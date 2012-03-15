@@ -35,12 +35,12 @@ public class ViewDemo {
 		public void actionPerformed(ActionEvent event) {
 			Point loc = MouseInfo.getPointerInfo().getLocation();
 			if (loc.x == 1365) {
-				TestPanel.camera.x = Math.min(TestPanel.squareSize*21 - 1366, TestPanel.camera.x + 4);
+				TestPanel.camera.x = Math.min(TestPanel.squareSize*24 - 1366, TestPanel.camera.x + 4);
 			} else if (loc.x == 0) {
 				TestPanel.camera.x = Math.max(0, TestPanel.camera.x - 4);
 			}
 			if (loc.y == 767) {
-				TestPanel.camera.y = Math.min(TestPanel.squareSize*21 - 748, TestPanel.camera.y + 4);
+				TestPanel.camera.y = Math.min(TestPanel.squareSize*23 - 748, TestPanel.camera.y + 4);
 			} else if (loc.y == 0) {
 				TestPanel.camera.y = Math.max(0, TestPanel.camera.y - 4);
 			}
