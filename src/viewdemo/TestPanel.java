@@ -85,26 +85,8 @@ public class TestPanel extends JPanel implements MouseListener {
 		}
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent evt) {
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void mouseEntered(MouseEvent me) {}
+	@Override public void mouseExited(MouseEvent me) {}
+	@Override public void mousePressed(MouseEvent me) {}
+	@Override public void mouseReleased(MouseEvent me) {}
 }
