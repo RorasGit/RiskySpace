@@ -37,15 +37,22 @@ public class BattleSimulator {
 	}
 
 	private static String doBattle(List<Ship> player1, List<Ship> player2) {
+		int init = 0;
 		while (!player1.isEmpty() && !player2.isEmpty()) {
 			int[] player1dmg = new int[player1.size()];
 			int[] player2dmg = new int[player2.size()];
 
 			for (int i = 0; i < player1.size(); i++) {
-				player1dmg[i] = player1.get(i).fire();
+				if (init == 0 && player1.get(i) instanceof Scout)
+					player1dmg[i] = player1.get(i).fire();
+				if (init == 1 && player1.get(i) instanceof Hunter)
+					player1dmg[i] = player1.get(i).fire();
 			}
 			for (int i = 0; i < player2.size(); i++) {
-				player2dmg[i] = player2.get(i).fire();
+				if (init == 0 && player2.get(i) instanceof Scout)
+					player2dmg[i] = player2.get(i).fire();
+				if (init == 1 && player2.get(i) instanceof Hunter)
+					player2dmg[i] = player2.get(i).fire();
 			}
 			List<Ship> remove1 = new ArrayList<Ship>();
 			List<Ship> remove2 = new ArrayList<Ship>();
@@ -63,6 +70,7 @@ public class BattleSimulator {
 			}
 			player1.removeAll(remove1);
 			player2.removeAll(remove2);
+			init = (init + 1) % 2;
 		}
 		String returnString = null;
 		if (player1.isEmpty() && player2.isEmpty()) {
