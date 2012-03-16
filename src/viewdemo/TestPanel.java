@@ -1,5 +1,6 @@
 package viewdemo;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -18,12 +19,18 @@ public class TestPanel extends JPanel implements MouseListener {
 	private Point[] stars = new Point[10000];
 	private Point selectedPoint;
 	private Point cursorLocation;
+	private Dimension sizeOfGrid;
+	private int startX;
+	private int startY;
 	
 	public TestPanel() {
 		measureScreen();
 		for (int i = 0; i < stars.length; i++) {
 			stars[i] = new Point((int) (Math.random()*squareSize*26), (int) (Math.random()*squareSize*26));
 		}
+		sizeOfGrid = new Dimension(20, 20);
+		startX = 3;
+		startY = 2;
 		addMouseListener(this);
 	}
 	
@@ -39,15 +46,15 @@ public class TestPanel extends JPanel implements MouseListener {
 			g.fillRect(stars[i].x, stars[i].y, 1, 1);
 		}
 		g.setColor(new Color(130,130,130));
-		for (int x = 3; x < 21; x++) {
-			g.drawLine(x * squareSize, 2*squareSize, x * squareSize, squareSize*20);
+		for (int x = startX; x <= sizeOfGrid.width+startX; x++) {
+			g.drawLine(x * squareSize, startY*squareSize, x * squareSize, squareSize*(sizeOfGrid.width+startY));
 		}
-		for (int y = 2; y < 21; y++) {
-			g.drawLine(3*squareSize, y * squareSize, squareSize*20, y * squareSize);
+		for (int y = startY; y <= sizeOfGrid.height+startY; y++) {
+			g.drawLine(startX*squareSize, y * squareSize, squareSize*(sizeOfGrid.height+startX), y * squareSize);
 		}
 		if (legalPos(new Point(selX,selY))) {
-		g.setColor(new Color(110, 170, 10, 170));
-		g.fillRect(selX - selX%squareSize + 1, selY - selY%squareSize + 1, squareSize -1, squareSize -1);
+			g.setColor(new Color(110, 170, 10, 170));
+			g.fillRect(selX - selX%squareSize + 1, selY - selY%squareSize + 1, squareSize -1, squareSize -1);
 		}
 		if (selectedPoint != null) {
 			g.setColor(new Color(240, 255, 0, 100));
@@ -57,7 +64,7 @@ public class TestPanel extends JPanel implements MouseListener {
 	}
 	
 	private boolean legalPos(Point loc) {
-		if (loc.x <= squareSize * 3 || loc.x >= squareSize * 23 || loc.y <= squareSize * 2 || loc.y >= squareSize * 22) {
+		if (loc.x <= squareSize * startX || loc.x >= squareSize * (sizeOfGrid.width+startX) || loc.y <= squareSize * startY || loc.y >= squareSize * (sizeOfGrid.height+startY)) {
 			return false;
 		} else {
 			return true;
