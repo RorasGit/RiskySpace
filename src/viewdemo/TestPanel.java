@@ -100,7 +100,7 @@ public class TestPanel extends JPanel implements MouseListener {
 				path = null;
 			}
 			if (selectedPoint != null && me.getButton() == MouseEvent.BUTTON3) {
-				path = MoveDemo.calcPath(selectedPoint, pos);
+				path = MoveDemo.calcPath2(selectedPoint, pos);
 			}
 		} else {
 			if (me.getButton() == MouseEvent.BUTTON1) {
