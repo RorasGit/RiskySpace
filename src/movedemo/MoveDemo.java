@@ -9,8 +9,8 @@ public class MoveDemo {
 	Position target = null;
 	
 	public MoveDemo() {
-		start = new Position(1,1);
-		target = new Position(3,5);
+		start = new Position(1,2);
+		target = new Position(7,1);
 		
 		Position[] path = calcPath2(start, target);
 		for (int i = 0; i < path.length; i++) {
@@ -52,9 +52,14 @@ public class MoveDemo {
 		path[0] = start;
 		int rows = Math.abs(start.getRow() - target.getRow());
 		int cols = Math.abs(start.getCol() - target.getCol());
+		
+		if (rows == 0 || cols == 0) {
+			// The old code can handle rows or columns to be zero
+			return calcPath(start, target);
+		}
+		
 		int dRow;
 		int dCol;
-		
 		int[] colExtra = new int[Math.min(cols, rows)];
 		int[] rowExtra = new int[Math.min(cols, rows)];
 		
