@@ -1,11 +1,8 @@
 package viewdemo;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.swing.JPanel;
 
@@ -13,7 +10,7 @@ import javax.swing.JPanel;
 public class TestPanel extends JPanel {
 	
 	private double width, height;
-	public static Point camera = new Point(300, 300);
+	public static Point camera = new Point(300, 100);
 	public static int squareSize;
 	private Point[] stars = new Point[10000];
 	
@@ -36,11 +33,11 @@ public class TestPanel extends JPanel {
 			g.fillRect(stars[i].x, stars[i].y, 1, 1);
 		}
 		g.setColor(new Color(130,130,130));
-		for (int x = 3; x < 22; x++) {
-			g.drawLine(x * squareSize, 2*squareSize, x * squareSize, squareSize*21);
+		for (int x = 3; x < 21; x++) {
+			g.drawLine(x * squareSize, 2*squareSize, x * squareSize, squareSize*20);
 		}
-		for (int y = 2; y < 22; y++) {
-			g.drawLine(3*squareSize, y * squareSize, squareSize*21, y * squareSize);
+		for (int y = 2; y < 21; y++) {
+			g.drawLine(3*squareSize, y * squareSize, squareSize*20, y * squareSize);
 		}
 		
 //		g.setColor(new Color(140, 230, 10, 110));
