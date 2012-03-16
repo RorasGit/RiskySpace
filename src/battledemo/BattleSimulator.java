@@ -33,7 +33,13 @@ public class BattleSimulator {
 		for (int i = 0; i < hunter2; i++) {
 			player2.add(new Hunter());
 		}
+		Fleet fleet = new Fleet(player1);
+		System.out.println(fleet.shipCount(ShipType.SCOUT));
 		System.out.println(doBattle(player1, player2));
+	}
+	
+	public static boolean hej() {
+		return true;
 	}
 
 	private static String doBattle(List<Ship> player1, List<Ship> player2) {
