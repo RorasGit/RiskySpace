@@ -28,18 +28,14 @@ public class MoveDemo {
 			if (path[index-1].getRow() != target.getRow() && direction == 0) {
 				if (path[index-1].getRow() < target.getRow()) {
 					next = new Position(path[index-1].getRow() + 1, path[index-1].getCol());
-					System.out.println(index + ": A " + next + " d:" + direction);
 				} else if (path[index-1].getRow() > target.getRow()) {
 					next = new Position(path[index-1].getRow() - 1, path[index-1].getCol());
-					System.out.println(index + ": B " + next + " d:" + direction);
 				}
 			} else if (path[index-1].getCol() != target.getCol() && direction == 1) {
 				if (path[index-1].getCol() < target.getCol()) {
 					next = new Position(path[index-1].getRow(), path[index-1].getCol() + 1);
-					System.out.println(index + ": C " + next + " d:" + direction);
 				} else if (path[index-1].getCol() > target.getCol()) {
 					next = new Position(path[index-1].getRow(), path[index-1].getCol() - 1);
-					System.out.println(index + ": D " + next + " d:" + direction);
 				}
 			}
 			if (next != null) {
