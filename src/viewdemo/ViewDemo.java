@@ -18,8 +18,6 @@ public class ViewDemo {
 	JFrame testFrame = null;
 
 	public ViewDemo() {
-		System.out.println("Space is risky shiet");
-		System.out.println("Oh yea");
 		testFrame = new JFrame();
 		TestPanel testPanel = new TestPanel();
 		testFrame.add(testPanel);
