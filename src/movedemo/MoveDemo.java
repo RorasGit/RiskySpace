@@ -10,7 +10,7 @@ public class MoveDemo {
 	
 	public MoveDemo() {
 		start = new Position(1,1);
-		target = new Position(2,4);
+		target = new Position(3,4);
 		
 		Position[] path = calcPath(start, target);
 		for (int i = 0; i < path.length; i++) {
@@ -18,28 +18,34 @@ public class MoveDemo {
 		}
 	}
 	
-	public Position[] calcPath(Position start, Position target) {
+	public static Position[] calcPath(Position start, Position target) {
 		Position[] path = new Position[start.distanceTo(target) + 1];
 		path[0] = start;
 		int direction = 0;
-		for (int i = 1; i < path.length; i++) {
+		int index = 1;
+		while (index < path.length) {
 			Position next = null;
-			if (direction == 0 || path[i-1].getCol() == target.getCol()) {
-				if (path[i-1].getRow() < target.getRow()) {
-					next = new Position(path[i-1].getRow() + 1, path[i-1].getCol());
-				} else if (path[i-1].getRow() > target.getRow()) {
-					next = new Position(path[i-1].getRow() - 1, path[i-1].getCol());
+			if (path[index-1].getRow() != target.getRow() && direction == 0) {
+				if (path[index-1].getRow() < target.getRow()) {
+					next = new Position(path[index-1].getRow() + 1, path[index-1].getCol());
+					System.out.println(index + ": A " + next + " d:" + direction);
+				} else if (path[index-1].getRow() > target.getRow()) {
+					next = new Position(path[index-1].getRow() - 1, path[index-1].getCol());
+					System.out.println(index + ": B " + next + " d:" + direction);
 				}
-			} else if (direction == 1 || path[i-1].getRow() == target.getRow()) {
-				if (path[i-1].getCol() < target.getCol()) {
-					System.out.println("+col");
-					next = new Position(path[i-1].getRow(), path[i-1].getCol() + 1);
-				} else if (path[i-1].getCol() > target.getCol()) {
-					System.out.println("-col");
-					next = new Position(path[i-1].getRow(), path[i-1].getCol() - 1);
+			} else if (path[index-1].getCol() != target.getCol() && direction == 1) {
+				if (path[index-1].getCol() < target.getCol()) {
+					next = new Position(path[index-1].getRow(), path[index-1].getCol() + 1);
+					System.out.println(index + ": C " + next + " d:" + direction);
+				} else if (path[index-1].getCol() > target.getCol()) {
+					next = new Position(path[index-1].getRow(), path[index-1].getCol() - 1);
+					System.out.println(index + ": D " + next + " d:" + direction);
 				}
 			}
-			path[i] = next;
+			if (next != null) {
+				path[index] = next;
+				index++;
+			}
 			direction = (direction + 1) % 2;
 		}
 		return path;

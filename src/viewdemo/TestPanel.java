@@ -10,6 +10,9 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
+import movedemo.MoveDemo;
+import movedemo.Position;
+
 
 public class TestPanel extends JPanel implements MouseListener {
 	
@@ -17,11 +20,11 @@ public class TestPanel extends JPanel implements MouseListener {
 	public static Point camera = new Point(300, 100);
 	public static int squareSize;
 	private Point[] stars = new Point[10000];
-	private Point selectedPoint;
-	private Point cursorLocation;
+	private Position selectedPoint;
 	private Dimension sizeOfGrid;
 	private int startX;
 	private int startY;
+	private Position[] path = null;
 	
 	public TestPanel() {
 		measureScreen();
@@ -35,7 +38,7 @@ public class TestPanel extends JPanel implements MouseListener {
 	}
 	
 	public void paintComponent(Graphics g) {
-		cursorLocation = MouseInfo.getPointerInfo().getLocation();
+		Point cursorLocation = MouseInfo.getPointerInfo().getLocation();
 		int selX = cursorLocation.x + camera.x;
 		int selY = cursorLocation.y + camera.y;
 		g.setColor(Color.BLACK);
@@ -57,10 +60,18 @@ public class TestPanel extends JPanel implements MouseListener {
 			g.fillRect(selX - selX%squareSize + 1, selY - selY%squareSize + 1, squareSize -1, squareSize -1);
 		}
 		if (selectedPoint != null) {
-			g.setColor(new Color(240, 255, 0, 100));
-			g.fillRect(selectedPoint.x - selectedPoint.x%squareSize + 1, selectedPoint.y - selectedPoint.y%squareSize + 1, squareSize -1, squareSize -1);
+			fillRect(selectedPoint, g, new Color(240, 255, 0, 100));
 		}
-		
+		if (path != null) {
+			for (int i = 1; i < path.length; i++) {
+				fillRect(path[i], g, new Color(240, 50, 50, 100));
+			}
+		}		
+	}
+	
+	private void fillRect(Position pos, Graphics g, Color c) {
+		g.setColor(c);
+		g.fillRect((pos.getCol() + 2)*squareSize + 1, (pos.getRow() + 1)*squareSize + 1, squareSize -1, squareSize -1);
 	}
 	
 	private boolean legalPos(Point loc) {
@@ -77,16 +88,32 @@ public class TestPanel extends JPanel implements MouseListener {
 		squareSize = Math.min((int) (width/6),(int) (height/6));
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent evt) {
-		Point p = new Point(evt.getPoint().x + camera.x, evt.getPoint().y+ camera.y);
-		if (legalPos(p)) {
-			selectedPoint = p;
-		}
-	}
-
+	@Override public void mouseClicked(MouseEvent me) {}
 	@Override public void mouseEntered(MouseEvent me) {}
 	@Override public void mouseExited(MouseEvent me) {}
-	@Override public void mousePressed(MouseEvent me) {}
+	@Override public void mousePressed(MouseEvent me) {
+		Point p = new Point(me.getPoint().x + camera.x, me.getPoint().y+ camera.y);
+		if (legalPos(p)) {
+			Position pos = getPos(p);
+			if (me.getButton() == MouseEvent.BUTTON1) {
+				selectedPoint = pos;
+				path = null;
+			}
+			if (selectedPoint != null && me.getButton() == MouseEvent.BUTTON3) {
+				path = MoveDemo.calcPath(selectedPoint, pos);
+			}
+		} else {
+			if (me.getButton() == MouseEvent.BUTTON1) {
+				selectedPoint = null;
+				path = null;
+			}
+		}
+	}
+	private Position getPos(Point p) {
+		int col = (p.x) / squareSize - 2;
+		int row = (p.y) / squareSize - 1;
+		return new Position(row, col);
+	}
+
 	@Override public void mouseReleased(MouseEvent me) {}
 }

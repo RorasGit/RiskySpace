@@ -6,8 +6,8 @@ public class Position {
 	
 	
 	public Position(int row, int col) {
-		this.col = row;
-		this.row = col;
+		this.col = col;
+		this.row = row;
 	}
 	
 	public int getCol() {
