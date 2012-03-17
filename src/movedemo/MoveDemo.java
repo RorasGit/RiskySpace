@@ -9,8 +9,8 @@ public class MoveDemo {
 	Position target = null;
 	
 	public MoveDemo() {
-		start = new Position(1,2);
-		target = new Position(7,1);
+		start = new Position(2,2);
+		target = new Position(3,7);
 		
 		Position[] path = calcPath2(start, target);
 		for (int i = 0; i < path.length; i++) {
@@ -53,37 +53,35 @@ public class MoveDemo {
 		int rows = Math.abs(start.getRow() - target.getRow());
 		int cols = Math.abs(start.getCol() - target.getCol());
 		
-		if (rows == 0 || cols == 0) {
-			// The old code can handle rows or columns to be zero
-			return calcPath(start, target);
-		}
-		
 		int dRow;
 		int dCol;
-		int[] colExtra = new int[Math.min(cols, rows)];
-		int[] rowExtra = new int[Math.min(cols, rows)];
+		int[] colExtra = new int[Math.min(cols, rows) + 1];
+		int[] rowExtra = new int[Math.min(cols, rows) + 1];
+		
+		int direction = 1;
 		
 		if (rows >= cols) {
-			dRow = rows/cols;
+			direction = 0;
+			dRow = rows/(cols+1);
 			dCol = 1;
-			for (int i = 0; i < rows%cols; i++) {
+			for (int i = 0; i < rows%(cols+1); i++) {
 				rowExtra[i] = 1;
 			}
 		} else {
 			dRow = 1;
-			dCol = cols/rows;
-			for (int i = 0; i < cols%rows; i++) {
+			dCol = cols/(rows+1);
+			for (int i = 0; i < cols%(rows+1); i++) {
 				colExtra[i] = 1;
 			}
 		}
 		int index = 1;
-		int direction = 0;
-		int dirChange = 0;
+		int colIndex = 0;
+		int rowIndex = 0;
 		while (index < path.length) {
 			System.out.println("WHILE: " + path[index-1]);
 			if (path[index-1].getRow() != target.getRow() && direction == 0) {
 				System.out.println("ROW");
-				for (int i = 0; i < dRow + rowExtra[dirChange]; i++) {
+				for (int i = 0; i < dRow + rowExtra[rowIndex]; i++) {
 					System.out.println("ROW: FOR");
 					int rowStep = path[index-1].getRow() < target.getRow() ? 1 : -1;
 					System.out.println("ROW STEP: " + rowStep);
@@ -95,10 +93,11 @@ public class MoveDemo {
 					}
 					index++;
 				}
+				rowIndex++;
 			}
 			if (path[index-1].getCol() != target.getCol() && direction == 1) {
 				System.out.println("COL");
-				for (int i = 0; i < dCol + colExtra[dirChange]; i++) {
+				for (int i = 0; i < dCol + colExtra[colIndex]; i++) {
 					System.out.println("COL: FOR");
 					int colStep = path[index-1].getCol() < target.getCol() ? 1 : -1;
 					System.out.println("COL: STEP " + colStep);
@@ -110,11 +109,9 @@ public class MoveDemo {
 					}
 					index++;
 				}
+				colIndex++;
 			}
 			direction = (direction + 1) % 2;
-			if (direction == 0) {
-				dirChange++;
-			}
 		}
 		return path;
 	}
