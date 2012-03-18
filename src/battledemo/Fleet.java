@@ -6,18 +6,54 @@ import java.util.ArrayList;
 public class Fleet {
 	
 	private List<Ship> ships = new ArrayList<Ship>();
-	private int nbrOfShips = 0;
 	private int nbrOfAttacks = 0;
 	// TODO private Planet planet = null;
+	
+	/*
+	 * TODO: Placeholder for player
+	 * Should not be string
+	 */
+	private String player = null;
 
 	public Fleet(List<Ship> ships) {
 		for (int i = 0; i < ships.size(); i++) {
-			if (ships.get(i) instanceof Ship) {
-				this.ships.add(ships.get(i));
-				nbrOfAttacks = nbrOfAttacks + ships.get(i).getAttacks();
+			this.ships.add(ships.get(i));
+			nbrOfAttacks = nbrOfAttacks + ships.get(i).getAttacks();
+		}
+	}
+
+	/**
+	 * Merge several fleets to a new fleet
+	 * @param ships
+	 */
+	public Fleet(Fleet[] fleets) {
+		for (int i = 0; i < fleets.length; i++) {
+			for (int j = 0; j < fleets[i].ships.size(); j++) {
+				this.ships.add(fleets[i].ships.get(j));
 			}
 		}
-		nbrOfShips = ships.size();
+	}
+	
+	/**
+	 * One ship fleet (For new ships)
+	 * @param ship
+	 */
+	public Fleet(Ship ship) {
+		ships.add(ship);
+		nbrOfAttacks = ship.getAttacks();
+	}
+	
+	/*
+	 * TODO: Split fleet
+	 */
+	public Fleet[] splitFleet(/*ARGS*/) {
+		// TODO
+		return null;
+	}
+	
+	public void setPlayer(String player) {
+		// PLACEHOLDER TODO
+		this.player = player;
 	}
 	
 	public int shipCount(ShipType type) {
@@ -44,8 +80,8 @@ public class Fleet {
 	}
 	
 	public boolean hasPlanet() {
-		//TODO Kolla om du har en lämplig planet som ska vara med i fighten. Dess försvar ska kunna dö utan 
-		// att planeten försvinner om dess fleet vinner fighten!
+		//TODO Kolla om du har en lï¿½mplig planet som ska vara med i fighten. Dess fï¿½rsvar ska kunna dï¿½ utan 
+		// att planeten fï¿½rsvinner om dess fleet vinner fighten!
 		return false;
 	}
 	
@@ -69,5 +105,4 @@ public class Fleet {
 			ships.get(i).reset();
 		}
 	}
-	
 }
