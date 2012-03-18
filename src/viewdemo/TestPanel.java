@@ -45,7 +45,11 @@ public class TestPanel extends JPanel implements MouseListener {
 		loadImages();
 	}
 	
-	public void loadImages() {
+	/**
+	 * Laddar in de bilder som används i en hashmap så att de inte behöver laddas från en fil
+	 * vid varje utritning.
+	 */
+	private void loadImages() {
 		images = new HashMap<String, Image>();
 		images.put("HEAD", Toolkit.getDefaultToolkit().createImage("res/head.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
 		images.put("STRAIGHT", Toolkit.getDefaultToolkit().createImage("res/straight.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
@@ -53,17 +57,34 @@ public class TestPanel extends JPanel implements MouseListener {
 		images.put("TURN", Toolkit.getDefaultToolkit().createImage("res/turn.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
 	}
 	
+	
 	public void paintComponent(Graphics g) {
 		Point cursorLocation = MouseInfo.getPointerInfo().getLocation();
 		int selX = cursorLocation.x + camera.x;
 		int selY = cursorLocation.y + camera.y;
+		
+		/*
+		 * Draw a black background
+		 */
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0,(int) width,(int) height);
+		
+		/*
+		 * Translate the canvas to show what the camera is currently looking at
+		 */
 		g.translate(-camera.x, -camera.y);
+		
+		/*
+		 * Draw white "stars" on random positions set when started 
+		 */
 		g.setColor(Color.WHITE);
 		for (int i = 0; i < stars.length; i++) {
 			g.fillRect(stars[i].x, stars[i].y, 1, 1);
 		}
+		
+		/*
+		 * Draw a grid marking the different Zones/Positions
+		 */
 		g.setColor(new Color(130,130,130));
 		for (int x = startX; x <= sizeOfGrid.width+startX; x++) {
 			g.drawLine(x * squareSize, startY*squareSize, x * squareSize, squareSize*(sizeOfGrid.width+startY));
@@ -71,46 +92,67 @@ public class TestPanel extends JPanel implements MouseListener {
 		for (int y = startY; y <= sizeOfGrid.height+startY; y++) {
 			g.drawLine(startX*squareSize, y * squareSize, squareSize*(sizeOfGrid.height+startX), y * squareSize);
 		}
+		
+		/*
+		 * Draw a greenish rectangle to show what Zone/Position the user is
+		 * currently hovering the mouse over.
+		 */
 		if (legalPos(new Point(selX,selY))) {
-			g.setColor(new Color(110, 170, 10, 170));
-			g.fillRect(selX - selX%squareSize + 1, selY - selY%squareSize + 1, squareSize -1, squareSize -1);
+			Position pos = getPos(new Point(selX,selY));
+			fillRect(pos, g, new Color(110, 170, 10, 170));
 		}
+		
+		/*
+		 * If a position is selected draw this.
+		 */
 		if (selectedPoint != null) {
 			fillRect(selectedPoint, g, new Color(240, 255, 0, 100));
 		}
+		
+		/*
+		 * If the path is not null, call method to draw it
+		 * TODO: Draw several paths
+		 */
 		if (path != null) {
-			/*
-			 * Rita ut pilar baserat på entry och exit med ett enum och en metod för att
-			 * få fram värdet. ex entry = Path.DOWN, exit = null ritar pil från down till
-			 * mitten.
-			 */
-			System.out.println("--->>LOOP<<---");
-			for (int i = 0; i < path.length; i++) {
-//				fillRect(path[i], g, new Color(240, 50, 50, 100));
-				Graphics2D g2D = (Graphics2D) g;
-				
-				Position previous = i == 0 ? null: path[i-1];; 
-				Position current = path[i]; 
-				Position next = i + 1 < path.length ? path[i+1]: null;
-				
-				String key = getArrow(previous, next);
-				double rotation = getRotation(previous, current, next);
-				System.out.println("{");
-				System.out.println(previous);
-				System.out.println(current);
-				System.out.println(next);
-				System.out.println("i: " + i  + ") " + rotation);
-				System.out.println("}");
-				
-				g2D.rotate(rotation, (path[i].getCol()+2.5)*squareSize, (path[i].getRow()+1.5)*squareSize);
-				g2D.drawImage(images.get(key), (path[i].getCol()+2)*squareSize, (path[i].getRow()+1)*squareSize, null);
-				g2D.rotate(-rotation, (path[i].getCol()+2.5)*squareSize, (path[i].getRow()+1.5)*squareSize);
-			}
-			System.out.println("-->>END-LOOP<<--");
+			drawPaths((Graphics2D) g, path);
 		}
 	}
 	
+	/**
+	 * Draw all paths
+	 */
+	private void drawPaths(Graphics2D g2D, Position[] path) {
+		for (int i = 0; i < path.length; i++) {
+			
+			Position previous = i == 0 ? null: path[i-1];; 
+			Position current = path[i]; 
+			Position next = i + 1 < path.length ? path[i+1]: null;
+			
+			String key = getArrow(previous, next);
+			double rotation = getRotation(previous, current, next);
+			
+			g2D.rotate(rotation, (path[i].getCol()+2.5)*squareSize, (path[i].getRow()+1.5)*squareSize);
+			g2D.drawImage(images.get(key), (path[i].getCol()+2)*squareSize, (path[i].getRow()+1)*squareSize, null);
+			g2D.rotate(-rotation, (path[i].getCol()+2.5)*squareSize, (path[i].getRow()+1.5)*squareSize);
+		}
+	}
+	
+	/**
+	 * Returns the rotation that should be used to draw the image based
+	 * on previous and next positions of the path
+	 * @param previous The Position before the one where you want draw in the path
+	 * @param current The Position where you want rotation for an arrow image
+	 * @param next The Position after the one where you want draw in the path
+	 * @return The rotation angle in radians.
+	 */
+	/*
+	 * TODO: Move to another class "Worth saving, may need some changes"
+	 */
 	private double getRotation(Position previous, Position current, Position next) {
+		/*
+		 * Variables for determining where the previous and next positions
+		 * are relative to the current position
+		 */
 		boolean prevAbove = false;
 		boolean prevUnder = false;
 		boolean prevLeft = false;
@@ -121,6 +163,10 @@ public class TestPanel extends JPanel implements MouseListener {
 		boolean nextLeft = false;
 		boolean nextAbove = false;
 		
+		/*
+		 * Only calculate values if there is a previous
+		 * respective next position in.
+		 */
 		if (previous != null) {
 			prevAbove = previous.getRow() < current.getRow();
 			prevUnder = previous.getRow() > current.getRow();
@@ -133,6 +179,12 @@ public class TestPanel extends JPanel implements MouseListener {
 			nextLeft = next.getCol() < current.getCol();
 			nextAbove = next.getRow() < current.getRow();
 		}
+		/*
+		 * If previous is null then only determine rotation based on 
+		 * next position.
+		 * >> Path is always of length 2 at least, therefore no point can
+		 * have neither previous or next location.
+		 */
 		if (previous == null) {
 			if (nextAbove) {
 				return 3*Math.PI/2;
@@ -144,6 +196,10 @@ public class TestPanel extends JPanel implements MouseListener {
 				return 0;
 			}
 		}
+		/*
+		 * If next is null then only determine rotation based on 
+		 * previous position.
+		 */
 		if (next == null) {
 			if (prevAbove) {
 				return Math.PI/2;
@@ -155,7 +211,9 @@ public class TestPanel extends JPanel implements MouseListener {
 				return Math.PI;
 			}
 		}
-		
+		/*
+		 * Return rotation based on where the previous and next locations are.
+		 */
 		if (prevAbove) {
 			if (nextUnder) {
 				return Math.PI/2;
@@ -189,27 +247,48 @@ public class TestPanel extends JPanel implements MouseListener {
 				return 3*Math.PI/2;
 			}
 		}
+		/*
+		 * Return 0 to make the compiler happy, will never run
+		 * unless previous == current || current == next which
+		 * is wrong usage.
+		 */
 		return 0;
 	}
 	
+	/**
+	 * Returns the String key for each arrow part based on previous and next positions in a path.
+	 * @param previous The Position previous to the one to draw.
+	 * @param next The Position after the one to draw.
+	 * @return a String key that will give a picture from the images MAP
+	 */
+	/*
+	 * Could perhaps return the image instead?
+	 * Advantages/Disadvantages?
+	 */
 	private String getArrow(Position previous, Position next) {
 		if (previous == null) {
 			return "START";
-		}
-		if (next == null) {
+		} else if (next == null) {
 			return "HEAD";
-		} if (previous.getCol() != next.getCol() && previous.getRow() != next.getRow()) {
+		} else if (previous.getCol() != next.getCol() && previous.getRow() != next.getRow()) {
 			return "TURN";
 		} else {
 			return "STRAIGHT";
 		}
 	}
 	
+	/*
+	 * Fills a rectangle with a Color on the sent Graphics representing a Position
+	 */
 	private void fillRect(Position pos, Graphics g, Color c) {
 		g.setColor(c);
 		g.fillRect((pos.getCol() + 2)*squareSize + 1, (pos.getRow() + 1)*squareSize + 1, squareSize -1, squareSize -1);
 	}
 	
+	/*
+	 * Checks if a Point is a legal position
+	 * ?? Should be called before trying to aquire a Position from the point
+	 */
 	private boolean legalPos(Point loc) {
 		if (loc.x <= squareSize * startX || loc.x >= squareSize * (sizeOfGrid.width+startX) || loc.y <= squareSize * startY || loc.y >= squareSize * (sizeOfGrid.height+startY)) {
 			return false;
@@ -218,6 +297,9 @@ public class TestPanel extends JPanel implements MouseListener {
 		}
 	}
 
+	/*
+	 * Measure the screen and set the squareSize
+	 */
 	public void measureScreen() {
 		width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -227,6 +309,7 @@ public class TestPanel extends JPanel implements MouseListener {
 	@Override public void mouseClicked(MouseEvent me) {}
 	@Override public void mouseEntered(MouseEvent me) {}
 	@Override public void mouseExited(MouseEvent me) {}
+	@Override public void mouseReleased(MouseEvent me) {}
 	@Override public void mousePressed(MouseEvent me) {
 		Point p = new Point(me.getPoint().x + camera.x, me.getPoint().y+ camera.y);
 		if (legalPos(p)) {
@@ -245,11 +328,13 @@ public class TestPanel extends JPanel implements MouseListener {
 			}
 		}
 	}
+	
+	/*
+	 * Returns a Position from a Point.
+	 */
 	private Position getPos(Point p) {
 		int col = (p.x) / squareSize - 2;
 		int row = (p.y) / squareSize - 1;
 		return new Position(row, col);
 	}
-
-	@Override public void mouseReleased(MouseEvent me) {}
 }
