@@ -36,6 +36,11 @@ public class Position {
 	}
 	
 	@Override
+	public int hashCode() {
+		return col*3 + row*101;
+	}
+	
+	@Override
 	public String toString() {
 		return "[" + row + "," + col + "]";
 	}
