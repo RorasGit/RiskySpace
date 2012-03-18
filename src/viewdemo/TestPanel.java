@@ -2,12 +2,18 @@ package viewdemo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import movedemo.MoveDemo;
@@ -25,6 +31,7 @@ public class TestPanel extends JPanel implements MouseListener {
 	private int startX;
 	private int startY;
 	private Position[] path = null;
+	private Map<String, Image> images = null;
 	
 	public TestPanel() {
 		measureScreen();
@@ -35,6 +42,15 @@ public class TestPanel extends JPanel implements MouseListener {
 		startX = 3;
 		startY = 2;
 		addMouseListener(this);
+		loadImages();
+	}
+	
+	public void loadImages() {
+		images = new HashMap<String, Image>();
+		images.put("HEAD", Toolkit.getDefaultToolkit().createImage("res/head.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		images.put("STRAIGHT", Toolkit.getDefaultToolkit().createImage("res/straight.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		images.put("START", Toolkit.getDefaultToolkit().createImage("res/start.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		images.put("TURN", Toolkit.getDefaultToolkit().createImage("res/turn.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -63,10 +79,130 @@ public class TestPanel extends JPanel implements MouseListener {
 			fillRect(selectedPoint, g, new Color(240, 255, 0, 100));
 		}
 		if (path != null) {
-			for (int i = 1; i < path.length; i++) {
-				fillRect(path[i], g, new Color(240, 50, 50, 100));
+			/*
+			 * Rita ut pilar baserat på entry och exit med ett enum och en metod för att
+			 * få fram värdet. ex entry = Path.DOWN, exit = null ritar pil från down till
+			 * mitten.
+			 */
+			System.out.println("--->>LOOP<<---");
+			for (int i = 0; i < path.length; i++) {
+//				fillRect(path[i], g, new Color(240, 50, 50, 100));
+				Graphics2D g2D = (Graphics2D) g;
+				
+				Position previous = i == 0 ? null: path[i-1];; 
+				Position current = path[i]; 
+				Position next = i + 1 < path.length ? path[i+1]: null;
+				
+				String key = getArrow(previous, next);
+				double rotation = getRotation(previous, current, next);
+				System.out.println("{");
+				System.out.println(previous);
+				System.out.println(current);
+				System.out.println(next);
+				System.out.println("i: " + i  + ") " + rotation);
+				System.out.println("}");
+				
+				g2D.rotate(rotation, (path[i].getCol()+2.5)*squareSize, (path[i].getRow()+1.5)*squareSize);
+				g2D.drawImage(images.get(key), (path[i].getCol()+2)*squareSize, (path[i].getRow()+1)*squareSize, null);
+				g2D.rotate(-rotation, (path[i].getCol()+2.5)*squareSize, (path[i].getRow()+1.5)*squareSize);
 			}
-		}		
+			System.out.println("-->>END-LOOP<<--");
+		}
+	}
+	
+	private double getRotation(Position previous, Position current, Position next) {
+		boolean prevAbove = false;
+		boolean prevUnder = false;
+		boolean prevLeft = false;
+		boolean prevRight = false;
+		
+		boolean nextRight = false;
+		boolean nextUnder = false;
+		boolean nextLeft = false;
+		boolean nextAbove = false;
+		
+		if (previous != null) {
+			prevAbove = previous.getRow() < current.getRow();
+			prevUnder = previous.getRow() > current.getRow();
+			prevLeft = previous.getCol() < current.getCol();
+			prevRight = previous.getCol() > current.getCol();
+		}
+		if (next != null) {
+			nextRight = next.getCol() > current.getCol();
+			nextUnder = next.getRow() > current.getRow();
+			nextLeft = next.getCol() < current.getCol();
+			nextAbove = next.getRow() < current.getRow();
+		}
+		if (previous == null) {
+			if (nextAbove) {
+				return 3*Math.PI/2;
+			} else if (nextUnder) {
+				return Math.PI/2;
+			} else if (nextLeft) {
+				return Math.PI;
+			} else if (nextRight) {
+				return 0;
+			}
+		}
+		if (next == null) {
+			if (prevAbove) {
+				return Math.PI/2;
+			} else if (prevUnder) {
+				return 3*Math.PI/2;
+			} else if (prevLeft) {
+				return 0;
+			} else if (prevRight) {
+				return Math.PI;
+			}
+		}
+		
+		if (prevAbove) {
+			if (nextUnder) {
+				return Math.PI/2;
+			} else if (nextLeft) {
+				return Math.PI/2;
+			} else if (nextRight) {
+				return Math.PI;
+			}
+		} else if (nextAbove) {
+			if (prevUnder) {
+				return Math.PI/2;
+			} else if (prevLeft) {
+				return Math.PI/2;
+			} else if (prevRight) {
+				return Math.PI;
+			}
+		} else if (prevUnder) {
+			if (nextAbove) {
+				return Math.PI/2;
+			} else if (nextLeft) {
+				return 0;
+			} else if (nextRight) {
+				return 3*Math.PI/2;
+			}
+		} else if (nextUnder) {
+			if (prevAbove) {
+				return Math.PI/2;
+			} else if (prevLeft) {
+				return 0;
+			} else if (prevRight) {
+				return 3*Math.PI/2;
+			}
+		}
+		return 0;
+	}
+	
+	private String getArrow(Position previous, Position next) {
+		if (previous == null) {
+			return "START";
+		}
+		if (next == null) {
+			return "HEAD";
+		} if (previous.getCol() != next.getCol() && previous.getRow() != next.getRow()) {
+			return "TURN";
+		} else {
+			return "STRAIGHT";
+		}
 	}
 	
 	private void fillRect(Position pos, Graphics g, Color c) {
