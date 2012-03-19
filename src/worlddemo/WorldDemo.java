@@ -45,16 +45,15 @@ public class WorldDemo {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			Point loc = MouseInfo.getPointerInfo().getLocation();
-			if (loc.x == Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 1) {
+			if (loc.x >= Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 1) {
 				TestPanel.camera.x = Math.min(TestPanel.squareSize* 26 - (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(), TestPanel.camera.x + 10);
-			} else if (loc.x == 0) {
+			} else if (loc.x <= 0) {
 				TestPanel.camera.x = Math.max(0, TestPanel.camera.x - 10);
 			}
-			if (loc.y == Toolkit.getDefaultToolkit().getScreenSize()
-					.getHeight() - 1) {
+			if (loc.y >= Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 1) {
 				TestPanel.camera.y = Math.min(TestPanel.squareSize * 24 - (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight(),
 						TestPanel.camera.y + 10);
-			} else if (loc.y == 0) {
+			} else if (loc.y <= 0) {
 				TestPanel.camera.y = Math.max(0, TestPanel.camera.y - 10);
 			}
 			testFrame.repaint();

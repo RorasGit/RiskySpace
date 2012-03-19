@@ -359,7 +359,11 @@ public class TestPanel extends JPanel implements MouseListener, KeyListener {
 				path = null;
 			}
 			if (selectedPos != null && me.getButton() == MouseEvent.BUTTON3) {
-				path = MoveDemo.calcPath2(selectedPos, pos);
+				if (!pos.equals(selectedPos)) {
+					path = MoveDemo.calcPath2(selectedPos, pos);
+				} else {
+					path = null;
+				}
 			}
 		} else {
 			if (me.getButton() == MouseEvent.BUTTON1) {
