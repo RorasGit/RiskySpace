@@ -1,5 +1,5 @@
 package demo;
 
 public class Ship {
-	ShipType type = null;
+	private ShipType type = null;
 }
