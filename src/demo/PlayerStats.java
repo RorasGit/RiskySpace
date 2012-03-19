@@ -1,5 +1,8 @@
 package demo;
 
-public class PlayerStats {
+import java.util.Map;
 
+public class PlayerStats {
+	Map<Resource, Integer> resources = null;
+	Map<Resource, Integer> income = null;
 }
