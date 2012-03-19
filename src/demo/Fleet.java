@@ -23,8 +23,9 @@ public class Fleet {
 		return nbrOfType;
 	}
 	
-	public void resetShields() {
-		;
+	public void reset() {
+		for (int i = 0; i < ships.size(); i++) {
+			ships.get(i).reset();
+		}
 	}
-
 }
