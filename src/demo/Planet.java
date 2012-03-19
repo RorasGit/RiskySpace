@@ -12,6 +12,4 @@ public class Planet {
 	public void buildColony(Player owner) {
 		this.colony = new Colony(type, owner);
 	}
-	
->>>>>>> THEIRS
 }
