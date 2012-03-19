@@ -9,7 +9,7 @@ public enum ShipType {
 	HUNTER		(11, 3,  38, 1,  3),
 	DESTROYER	(11, 3, 100, 3,  3),
 	COLONIZER	( 1, 1,  38, 1,  2),
-	MAGIKARP	( 0, 0,   1, 0,  0); //FOR THE AWESOME
+	MAGIKARP	( 0, 0,  1,  0,  0); //FOR THE AWESOME
 	
 	private final int damage;
 	private final int variation;
