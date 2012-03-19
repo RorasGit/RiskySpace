@@ -1,5 +1,8 @@
 package demo;
 
-public class Colony {
+public class Colony implements BattleAble {
+	
+	private Player owner = null;
+	private int income = 0;
 
 }
