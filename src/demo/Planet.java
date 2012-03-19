@@ -12,4 +12,20 @@ public class Planet {
 	public void buildColony(Player owner) {
 		this.colony = new Colony(type, owner);
 	}
+	
+	public boolean hasColony() {
+		return colony != null;
+	}
+	
+	public Player controlledBy() {
+		if (hasColony()) {
+			return colony.getOwner();
+		} else {
+			return Player.WORLD;
+		}
+	}
+	
+	public Resource getType() {
+		return type;
+	}
 }

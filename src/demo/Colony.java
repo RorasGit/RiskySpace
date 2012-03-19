@@ -33,7 +33,11 @@ public class Colony implements BattleAble {
 	}
 
 	@Override
-	public List<Integer> getDamage() {
+	public List<Integer> getAttacks() {
 		return new ArrayList<Integer>();
+	}
+
+	public Player getOwner() {
+		return owner;
 	}
 }

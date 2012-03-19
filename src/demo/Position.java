@@ -1,6 +1,5 @@
 package demo;
 
-
 public class Position {
 	private int row = 0;
 	private int col = 0;
@@ -37,7 +36,7 @@ public class Position {
 	
 	@Override
 	public int hashCode() {
-		return col*3 + row*101;
+		return col*3 + row*7919;
 	}
 	
 	@Override

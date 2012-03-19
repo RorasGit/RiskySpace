@@ -16,6 +16,10 @@ public class Ship implements BattleAble {
 	public ShipType getType() {
 		return type;
 	}
+	
+	public int getInitiative() {
+		return type.getInitiative();
+	}
 
 	public void reset() {
 		this.shield = type.getShield();
@@ -29,7 +33,20 @@ public class Ship implements BattleAble {
 	}
 
 	@Override
-	public List<Integer> getDamage() {
+	public List<Integer> getAttacks() {
 		return type.getDamage();
+	}
+	
+	/*
+	 * boolean has enough energy (int energy) 
+	 */
+	
+	public boolean useEnergy(int energy) {
+		if (this.energy >= energy) {
+			this.energy -= energy;
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

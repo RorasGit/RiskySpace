@@ -30,4 +30,41 @@ public class Territory {
 			return false;
 		}
 	}
+	
+	public boolean hasPlanet() {
+		return planet != null;
+	}
+	
+	public Planet getPlanet() {
+		return planet;
+	}
+	
+	public boolean hasFleet() {
+		return !fleets.isEmpty();
+	}
+	
+	public Fleet getFleet(int index) {
+		return fleets.get(index);
+	}
+	
+	public List<Fleet> getFleets() {
+		return fleets;
+	}
+	
+	public Player controlledBy() {
+		if (!hasFleet() && (!hasPlanet() || !getPlanet().hasColony())) {
+			return Player.WORLD;
+		} else {
+			if (hasPlanet()) {
+				if (getPlanet().hasColony()) {
+					return getPlanet().controlledBy();
+				}
+			}
+			if (hasFleet()) {
+				// if not-several-players
+				return getFleet(0).getOwner();
+			}
+		}
+		return null;
+	}
 }
