@@ -1,5 +1,8 @@
 package demo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Colony implements BattleAble {
 	
 	private Player owner = null;
@@ -24,4 +27,13 @@ public class Colony implements BattleAble {
 		//TODO
 	}
 
+	@Override
+	public boolean takeDamage(int damage) {
+		return false;
+	}
+
+	@Override
+	public List<Integer> getDamage() {
+		return new ArrayList<Integer>();
+	}
 }

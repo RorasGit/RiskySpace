@@ -1,6 +1,8 @@
 package demo;
 
-public class Ship {
+import java.util.List;
+
+public class Ship implements BattleAble {
 	
 	private ShipType type = null;
 	private int shield = 0;
@@ -11,12 +13,23 @@ public class Ship {
 		reset();
 	}
 
+	public ShipType getType() {
+		return type;
+	}
+
 	public void reset() {
 		this.shield = type.getShield();
 		this.energy = type.getEnergy();
 	}
 
-	public ShipType getType() {
-		return type;
-	}	
+	@Override
+	public boolean takeDamage(int damage) {
+		shield -= damage;
+		return shield <= 0;
+	}
+
+	@Override
+	public List<Integer> getDamage() {
+		return type.getDamage();
+	}
 }

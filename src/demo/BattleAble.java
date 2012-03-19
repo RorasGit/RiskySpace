@@ -1,5 +1,8 @@
 package demo;
 
-public interface BattleAble {
+import java.util.List;
 
+public interface BattleAble {
+	public boolean takeDamage(int damage);
+	public List<Integer> getDamage();
 }
