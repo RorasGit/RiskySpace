@@ -30,6 +30,7 @@ public class Fleet {
 		for (int i = 0; i < fleets.length; i++) {
 			for (int j = 0; j < fleets[i].ships.size(); j++) {
 				this.ships.add(fleets[i].ships.get(j));
+				nbrOfAttacks = nbrOfAttacks + fleets[i].ships.get(i).getAttacks();
 			}
 		}
 	}
