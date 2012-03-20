@@ -45,8 +45,13 @@ public class Fleet {
 		}
 		List<Ship> destroyedShips = new ArrayList<Ship>();
 		for (int i = 0; i < targetIndexes.size(); i++) {
-			if (ships.get(i).takeDamage(attacks.get(i))) {
-				destroyedShips.add(ships.get(i));
+			if (targetIndexes.get(i) >= 0 && targetIndexes.get(i) < ships.size()) {
+				if (ships.get(targetIndexes.get(i)).takeDamage(attacks.get(i))) {
+					destroyedShips.add(ships.get(targetIndexes.get(i)));
+				}
+			} else {
+				throw new IllegalArgumentException("targetIndex " + targetIndexes.get(i) 
+						+ " at index " + i + " doesn't represent a ship");
 			}
 		}
 		ships.removeAll(destroyedShips);
