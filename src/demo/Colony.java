@@ -18,6 +18,7 @@ public class Colony implements BattleAble {
 		} else {
 			this.income = 20;
 		}
+		constructTurret();
 	}
 	
 	public void constructTurret() {
