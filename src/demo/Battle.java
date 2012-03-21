@@ -1,7 +1,9 @@
 package demo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Battle {
 	
@@ -63,6 +65,20 @@ public class Battle {
 		}
 		
 		void takeDamage(List<Integer> attacks, List<Integer> targetIndexes) {
+			/*
+			 * Each fleet will have a list of attacks and targetIndexes
+			 */
+			Map<Fleet, List<Integer>> fleetTargetIndexes = new HashMap<Fleet, List<Integer>>();
+			Map<Fleet, List<Integer>> fleetAttacks = new HashMap<Fleet, List<Integer>>();
+			
+			/*
+			 * 
+			 */
+			for (int i = 0; i < fleets.size(); i++) {
+				fleetTargetIndexes.put(fleets.get(i), new ArrayList<Integer>());
+				fleetAttacks.put(fleets.get(i), new ArrayList<Integer>());
+			}
+			
 			for (int i = 0; i < targetIndexes.size(); i++) {
 				if (colony != null && targetIndexes.get(i) == numberOfUnits()-1) {
 					if (colony.takeDamage(attacks.get(i))) {
@@ -78,8 +94,16 @@ public class Battle {
 						 * [3,4]   => [0,1]
 						 */ 
 						 if (targetIndexes.get(i) < fleets.get(j).targets() - indexMod) {
-						 	// Lägg i delad lista eller liknande
-						 	// sedan break?
+							 /*
+							  * Split the data from the large list into the hit fleets
+							  * Lists.
+							  */
+							 fleetTargetIndexes.get(fleets.get(j)).add(targetIndexes.get(i));
+							 fleetAttacks.get(fleets.get(j)).add(attacks.get(i));
+							 /*
+							  * We found the hit fleet, now break for the next targetIndex.
+							  */
+							 break;
 						 } else {
 						 	indexMod += fleets.get(j).targets();
 						 }
@@ -87,8 +111,15 @@ public class Battle {
 				}
 			}
 			/*
-			 * TODO: Dela ut skada? Med nya listor?
+			 * Loop through all fleets and have them take damage for
+			 * every hit on that fleet.
 			 */
+			for (Fleet fleet : fleets) {
+				/*
+				 * Tell each fleet to take damage earlier set to that fleet.
+				 */
+				fleet.takeDamage(fleetAttacks.get(fleet), fleetTargetIndexes.get(fleet));
+			}
 		}
 		
 		int numberOfUnits() {
@@ -100,6 +131,10 @@ public class Battle {
 				units++;
 			}
 			return units;
+		}
+		
+		public boolean isDefeated() {
+			return numberOfUnits() == 0;
 		}
 	}
 }
