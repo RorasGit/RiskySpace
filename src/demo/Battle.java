@@ -52,5 +52,54 @@ public class Battle {
 		}
 		return playerAttacks;
 	}
-
+	
+	private class BattleGroup {
+		List<Fleet> fleets = null;
+		Colony colony = null;
+		
+		BattleGroup(List<Fleet> fleets, Colony colony) {
+			this.fleets = fleets;
+			this.colony = colony;
+		}
+		
+		void takeDamage(List<Integer> attacks, List<Integer> targetIndexes) {
+			for (int i = 0; i < targetIndexes.size(); i++) {
+				if (colony != null && targetIndexes.get(i) == numberOfUnits()-1) {
+					if (colony.takeDamage(attacks.get(i))) {
+						colony = null;
+					}
+				} else {
+					int indexMod = 0;
+					for (int j = 0; j < fleets.size(); j++) {
+						/* BG: [0,1,2,3,4]  length == 5
+						 * F1: [0,1,2]		length == 3
+						 * F2: [0,1]		length == 2
+						 * [0,1,2] => [0,1,2]
+						 * [3,4]   => [0,1]
+						 */ 
+						 if (targetIndexes.get(i) < fleets.get(j).targets() - indexMod) {
+						 	// Lägg i delad lista eller liknande
+						 	// sedan break?
+						 } else {
+						 	indexMod += fleets.get(j).targets();
+						 }
+					}
+				}
+			}
+			/*
+			 * TODO: Dela ut skada? Med nya listor?
+			 */
+		}
+		
+		int numberOfUnits() {
+			int units = 0;
+			for (int i = 0; i < fleets.size(); i++) {
+				units += fleets.get(i).targets();
+			}
+			if (colony != null) {
+				units++;
+			}
+			return units;
+		}
+	}
 }

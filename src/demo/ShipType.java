@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum ShipType {
-	//		    Dmg Var HP  Atk  Init   E
+	//		    Dmg Var  HP Atk  Init   E
 	SCOUT		( 5, 3,  12, 1,   3,	4), // Skauwt
 	HUNTER		(11, 3,  38, 1,   2,	3), // Hannter
 	DESTROYER	(11, 3, 100, 3,   1,	3), // Dezztrojjer
