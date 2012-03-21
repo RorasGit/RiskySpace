@@ -41,10 +41,10 @@ public class World {
 		/*
 		 * Starting planets
 		 */
-		Position pos = new Position(3 + ((int) Math.random()*2), 3 + ((int) Math.random()*2));
+		Position pos = new Position(3 + ((int) Math.random()*2), 3 + ((int) (Math.random()*2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.RED);
-		pos = new Position(16 + ((int) Math.random()*2), 16 + ((int) Math.random()*2));
+		pos = new Position((rows - 4) + ((int) Math.random()*2), (cols - 4) + ((int) (Math.random()*2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.BLUE);
 		
@@ -53,12 +53,13 @@ public class World {
 		while (planetCount <= maxPlanets) {
 			
 			//TODO: something that randoms out a planet at a position
-			Position random = new Position(r.nextInt(20),r.nextInt(20));
+			Position random = new Position((int)(Math.random()*(rows+1)),(int)(Math.random()*(cols+1)));
 			if (checkNeighboringPlanets(random)) {
 				//TODO: place a planet.
+				planetCount++;
+			} else {
+				// else gör inget
 			}
-			
-			planetCount++;
 		}
 		
 		
