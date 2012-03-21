@@ -26,9 +26,6 @@ public class Battle {
 				player1.add(territory.getFleet(i));
 			}
 		}
-		if (player1.isEmpty() || player2.isEmpty()) {
-			throw new IllegalArgumentException("There need to be two players' fleets in the territory to battle");
-		}
 		/*
 		 * Create a BattleGroups for each player with the fleets and colony if there is one
 		 * and it belongs to that player.
@@ -38,13 +35,32 @@ public class Battle {
 				territory.hasColony() && colony.getOwner() == player1.get(0).getOwner() ?
 				colony : null);
 		BattleGroup bg2 = new BattleGroup(player2, 
-				territory.hasColony() && colony.getOwner() == player2.get(0).getOwner() ?
+				territory.hasColony() && colony.getOwner() != player1.get(0).getOwner() ?
 				colony : null);
-		
+		if (bg1.isDefeated() || bg2.isDefeated()) {
+			throw new IllegalArgumentException("There need to be two players' fleets or Planet " +
+					"in the territory to battle");
+		}
+		// TODO setOwner
+		bg1.owner = player1.isEmpty() ? colony.getOwner() : player1.get(0).getOwner();
+		bg2.owner = player2.isEmpty() ? colony.getOwner() : player2.get(0).getOwner();
 		/*
 		 * Battle loop until one or both fleets are defeated
 		 */
-		while (!bg1.isDefeated() || !bg2.isDefeated()) {
+		while (!bg1.isDefeated() && !bg2.isDefeated()) {
+			List<Integer> planetAttacks1 = bg1.getPlanetAttacks();
+			List<Integer> planetAttacks2 = bg2.getPlanetAttacks();
+			List<Integer> targets1 = new ArrayList<Integer>();
+			List<Integer> targets2 = new ArrayList<Integer>();
+			for (int i = 0; i < planetAttacks1.size(); i++) {
+				targets1.add((int)(Math.random()*bg2.numberOfUnits()));
+			}
+			for (int i = 0; i < planetAttacks2.size(); i++) {
+				targets2.add((int)(Math.random()*bg1.numberOfUnits()));
+			}
+			bg2.takeDamage(planetAttacks1, targets1);
+			bg1.takeDamage(planetAttacks2, targets2);
+			
 			for (int i = MAX_INITIATIVE; i >= 0; i--) {
 				/*
 				 * Get attacks from each fleet for this initiative
@@ -71,11 +87,32 @@ public class Battle {
 				bg1.takeDamage(attacks2, targetIndex2);
 			}
 		}
+		
+		/*
+		 * Remove empty Fleets from territory
+		 */
+		List<Fleet> destroyedFleets = new ArrayList<Fleet>();
+		for (Fleet fleet : territory.getFleets()) {
+			if (fleet.fleetSize() == 0) {
+				destroyedFleets.add(fleet);
+			}
+		}
+		territory.removeFleets(destroyedFleets);
+		/*
+		 * Remove colony if defender lost
+		 */
+		Player winner = !bg1.isDefeated() ? bg1.owner : bg2.owner;
+		if (territory.hasColony()) {
+			if (territory.getColony().getOwner() != winner) {
+				territory.getPlanet().destroyColony();
+			}
+		}
 	}
 
 	private static class BattleGroup {
 		List<Fleet> fleets = null;
 		Colony colony = null;
+		Player owner = null;
 		
 		BattleGroup(List<Fleet> fleets, Colony colony) {
 			this.fleets = fleets;
@@ -92,6 +129,14 @@ public class Battle {
 			return attacks;
 		}
 		
+		List<Integer> getPlanetAttacks() {
+			if (colony != null) {
+				return colony.getAttacks();
+			} else {
+				return new ArrayList<Integer>();
+			}
+		}
+		
 		void takeDamage(List<Integer> attacks, List<Integer> targetIndexes) {
 			/*
 			 * Each fleet will have a list of attacks and targetIndexes
@@ -99,9 +144,6 @@ public class Battle {
 			Map<Fleet, List<Integer>> fleetTargetIndexes = new HashMap<Fleet, List<Integer>>();
 			Map<Fleet, List<Integer>> fleetAttacks = new HashMap<Fleet, List<Integer>>();
 			
-			/*
-			 * 
-			 */
 			for (int i = 0; i < fleets.size(); i++) {
 				fleetTargetIndexes.put(fleets.get(i), new ArrayList<Integer>());
 				fleetAttacks.put(fleets.get(i), new ArrayList<Integer>());

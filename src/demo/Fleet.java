@@ -6,7 +6,7 @@ import java.util.List;
 public class Fleet {
 	
 	private Player owner = null;
-	private List<Ship> ships = null;
+	private List<Ship> ships = new ArrayList<Ship>();
 	
 	/**
 	 * This Fleet id
@@ -26,6 +26,16 @@ public class Fleet {
 		for (int i = 0; i < ships.size(); i++) {
 			this.ships.add(ships.get(i));
 		}
+		id = nextId;
+		nextId++;
+	}
+	
+	public Fleet(Ship ship, Player owner) {
+		if (owner == null) {
+			throw new IllegalArgumentException("Owner can not be null");
+		}
+		this.owner = owner;
+		ships.add(ship);
 		id = nextId;
 		nextId++;
 	}

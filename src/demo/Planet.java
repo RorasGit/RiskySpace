@@ -6,12 +6,12 @@ public class Planet {
 	private Colony colony = null;
 	
 	/**
-	 * This planet´s id
+	 * This Planets id
 	 */
 	private int id = 0;
 	
 	/**
-	 * Static save of planet´s id whenever a new planet is created.
+	 * Static save of planetId whenever a new Planet is created.
 	 */
 	private static int nextId = 0;
 	
@@ -26,7 +26,11 @@ public class Planet {
 	}
 	
 	public void buildColony(Player owner) {
-		this.colony = new Colony(type, owner);
+		colony = new Colony(type, owner);
+	}
+
+	public void destroyColony() {
+		colony = null;
 	}
 	
 	public boolean hasColony() {

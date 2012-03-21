@@ -29,6 +29,10 @@ public class Territory {
 			this.fleets.add(fleets.get(i));
 		}
 	}
+
+	public void removeFleets(List<Fleet> destroyedFleets) {
+		fleets.removeAll(destroyedFleets);
+	}
 	
 	/**
 	 * Set this territory to have a planet if there is not one already.
@@ -85,7 +89,7 @@ public class Territory {
 			return Player.WORLD;
 		} else {
 			if (hasPlanet()) {
-				if (getPlanet().hasColony()) {
+				if (hasColony()) {
 					return getPlanet().controlledBy();
 				}
 			}
