@@ -8,6 +8,16 @@ public class Fleet {
 	private Player owner = null;
 	private List<Ship> ships = null;
 	
+	/**
+	 * This Fleet id
+	 */
+	private int id = 0;
+	
+	/**
+	 * Static save of id every time a new Fleet is created
+	 */
+	private static int nextId = 0;
+	
 	public Fleet(List<Ship> ships, Player owner) {
 		if (owner == null) {
 			throw new IllegalArgumentException("Owner can not be null");
@@ -16,6 +26,8 @@ public class Fleet {
 		for (int i = 0; i < ships.size(); i++) {
 			this.ships.add(ships.get(i));
 		}
+		id = nextId;
+		nextId++;
 	}
 	
 	public List<Integer> getAttacks(int initiative) {
@@ -77,5 +89,21 @@ public class Fleet {
 
 	public int targets() {
 		return ships.size();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		} else if (other == null || this.getClass() != other.getClass()) {
+			return false;
+		} else {
+			return id == ((Fleet) other).id;
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+		return 7*id;
 	}
 }
