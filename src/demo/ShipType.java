@@ -39,6 +39,14 @@ public enum ShipType {
 		return damages;
 	}
 	
+	public int getVariation() {
+		return variation;
+	}
+	
+	public int getBaseDamage() {
+		return damage;
+	}
+	
 	public int getShield() {
 		return shield;
 	}

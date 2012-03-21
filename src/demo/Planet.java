@@ -5,8 +5,24 @@ public class Planet {
 	private Resource type = null;
 	private Colony colony = null;
 	
+	/**
+	 * This planet´s ID
+	 */
+	private int planetId = 0;
+	
+	/**
+	 * Static save of planetId whenever a new planet is created.
+	 */
+	private static int nextPlanetId = 0;
+	
+	/**
+	 * 
+	 * @param resource
+	 */
 	public Planet(Resource resource) {
 		this.type = resource;
+		planetId = nextPlanetId;
+		nextPlanetId++;
 	}
 	
 	public void buildColony(Player owner) {
@@ -29,6 +45,10 @@ public class Planet {
 		return type;
 	}
 	
+	public Colony getColony() {
+		return colony;
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -46,8 +66,9 @@ public class Planet {
 		return "[" + type + ", " + (this.hasColony()? colony.getOwner() : "Uninhabited") + "]";
 	}
 	
+	@Override
 	public int hashCode() {
-		return 0;
+		return planetId*3;
 		
 	}
 }

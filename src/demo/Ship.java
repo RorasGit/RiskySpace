@@ -49,4 +49,28 @@ public class Ship implements BattleAble {
 			return false;
 		}
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		} else if (other == null || this.getClass() != other.getClass()) {
+			return false;
+		} else {
+			Ship otherShip = (Ship) other;
+			return (this.type == otherShip.type);
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + type + ", " + type.getBaseDamage() + "-" + type.getBaseDamage()+type.getVariation()
+				+ ", " + shield + ", " + energy + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+		return type.getBaseDamage()*5;
+		
+	}
 }

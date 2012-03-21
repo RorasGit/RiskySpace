@@ -7,6 +7,10 @@ public class Colony implements BattleAble {
 	
 	private Player owner = null;
 	private int income = 0;
+	
+	/*
+	 * Turret stats will be kept in a seperate class later.
+	 */
 	private int damage = 0;
 	private int shield = 0;
 	private int variation = 0;
@@ -50,5 +54,28 @@ public class Colony implements BattleAble {
 	
 	public void resetShield() {
 		shield = 30;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		} else if (other == null || this.getClass() != other.getClass()) {
+			return false;
+		} else {
+			Colony otherColony = (Colony) other;
+			return (this.income == otherColony.income && this.owner == otherColony.owner);
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + owner + ", " + income + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+		return income*13;
+		
 	}
 }
