@@ -7,6 +7,10 @@ import java.util.Map;
 
 public class Battle {
 	
+	// initiatives is temporary solution for demo, this probably belongs elsewhere and
+	// should be possible to change (or change itself according to ships initiative in fleets)
+	private int initiatives = 5;
+	
 	private int player1Targets = 0;
 	private int player2Targets = 0;
 	
@@ -17,27 +21,30 @@ public class Battle {
 	public void doBattle(Territory territory) {
 		List<Fleet> player1 = new ArrayList<Fleet>();
 		List<Fleet> player2 = new ArrayList<Fleet>();
-		if (territory.getFleets().size() < 2) {
-			throw new IllegalArgumentException("Needs to be 2 or more fleets in a territory for a battle to occur");
-		}
+		
 		player1.add(territory.getFleets().get(0));
-		player1Targets = territory.getFleets().get(0).targets();
+		player1Targets = territory.getFleets().get(0).fleetSize();
 		for (int i = 1; i < territory.getFleets().size(); i++) {
 			if (territory.getFleets().get(i).getOwner() != player1.get(0).getOwner()) {
 				player2.add(territory.getFleet(i));
-				player2Targets = player2Targets + territory.getFleet(i).targets();
+				player2Targets = player2Targets + territory.getFleet(i).fleetSize();
 			} else {
 				player1.add(territory.getFleet(i));
-				player1Targets = player1Targets + territory.getFleet(i).targets();
+				player1Targets = player1Targets + territory.getFleet(i).fleetSize();
 			}
 		}
 		
-		// Who will be hit? see Fleet.takeDamage() for requirements
-		for (int i = 0; i < mergeAttacks(player1, 1).size(); i++) {
+		List<Integer> player1AttackIndex = null;
+		List<Integer> player2AttackIndex = null;
+		for (int i = initiatives; i >= 0; i--) {
+			for (int j = 0; j < mergeAttacks(player1, i).size(); j++) {
+				player1AttackIndex.add((int) (Math.random() * player2Targets + 1));
+			}
+			for (int j = 0; j < mergeAttacks(player2, i).size(); j++) {
+				player2AttackIndex.add((int) (Math.random() * player1Targets + 1));
+			}
 			
 		}
-		
-		// KRIGA med mergeAttacks(player1) vs mergeAttacks(player2)
 
 
 		territory.controlledBy(
@@ -54,7 +61,7 @@ public class Battle {
 		}
 		return playerAttacks;
 	}
-	
+
 	private class BattleGroup {
 		List<Fleet> fleets = null;
 		Colony colony = null;
@@ -93,7 +100,7 @@ public class Battle {
 						 * [0,1,2] => [0,1,2]
 						 * [3,4]   => [0,1]
 						 */ 
-						 if (targetIndexes.get(i) < fleets.get(j).targets() - indexMod) {
+						 if (targetIndexes.get(i) < fleets.get(j).fleetSize() - indexMod) {
 							 /*
 							  * Split the data from the large list into the hit fleets
 							  * Lists.
@@ -105,7 +112,7 @@ public class Battle {
 							  */
 							 break;
 						 } else {
-						 	indexMod += fleets.get(j).targets();
+						 	indexMod += fleets.get(j).fleetSize();
 						 }
 					}
 				}
@@ -125,7 +132,7 @@ public class Battle {
 		int numberOfUnits() {
 			int units = 0;
 			for (int i = 0; i < fleets.size(); i++) {
-				units += fleets.get(i).targets();
+				units += fleets.get(i).fleetSize();
 			}
 			if (colony != null) {
 				units++;

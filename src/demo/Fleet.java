@@ -87,7 +87,7 @@ public class Fleet {
 		return owner;
 	}
 
-	public int targets() {
+	public int fleetSize() {
 		return ships.size();
 	}
 	
