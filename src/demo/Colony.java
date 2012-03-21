@@ -40,7 +40,7 @@ public class Colony implements BattleAble {
 	@Override
 	public List<Integer> getAttacks() {
 		List<Integer> damage = new ArrayList<Integer>();
-		damage.add(this.damage + (int) (Math.random()*variation+1));
+		damage.add(this.damage + (int) (Math.random()*(variation+1)));
 		return damage;
 	}
 
