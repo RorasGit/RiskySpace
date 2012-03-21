@@ -27,7 +27,7 @@ public class Battle {
 			}
 		}
 		if (player1.isEmpty() || player2.isEmpty()) {
-			throw new IllegalArgumentException("There need to be two players' fleets present to battle");
+			throw new IllegalArgumentException("There need to be two players' fleets in the territory to battle");
 		}
 		/*
 		 * Create a BattleGroups for each player with the fleets and colony if there is one
@@ -73,7 +73,7 @@ public class Battle {
 		}
 	}
 
-	private class BattleGroup {
+	private static class BattleGroup {
 		List<Fleet> fleets = null;
 		Colony colony = null;
 		

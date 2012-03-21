@@ -76,6 +76,5 @@ public class Colony implements BattleAble {
 	@Override
 	public int hashCode() {
 		return income*13;
-		
 	}
 }

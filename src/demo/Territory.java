@@ -39,6 +39,22 @@ public class Territory {
 		return planet;
 	}
 	
+	public boolean hasColony() {
+		if (!hasPlanet()) {
+			return false;
+		} else {
+			return getPlanet().hasColony();
+		}
+	}
+	
+	public Colony getColony() {
+		if (!hasColony()) {
+			return null;
+		} else {
+			return getPlanet().getColony();
+		}
+	}
+	
 	public boolean hasFleet() {
 		return !fleets.isEmpty();
 	}
