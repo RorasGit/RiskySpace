@@ -11,11 +11,11 @@ public class BattleSimulator {
 
 	public static void main(String[] args) {
 
-		int scout1 = 1;
-		int hunter1 = 0;
+		int scout1 = 0;
+		int hunter1 = 1;
 
-		int scout2 = 1;
-		int hunter2 = 0;
+		int scout2 = 0;
+		int hunter2 = 1;
 
 		List<Ship> player1 = new ArrayList<Ship>();
 		List<Ship> player2 = new ArrayList<Ship>();

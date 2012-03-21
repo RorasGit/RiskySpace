@@ -7,15 +7,12 @@ public class Colony implements BattleAble {
 	
 	private Player owner = null;
 	private int income = 0;
-//	private int damage = 0;
-//	private int shield = 0;
-//	private int variation = 0;
+	private int damage = 0;
+	private int shield = 0;
+	private int variation = 0;
 	
 	public Colony (Resource resource, Player owner) {
 		this.owner = owner;
-//		this.damage = 8;
-//		this.shield = 30;
-//		this.variation = 3;
 		if (resource == Resource.METAL) {
 			this.income = 40;	
 		} else {
@@ -23,21 +20,34 @@ public class Colony implements BattleAble {
 		}
 	}
 	
-	public void getIncome() {
-		//TODO
+	public void constructTurret() {
+		this.damage = 5;
+		this.shield = 30;
+		this.variation = 1;
+	}
+	
+	public int getIncome() {
+		return income;
 	}
 
 	@Override
 	public boolean takeDamage(int damage) {
-		return false;
+		shield -= damage;
+		return shield <= 0;
 	}
 
 	@Override
 	public List<Integer> getAttacks() {
-		return new ArrayList<Integer>();
+		List<Integer> damage = new ArrayList<Integer>();
+		damage.add(this.damage + (int) (Math.random()*variation+1));
+		return damage;
 	}
 
 	public Player getOwner() {
 		return owner;
+	}
+	
+	public void resetShield() {
+		shield = 30;
 	}
 }
