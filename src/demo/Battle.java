@@ -9,57 +9,68 @@ public class Battle {
 	
 	// initiatives is temporary solution for demo, this probably belongs elsewhere and
 	// should be possible to change (or change itself according to ships initiative in fleets)
-	private int initiatives = 5;
+	private static final int MAX_INITIATIVE = 5;
 	
-	private int player1Targets = 0;
-	private int player2Targets = 0;
-	
-	public Battle () {
-		;
-	}
-	
-	public void doBattle(Territory territory) {
+	public static void doBattle(Territory territory) {
+		if (territory.getFleets().isEmpty()) {
+			throw new IllegalArgumentException("Battle can not occur in empty territories");
+		}
 		List<Fleet> player1 = new ArrayList<Fleet>();
 		List<Fleet> player2 = new ArrayList<Fleet>();
 		
 		player1.add(territory.getFleets().get(0));
-		player1Targets = territory.getFleets().get(0).fleetSize();
 		for (int i = 1; i < territory.getFleets().size(); i++) {
 			if (territory.getFleets().get(i).getOwner() != player1.get(0).getOwner()) {
 				player2.add(territory.getFleet(i));
-				player2Targets = player2Targets + territory.getFleet(i).fleetSize();
 			} else {
 				player1.add(territory.getFleet(i));
-				player1Targets = player1Targets + territory.getFleet(i).fleetSize();
 			}
 		}
+		if (player1.isEmpty() || player2.isEmpty()) {
+			throw new IllegalArgumentException("There need to be two players' fleets present to battle");
+		}
+		/*
+		 * Create a BattleGroups for each player with the fleets and colony if there is one
+		 * and it belongs to that player.
+		 */
+		Colony colony = territory.getColony();
+		BattleGroup bg1 = new BattleGroup(player1, 
+				territory.hasColony() && colony.getOwner() == player1.get(0).getOwner() ?
+				colony : null);
+		BattleGroup bg2 = new BattleGroup(player2, 
+				territory.hasColony() && colony.getOwner() == player2.get(0).getOwner() ?
+				colony : null);
 		
-		List<Integer> player1AttackIndex = null;
-		List<Integer> player2AttackIndex = null;
-		for (int i = initiatives; i >= 0; i--) {
-			for (int j = 0; j < mergeAttacks(player1, i).size(); j++) {
-				player1AttackIndex.add((int) (Math.random() * player2Targets + 1));
-			}
-			for (int j = 0; j < mergeAttacks(player2, i).size(); j++) {
-				player2AttackIndex.add((int) (Math.random() * player1Targets + 1));
-			}
-			
-		}
+		/*
+		 * Battle loop until one or both fleets are defeated
+		 */
+		while (!bg1.isDefeated() || !bg2.isDefeated()) {
+			for (int i = MAX_INITIATIVE; i >= 0; i--) {
+				/*
+				 * Get attacks from each fleet for this initiative
+				 */
+				List<Integer> attacks1 = bg1.getAttacks(i);
+				List<Integer> attacks2 = bg2.getAttacks(i);
 
-
-		territory.controlledBy(
-				//winner of the battle!
-				);
-	}
-	
-	private List<Integer> mergeAttacks(List<Fleet> playerFleets, int initiative) {
-		List<Integer> playerAttacks = new ArrayList<Integer>();
-		for (int fleetIndex = 0; fleetIndex < playerFleets.size(); fleetIndex++) {
-			for (int j = 0; j < playerFleets.get(fleetIndex).getAttacks(initiative).size(); j++) {
-				playerAttacks.add(playerFleets.get(fleetIndex).getAttacks(initiative).get(j));
+				/*
+				 * Get targets for each attack for each fleet
+				 */
+				List<Integer> targetIndex1 = new ArrayList<Integer>();
+				List<Integer> targetIndex2 = new ArrayList<Integer>();
+				for (int j = 0; j < attacks1.size(); j++) {
+					targetIndex1.add((int) (Math.random()*(bg2.numberOfUnits())));
+				}
+				for (int j = 0; j < attacks2.size(); j++) {
+					targetIndex2.add((int) (Math.random()*(bg1.numberOfUnits())));
+				}
+				
+				/*
+				 * Both BattleGroups take damage
+				 */
+				bg2.takeDamage(attacks1, targetIndex1);
+				bg1.takeDamage(attacks2, targetIndex2);
 			}
 		}
-		return playerAttacks;
 	}
 
 	private class BattleGroup {
@@ -69,6 +80,16 @@ public class Battle {
 		BattleGroup(List<Fleet> fleets, Colony colony) {
 			this.fleets = fleets;
 			this.colony = colony;
+		}
+		
+		List<Integer> getAttacks(int initiative) {
+			List<Integer> attacks = new ArrayList<Integer>();
+			for (int fleetIndex = 0; fleetIndex < fleets.size(); fleetIndex++) {
+				for (int j = 0; j < fleets.get(fleetIndex).getAttacks(initiative).size(); j++) {
+					attacks.add(fleets.get(fleetIndex).getAttacks(initiative).get(j));
+				}
+			}
+			return attacks;
 		}
 		
 		void takeDamage(List<Integer> attacks, List<Integer> targetIndexes) {
