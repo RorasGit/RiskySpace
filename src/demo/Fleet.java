@@ -3,8 +3,6 @@ package demo;
 import java.util.ArrayList;
 import java.util.List;
 
-import sun.org.mozilla.javascript.ast.FunctionNode.Form;
-
 public class Fleet {
 	
 	private Player owner = null;
@@ -75,5 +73,9 @@ public class Fleet {
 
 	public Player getOwner() {
 		return owner;
+	}
+
+	public int targets() {
+		return ships.size();
 	}
 }
