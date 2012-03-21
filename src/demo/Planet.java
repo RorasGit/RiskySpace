@@ -28,4 +28,26 @@ public class Planet {
 	public Resource getType() {
 		return type;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		} else if (other == null || this.getClass() != other.getClass()) {
+			return false;
+		} else {
+			Planet otherPlanet = (Planet) other;
+			return (this.type == otherPlanet.type && this.colony == otherPlanet.colony);
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + type + ", " + (this.hasColony()? colony.getOwner() : "Uninhabited") + "]";
+	}
+	
+	public int hashCode() {
+		return 0;
+		
+	}
 }
