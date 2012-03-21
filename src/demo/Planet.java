@@ -6,14 +6,14 @@ public class Planet {
 	private Colony colony = null;
 	
 	/**
-	 * This planet´s ID
+	 * This planet´s id
 	 */
-	private int planetId = 0;
+	private int id = 0;
 	
 	/**
-	 * Static save of planetId whenever a new planet is created.
+	 * Static save of planet´s id whenever a new planet is created.
 	 */
-	private static int nextPlanetId = 0;
+	private static int nextId = 0;
 	
 	/**
 	 * 
@@ -21,8 +21,8 @@ public class Planet {
 	 */
 	public Planet(Resource resource) {
 		this.type = resource;
-		planetId = nextPlanetId;
-		nextPlanetId++;
+		id = nextId;
+		nextId++;
 	}
 	
 	public void buildColony(Player owner) {
@@ -68,7 +68,7 @@ public class Planet {
 	
 	@Override
 	public int hashCode() {
-		return planetId*3;
+		return id*3;
 		
 	}
 }

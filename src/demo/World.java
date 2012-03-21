@@ -56,4 +56,26 @@ public class World {
 	public static void main(String[] args) {
 		new World();
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		} else if (other == null || this.getClass() != other.getClass()) {
+			return false;
+		} else {
+			World otherWorld = (World) other;
+			return (rows == otherWorld.rows && cols == otherWorld.cols);
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + "Rows: " + rows + ", " + "Columns: " + cols + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+		return rows*17 + cols*23;
+	}
 }

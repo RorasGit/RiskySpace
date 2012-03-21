@@ -115,4 +115,32 @@ public class PlayerStats {
 	public boolean isSupplyCapped() {
 		return usedSupply >= getMaxSupply();
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		} else if (other == null || this.getClass() != other.getClass()) {
+			return false;
+		} else {
+			PlayerStats otherPlayerStats = (PlayerStats) other;
+			return (resources.get(GAS) == otherPlayerStats.resources.get(GAS) && 
+					resources.get(METAL) == otherPlayerStats.resources.get(METAL) &&
+					usedSupply == otherPlayerStats.usedSupply && 
+					numberOfColonies == otherPlayerStats.numberOfColonies);
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + "Metal: " + resources.get(METAL) + "  Income: " + income.get(METAL) + ", " + 
+				"Gas: " + resources.get(GAS) + "  Income: " + income.get(GAS) + 
+				", " +  "Number of colonies: " + numberOfColonies + ", " + "Supply: " + usedSupply + "/" +
+				getMaxSupply() + " ]";
+	}
+	
+	@Override
+	public int hashCode() {
+		return resources.get(GAS)*3 + resources.get(METAL)*5 + usedSupply*7 + numberOfColonies*11;
+	}
 }

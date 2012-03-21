@@ -7,8 +7,21 @@ public class Territory {
 	private List<Fleet> fleets = null;
 	private Planet planet = null;
 	
+	
+	/**
+	 * This territory´s id
+	 */
+	private int id = 0;
+	
+	/**
+	 * Static save of the territory´s id whenever a new planet is created.
+	 */
+	private static int nextId = 0;
+	
 	public Territory() {
 		fleets = new ArrayList<Fleet>();
+		id = nextId;
+		nextId++;
 	}
 	
 	public void addFleets(List<Fleet> fleets) {
@@ -82,5 +95,28 @@ public class Territory {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		} else if (other == null || this.getClass() != other.getClass()) {
+			return false;
+		} else {
+			Territory otherTerritory = (Territory) other;
+			return (otherTerritory.id == this.id);
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + (hasPlanet()? planet.toString() : "No Planet present in this zone") 
+				+ ", " + (hasFleet()? "Fleets present: " + fleets.size() : "No fleets present in this zone") + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+		return id*17;
 	}
 }
