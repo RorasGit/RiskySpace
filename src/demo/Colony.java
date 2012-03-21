@@ -18,9 +18,9 @@ public class Colony implements BattleAble {
 	public Colony (Resource resource, Player owner) {
 		this.owner = owner;
 		if (resource == Resource.METAL) {
-			this.income = 40;	
+			income = 40;
 		} else {
-			this.income = 20;
+			income = 20;
 		}
 		constructTurret();
 	}

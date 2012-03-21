@@ -17,25 +17,58 @@ public class Fleet {
 	 * Static save of id every time a new Fleet is created
 	 */
 	private static int nextId = 0;
-	
+
+	/**
+	 * Create a Fleet with a List of Ships.
+	 * @param ships The Fleets Ships
+	 * @param owner The owner of the Fleet
+	 */
 	public Fleet(List<Ship> ships, Player owner) {
 		if (owner == null) {
 			throw new IllegalArgumentException("Owner can not be null");
 		}
 		this.owner = owner;
-		for (int i = 0; i < ships.size(); i++) {
-			this.ships.add(ships.get(i));
+		this.ships.addAll(ships);
+		if (fleetSize() == 0) {
+			throw new IllegalArgumentException("Can not create empty fleet");
 		}
 		id = nextId;
 		nextId++;
 	}
 	
+	/**
+	 * Create a Fleet with a Single Ship.
+	 * @param ship The Fleets Ship
+	 * @param owner The owner of the Fleet
+	 */
 	public Fleet(Ship ship, Player owner) {
 		if (owner == null) {
 			throw new IllegalArgumentException("Owner can not be null");
 		}
 		this.owner = owner;
 		ships.add(ship);
+		id = nextId;
+		nextId++;
+	}
+	
+	/**
+	 * Create a Fleet by merging a List of other Fleets.
+	 * @param fleets The List of Fleets to merge.
+	 */
+	public Fleet(List<Fleet> fleets) {
+		if (fleets.isEmpty()) {
+			throw new IllegalArgumentException("No Fleets sent");
+		}
+		this.owner = fleets.get(0).getOwner();
+		for (int i = 0; i < fleets.size(); i++) {
+			if (fleets.get(i).getOwner() != owner) {
+				throw new IllegalArgumentException("The Fleets can not have different owners");
+			}
+			ships.addAll(fleets.get(i).ships);
+		}
+		if (fleetSize() == 0) {
+			throw new IllegalArgumentException("Can not create empty Fleet");
+		}
 		id = nextId;
 		nextId++;
 	}
@@ -50,9 +83,6 @@ public class Fleet {
 		return attacks;
 	} 
 	
-	/*
-	 * DEAL DAMAGE TO SHIPS METHOD TODO:
-	 */
 	/**
 	 * Attack this Fleet with attacks at target indexes.
 	 * @param attacks List of Integers of size n to represent each attack.
@@ -77,9 +107,30 @@ public class Fleet {
 		ships.removeAll(destroyedShips);
 	}
 	
+	public boolean hasColonizer() {
+		return shipCount(ShipType.COLONIZER) > 0;
+	}
+	
+	public boolean useColonizer() {
+		if (hasColonizer()) {
+			for (int i = 0; i < fleetSize(); i++) {
+				if (ships.get(i).getType().equals(ShipType.COLONIZER)) {
+					/*
+					 * When Colonizer is found remove and stop the loop
+					 */
+					ships.remove(i);
+					break;
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public int shipCount(ShipType type) {
 		int nbrOfType = 0;
-		for (int i = 0; i < ships.size(); i++) {
+		for (int i = 0; i < fleetSize(); i++) {
 			if (ships.get(i).getType() == type) {
 				nbrOfType++;
 			}

@@ -2,7 +2,14 @@ package demo;
 
 public class Planet {
 
+	/**
+	 * This Planets Resource type
+	 */
 	private Resource type = null;
+	
+	/**
+	 * This Planets Colony, set to null if there is no Colony.
+	 */
 	private Colony colony = null;
 	
 	/**
@@ -16,8 +23,8 @@ public class Planet {
 	private static int nextId = 0;
 	
 	/**
-	 * 
-	 * @param resource
+	 * Creates a new Planet with one type of Resource.
+	 * @param resource The kind of Resource to be found on the Planet.
 	 */
 	public Planet(Resource resource) {
 		this.type = resource;
@@ -25,10 +32,17 @@ public class Planet {
 		nextId++;
 	}
 	
+	/**
+	 * Places a new Colony on this Planet.
+	 * @param owner The Player that will own the Colony.
+	 */
 	public void buildColony(Player owner) {
 		colony = new Colony(type, owner);
 	}
-
+	
+	/**
+	 * Removes the Colony on this Planet if there is one, otherwise it does nothing.
+	 */
 	public void destroyColony() {
 		colony = null;
 	}
@@ -37,6 +51,12 @@ public class Planet {
 		return colony != null;
 	}
 	
+	/**
+	 * Checks what Player owns the colony on this Planet
+	 * and returns the value. If there is no Colony the 
+	 * Planet is owned by Player.<code>WORLD</code>
+	 * @return The Player controlling this Planet
+	 */
 	public Player controlledBy() {
 		if (hasColony()) {
 			return colony.getOwner();
@@ -45,10 +65,17 @@ public class Planet {
 		}
 	}
 	
+	/**
+	 * The Resource of this Planet
+	 */
 	public Resource getType() {
 		return type;
 	}
 	
+	/**
+	 * The Colony on this Planet
+	 * @return If there is a Colony on this Planet it is returned, else <code>null</code>.
+	 */
 	public Colony getColony() {
 		return colony;
 	}

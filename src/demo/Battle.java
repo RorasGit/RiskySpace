@@ -41,9 +41,8 @@ public class Battle {
 			throw new IllegalArgumentException("There need to be two players' fleets or Planet " +
 					"in the territory to battle");
 		}
-		// TODO setOwner
-		bg1.owner = player1.isEmpty() ? colony.getOwner() : player1.get(0).getOwner();
-		bg2.owner = player2.isEmpty() ? colony.getOwner() : player2.get(0).getOwner();
+		bg1.setOwner(player1.isEmpty() ? colony.getOwner() : player1.get(0).getOwner());
+		bg2.setOwner(player2.isEmpty() ? colony.getOwner() : player2.get(0).getOwner());
 		/*
 		 * Battle loop until one or both fleets are defeated
 		 */
@@ -99,9 +98,9 @@ public class Battle {
 		}
 		territory.removeFleets(destroyedFleets);
 		/*
-		 * Remove colony if defender lost
+		 * Remove colony if the owner lost
 		 */
-		Player winner = !bg1.isDefeated() ? bg1.owner : bg2.owner;
+		Player winner = !bg1.isDefeated() ? bg1.getOwner() : bg2.getOwner();
 		if (territory.hasColony()) {
 			if (territory.getColony().getOwner() != winner) {
 				territory.getPlanet().destroyColony();
@@ -110,15 +109,15 @@ public class Battle {
 	}
 
 	private static class BattleGroup {
-		List<Fleet> fleets = null;
-		Colony colony = null;
-		Player owner = null;
+		private List<Fleet> fleets = null;
+		private Colony colony = null;
+		private Player owner = null;
 		
 		BattleGroup(List<Fleet> fleets, Colony colony) {
 			this.fleets = fleets;
 			this.colony = colony;
 		}
-		
+
 		List<Integer> getAttacks(int initiative) {
 			List<Integer> attacks = new ArrayList<Integer>();
 			for (int fleetIndex = 0; fleetIndex < fleets.size(); fleetIndex++) {
@@ -205,6 +204,14 @@ public class Battle {
 		
 		public boolean isDefeated() {
 			return numberOfUnits() == 0;
+		}
+		
+		public void setOwner(Player player) {
+			owner = player;
+		}
+		
+		public Player getOwner() {
+			return owner;
 		}
 	}
 }

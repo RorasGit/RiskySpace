@@ -37,12 +37,17 @@ public class Ship implements BattleAble {
 		return type.getDamage();
 	}
 	
-	/*
-	 * boolean has enough energy (int energy) 
+	/**
+	 * Check if this Ship has an amount energy left
+	 * @param energy The amount to check.
+	 * @return true if this Ship has at least <code>energy</code> left.
 	 */
+	public boolean hasEnergy(int energy) {
+		return this.energy >= energy;
+	}
 	
 	public boolean useEnergy(int energy) {
-		if (this.energy >= energy) {
+		if (hasEnergy(energy)) {
 			this.energy -= energy;
 			return true;
 		} else {
