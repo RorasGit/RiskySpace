@@ -75,7 +75,9 @@ public class Ship implements BattleAble {
 	
 	@Override
 	public int hashCode() {
+		/*
+		 * Fel impl?
+		 */
 		return type.getBaseDamage()*5;
-		
 	}
 }

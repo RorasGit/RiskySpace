@@ -25,6 +25,10 @@ public class World {
 		 * Set Planets TODO: Roras Set Starting Fleets
 		 */
 	}
+
+	public World() {
+		this(20, 20);
+	}
 	
 	/*
 	 * Check for other planets in the perimeter. 3x3 grid with current planet in the middle.
@@ -84,10 +88,6 @@ public class World {
 		playerstats = new HashMap<Player, PlayerStats>();
 		playerstats.put(Player.BLUE, new PlayerStats());
 		playerstats.put(Player.RED, new PlayerStats());
-	}
-
-	public World() {
-		this(20, 20);
 	}
 
 	public static void main(String[] args) {
