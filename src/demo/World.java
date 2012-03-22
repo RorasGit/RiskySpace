@@ -38,6 +38,9 @@ public class World {
 	 * @return return true if no planets are present.
 	 */
 	private boolean checkNeighboringPlanets(Position pos) {
+		/*
+		 * Check inner matrix
+		 */
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
 				Position p = new Position(pos.getRow() + i, pos.getCol() + j);
@@ -49,21 +52,25 @@ public class World {
 			}
 		}
 		for (int i = -2; i <= 2; i += 4) {
+			/*
+			 *	Check midcolumn outer bounds 
+			 */
 			Position p = new Position(pos.getRow() + i, pos.getCol());
 			if (legalPos(p)) {
 				if (!legalPlanetPosition(p)) {
 					return false;
 				}
 			}
-
-		}
-		for (int i = -2; i <= 2; i += 4) {
-			Position p = new Position(pos.getRow(), pos.getCol() + i);
+			/*
+			 *	Check midrow outer bounds 
+			 */
+			p = new Position(pos.getRow(), pos.getCol() + i);
 			if (legalPos(p)) {
 				if (!legalPlanetPosition(p)) {
 					return false;
 				}
 			}
+
 		}
 		return true;
 	}
