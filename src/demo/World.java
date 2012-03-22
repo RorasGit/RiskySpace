@@ -20,10 +20,6 @@ public class World {
 		initTerritories();
 		initPlayers();
 		setPlanets();
-		
-		/*
-		 * Set Planets TODO: Roras Set Starting Fleets
-		 */
 	}
 
 	public World() {
@@ -50,10 +46,10 @@ public class World {
 		/*
 		 * Starting planets
 		 */
-		Position pos = new Position(3 + ((int) Math.random()*2), 3 + ((int) (Math.random()*2)));
+		Position pos = new Position(3 + ((int) (Math.random()*2)), 3 + ((int) (Math.random()*2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.RED);
-		pos = new Position((rows - 4) + ((int) Math.random()*2), (cols - 4) + ((int) (Math.random()*2)));
+		pos = new Position((rows - 4) + ((int) (Math.random()*2)), (cols - 4) + ((int) (Math.random()*2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.BLUE);
 		
