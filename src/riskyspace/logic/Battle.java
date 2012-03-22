@@ -1,9 +1,14 @@
-package demo;
+package riskyspace.logic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import demo.Colony;
+import demo.Fleet;
+import demo.Player;
+import demo.Territory;
 
 public class Battle {
 	
