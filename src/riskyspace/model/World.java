@@ -1,8 +1,6 @@
 package riskyspace.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import riskyspace.logic.Builder;
@@ -12,16 +10,12 @@ public class World {
 	private int cols = 0;
 	private Map<Position, Territory> territories = null;
 	private Map<Player, PlayerStats> playerstats = null;
-	private List<Player> players = null;
 
 	public World(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
-		players = new ArrayList<Player>();
-		players.add(Player.RED);
-		players.add(Player.BLUE);
-		territories = Builder.generateMap(rows, cols);
 		initPlayers();
+		territories = Builder.generateMap(rows, cols);
 
 		/*
 		 * Set Planets TODO: Roras Set Starting Fleets
@@ -60,9 +54,6 @@ public class World {
 		return rows * 17 + cols * 23;
 	}
 
-	/*
-	 * Testmethod
-	 */
 	public Map<Position, Territory> getTerritories() {
 		return territories;
 	}

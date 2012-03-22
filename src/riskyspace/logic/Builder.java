@@ -32,11 +32,9 @@ public class Builder {
 		 */
 		setStartPlanets(territories, cols, cols);
 
-		int maxPlanets = 25;
 		int planetCount = 0;
 		int resourceIntervall = 1;
-		int fail = 0;
-		while (planetCount < maxPlanets) {
+		while (planetCount < 25) {
 
 			// TODO: something that randoms out a planet at a position
 			Position random = new Position((int) (Math.random() * (rows-2) + 2),(int) (Math.random() * (cols-2) + 2));
@@ -44,27 +42,24 @@ public class Builder {
 				territories.get(random).setPlanet(((resourceIntervall % 3) != 0 ? Resource.METAL: Resource.GAS));
 				resourceIntervall++;
 				planetCount++;
-			} else {
-				System.out.println(fail++);
-			}
+			} 
 		}
 	}
 
 	private static void setStartPlanets(Map<Position, Territory> territories, int rows, int cols) {
 		//Player 1
-		Position pos = new Position(3 + ((int) (Math.random() * 2)),
-				3 + ((int) (Math.random() * 2)));
+		Position pos = new Position(3 + ((int) (Math.random() * 2)),3 + ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.RED);
-		//Player 1�s closest planets
+		//Player 1:s closest planets
 		territories.get(new Position(pos.getRow()+2,pos.getCol()-1)).setPlanet(Resource.METAL);
 		territories.get(new Position(pos.getRow()-1,pos.getCol()+2)).setPlanet(Resource.METAL);
+		
 		//Player 2
-		pos = new Position((rows - 3) + ((int) (Math.random() * 2)), (cols - 3)
-				+ ((int) (Math.random() * 2)));
+		pos = new Position((rows - 3) + ((int) (Math.random() * 2)), (cols - 3) + ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.BLUE);
-		//Player 2�s closest planets
+		//Player 2:s closest planets
 		territories.get(new Position(pos.getRow()-2,pos.getCol()+1)).setPlanet(Resource.METAL);
 		territories.get(new Position(pos.getRow()+1,pos.getCol()-2)).setPlanet(Resource.METAL);
 		
