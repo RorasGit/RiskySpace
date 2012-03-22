@@ -1,17 +1,11 @@
 package demo;
 
-import static org.junit.Assert.*;
-
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import org.junit.Test;
@@ -29,7 +23,11 @@ public class WorldTest {
 				JPanel p = new JPanel();
 				p.setBorder(new LineBorder(Color.white));
 				if(map.get(new Position(row, col)).hasPlanet()){
-					p.setBackground(Color.red);
+					if (map.get(new Position(row, col)).getPlanet().getType() == Resource.METAL) {
+						p.setBackground(Color.lightGray);
+					}else{
+						p.setBackground(Color.green);
+					}
 				}else{
 					p.setBackground(Color.black);
 				}
