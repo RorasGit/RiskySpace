@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import quicktime.streaming.NewPresentationParams;
-
 public class World {
 	private int rows = 0;
 	private int cols = 0;
@@ -112,14 +110,24 @@ public class World {
 	}
 
 	private void setStartPlanets() {
+		//Player 1
 		Position pos = new Position(3 + ((int) (Math.random() * 2)),
 				3 + ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.RED);
+		//Player 1´s closest planets
+		territories.get(new Position(pos.getRow()+2,pos.getCol()-1)).setPlanet(Resource.METAL);
+		territories.get(new Position(pos.getRow()-1,pos.getCol()+2)).setPlanet(Resource.METAL);
+		//Player 2
 		pos = new Position((rows - 3) + ((int) (Math.random() * 2)), (cols - 3)
 				+ ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.BLUE);
+		//Player 2´s closest planets
+		territories.get(new Position(pos.getRow()-2,pos.getCol()+1)).setPlanet(Resource.METAL);
+		territories.get(new Position(pos.getRow()+1,pos.getCol()-2)).setPlanet(Resource.METAL);
+		
+		
 	}
 
 	private void initTerritories() {
