@@ -66,4 +66,12 @@ public class World {
 	public Map<Position, Territory> getTerritories() {
 		return territories;
 	}
+
+	public int getRows() {
+		return rows;
+	}
+	
+	public int getCols() {
+		return cols;
+	}
 }
