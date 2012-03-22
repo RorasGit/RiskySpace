@@ -35,8 +35,8 @@ public class World {
 	 * @return return true if no planets are present.
 	 */
 	private boolean checkNeighboringPlanets(Position pos) {
-		for (int i=1 ; i<=3 ; i++) {
-			for (int j=1; j<=3 ; j++) {
+		for (int i=-1 ; i<=1 ; i++) {
+			for (int j=-1; j<=1 ; j++) {
 				Position p = new Position(pos.getRow()+i,pos.getCol()+j);
 				if (territories.get(p).hasPlanet()) {
 					return false;
@@ -47,9 +47,6 @@ public class World {
 	}
 
 	private void setPlanets() {
-		// Object[] t = territories.values().toArray();
-		// Random r = new Random();
-		
 		/*
 		 * Starting planets
 		 */
@@ -64,8 +61,6 @@ public class World {
 		int planetCount = 0;
 		int resourceIntervall = 1;
 		while (planetCount < maxPlanets) {
-			
-			//TODO: something that randoms out a planet at a position
 			Position random = new Position((int)(Math.random()*(rows+1)),(int)(Math.random()*(cols+1)));
 			if (checkNeighboringPlanets(random)) {
 				territories.get(random).setPlanet(((resourceIntervall % 3) != 0? Resource.METAL : Resource.GAS));
@@ -75,13 +70,6 @@ public class World {
 				// else do nothing
 			}
 		}
-		
-		
-		//int maxPlanets = 20;
-		//for (int i = 0; i < maxPlanets; i++) {
-		//	((Territory) t[r.nextInt(400)]).setPlanet(i % 2 == 0 ? Resource.GAS
-		//			: Resource.METAL);
-		//}
 
 	}
 
