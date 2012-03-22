@@ -30,17 +30,25 @@ public class World {
 		this(20, 20);
 	}
 	
-	/*
-	 * Check for other planets in the perimeter. 3x3 grid with current planet in the middle.
+	/**
+	 * Check for other planets in a 3x3 grid with current position in the middle.
+	 * @return return true if no planets are present.
 	 */
 	private boolean checkNeighboringPlanets(Position pos) {
-		//TODO: make it happen :P
+		for (int i=1 ; i<=3 ; i++) {
+			for (int j=1; j<=3 ; j++) {
+				Position p = new Position(pos.getRow()+i,pos.getCol()+j);
+				if (territories.get(p).hasPlanet()) {
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 
 	private void setPlanets() {
 		// Object[] t = territories.values().toArray();
-		Random r = new Random();
+		// Random r = new Random();
 		
 		/*
 		 * Starting planets
@@ -54,15 +62,17 @@ public class World {
 		
 		int maxPlanets = 20;
 		int planetCount = 0;
-		while (planetCount <= maxPlanets) {
+		int resourceIntervall = 1;
+		while (planetCount < maxPlanets) {
 			
 			//TODO: something that randoms out a planet at a position
 			Position random = new Position((int)(Math.random()*(rows+1)),(int)(Math.random()*(cols+1)));
 			if (checkNeighboringPlanets(random)) {
-				//TODO: place a planet.
+				territories.get(random).setPlanet(((resourceIntervall % 3) != 0? Resource.METAL : Resource.GAS));
+				resourceIntervall++;
 				planetCount++;
 			} else {
-				// else gör inget
+				// else do nothing
 			}
 		}
 		
