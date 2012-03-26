@@ -37,7 +37,7 @@ public class SwingView implements View {
 	
 	@Override
 	public void draw() {
-		renderArea.draw();
+		renderArea.repaint();
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package riskyspace.view.swingImpl;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -15,6 +16,8 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import riskyspace.model.Player;
+import riskyspace.model.Position;
+import riskyspace.model.Territory;
 import riskyspace.model.World;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -53,14 +56,27 @@ public class RenderArea extends JPanel {
 	 */
 	private BufferedImage background = null;
 	
+	/*
+	 * Textures
+	 */
+	private Image planet = null;
+	private Image scout_blue = null;
+	private Image scout_red = null;
 	
 	public RenderArea(World world) {
-		measureScreen();
 		this.world = world;
+		measureScreen();
+		setTextures();
 		setStars();
 		createBackground();
 		initCameras();
 		cc.start();
+	}
+	
+	private void setTextures() {
+		planet = Toolkit.getDefaultToolkit().getImage("res/planet.png").getScaledInstance(64, 64, Image.SCALE_DEFAULT);
+		scout_red = Toolkit.getDefaultToolkit().getImage("res/scout_red.png");
+		scout_blue = Toolkit.getDefaultToolkit().getImage("res/scout_blue.png");
 	}
 	
 	private void createBackground() {
@@ -101,7 +117,6 @@ public class RenderArea extends JPanel {
 		for (int i = 0; i < stars.size(); i++) {
 			g2D.fillRect(stars.get(i).x, stars.get(i).y, 1, 1);
 		}
-		System.out.println(background);
 	}
 
 	public void setStars() {
@@ -136,11 +151,7 @@ public class RenderArea extends JPanel {
 		cc.setCamera(currentCamera);
 	}
 	
-	public void draw() {
-		/*
-		 * Get Graphics object from local Context
-		 */
-		Graphics g = getGraphics();
+	public void paintComponent(Graphics g) {
 		/*
 		 * Translate with cameras
 		 */
@@ -151,8 +162,23 @@ public class RenderArea extends JPanel {
 		// Draw background
 		g.drawImage(background, 0, 0, null);
 		
+		Map<Position, Territory> terr = world.getTerritories();
 		// Draw Planets
-		
+		for (int row = 1; row <= world.getRows(); row++) {
+			for (int col = 1; col <= world.getCols(); col++) {
+				if (terr.get(new Position(row, col)).hasPlanet()) {
+					if (terr.get(new Position(row, col)).hasColony()) {
+						g.setColor(terr.get(new Position(row, col)).getColony().getOwner() == Player.BLUE ?
+								Color.BLUE : Color.RED);
+						g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + col - 0.5) * squareSize - 2),
+								(int) ((EXTRA_SPACE_VERTICAL + row - 1) * squareSize + 2),
+								squareSize/2 - 2, squareSize/2 - 2);
+					}
+					g.drawImage(planet,	(int) ((EXTRA_SPACE_HORIZONTAL + col - 0.5) * squareSize - 2),
+							(int) ((EXTRA_SPACE_VERTICAL + row - 1) * squareSize + 1), null);
+				}
+			}
+		}
 		
 		// Draw Paths
 		/*
@@ -161,6 +187,20 @@ public class RenderArea extends JPanel {
 		 * TODO:
 		 */
 		
-		// Draw Fleets
+		// Draw Fleets (Scouts)
+		for (int row = 1; row <= world.getRows(); row++) {
+			for (int col = 1; col <= world.getCols(); col++) {
+				if (terr.get(new Position(row, col)).hasFleet()) {
+					Player controller = terr.get(new Position(row, col)).controlledBy();
+					g.setColor(controller == Player.BLUE ? Color.BLUE : Color.RED);
+					g.drawOval((int) ((EXTRA_SPACE_HORIZONTAL + col - 1) * squareSize + 2),
+							(int) ((EXTRA_SPACE_VERTICAL + row - 0.5) * squareSize - 2),
+							squareSize/2, squareSize/2);
+					g.drawImage(controller == Player.BLUE ? scout_blue : scout_red,	
+							(int) ((EXTRA_SPACE_HORIZONTAL + col - 1) * squareSize + 1),
+							(int) ((EXTRA_SPACE_VERTICAL + row - 0.5) * squareSize - 1), null);
+				}
+			}
+		}
 	}
 }

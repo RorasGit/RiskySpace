@@ -2,7 +2,6 @@ package riskyspace;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.InputStream;
 
 import riskyspace.model.Player;
 import riskyspace.model.World;
