@@ -1,21 +1,25 @@
 package riskyspace.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import riskyspace.logic.Builder;
+import riskyspace.logic.MapGenerator;
 
 public class World {
 	private int rows = 0;
 	private int cols = 0;
 	private Map<Position, Territory> territories = null;
 	private Map<Player, PlayerStats> playerstats = null;
+	private List<Position> hasContent = null;
 
 	public World(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
 		initPlayers();
-		territories = Builder.generateMap(rows, cols);
+		territories = MapGenerator.generateMap(rows, cols);
+		hasContent = territoriesWithContent();
 	}
 
 	public World() {
@@ -50,12 +54,27 @@ public class World {
 		return rows * 17 + cols * 23;
 	}
 
-	public Map<Position, Territory> getTerritories() {
-		return territories;
+	public Territory getTerritory(Position p) {
+		return territories.get(p);
 	}
 
 	public int getRows() {
 		return rows;
+	}
+	private List<Position> territoriesWithContent(){
+		List<Position> hasContent = new ArrayList<Position>();
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < cols; col++) {
+				if(!territories.get(new Position(row, col)).isEmpty()){
+					hasContent.add(new Position(row, col));
+				}
+				
+			}
+		}
+		return hasContent;
+	}
+	public List<Position> getContentPositions(){
+		return hasContent;
 	}
 	
 	public int getCols() {

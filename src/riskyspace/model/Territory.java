@@ -23,11 +23,16 @@ public class Territory {
 		id = nextId;
 		nextId++;
 	}
-	
+	public void addFleet(Fleet fleet){
+		this.fleets.add(fleet);
+	}
 	public void addFleets(List<Fleet> fleets) {
 		for (int i = 0; i < fleets.size(); i++) {
 			this.fleets.add(fleets.get(i));
 		}
+	}
+	public void removeFleet(Fleet fleet){
+		this.removeFleet(fleet);
 	}
 
 	public void removeFleets(List<Fleet> destroyedFleets) {
@@ -99,6 +104,9 @@ public class Territory {
 			}
 		}
 		return null;
+	}
+	public boolean isEmpty(){
+		return !this.hasPlanet() && !this.hasFleet();
 	}
 	
 	@Override
