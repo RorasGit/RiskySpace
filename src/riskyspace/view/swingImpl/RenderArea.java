@@ -5,8 +5,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +18,6 @@ import javax.swing.JPanel;
 
 import riskyspace.model.Player;
 import riskyspace.model.Position;
-import riskyspace.model.Territory;
 import riskyspace.model.World;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -61,7 +61,11 @@ public class RenderArea extends JPanel {
 	 */
 	private Image planet = null;
 	private Image scout_blue = null;
+	private Image hunter_blue = null;
+	private Image destroyer_blue = null;
 	private Image scout_red = null;
+	private Image hunter_red = null;
+	private Image destroyer_red = null;
 	
 	public RenderArea(World world) {
 		this.world = world;
@@ -75,8 +79,12 @@ public class RenderArea extends JPanel {
 	
 	private void setTextures() {
 		planet = Toolkit.getDefaultToolkit().getImage("res/planet.png").getScaledInstance(64, 64, Image.SCALE_DEFAULT);
-		scout_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png");
-		scout_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png");
+		scout_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png");
+		hunter_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png");
+		destroyer_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png");
+		scout_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png");
+		hunter_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png");
+		destroyer_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png");
 	}
 	
 	private void createBackground() {
@@ -163,19 +171,17 @@ public class RenderArea extends JPanel {
 		g.drawImage(background, 0, 0, null);
 		
 		// Draw Planets
-		for (int row = 1; row <= world.getRows(); row++) {
-			for (int col = 1; col <= world.getCols(); col++) {
-				if (world.getTerritory(new Position(row, col)).hasPlanet()) {
-					if (world.getTerritory(new Position(row, col)).hasColony()) {
-						g.setColor(world.getTerritory(new Position(row, col)).getColony().getOwner() == Player.BLUE ?
-								Color.BLUE : Color.RED);
-						g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + col - 0.5) * squareSize - 2),
-								(int) ((EXTRA_SPACE_VERTICAL + row - 1) * squareSize + 2),
-								squareSize/2 - 2, squareSize/2 - 2);
-					}
-					g.drawImage(planet,	(int) ((EXTRA_SPACE_HORIZONTAL + col - 0.5) * squareSize - 2),
-							(int) ((EXTRA_SPACE_VERTICAL + row - 1) * squareSize + 1), null);
+		for (Position pos : world.getContentPositions()) {
+			if (world.getTerritory(pos).hasPlanet()) {
+				if (world.getTerritory(pos).hasColony()) {
+					g.setColor(world.getTerritory(pos).getColony().getOwner() == Player.BLUE ?
+							Color.BLUE : Color.RED);
+					g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
+							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 2),
+							squareSize/2 - 2, squareSize/2 - 2);
 				}
+				g.drawImage(planet,	(int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
+						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 1), null);
 			}
 		}
 		
@@ -186,16 +192,54 @@ public class RenderArea extends JPanel {
 		 * TODO:
 		 */
 		
-		// Draw Fleets (Scouts)
-		for (int row = 1; row <= world.getRows(); row++) {
-			for (int col = 1; col <= world.getCols(); col++) {
-				if (world.getTerritory(new Position(row, col)).hasFleet()) {
-					Player controller = world.getTerritory(new Position(row, col)).controlledBy();
-					g.drawImage(controller == Player.BLUE ? scout_blue : scout_red,	
-							(int) ((EXTRA_SPACE_HORIZONTAL + col - 1) * squareSize),
-							(int) ((EXTRA_SPACE_VERTICAL + row - 0.5) * squareSize), null);
-				}
+		for (Position pos : world.getContentPositions()) {
+			if (world.getTerritory(pos).hasFleet()) {
+				Player controller = world.getTerritory(pos).controlledBy();
+				Image image = null;
+				image = controller == Player.BLUE ? scout_blue : scout_red;
+				g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.75) * squareSize) - image.getWidth(null)/2,
+						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
 			}
 		}
+	}
+
+	/*
+	 * 
+	 */
+	public boolean menuClick(Point point) {
+//		if (!menu.isActive()) {
+//			return false;
+//		} else {
+			return true;
+//		}
+	}
+	
+	public boolean shipClick(Point point) {
+		return false;
+	}
+
+	public boolean colonyClick(Point point) {
+		return false;
+	}
+	
+	class ClickHandler implements MouseListener {
+		@Override public void mousePressed(MouseEvent me) {
+			/*
+			 * Check each level of interaction in order.
+			 */
+			if (menuClick(me.getPoint())) {return;}
+			if (shipClick(me.getPoint())) {return;}
+			if (colonyClick(me.getPoint())) {return;}
+			else {
+				/*
+				 * Click was not in any trigger zone
+				 * Call deselect.
+				 */
+			}
+		}		
+		@Override public void mouseClicked(MouseEvent me) {}
+		@Override public void mouseEntered(MouseEvent me) {}
+		@Override public void mouseExited(MouseEvent me) {}
+		@Override public void mouseReleased(MouseEvent me) {}
 	}
 }
