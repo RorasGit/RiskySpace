@@ -2,13 +2,19 @@ package riskyspace.view.swingImpl;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
+import riskyspace.model.Player;
 import riskyspace.model.World;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -21,19 +27,19 @@ public class RenderArea extends JPanel {
 	 * Extra space at the Right and Left sides
 	 * of the screen.
 	 */
-	private static final int EXTRA_SPACE_RL = 3;
+	private static final int EXTRA_SPACE_HORIZONTAL = 3;
 	
 	/**
 	 * Extra space at the Top and Bottom sides
 	 * of the screen.
 	 */
-	private static final int EXTRA_SPACE_TB = 2;
+	private static final int EXTRA_SPACE_VERTICAL = 2;
 	
 	private final World world;
-	private Camera[] cameras = null;
+	private Map<Player, Camera> cameras = null;
 	private CameraController cc = null;
 	private List<Point> stars = null;
-
+	private Camera currentCamera = null;
 	
 	/*
 	 * Screen measures
@@ -42,33 +48,78 @@ public class RenderArea extends JPanel {
 	private int height;
 	private int squareSize;
 	
+	/*
+	 * BufferedImages
+	 */
+	private BufferedImage background = null;
+	
+	
 	public RenderArea(World world) {
 		measureScreen();
 		this.world = world;
 		setStars();
+		createBackground();
 		initCameras();
-		// start camera Thread soonish
+		cc.start();
 	}
 	
+	private void createBackground() {
+		int totalWidth = (world.getCols() + 2*EXTRA_SPACE_HORIZONTAL)*squareSize;
+		int totalHeight = (world.getRows() + 2*EXTRA_SPACE_VERTICAL)*squareSize;
+		background = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2D = background.createGraphics();
+		
+		g2D.setColor(Color.BLACK);
+		g2D.fillRect(0, 0, totalWidth, totalHeight);
+		
+		g2D.setColor(Color.LIGHT_GRAY);
+		/*
+		 * Draw Horizontal lines
+		 */
+		for (int row = 0; row <= world.getRows(); row++) {
+			int x1 = (EXTRA_SPACE_HORIZONTAL) * squareSize;
+			int y1 = (EXTRA_SPACE_VERTICAL + row) * squareSize;
+			int x2 = (EXTRA_SPACE_HORIZONTAL + world.getCols()) * squareSize;
+			int y2 = (EXTRA_SPACE_VERTICAL + row) * squareSize;
+			g2D.drawLine(x1, y1, x2, y2);
+		}
+		/*
+		 * Draw Vertical lines
+		 */
+		for (int col = 0; col <= world.getCols(); col++) {
+			int x1 = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
+			int y1 = (EXTRA_SPACE_VERTICAL) * squareSize;
+			int x2 = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
+			int y2 = (EXTRA_SPACE_VERTICAL + world.getRows()) * squareSize;
+			g2D.drawLine(x1, y1, x2, y2);
+		}
+		
+		/*
+		 * Draw stars
+		 */
+		g2D.setColor(Color.WHITE);
+		for (int i = 0; i < stars.size(); i++) {
+			g2D.fillRect(stars.get(i).x, stars.get(i).y, 1, 1);
+		}
+		System.out.println(background);
+	}
+
 	public void setStars() {
 		stars = new ArrayList<Point>();
-		for (int i = 0; i < stars.size(); i++) {
-			int x = (int) (Math.random()*(world.getCols()+2*EXTRA_SPACE_RL));
-			int y = (int) (Math.random()*(world.getRows()+2*EXTRA_SPACE_TB));
+		for (int i = 0; i < 5000; i++) {
+			int x = (int) (Math.random()*(world.getCols()+2*EXTRA_SPACE_HORIZONTAL)*squareSize);
+			int y = (int) (Math.random()*(world.getRows()+2*EXTRA_SPACE_VERTICAL)*squareSize);
 			stars.add(new Point(x, y));
 		}
 	}
 	
-	/*
-	 * TODO: Listener for swapping cameras??
-	 */
-	
 	private void initCameras() {
-		cameras = new Camera[2];
-		cameras[0] = new Camera();
-		cameras[1] = new Camera();
-//		cc = new CameraController();
-//		cc.setCamera(cameras[0]);
+		cameras = new HashMap<Player, Camera>();
+		cameras.put(Player.BLUE, new Camera());
+		cameras.put(Player.RED, new Camera());
+		currentCamera = cameras.get(Player.BLUE);
+		cc = new CameraController();
+		cc.setCamera(currentCamera);
 	}
 	
 	/*
@@ -80,20 +131,25 @@ public class RenderArea extends JPanel {
 		squareSize = Math.min(width/6,height/6);
 	}
 	
-	public void render() {
+	public void setPlayer(Player player) {
+		currentCamera = cameras.get(player);
+		cc.setCamera(currentCamera);
+	}
+	
+	public void draw() {
+		/*
+		 * Get Graphics object from local Context
+		 */
 		Graphics g = getGraphics();
-		// Draw black background
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, width, height);
 		/*
 		 * Translate with cameras
 		 */
+		int xTrans = -(int) (((world.getCols()+2*EXTRA_SPACE_HORIZONTAL)*squareSize - width)*currentCamera.getX());
+		int yTrans = -(int) (((world.getRows()+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
+		g.translate(xTrans, yTrans);
 		
-		// Draw stars
-		drawStars(g);
-		
-		// Draw grid
-		drawGrid(g);
+		// Draw background
+		g.drawImage(background, 0, 0, null);
 		
 		// Draw Planets
 		
@@ -106,40 +162,5 @@ public class RenderArea extends JPanel {
 		 */
 		
 		// Draw Fleets
-	}
-
-	/*
-	 * Draw methods
-	 */
-	
-	private void drawGrid(Graphics g) {
-		g.setColor(Color.LIGHT_GRAY);
-		/*
-		 * Draw Horizontal lines
-		 */
-		for (int row = 0; row < world.getRows(); row++) {
-			int x1 = (EXTRA_SPACE_RL) * squareSize;
-			int y1 = (EXTRA_SPACE_TB + row) * squareSize;
-			int x2 = (EXTRA_SPACE_RL + world.getCols()) * squareSize;
-			int y2 = (EXTRA_SPACE_TB + row) * squareSize;
-			g.drawLine(x1, y1, x2, y2);
-		}
-		/*
-		 * Draw Vertical lines
-		 */
-		for (int col = 0; col < world.getCols(); col++) {
-			int x1 = (EXTRA_SPACE_RL + col) * squareSize;
-			int y1 = (EXTRA_SPACE_TB) * squareSize;
-			int x2 = (EXTRA_SPACE_RL + col) * squareSize;
-			int y2 = (EXTRA_SPACE_TB + world.getRows()) * squareSize;
-			g.drawLine(x1, y1, x2, y2);
-		}
-	}
-
-	private void drawStars(Graphics g) {
-		g.setColor(Color.WHITE);
-		for (int i = 0; i < stars.size(); i++) {
-			g.fillRect(stars.get(i).x, stars.get(i).y, 1, 1);
-		}
 	}
 }
