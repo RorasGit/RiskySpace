@@ -8,8 +8,9 @@ public class ViewEvent {
 	 * The different events that can occur.
 	 */
 	public enum EventTag {
-		SHIP_SELECTED,
+		FLEET_SELECTED,
 		TERRITORY_SELECTED,
+		DESELECT_UNIT,
 		NEXT_TURN;
 		//TODO: add all events that can occur.
 	}
