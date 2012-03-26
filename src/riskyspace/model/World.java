@@ -16,10 +16,6 @@ public class World {
 		this.cols = cols;
 		initPlayers();
 		territories = Builder.generateMap(rows, cols);
-
-		/*
-		 * Set Planets TODO: Roras Set Starting Fleets
-		 */
 	}
 
 	public World() {
