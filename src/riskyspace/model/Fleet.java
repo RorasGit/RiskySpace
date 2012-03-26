@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Fleet {
 	
+	private boolean hasColonizer = false;
+	private ShipType flagship = null;
 	private Player owner = null;
 	private List<Ship> ships = new ArrayList<Ship>();
 	
@@ -32,6 +34,7 @@ public class Fleet {
 		if (fleetSize() == 0) {
 			throw new IllegalArgumentException("Can not create empty fleet");
 		}
+		setFlagship();
 		id = nextId;
 		nextId++;
 	}
@@ -47,6 +50,7 @@ public class Fleet {
 		}
 		this.owner = owner;
 		ships.add(ship);
+		flagship = ship.getType();
 		id = nextId;
 		nextId++;
 	}
@@ -69,6 +73,7 @@ public class Fleet {
 		if (fleetSize() == 0) {
 			throw new IllegalArgumentException("Can not create empty Fleet");
 		}
+		setFlagship();
 		id = nextId;
 		nextId++;
 	}
@@ -105,20 +110,18 @@ public class Fleet {
 			}
 		}
 		ships.removeAll(destroyedShips);
-	}
-	
-	public boolean hasColonizer() {
-		return shipCount(ShipType.COLONIZER) > 0;
+		setFlagship();
 	}
 	
 	public boolean useColonizer() {
-		if (hasColonizer()) {
+		if (hasColonizer) {
 			for (int i = 0; i < fleetSize(); i++) {
 				if (ships.get(i).getType().equals(ShipType.COLONIZER)) {
 					/*
 					 * When Colonizer is found remove and stop the loop
 					 */
 					ships.remove(i);
+					setFlagship();
 					break;
 				}
 			}
@@ -136,6 +139,31 @@ public class Fleet {
 			}
 		}
 		return nbrOfType;
+	}
+	
+	private void setFlagship() {
+		if (ships.size() == 0) {
+			return;
+		}
+		flagship = null;
+		int hp = 0;
+		for (int i = 0; i < ships.size(); i++) {
+			if (ships.get(i).getType().getShield() > hp && ships.get(i).getType() != ShipType.COLONIZER) {
+				flagship = ships.get(i).getType();
+				hp = ships.get(i).getType().getShield();
+			}
+			if (ships.get(i).getType() == ShipType.COLONIZER) {
+				hasColonizer = true;
+			}
+		}
+	}
+	
+	public ShipType getFlagship() {
+		return flagship;
+	}
+	
+	public boolean hasColonizer() {
+		return hasColonizer;
 	}
 	
 	public void reset() {
