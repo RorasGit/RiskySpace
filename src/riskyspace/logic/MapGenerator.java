@@ -3,20 +3,20 @@ package riskyspace.logic;
 import java.util.HashMap;
 import java.util.Map;
 
+import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
+import riskyspace.model.Ship;
+import riskyspace.model.ShipType;
 import riskyspace.model.Territory;
 
-public class Builder {
+public class MapGenerator {
 	
 	public static Map<Position, Territory> generateMap(int rows, int cols){
 		Map<Position, Territory> territories = new HashMap<Position, Territory>();
 		initTerritories(territories, rows, cols);
 		setPlanets(territories, rows, cols);
-		
-		
-		
 		return territories;
 	}
 	private static void initTerritories(Map<Position, Territory> territories, int rows, int cols) {
@@ -36,7 +36,6 @@ public class Builder {
 		int resourceIntervall = 1;
 		while (planetCount < 25) {
 
-			// TODO: something that randoms out a planet at a position
 			Position random = new Position((int) (Math.random() * (rows-2) + 2),(int) (Math.random() * (cols-2) + 2));
 			if (checkNeighboringPlanets(territories, random, rows, cols)) {
 				territories.get(random).setPlanet(((resourceIntervall % 3) != 0 ? Resource.METAL: Resource.GAS));
@@ -51,6 +50,7 @@ public class Builder {
 		Position pos = new Position(3 + ((int) (Math.random() * 2)),3 + ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.RED);
+		addStartingFleets(territories.get(pos));
 		//Player 1:s closest planets
 		territories.get(new Position(pos.getRow()+2,pos.getCol()-1)).setPlanet(Resource.METAL);
 		territories.get(new Position(pos.getRow()-1,pos.getCol()+2)).setPlanet(Resource.METAL);
@@ -59,6 +59,7 @@ public class Builder {
 		pos = new Position((rows - 3) + ((int) (Math.random() * 2)), (cols - 3) + ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.BLUE);
+		addStartingFleets(territories.get(pos));
 		//Player 2:s closest planets
 		territories.get(new Position(pos.getRow()-2,pos.getCol()+1)).setPlanet(Resource.METAL);
 		territories.get(new Position(pos.getRow()+1,pos.getCol()-2)).setPlanet(Resource.METAL);
@@ -67,8 +68,7 @@ public class Builder {
 	}
 
 	/**
-	 * Check for other planets in a 3x3 grid with current position in the
-	 * middle.
+	 * Check for other planets around the current position.
 	 * 
 	 * @return return true if no planets are present.
 	 */
@@ -126,5 +126,9 @@ public class Builder {
 			return false;
 		}
 		return true;
+	}
+	private static void addStartingFleets(Territory t) {
+		t.addFleet(new Fleet(new Ship(ShipType.SCOUT), t.getColony().getOwner()));
+		
 	}
 }
