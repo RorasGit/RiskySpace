@@ -43,6 +43,9 @@ public class Demo {
 		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world, new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					System.exit(0);
+				}
 				currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
 				mainView.setViewer(currentPlayer);
 			}
