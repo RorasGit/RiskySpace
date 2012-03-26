@@ -23,7 +23,7 @@ public class Camera {
 	}
 	
 	public Camera() {
-		this(0 , 0 , 0.01f);
+		this(0 , 0 , 0.005f);
 	}
 	
 	/**
@@ -40,5 +40,13 @@ public class Camera {
 		} else if (dir == Direction.LEFT) {
 			x = Math.max(x - diff, 0.0f);
 		} 
+	}
+	
+	public float getX() {
+		return x;
+	}
+	
+	public float getY() {
+		return y;
 	}
 }
