@@ -74,10 +74,19 @@ public class RenderArea extends JPanel {
 	private BufferedImage background = null;
 	
 	/*
-	 * Textures
+	 * Planet Textures
 	 */
-	private Image metalplanet = null;
-	private Image gasplanet = null;
+	private Map<Integer, Image> metalplanets = new HashMap<Integer, Image>();
+	private Map<Integer, Image> gasplanets = new HashMap<Integer, Image>();
+	private Map<Position, Image> planetTextures = new HashMap<Position, Image>();
+	/*
+	 * Planet Positions to draw planet textures
+	 */
+	private List<Position> planetPositions = new ArrayList<Position>();
+	
+	/*
+	 * Ship Textures
+	 */
 	private Image scout_blue = null;
 	private Image hunter_blue = null;
 	private Image destroyer_blue = null;
@@ -90,6 +99,7 @@ public class RenderArea extends JPanel {
 		measureScreen();
 		setTextures();
 		createBackground();
+		savePlanets();
 		initCameras();
 		createSideMenu();
 		createTopMenu();
@@ -97,6 +107,19 @@ public class RenderArea extends JPanel {
 		
 	}
 	
+	private void savePlanets() {
+		for (Position pos : world.getContentPositions()) {
+			if (world.getTerritory(pos).hasPlanet()) {
+				if (world.getTerritory(pos).getPlanet().getType() == Resource.METAL) {
+					planetTextures.put(pos, metalplanets.get((int) (Math.random()*4)));
+				} else {
+					planetTextures.put(pos, gasplanets.get((int) (Math.random()*3)));
+				}
+				planetPositions.add(pos);
+			}
+		}
+	}
+
 	private void createMiniMap() {
 		
 	}
@@ -113,11 +136,27 @@ public class RenderArea extends JPanel {
 	}
 
 	private void setTextures() {
-		metalplanet = Toolkit.getDefaultToolkit().getImage("res/metalplanet.png");
-		gasplanet = Toolkit.getDefaultToolkit().getImage("res/gasplanet.png");
+		/*
+		 * Planets
+		 */
+		metalplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_0.png"));
+		metalplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_1.png"));
+		metalplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_2.png"));
+		metalplanets.put(3, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_3.png"));
+		gasplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_0.png"));
+		gasplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_1.png"));
+		gasplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_2.png"));
+		
+		/*
+		 * Ships Blue Player
+		 */
 		scout_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png");
 		hunter_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png");
 		destroyer_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png");
+		
+		/*
+		 * Ships Red Player
+		 */
 		scout_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png");
 		hunter_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png");
 		destroyer_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png");
@@ -200,20 +239,22 @@ public class RenderArea extends JPanel {
 		// Draw background
 		g.drawImage(background, 0, 0, null);
 		
-		// Draw Planets
+		// Draw Colony Marker
 		for (Position pos : world.getContentPositions()) {
-			if (world.getTerritory(pos).hasPlanet()) {
-				if (world.getTerritory(pos).hasColony()) {
-					g.setColor(world.getTerritory(pos).getColony().getOwner() == Player.BLUE ?
-							Color.BLUE : Color.RED);
-					g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
-							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 2),
-							squareSize/2 - 5, squareSize/2 - 5);
-				}
-				Image planet = world.getTerritory(pos).getPlanet().getType() == Resource.METAL ? metalplanet : gasplanet;
-				g.drawImage(planet, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 4),
-						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize), null);
+			if (world.getTerritory(pos).hasColony()) {
+				g.setColor(world.getTerritory(pos).getColony().getOwner() == Player.BLUE ?
+						Color.BLUE : Color.RED);
+				g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
+						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 2),
+						squareSize/2 - 5, squareSize/2 - 5);
 			}
+			
+		}
+		
+		// Draw Planets
+		for (Position pos : planetPositions) {
+			g.drawImage(planetTextures.get(pos), (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 4),
+					(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize), null);
 		}
 		
 		// Draw Paths
