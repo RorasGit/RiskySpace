@@ -30,7 +30,7 @@ public enum ModelEventBus {
 			System.out.println(evt);
 		}
 		for(ModelEventHandler eventHandler : eventHandlers) {
-			eventHandler.preformEvent(evt);
+			eventHandler.performEvent(evt);
 		}
 	}
 	

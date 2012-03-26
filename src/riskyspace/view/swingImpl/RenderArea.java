@@ -20,10 +20,13 @@ import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
 import riskyspace.model.World;
+import riskyspace.services.ModelEvent;
+import riskyspace.services.ModelEventBus;
+import riskyspace.services.ModelEventHandler;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 
-public class RenderArea extends JPanel {
+public class RenderArea extends JPanel implements ModelEventHandler {
 
 	private static final long serialVersionUID = 8209691542499926289L;
 	
@@ -55,11 +58,6 @@ public class RenderArea extends JPanel {
 	private int menuWidth;
 	private Image menuBackground = null;
 	private Map<String, Image> buttons = new HashMap<String, Image>();
-	
-	/*
-	 * Top menu variables
-	 */
-
 	
 	/*
 	 * Screen measures
@@ -102,9 +100,7 @@ public class RenderArea extends JPanel {
 		savePlanets();
 		initCameras();
 		createSideMenu();
-		createTopMenu();
-		createMiniMap();
-		
+		ModelEventBus.INSTANCE.addHandler(this);
 	}
 	
 	private void savePlanets() {
@@ -120,17 +116,9 @@ public class RenderArea extends JPanel {
 		}
 	}
 
-	private void createMiniMap() {
-		
-	}
-
-	private void createTopMenu() {
-		
-	}
-
 	private void createSideMenu() {
 		menuWidth = height / 3;
-		menuBackground = Toolkit.getDefaultToolkit().getImage("res/menu/background.png");
+		menuBackground = Toolkit.getDefaultToolkit().getImage("res/menu/background.png").getScaledInstance(menuWidth, height, Image.SCALE_DEFAULT);
 		buttons.put("buy", Toolkit.getDefaultToolkit().getImage("res/menu/background.png"));
 		buttons.put("next", Toolkit.getDefaultToolkit().getImage("res/menu/background.png"));
 	}
@@ -269,6 +257,12 @@ public class RenderArea extends JPanel {
 						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
 			}
 		}
+		
+		// Draw menu
+		g.translate(-xTrans, -yTrans);
+		if (menuActive) {
+			g.drawImage(menuBackground, width - menuWidth, 0, menuWidth, height, null);
+		}
 	}
 
 	/*
@@ -276,6 +270,9 @@ public class RenderArea extends JPanel {
 	 */
 	public boolean menuClick(Point point) {
 		if (menuActive) {
+//			if () {
+//				
+//			}
 			return true;
 		} else {
 			return false;
@@ -309,5 +306,13 @@ public class RenderArea extends JPanel {
 		@Override public void mouseEntered(MouseEvent me) {}
 		@Override public void mouseExited(MouseEvent me) {}
 		@Override public void mouseReleased(MouseEvent me) {}
+	}
+
+	@Override
+	public void performEvent(ModelEvent evt) {
+		//TODO:
+		if (evt.getTag() == ModelEvent.EventTag.SHOW_MENU) {
+			menuActive = !menuActive;
+		}
 	}
 }

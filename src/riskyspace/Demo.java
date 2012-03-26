@@ -5,6 +5,8 @@ import java.awt.event.KeyListener;
 
 import riskyspace.model.Player;
 import riskyspace.model.World;
+import riskyspace.services.ModelEvent;
+import riskyspace.services.ModelEventBus;
 import riskyspace.view.View;
 import riskyspace.view.ViewFactory;
 
@@ -44,9 +46,12 @@ public class Demo {
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					System.exit(0);
+				} else if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
+					ModelEventBus.INSTANCE.publish(new ModelEvent(ModelEvent.EventTag.SHOW_MENU, null, null)); // null atm test
+				} else {
+					currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
+					mainView.setViewer(currentPlayer);
 				}
-				currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
-				mainView.setViewer(currentPlayer);
 			}
 			@Override public void keyReleased(KeyEvent arg0) {}
 			@Override public void keyTyped(KeyEvent arg0) {}

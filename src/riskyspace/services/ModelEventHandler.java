@@ -5,6 +5,6 @@ public interface ModelEventHandler {
 	/*
 	 * Perform an event of some sort.
 	 */
-	public void preformEvent(ModelEvent evt);
+	public void performEvent(ModelEvent evt);
 
 }

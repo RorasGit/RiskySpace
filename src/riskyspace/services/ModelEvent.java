@@ -8,8 +8,8 @@ public class ModelEvent {
 	 * The different events that can occur.
 	 */
 	public enum EventTag {
-		SHIP_BUILT,
 		TERRITORY_CHANGED,
+		SHOW_MENU,
 		NEXT_TURN;
 		
 		//TODO: add all events that can occur.
