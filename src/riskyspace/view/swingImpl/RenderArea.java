@@ -75,8 +75,8 @@ public class RenderArea extends JPanel {
 	
 	private void setTextures() {
 		planet = Toolkit.getDefaultToolkit().getImage("res/planet.png").getScaledInstance(64, 64, Image.SCALE_DEFAULT);
-		scout_red = Toolkit.getDefaultToolkit().getImage("res/scout_red.png");
-		scout_blue = Toolkit.getDefaultToolkit().getImage("res/scout_blue.png");
+		scout_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png");
+		scout_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png");
 	}
 	
 	private void createBackground() {
@@ -162,13 +162,12 @@ public class RenderArea extends JPanel {
 		// Draw background
 		g.drawImage(background, 0, 0, null);
 		
-		Map<Position, Territory> terr = world.getTerritories();
 		// Draw Planets
 		for (int row = 1; row <= world.getRows(); row++) {
 			for (int col = 1; col <= world.getCols(); col++) {
-				if (terr.get(new Position(row, col)).hasPlanet()) {
-					if (terr.get(new Position(row, col)).hasColony()) {
-						g.setColor(terr.get(new Position(row, col)).getColony().getOwner() == Player.BLUE ?
+				if (world.getTerritory(new Position(row, col)).hasPlanet()) {
+					if (world.getTerritory(new Position(row, col)).hasColony()) {
+						g.setColor(world.getTerritory(new Position(row, col)).getColony().getOwner() == Player.BLUE ?
 								Color.BLUE : Color.RED);
 						g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + col - 0.5) * squareSize - 2),
 								(int) ((EXTRA_SPACE_VERTICAL + row - 1) * squareSize + 2),
@@ -190,15 +189,11 @@ public class RenderArea extends JPanel {
 		// Draw Fleets (Scouts)
 		for (int row = 1; row <= world.getRows(); row++) {
 			for (int col = 1; col <= world.getCols(); col++) {
-				if (terr.get(new Position(row, col)).hasFleet()) {
-					Player controller = terr.get(new Position(row, col)).controlledBy();
-					g.setColor(controller == Player.BLUE ? Color.BLUE : Color.RED);
-					g.drawOval((int) ((EXTRA_SPACE_HORIZONTAL + col - 1) * squareSize + 2),
-							(int) ((EXTRA_SPACE_VERTICAL + row - 0.5) * squareSize - 2),
-							squareSize/2, squareSize/2);
+				if (world.getTerritory(new Position(row, col)).hasFleet()) {
+					Player controller = world.getTerritory(new Position(row, col)).controlledBy();
 					g.drawImage(controller == Player.BLUE ? scout_blue : scout_red,	
-							(int) ((EXTRA_SPACE_HORIZONTAL + col - 1) * squareSize + 1),
-							(int) ((EXTRA_SPACE_VERTICAL + row - 0.5) * squareSize - 1), null);
+							(int) ((EXTRA_SPACE_HORIZONTAL + col - 1) * squareSize),
+							(int) ((EXTRA_SPACE_VERTICAL + row - 0.5) * squareSize), null);
 				}
 			}
 		}

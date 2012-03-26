@@ -64,8 +64,8 @@ public class World {
 	}
 	private List<Position> territoriesWithContent(){
 		List<Position> hasContent = new ArrayList<Position>();
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < cols; col++) {
+		for (int row = 1; row <= rows; row++) {
+			for (int col = 1; col <= cols; col++) {
 				if(!territories.get(new Position(row, col)).isEmpty()){
 					hasContent.add(new Position(row, col));
 				}
