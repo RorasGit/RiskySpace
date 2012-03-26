@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import riskyspace.model.Player;
+import riskyspace.model.ShipType;
 import riskyspace.model.World;
 import riskyspace.services.ModelEvent;
 import riskyspace.services.ModelEventBus;

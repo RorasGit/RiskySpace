@@ -89,6 +89,16 @@ public class Territory {
 		return fleets;
 	}
 	
+	public ShipType getFleetsFlagships() {
+		ShipType flagship = null;
+		for (int i = 0; i < fleets.size(); i++) {
+			if (flagship == null || flagship.compareTo(fleets.get(i).getFlagship()) < 0) {
+				flagship = fleets.get(i).getFlagship();
+			}
+		}
+		return flagship;
+	}
+	
 	public Player controlledBy() {
 		if (!hasFleet() && (!hasPlanet() || !getPlanet().hasColony())) {
 			return Player.WORLD;

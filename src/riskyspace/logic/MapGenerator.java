@@ -114,10 +114,8 @@ public class MapGenerator {
 		return (p.getCol() > 0 && p.getCol() <= cols && p.getRow() > 0 && p
 				.getRow() <= rows);
 	}
-	
 
 	private static boolean legalPlanetPosition(Map<Position, Territory> territories, Position p, int rows, int cols) {
-
 		if (territories.get(p).hasPlanet()) {
 			return false;
 		} else if (p.getRow() <= 5 && p.getCol() <= 5) {
@@ -127,8 +125,8 @@ public class MapGenerator {
 		}
 		return true;
 	}
+	
 	private static void addStartingFleets(Territory t) {
 		t.addFleet(new Fleet(new Ship(ShipType.SCOUT), t.getColony().getOwner()));
-		
 	}
 }

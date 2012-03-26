@@ -114,14 +114,13 @@ public class Fleet {
 	}
 	
 	public boolean useColonizer() {
-		if (hasColonizer) {
+		if (hasColonizer()) {
 			for (int i = 0; i < fleetSize(); i++) {
 				if (ships.get(i).getType().equals(ShipType.COLONIZER)) {
 					/*
 					 * When Colonizer is found remove and stop the loop
 					 */
 					ships.remove(i);
-					setFlagship();
 					break;
 				}
 			}
@@ -143,21 +142,12 @@ public class Fleet {
 	
 	/*
 	 * This sets the flagship, which is the ShipType that will represent the fleet graphically on the map.
-	 * Also sets hasColonizer which needed for drawing.
 	 */
 	private void setFlagship() {
-		if (ships.size() == 0) {
-			return;
-		}
 		flagship = null;
-		int hp = 0;
 		for (int i = 0; i < ships.size(); i++) {
-			if (ships.get(i).getType().getShield() > hp && ships.get(i).getType() != ShipType.COLONIZER) {
+			if (flagship == null || flagship.compareTo(ships.get(i).getType()) < 0) {
 				flagship = ships.get(i).getType();
-				hp = ships.get(i).getType().getShield();
-			}
-			if (ships.get(i).getType() == ShipType.COLONIZER) {
-				hasColonizer = true;
 			}
 		}
 	}
@@ -167,7 +157,7 @@ public class Fleet {
 	}
 	
 	public boolean hasColonizer() {
-		return hasColonizer;
+		return shipCount(ShipType.COLONIZER) > 0;
 	}
 	
 	public void reset() {

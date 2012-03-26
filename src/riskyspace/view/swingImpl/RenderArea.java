@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
+import riskyspace.model.ShipType;
 import riskyspace.model.World;
 import riskyspace.services.ModelEvent;
 import riskyspace.services.ModelEventBus;
@@ -85,12 +86,7 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 	/*
 	 * Ship Textures
 	 */
-	private Image scout_blue = null;
-	private Image hunter_blue = null;
-	private Image destroyer_blue = null;
-	private Image scout_red = null;
-	private Image hunter_red = null;
-	private Image destroyer_red = null;
+	private Map<String, Image> shipTextures = new HashMap<String, Image>();
 	
 	public RenderArea(World world) {
 		this.world = world;
@@ -101,6 +97,7 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		initCameras();
 		createSideMenu();
 		ModelEventBus.INSTANCE.addHandler(this);
+		addMouseListener(new ClickHandler());
 	}
 	
 	private void savePlanets() {
@@ -138,16 +135,16 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		/*
 		 * Ships Blue Player
 		 */
-		scout_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png");
-		hunter_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png");
-		destroyer_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png");
+		shipTextures.put("SCOUT_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png"));
+		shipTextures.put("HUNTER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png"));
+		shipTextures.put("DESTROYER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png"));
 		
 		/*
 		 * Ships Red Player
 		 */
-		scout_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png");
-		hunter_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png");
-		destroyer_red = Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png");
+		shipTextures.put("SCOUT_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png"));
+		shipTextures.put("HUNTER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png"));
+		shipTextures.put("DESTROYER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png"));
 	}
 	
 	private void createBackground() {
@@ -247,12 +244,12 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		
 		// Draw Paths
 		
-		
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasFleet()) {
 				Player controller = world.getTerritory(pos).controlledBy();
 				Image image = null;
-				image = controller == Player.BLUE ? scout_blue : scout_red;
+				ShipType flagship = world.getTerritory(pos).getFleetsFlagships();
+				image = controller == Player.BLUE ? shipTextures.get(flagship + "_BLUE") : shipTextures.get(flagship + "_RED");
 				g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.75) * squareSize) - image.getWidth(null)/2,
 						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
 			}
@@ -270,10 +267,11 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 	 */
 	public boolean menuClick(Point point) {
 		if (menuActive) {
-//			if () {
-//				
-//			}
-			return true;
+			if (point.getX() >= width - menuWidth) {
+				System.out.println("Clicked in menu");
+				return true;
+			}
+			return false;
 		} else {
 			return false;
 		}
