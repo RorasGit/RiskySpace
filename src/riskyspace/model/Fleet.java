@@ -141,6 +141,10 @@ public class Fleet {
 		return nbrOfType;
 	}
 	
+	/*
+	 * This sets the flagship, which is the ShipType that will represent the fleet graphically on the map.
+	 * Also sets hasColonizer which needed for drawing.
+	 */
 	private void setFlagship() {
 		if (ships.size() == 0) {
 			return;
