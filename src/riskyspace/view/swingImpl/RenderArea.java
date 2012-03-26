@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 
 import riskyspace.model.Player;
 import riskyspace.model.Position;
+import riskyspace.model.Resource;
 import riskyspace.model.World;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -39,10 +40,26 @@ public class RenderArea extends JPanel {
 	private static final int EXTRA_SPACE_VERTICAL = 2;
 	
 	private final World world;
+	
+	/*
+	 * Cameras
+	 */
+	private Camera currentCamera = null;
 	private Map<Player, Camera> cameras = null;
 	private CameraController cc = null;
-	private List<Point> stars = null;
-	private Camera currentCamera = null;
+	
+	/*
+	 * Side menu settings
+	 */
+	private boolean menuActive = false;
+	private int menuWidth;
+	private Image menuBackground = null;
+	private Map<String, Image> buttons = new HashMap<String, Image>();
+	
+	/*
+	 * Top menu variables
+	 */
+
 	
 	/*
 	 * Screen measures
@@ -52,14 +69,15 @@ public class RenderArea extends JPanel {
 	private int squareSize;
 	
 	/*
-	 * BufferedImages
+	 * BufferedImage background
 	 */
 	private BufferedImage background = null;
 	
 	/*
 	 * Textures
 	 */
-	private Image planet = null;
+	private Image metalplanet = null;
+	private Image gasplanet = null;
 	private Image scout_blue = null;
 	private Image hunter_blue = null;
 	private Image destroyer_blue = null;
@@ -71,14 +89,32 @@ public class RenderArea extends JPanel {
 		this.world = world;
 		measureScreen();
 		setTextures();
-		setStars();
 		createBackground();
 		initCameras();
-		cc.start();
+		createSideMenu();
+		createTopMenu();
+		createMiniMap();
+		
 	}
 	
+	private void createMiniMap() {
+		
+	}
+
+	private void createTopMenu() {
+		
+	}
+
+	private void createSideMenu() {
+		menuWidth = height / 3;
+		menuBackground = Toolkit.getDefaultToolkit().getImage("res/menu/background.png");
+		buttons.put("buy", Toolkit.getDefaultToolkit().getImage("res/menu/background.png"));
+		buttons.put("next", Toolkit.getDefaultToolkit().getImage("res/menu/background.png"));
+	}
+
 	private void setTextures() {
-		planet = Toolkit.getDefaultToolkit().getImage("res/planet.png").getScaledInstance(64, 64, Image.SCALE_DEFAULT);
+		metalplanet = Toolkit.getDefaultToolkit().getImage("res/metalplanet.png");
+		gasplanet = Toolkit.getDefaultToolkit().getImage("res/gasplanet.png");
 		scout_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png");
 		hunter_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png");
 		destroyer_blue = Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png");
@@ -122,17 +158,10 @@ public class RenderArea extends JPanel {
 		 * Draw stars
 		 */
 		g2D.setColor(Color.WHITE);
-		for (int i = 0; i < stars.size(); i++) {
-			g2D.fillRect(stars.get(i).x, stars.get(i).y, 1, 1);
-		}
-	}
-
-	public void setStars() {
-		stars = new ArrayList<Point>();
 		for (int i = 0; i < 5000; i++) {
 			int x = (int) (Math.random()*(world.getCols()+2*EXTRA_SPACE_HORIZONTAL)*squareSize);
 			int y = (int) (Math.random()*(world.getRows()+2*EXTRA_SPACE_VERTICAL)*squareSize);
-			stars.add(new Point(x, y));
+			g2D.fillRect(x, y, 1, 1);
 		}
 	}
 	
@@ -143,6 +172,7 @@ public class RenderArea extends JPanel {
 		currentCamera = cameras.get(Player.BLUE);
 		cc = new CameraController();
 		cc.setCamera(currentCamera);
+		cc.start();
 	}
 	
 	/*
@@ -178,19 +208,16 @@ public class RenderArea extends JPanel {
 							Color.BLUE : Color.RED);
 					g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
 							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 2),
-							squareSize/2 - 2, squareSize/2 - 2);
+							squareSize/2 - 5, squareSize/2 - 5);
 				}
-				g.drawImage(planet,	(int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
-						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 1), null);
+				Image planet = world.getTerritory(pos).getPlanet().getType() == Resource.METAL ? metalplanet : gasplanet;
+				g.drawImage(planet, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 4),
+						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize), null);
 			}
 		}
 		
 		// Draw Paths
-		/*
-		 * Multiple path saved in some move handler class?
-		 * example: Map<Fleet, Path>
-		 * TODO:
-		 */
+		
 		
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasFleet()) {
@@ -207,11 +234,11 @@ public class RenderArea extends JPanel {
 	 * 
 	 */
 	public boolean menuClick(Point point) {
-//		if (!menu.isActive()) {
-//			return false;
-//		} else {
+		if (menuActive) {
 			return true;
-//		}
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean shipClick(Point point) {
