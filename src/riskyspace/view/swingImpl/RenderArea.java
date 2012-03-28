@@ -16,19 +16,23 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
+import riskyspace.model.Territory;
 import riskyspace.model.World;
 import riskyspace.services.ModelEvent;
 import riskyspace.services.ModelEventBus;
 import riskyspace.services.ModelEventHandler;
 import riskyspace.services.ViewEvent;
 import riskyspace.services.ViewEventBus;
-import riskyspace.view.Button;
+import riskyspace.view.Clickable;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
+import riskyspace.view.menu.ColonyMenu;
+import riskyspace.view.menu.IMenu;
 
 public class RenderArea extends JPanel implements ModelEventHandler {
 
@@ -58,10 +62,7 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 	/*
 	 * Side menu settings
 	 */
-	private boolean menuActive = false;
-	private int menuWidth;
-	private Image menuBackground = null;
-	private riskyspace.view.Button next = null;
+	private IMenu sideMenu = null;
 	
 	/*
 	 * Screen measures
@@ -117,10 +118,8 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 	}
 
 	private void createMenu() {
-		menuWidth = height / 3;
-		menuBackground = Toolkit.getDefaultToolkit().getImage("res/menu/background.png").getScaledInstance(menuWidth, height, Image.SCALE_DEFAULT);
-		next = new Button(width - menuWidth + 10, height - menuWidth + 10, menuWidth - 20, menuWidth - 20);
-		next.setImage("res/menu/background.png");
+		int menuWidth = height / 3;
+		sideMenu = new ColonyMenu(width - menuWidth, 0, menuWidth, height);
 	}
 
 	private void setTextures() {
@@ -216,6 +215,14 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		cc.setCamera(currentCamera);
 	}
 	
+	public int translateRealX() {
+		return (int) (((world.getCols()+2*EXTRA_SPACE_HORIZONTAL)*squareSize - width)*currentCamera.getX());
+	}
+	
+	public int translateRealY() {
+		return (int) (((world.getRows()+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
+	}
+
 	public void paintComponent(Graphics g) {
 		/*
 		 * Translate with cameras
@@ -260,31 +267,35 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		
 		// Draw menu
 		g.translate(-xTrans, -yTrans);
-		if (menuActive) {
-			g.drawImage(menuBackground, width - menuWidth, 0, menuWidth, height, null);
+		if (sideMenu.isVisible()) {
+			sideMenu.draw(g);
 		}
 		// draw next btn
 //		next.draw(g);
 	}
+	
+	public Position getPosition(Point point) {
+		int row = ((point.y + translateRealY()) / squareSize) + 1 - EXTRA_SPACE_VERTICAL;
+		int col = ((point.x  + translateRealX()) / squareSize) + 1 - EXTRA_SPACE_HORIZONTAL;
+		return new Position(row, col); 
+	}
+	
+	private boolean isLegalPos(Position pos) {
+		boolean rowLegal = pos.getRow() >= 1 && pos.getRow() <= world.getRows();
+		boolean colLegal = pos.getCol() >= 1 && pos.getCol() <= world.getCols();
+		return rowLegal && colLegal;
+	}
 
 	/*
-	 * 
+	 * Click handling for different parts
 	 */
 	public boolean menuClick(Point point) {
-		if (menuActive) {
-			if (point.getX() >= width - menuWidth) {
-				System.out.println("Clicked in menu");
-				if (true) {
-					// If knapp1
-				} else if (true) {
-					// If knapp2
-				}
-				return true;
+		if (sideMenu.isVisible()) {
+			if (sideMenu instanceof Clickable) {
+				return ((Clickable) sideMenu).mousePressed(point);
 			}
-			return false;
-		} else {
-			return false;
 		}
+		return false;
 	}
 	
 	public boolean shipClick(Point point) {
@@ -292,6 +303,14 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 	}
 
 	public boolean colonyClick(Point point) {
+		Position pos = getPosition(point);
+		if (isLegalPos(pos)) {
+			if (world.getTerritory(pos).hasColony()) {
+				ViewEvent evt = new ViewEvent(ViewEvent.EventTag.COLONY_SELECTED, pos, null);
+				ViewEventBus.INSTANCE.publish(evt);
+				return true;
+			}
+		}
 		return false;
 	}
 	
@@ -319,8 +338,5 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 	@Override
 	public void performEvent(ModelEvent evt) {
 		//TODO:
-		if (evt.getTag() == ModelEvent.EventTag.SHOW_MENU) {
-			menuActive = !menuActive;
-		}
 	}
 }
