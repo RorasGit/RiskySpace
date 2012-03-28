@@ -30,7 +30,7 @@ public enum ViewEventBus {
 			System.out.println(evt);
 		}
 		for(ViewEventHandler eventHandler : eventHandlers) {
-			eventHandler.preformEvent(evt);
+			eventHandler.performEvent(evt);
 		}
 	}
 	

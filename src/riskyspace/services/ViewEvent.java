@@ -10,10 +10,11 @@ public class ViewEvent {
 	public enum EventTag {
 		FLEET_SELECTED,
 		FLEET_MOVED,
-		TERRITORY_SELECTED,
+		COLONY_SELECTED,
 		DESELECT,
-		AFTER_BATTLE,
-		NEXT_TURN;
+		AFTER_BATTLE,//Is this really a View Event??
+		NEXT_TURN, 
+		BUILD_SHIP;
 		
 		//TODO: add all events that can occur.
 	}
@@ -47,6 +48,6 @@ public class ViewEvent {
 	
 	@Override
     public String toString() {
-        return "Event [tag=" + tag + ", value=" + objectValue + ", player=" + player + "]";
+        return "ViewEvent [tag=" + tag + ", value=" + objectValue + ", player=" + player + "]";
     } 
 }

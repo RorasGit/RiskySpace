@@ -10,6 +10,7 @@ public class ModelEvent {
 	public enum EventTag {
 		TERRITORY_CHANGED,
 		SHOW_MENU,
+		HIDE_MENU,
 		NEXT_TURN;
 		
 		//TODO: add all events that can occur.
@@ -44,7 +45,7 @@ public class ModelEvent {
 	
 	@Override
     public String toString() {
-        return "Event [tag=" + tag + ", value=" + objectValue + ", player=" + player + "]";
+        return "ModelEvent [tag=" + tag + ", value=" + objectValue + ", player=" + player + "]";
     } 
     
 }
