@@ -7,7 +7,7 @@ public class Colony implements BattleAble {
 	
 	private Player owner = null;
 	private int income = 0;
-	
+	private String colonyName = null;
 	/*
 	 * Turret stats will be kept in a seperate class later.
 	 */
@@ -23,6 +23,14 @@ public class Colony implements BattleAble {
 			income = 20;
 		}
 		constructTurret();
+		/*
+		 * Test name setter (Semi-Random the names later)
+		 */
+		if (owner == Player.BLUE) {
+			colonyName = "Atlantis";
+		} else {
+			colonyName = "Gargaloo";
+		}
 	}
 	
 	public void constructTurret() {
@@ -54,6 +62,10 @@ public class Colony implements BattleAble {
 	
 	public void resetShield() {
 		shield = 30;
+	}
+	
+	public String getName() {
+		return colonyName;
 	}
 	
 	@Override
