@@ -194,8 +194,8 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 	
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
-		cameras.put(Player.BLUE, new Camera());
-		cameras.put(Player.RED, new Camera());
+		cameras.put(Player.BLUE, new Camera(0.95f,0.95f));
+		cameras.put(Player.RED, new Camera(0.05f,0.05f));
 		currentCamera = cameras.get(Player.BLUE);
 		cc = new CameraController();
 		cc.setCamera(currentCamera);

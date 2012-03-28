@@ -22,6 +22,10 @@ public class Camera {
 		this.diff = diff;
 	}
 	
+	public Camera(float x, float y) {
+		this(x, y, 0.005f);
+	}
+	
 	public Camera() {
 		this(0 , 0 , 0.005f);
 	}
