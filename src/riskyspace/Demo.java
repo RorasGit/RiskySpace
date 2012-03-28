@@ -3,6 +3,7 @@ package riskyspace;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import riskyspace.logic.ViewEventController;
 import riskyspace.model.Player;
 import riskyspace.model.ShipType;
 import riskyspace.model.World;
@@ -42,13 +43,12 @@ public class Demo {
 	
 	public Demo () {
 		world = new World();
+		new ViewEventController(world);
 		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world, new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					System.exit(0);
-				} else if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
-					ModelEventBus.INSTANCE.publish(new ModelEvent(ModelEvent.EventTag.SHOW_MENU, null, null));
 				} else {
 					currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
 					mainView.setViewer(currentPlayer);
