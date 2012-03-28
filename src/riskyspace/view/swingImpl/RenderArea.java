@@ -24,6 +24,9 @@ import riskyspace.model.World;
 import riskyspace.services.ModelEvent;
 import riskyspace.services.ModelEventBus;
 import riskyspace.services.ModelEventHandler;
+import riskyspace.services.ViewEvent;
+import riskyspace.services.ViewEventBus;
+import riskyspace.view.Button;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 
@@ -58,7 +61,7 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 	private boolean menuActive = false;
 	private int menuWidth;
 	private Image menuBackground = null;
-	private Map<String, Image> buttons = new HashMap<String, Image>();
+	private riskyspace.view.Button next = null;
 	
 	/*
 	 * Screen measures
@@ -95,7 +98,7 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		createBackground();
 		savePlanets();
 		initCameras();
-		createSideMenu();
+		createMenu();
 		ModelEventBus.INSTANCE.addHandler(this);
 		addMouseListener(new ClickHandler());
 	}
@@ -113,11 +116,11 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		}
 	}
 
-	private void createSideMenu() {
+	private void createMenu() {
 		menuWidth = height / 3;
 		menuBackground = Toolkit.getDefaultToolkit().getImage("res/menu/background.png").getScaledInstance(menuWidth, height, Image.SCALE_DEFAULT);
-		buttons.put("buy", Toolkit.getDefaultToolkit().getImage("res/menu/background.png"));
-		buttons.put("next", Toolkit.getDefaultToolkit().getImage("res/menu/background.png"));
+		next = new Button(width - menuWidth + 10, height - menuWidth + 10, menuWidth - 20, menuWidth - 20);
+		next.setImage("res/menu/background.png");
 	}
 
 	private void setTextures() {
@@ -260,6 +263,8 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		if (menuActive) {
 			g.drawImage(menuBackground, width - menuWidth, 0, menuWidth, height, null);
 		}
+		// draw next btn
+//		next.draw(g);
 	}
 
 	/*
@@ -269,6 +274,11 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		if (menuActive) {
 			if (point.getX() >= width - menuWidth) {
 				System.out.println("Clicked in menu");
+				if (true) {
+					// If knapp1
+				} else if (true) {
+					// If knapp2
+				}
 				return true;
 			}
 			return false;
@@ -295,9 +305,9 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 			if (colonyClick(me.getPoint())) {return;}
 			else {
 				/*
-				 * Click was not in any trigger zone
-				 * Call deselect.
+				 * Click was not in any trigger zone. Call deselect.
 				 */
+				ViewEventBus.INSTANCE.publish(new ViewEvent(ViewEvent.EventTag.DESELECT, null, null));
 			}
 		}		
 		@Override public void mouseClicked(MouseEvent me) {}

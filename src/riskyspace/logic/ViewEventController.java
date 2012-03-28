@@ -47,7 +47,7 @@ public class ViewEventController implements ViewEventHandler {
 			
 		}
 		
-		if (evt.getTag() == ViewEvent.EventTag.DESELECT_UNIT) {
+		if (evt.getTag() == ViewEvent.EventTag.DESELECT) {
 			selectedFleets.clear();
 			selectedColony = null;
 		}

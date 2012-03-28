@@ -10,7 +10,7 @@ public class ViewEvent {
 	public enum EventTag {
 		FLEET_SELECTED,
 		TERRITORY_SELECTED,
-		DESELECT_UNIT,
+		DESELECT,
 		NEXT_TURN;
 		//TODO: add all events that can occur.
 	}
@@ -46,5 +46,4 @@ public class ViewEvent {
     public String toString() {
         return "Event [tag=" + tag + ", value=" + objectValue + ", player=" + player + "]";
     } 
-    
 }

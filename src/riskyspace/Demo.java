@@ -48,7 +48,7 @@ public class Demo {
 				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					System.exit(0);
 				} else if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
-					ModelEventBus.INSTANCE.publish(new ModelEvent(ModelEvent.EventTag.SHOW_MENU, null, null)); // null atm test
+					ModelEventBus.INSTANCE.publish(new ModelEvent(ModelEvent.EventTag.SHOW_MENU, null, null));
 				} else {
 					currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
 					mainView.setViewer(currentPlayer);
