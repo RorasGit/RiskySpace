@@ -1,11 +1,10 @@
 package riskyspace.logic;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
-import riskyspace.model.Planet;
 import riskyspace.model.Territory;
 import riskyspace.model.World;
 import riskyspace.services.ViewEvent;
@@ -30,8 +29,7 @@ public class ViewEventController implements ViewEventHandler {
 			/*
 			 * Clear old selections
 			 */
-			selectedFleets.clear();
-			selectedColony = null;
+			resetVariables();
 			/*
 			 * Is it List<Fleet> or Fleet
 			 */
@@ -48,19 +46,44 @@ public class ViewEventController implements ViewEventHandler {
 		}
 		
 		if (evt.getTag() == ViewEvent.EventTag.DESELECT) {
-			selectedFleets.clear();
-			selectedColony = null;
+			resetVariables();
 		}
 		
+		/*
+		 * selects the fleet if the territory has one, otherwise the colony.
+		 * if it has neither nothing is selected.
+		 */
 		if(evt.getTag() == ViewEvent.EventTag.TERRITORY_SELECTED) {
+			resetVariables();
 			Territory selectedTerritory = (Territory) evt.getObjectValue();
-			if(selectedTerritory.hasColony()) {
+			if(selectedTerritory.hasFleet()) {
+				for(int i=0; i<selectedTerritory.getFleets().size(); i++)
+					selectedFleets.add(selectedTerritory.getFleets().get(i));
+			} else if(selectedTerritory.hasColony()) {
 				selectedColony = selectedTerritory.getColony();
-			} else {
-				// Can't be selected
 			}
 			
 			//TODO: Draw / mark the selected area.
 		}
+		
+		if(evt.getTag() == ViewEvent.EventTag.FLEET_MOVED) {
+			/*
+			 *  Move selectedFleets somehow....
+			 */
+		}
+		
+		if(evt.getTag() == ViewEvent.EventTag.AFTER_BATTLE) {
+			/*
+			 * Display battle results...
+			 */
+		}
+	}
+	
+	/*
+	 * Resets all the instance variables.
+	 */
+	private void resetVariables() {
+		selectedFleets.clear();
+		selectedColony = null;
 	}
 }
