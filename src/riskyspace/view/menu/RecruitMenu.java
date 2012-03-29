@@ -36,7 +36,6 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 	private Button buildDestroyerButton = null;
 	private Button buildColonizerButton = null;
 	
-	
 	/*
 	 * Images
 	 */
@@ -49,21 +48,22 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 		menuHeight = height;
 		menuWidth = width;
 		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground.png")
-				.getScaledInstance(menuWidth, menuHeight-40, Image.SCALE_DEFAULT);
+				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/city_blue.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
-		buildScoutButton = new Button(x + margin, menuHeight - (2*menuWidth - margin), 90, 90);
+		
+		buildScoutButton = new Button(x + margin, menuHeight - (2*menuWidth), 90, 90);
 		buildScoutButton.setImage("res/icons/ships/scoutbutton.png");
 		
-		buildHunterButton = new Button(x + width - (margin+90), menuHeight - (2*menuWidth - margin), 90, 90);
+		buildHunterButton = new Button(x + width - (margin+90), menuHeight - (2*menuWidth), 90, 90);
 		buildHunterButton.setImage("res/icons/ships/hunterButton.png");
 		
-		buildDestroyerButton = new Button(x + margin , menuHeight - (2*menuWidth - margin) + 3*margin, 90, 90);
+		buildDestroyerButton = new Button(x + margin , menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
 		buildDestroyerButton.setImage("res/icons/ships/destroyerButton.png");
 		
-		buildColonizerButton = new Button(x + width - (margin+90), menuHeight - (2*menuWidth - margin) + 3*margin, 90, 90);
+		buildColonizerButton = new Button(x + width - (margin+90), menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
 		buildColonizerButton.setImage("res/icons/ships/colonizerButton.png");
 		
 		EventBus.INSTANCE.addHandler(this);

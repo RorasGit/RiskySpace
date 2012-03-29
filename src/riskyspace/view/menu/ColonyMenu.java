@@ -52,7 +52,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 		menuHeight = height;
 		menuWidth = width;
 		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground.png")
-				.getScaledInstance(menuWidth, menuHeight-40, Image.SCALE_DEFAULT);
+				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/city_blue.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.png").
