@@ -167,12 +167,10 @@ public class ViewEventController implements EventHandler {
 				}
 			}
 		}
-<<<<<<< OURS
 
 		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables();
 		}
-=======
 		
 		if(evt.getTag() == Event.EventTag.BUILD_COLONIZER) {
 			Position buildPos = null;
@@ -194,8 +192,6 @@ public class ViewEventController implements EventHandler {
 				}
 			}
 		}
-		
->>>>>>> THEIRS
 	}
 	
 	

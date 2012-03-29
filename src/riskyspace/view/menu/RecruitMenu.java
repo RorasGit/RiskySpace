@@ -54,14 +54,13 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
-		buildScoutButton = new Button(x + margin, menuHeight - 2*menuWidth, (menuWidth/2)-2*margin, (menuWidth - 2*margin)/3);
+		buildScoutButton = new Button(x + margin, menuHeight - (2*menuWidth - margin), 80, 80);
+		buildScoutButton.setImage("res/icons/ships/scoutbutton.png");
+		//buildHunterButton = new Button(x + margin, menuHeight - 2*menuWidth, (menuWidth/2)-2*margin, (menuWidth - 2*margin)/3);
 		
-		buildHunterButton = new Button(x + margin, menuHeight - 2*menuWidth, (menuWidth/2)-2*margin, (menuWidth - 2*margin)/3);
+		//buildDestroyerButton = new Button(x + margin, menuHeight - 2*menuWidth, (menuWidth/2)-2*margin, (menuWidth - 2*margin)/3);
 		
-		buildDestroyerButton = new Button(x + margin, menuHeight - 2*menuWidth, (menuWidth/2)-2*margin, (menuWidth - 2*margin)/3);
-		
-		buildColonizerButton = new Button(x + margin, menuHeight - 2*menuWidth, (menuWidth/2)-2*margin, (menuWidth - 2*margin)/3);
-		
+		//buildColonizerButton = new Button(x + margin, menuHeight - 2*menuWidth, (menuWidth/2)-2*margin, (menuWidth - 2*margin)/3);
 		
 		
 		EventBus.INSTANCE.addHandler(this);
@@ -111,18 +110,18 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 				Event evt = new Event(Event.EventTag.BUILD_SCOUT, null);
 				EventBus.INSTANCE.publish(evt);
 				return true;
-			} else if (buildHunterButton.mousePressed(p)) {
-				Event evt = new Event(Event.EventTag.BUILD_HUNTER, null);
-				EventBus.INSTANCE.publish(evt);
-				return true;
-			} else if (buildDestroyerButton.mousePressed(p)) {
-				Event evt = new Event(Event.EventTag.BUILD_DESTROYER, null);
-				EventBus.INSTANCE.publish(evt);
-				return true;
-			} else if (buildColonizerButton.mousePressed(p)) {
-				Event evt = new Event(Event.EventTag.BUILD_COLONIZER, null);
-				EventBus.INSTANCE.publish(evt);
-				return true;
+//			} else if (buildHunterButton.mousePressed(p)) {
+//				Event evt = new Event(Event.EventTag.BUILD_HUNTER, null);
+//				EventBus.INSTANCE.publish(evt);
+//				return true;
+//			} else if (buildDestroyerButton.mousePressed(p)) {
+//				Event evt = new Event(Event.EventTag.BUILD_DESTROYER, null);
+//				EventBus.INSTANCE.publish(evt);
+//				return true;
+//			} else if (buildColonizerButton.mousePressed(p)) {
+//				Event evt = new Event(Event.EventTag.BUILD_COLONIZER, null);
+//				EventBus.INSTANCE.publish(evt);
+//				return true;
 			}
 			if (this.contains(p)) {return true;}
 			else {
@@ -156,9 +155,9 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 			g.drawImage(colonyPicture, x + margin, y + margin ,null);
 			drawColonyName(g);
 			buildScoutButton.draw(g);
-			buildHunterButton.draw(g);
-			buildDestroyerButton.draw(g);
-			buildColonizerButton.draw(g);
+			//buildHunterButton.draw(g);
+			//buildDestroyerButton.draw(g);
+			//buildColonizerButton.draw(g);
 		}
 	}
 	
