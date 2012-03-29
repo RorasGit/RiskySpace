@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Fleet implements MoveAble {
 	
-	private boolean hasColonizer = false;
 	private ShipType flagship = null;
 	private Player owner = null;
 	private List<Ship> ships = new ArrayList<Ship>();

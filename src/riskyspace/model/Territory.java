@@ -99,6 +99,14 @@ public class Territory {
 		return flagship;
 	}
 	
+	public boolean containsColonizer() {
+		for (int i = 0; i < fleets.size(); i++) {
+			if (fleets.get(i).hasColonizer()) {
+				return true;
+			}
+		} return false;
+	}
+	
 	public Player controlledBy() {
 		if (!hasFleet() && (!hasPlanet() || !getPlanet().hasColony())) {
 			return Player.WORLD;

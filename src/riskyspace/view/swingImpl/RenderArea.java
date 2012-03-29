@@ -137,16 +137,18 @@ public class RenderArea extends JPanel implements EventHandler {
 		/*
 		 * Ships Blue Player
 		 */
-		shipTextures.put("SCOUT_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png").getScaledInstance(squareSize/3, squareSize/3, Image.SCALE_DEFAULT));
-		shipTextures.put("HUNTER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png").getScaledInstance(squareSize/3, squareSize/3, Image.SCALE_DEFAULT));
-		shipTextures.put("DESTROYER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
+		shipTextures.put("SCOUT_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png"));
+		shipTextures.put("HUNTER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png"));
+		shipTextures.put("DESTROYER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png"));
+		shipTextures.put("COLONIZER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/colonizer.png"));
 		
 		/*
 		 * Ships Red Player
 		 */
-		shipTextures.put("SCOUT_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png").getScaledInstance(squareSize/3, squareSize/3, Image.SCALE_DEFAULT));
-		shipTextures.put("HUNTER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png").getScaledInstance(squareSize/3, squareSize/3, Image.SCALE_DEFAULT));
-		shipTextures.put("DESTROYER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
+		shipTextures.put("SCOUT_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png"));
+		shipTextures.put("HUNTER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png"));
+		shipTextures.put("DESTROYER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png"));
+		shipTextures.put("COLONIZER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/colonizer.png"));
 	}
 	
 	private void createBackground() {
@@ -263,6 +265,11 @@ public class RenderArea extends JPanel implements EventHandler {
 				image = controller == Player.BLUE ? shipTextures.get(flagship + "_BLUE") : shipTextures.get(flagship + "_RED");
 				g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.75) * squareSize) - image.getWidth(null)/2,
 						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
+				if (world.getTerritory(pos).containsColonizer()) {
+					image = controller == Player.BLUE ? shipTextures.get("COLONIZER_BLUE") : shipTextures.get("COLONIZER_RED");
+					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() + 0.75) * squareSize) - image.getWidth(null)/2,
+							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
+				}
 			}
 		}
 		
