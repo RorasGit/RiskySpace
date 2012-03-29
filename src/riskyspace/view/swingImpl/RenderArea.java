@@ -267,7 +267,7 @@ public class RenderArea extends JPanel implements EventHandler {
 						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
 				if (world.getTerritory(pos).containsColonizer()) {
 					image = controller == Player.BLUE ? shipTextures.get("COLONIZER_BLUE") : shipTextures.get("COLONIZER_RED");
-					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() + 0.75) * squareSize) - image.getWidth(null)/2,
+					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.25) * squareSize) - image.getWidth(null)/2,
 							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
 				}
 			}
@@ -323,7 +323,7 @@ public class RenderArea extends JPanel implements EventHandler {
 			int dX = (point.x + translateRealX()) % squareSize;
 			int dY = (point.y + translateRealY()) % squareSize;
 			if (world.getTerritory(pos).hasFleet()) {
-				if (dX <= squareSize/2 && dY >= squareSize/2) {
+				if (dX <= squareSize/2 || dY >= squareSize/2) {
 					if (me.isShiftDown()) {
 						Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
 						EventBus.INSTANCE.publish(evt);
