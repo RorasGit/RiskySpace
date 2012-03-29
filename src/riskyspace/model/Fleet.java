@@ -189,4 +189,9 @@ public class Fleet {
 	public int hashCode() {
 		return 7*id;
 	}
+	
+	@Override
+	public String toString() {
+		return "Fleet [size=" + fleetSize() +", flagship=" + flagship + "]";
+	}
 }
