@@ -99,8 +99,55 @@ public class ViewEventController implements EventHandler {
 			}
 		}
 
-
-		if(evt.getTag() == Event.EventTag.BUILD_SHIP) {
+		if(evt.getTag() == Event.EventTag.SHIP_MENU) {
+			Event mEvent = new Event(Event.EventTag.SHOW_RECRUITMENU, selectedColony);
+			EventBus.INSTANCE.publish(mEvent);
+		}
+		
+		
+		if(evt.getTag() == Event.EventTag.BUILD_SCOUT) {
+			Position buildPos = null;
+			for (Position pos : world.getContentPositions()) {
+				if (world.getTerritory(pos).hasColony()) {
+					if (world.getTerritory(pos).getColony().equals(selectedColony)) {
+						/* TODO:
+						 * Check that this position is already not queued
+						 * Use resources if possible, else break?
+						 * TEST:
+						 * Builds a new Destroyer to change the picture!
+						 * --Should be sent as event somehow something and then
+						 * --queued and build when called from new turn thingy!
+						 */
+						System.out.println("Built at: " + pos);
+						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.SCOUT), world.getTerritory(pos).getColony().getOwner()));
+						buildPos = pos;
+					}
+				}
+			}
+		}
+		
+		if(evt.getTag() == Event.EventTag.BUILD_HUNTER) {
+			Position buildPos = null;
+			for (Position pos : world.getContentPositions()) {
+				if (world.getTerritory(pos).hasColony()) {
+					if (world.getTerritory(pos).getColony().equals(selectedColony)) {
+						/* TODO:
+						 * Check that this position is already not queued
+						 * Use resources if possible, else break?
+						 * TEST:
+						 * Builds a new Destroyer to change the picture!
+						 * --Should be sent as event somehow something and then
+						 * --queued and build when called from new turn thingy!
+						 */
+						System.out.println("Built at: " + pos);
+						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.HUNTER), world.getTerritory(pos).getColony().getOwner()));
+						buildPos = pos;
+					}
+				}
+			}
+		}
+		
+		if(evt.getTag() == Event.EventTag.BUILD_DESTROYER) {
 			Position buildPos = null;
 			for (Position pos : world.getContentPositions()) {
 				if (world.getTerritory(pos).hasColony()) {
@@ -120,11 +167,38 @@ public class ViewEventController implements EventHandler {
 				}
 			}
 		}
+<<<<<<< OURS
 
 		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables();
 		}
+=======
+		
+		if(evt.getTag() == Event.EventTag.BUILD_COLONIZER) {
+			Position buildPos = null;
+			for (Position pos : world.getContentPositions()) {
+				if (world.getTerritory(pos).hasColony()) {
+					if (world.getTerritory(pos).getColony().equals(selectedColony)) {
+						/* TODO:
+						 * Check that this position is already not queued
+						 * Use resources if possible, else break?
+						 * TEST:
+						 * Builds a new Destroyer to change the picture!
+						 * --Should be sent as event somehow something and then
+						 * --queued and build when called from new turn thingy!
+						 */
+						System.out.println("Built at: " + pos);
+						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.COLONIZER), world.getTerritory(pos).getColony().getOwner()));
+						buildPos = pos;
+					}
+				}
+			}
+		}
+		
+>>>>>>> THEIRS
 	}
+	
+	
 	
 	/*
 	 * Resets all the instance variables.

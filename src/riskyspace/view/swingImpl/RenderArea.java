@@ -30,6 +30,7 @@ import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.menu.ColonyMenu;
 import riskyspace.view.menu.IMenu;
+import riskyspace.view.menu.RecruitMenu;
 
 public class RenderArea extends JPanel implements EventHandler {
 
@@ -59,7 +60,8 @@ public class RenderArea extends JPanel implements EventHandler {
 	/*
 	 * Side menu settings
 	 */
-	private IMenu sideMenu = null;
+	private IMenu colonyMenu = null;
+	private IMenu recruitMenu = null;
 	
 	/*
 	 * Screen measures
@@ -96,7 +98,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		createBackground();
 		savePlanets();
 		initCameras();
-		createMenu();
+		createMenus();
 		EventBus.INSTANCE.addHandler(this);
 		addMouseListener(new ClickHandler());
 	}
@@ -114,9 +116,10 @@ public class RenderArea extends JPanel implements EventHandler {
 		}
 	}
 
-	private void createMenu() {
+	private void createMenus() {
 		int menuWidth = height / 3;
-		sideMenu = new ColonyMenu(width - menuWidth, 0, menuWidth, height);
+		colonyMenu = new ColonyMenu(width - menuWidth, 40, menuWidth, height);
+		recruitMenu = new RecruitMenu(width - menuWidth, 40, menuWidth, height);
 	}
 
 	private void setTextures() {
@@ -264,8 +267,11 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 		// Draw menu
 		g.translate(-xTrans, -yTrans);
-		if (sideMenu.isVisible()) {
-			sideMenu.draw(g);
+		if (colonyMenu.isVisible()) {
+			colonyMenu.draw(g);
+		}
+		if (recruitMenu.isVisible()) {
+			recruitMenu.draw(g);
 		}
 		// draw next btn
 //		next.draw(g);
@@ -287,11 +293,18 @@ public class RenderArea extends JPanel implements EventHandler {
 	 * Click handling for different parts
 	 */
 	public boolean menuClick(Point point) {
-		if (sideMenu.isVisible()) {
-			if (sideMenu instanceof Clickable) {
-				return ((Clickable) sideMenu).mousePressed(point);
+		if (colonyMenu.isVisible()) {
+			if (colonyMenu instanceof Clickable) {
+				return ((Clickable) colonyMenu).mousePressed(point);
 			}
 		}
+		
+		if (recruitMenu.isVisible()) {
+			if (recruitMenu instanceof Clickable) {
+				return ((Clickable) recruitMenu).mousePressed(point);
+			}
+		}
+		
 		return false;
 	}
 	

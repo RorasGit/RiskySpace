@@ -34,7 +34,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 	private int x, y;
 	private int menuHeight = 0;
 	private int menuWidth = 0;
-	private int margin = 8;
+	private int margin = 30;
 	
 	private Image background = null;
 	private Image colonyPicture = null;
@@ -51,13 +51,13 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 		this.y = y;
 		menuHeight = height;
 		menuWidth = width;
-		background = Toolkit.getDefaultToolkit().getImage("res/menu/background.png")
-				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
+		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground.png")
+				.getScaledInstance(menuWidth, menuHeight-40, Image.SCALE_DEFAULT);
 		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/city_blue.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
-		buildShipButton = new Button(x + margin, menuHeight - 2*menuWidth, menuWidth-2*margin, (menuWidth - 2*margin)/2);
+		buildShipButton = new Button(x + margin, menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		buildShipButton.setImage("res/menu/btn.jpg");
 		buildShipButton.setText("Build Ship");
 		EventBus.INSTANCE.addHandler(this);
@@ -89,7 +89,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 		 */
 		if (enabled) {
 			if (buildShipButton.mousePressed(p)) {
-				Event evt = new Event(Event.EventTag.BUILD_SHIP, null);
+				Event evt = new Event(Event.EventTag.SHIP_MENU, null);
 				EventBus.INSTANCE.publish(evt);
 				return true;
 			}
@@ -123,7 +123,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 		 */
 		if (enabled) {
 			g.drawImage(background, x, y, null);
-			g.drawImage(colonyPicture, x + margin, y + margin ,null);
+			g.drawImage(colonyPicture, x + margin, y + margin,null);
 			drawColonyName(g);
 			buildShipButton.draw(g);
 		}
@@ -134,7 +134,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 		Font saveFont = g.getFont();
 		g.setFont(new Font("Monotype", Font.BOLD, 38));
 		int textX = x - (g.getFontMetrics().stringWidth(colonyName) / 2) + (menuWidth / 2);
-		int textY = y + (g.getFontMetrics().getHeight() / 2) + (5*margin + colonyPicture.getHeight(null));
+		int textY = y + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
 		g.drawString(colonyName, textX, textY);
 		g.setFont(saveFont);
 	}
@@ -157,7 +157,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 				setColony((Colony) evt.getObjectValue());
 				setVisible(true);
 			}
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
+		} else if (evt.getTag() == Event.EventTag.HIDE_MENU || evt.getTag() == Event.EventTag.SHOW_RECRUITMENU) {
 			setVisible(false);
 		}
 	}

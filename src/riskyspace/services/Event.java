@@ -21,12 +21,17 @@ public class Event {
 		PERFORM_MOVES, 
 		COLONY_SELECTED,
 		DESELECT,
-		BUILD_SHIP,
+		SHIP_MENU,
+		BUILD_SCOUT,
+		BUILD_HUNTER,
+		BUILD_DESTROYER,
+		BUILD_COLONIZER,
 		NEXT_TURN,
 		/*
 		 * Controller triggered events
 		 */		
 		SHOW_MENU,
+		SHOW_RECRUITMENU,
 		HIDE_MENU,
 		NEW_TURN;
 		
