@@ -12,8 +12,8 @@ Refactor:
 Create
 -Next player button, sync event
 -Move(Fleet f, Path p) 		//Roras
--Path class			//Roras
---Calc path			//Roras
+-Path class			//Roras!
+--Calc path			//Roras!
 --step()			//Roras!
 -Camera constr (x, y)		//Flygarn!
 -build queue system		//Rapp
