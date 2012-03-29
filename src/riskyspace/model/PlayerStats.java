@@ -100,6 +100,10 @@ public class PlayerStats {
 		resources.put(GAS, resources.get(GAS) + income.get(GAS));
 	}
 	
+	public int getResource(Resource resource) {
+		return resources.get(resource);
+	}
+	
 	public int getNumberOfColonies() {
 		return numberOfColonies;
 	}

@@ -60,6 +60,10 @@ public class World {
 		return cols;
 	}
 	
+	public int getResources(Player player, Resource resource) {
+		return playerstats.get(player).getResource(resource);
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
