@@ -12,7 +12,7 @@ public class Path {
 		path = new LinkedList<Position>();
 		calcPath(start, target);
 	}
-	private void calcPath(Position start, Position target) throws IllegalArgumentException{
+	private void calcPath(Position start, Position target) {
 		int rows = Math.abs(start.getRow() - target.getRow());
 		int cols = Math.abs(start.getCol() - target.getCol());
 		this.length = cols + rows;
@@ -70,6 +70,7 @@ public class Path {
 			direction = (direction + 1) % 2;
 		}
 	}
+	
 	public Position step(){
 		if(length > 1){
 			this.path.removeFirst();
@@ -77,11 +78,12 @@ public class Path {
 		}
 		return path.getFirst();
 	}
+	
 	public Position getCurrentPos(){
 		return path.getFirst();
 	}
+	
 	public int getLength(){
 		return length;
 	}
-	
 }
