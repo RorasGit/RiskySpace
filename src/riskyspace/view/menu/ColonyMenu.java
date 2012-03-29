@@ -25,7 +25,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 	/*
 	 * Strings to be printed on the menu
 	 */
-	private String colonyName = "Atlantis";
+	private String colonyName = null;
 	
 	private Color ownerColor = null;
 	
@@ -151,7 +151,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 
 	@Override
 	public void performEvent(Event evt) {
-		// TEST EVENT (if object sent is colony or smth)
+		// TEST EVENT (if object sent is colony)
 		if (evt.getTag() == Event.EventTag.SHOW_MENU) {
 			if (evt.getObjectValue() instanceof Colony) {
 				setColony((Colony) evt.getObjectValue());
