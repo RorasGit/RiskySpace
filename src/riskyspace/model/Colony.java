@@ -82,7 +82,7 @@ public class Colony implements BattleAble {
 	
 	@Override
 	public String toString() {
-		return "[" + owner + ", " + income + "]";
+		return "Colony [" + owner + ", " + income + "]";
 	}
 	
 	@Override

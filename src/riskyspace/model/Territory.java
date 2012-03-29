@@ -133,7 +133,7 @@ public class Territory {
 	
 	@Override
 	public String toString() {
-		return "[" + (hasPlanet()? planet.toString() : "No Planet present in this zone") 
+		return "Territory [" + (hasPlanet()? planet.toString() : "No Planet present in this zone") 
 				+ ", " + (hasFleet()? "Fleets present: " + fleets.size() : "No fleets present in this zone") + "]";
 	}
 	

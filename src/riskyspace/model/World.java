@@ -33,28 +33,6 @@ public class World {
 		playerstats.put(Player.RED, new PlayerStats());
 	}
 
-	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		} else if (other == null || this.getClass() != other.getClass()) {
-			return false;
-		} else {
-			World otherWorld = (World) other;
-			return (rows == otherWorld.rows && cols == otherWorld.cols);
-		}
-	}
-
-	@Override
-	public String toString() {
-		return "[" + "Rows: " + rows + ", " + "Columns: " + cols + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		return rows * 17 + cols * 23;
-	}
-
 	public Territory getTerritory(Position p) {
 		return territories.get(p);
 	}
@@ -81,4 +59,27 @@ public class World {
 	public int getCols() {
 		return cols;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		} else if (other == null || this.getClass() != other.getClass()) {
+			return false;
+		} else {
+			World otherWorld = (World) other;
+			return (rows == otherWorld.rows && cols == otherWorld.cols);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "World [" + "Rows: " + rows + ", " + "Columns: " + cols + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return rows * 17 + cols * 23;
+	}
+
 }

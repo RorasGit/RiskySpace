@@ -94,7 +94,7 @@ public class Planet {
 	
 	@Override
 	public String toString() {
-		return "[" + type + ", " + (this.hasColony()? colony.getOwner() : "Uninhabited") + "]";
+		return "Planet [" + type + ", " + (this.hasColony()? colony.getOwner() : "Uninhabited") + "]";
 	}
 	
 	@Override

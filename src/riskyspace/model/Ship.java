@@ -69,7 +69,7 @@ public class Ship implements BattleAble {
 	
 	@Override
 	public String toString() {
-		return "[" + type + ", " + type.getBaseDamage() + "-" + type.getBaseDamage()+type.getVariation()
+		return "Ship [" + type + ", " + type.getBaseDamage() + "-" + type.getBaseDamage()+type.getVariation()
 				+ ", " + shield + ", " + energy + "]";
 	}
 	

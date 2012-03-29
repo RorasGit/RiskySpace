@@ -133,7 +133,7 @@ public class PlayerStats {
 	
 	@Override
 	public String toString() {
-		return "[" + "Metal: " + resources.get(METAL) + "  Income: " + income.get(METAL) + ", " + 
+		return "PlayerStats [" + "Metal: " + resources.get(METAL) + "  Income: " + income.get(METAL) + ", " + 
 				"Gas: " + resources.get(GAS) + "  Income: " + income.get(GAS) + 
 				", " +  "Number of colonies: " + numberOfColonies + ", " + "Supply: " + usedSupply + "/" +
 				getMaxSupply() + " ]";
