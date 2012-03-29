@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -294,7 +295,25 @@ public class RenderArea extends JPanel implements EventHandler {
 		return false;
 	}
 	
-	public boolean shipClick(Point point) {
+	public boolean shipClick(MouseEvent me) {
+		Point point = me.getPoint();
+		Position pos = getPosition(point);
+		if (isLegalPos(pos)) {
+			int dX = (point.x + translateRealX()) % squareSize;
+			int dY = (point.y + translateRealY()) % squareSize;
+			if (world.getTerritory(pos).hasFleet()) {
+				if (dX <= squareSize/2 && dY >= squareSize/2) {
+					if (me.isShiftDown()) {
+						Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
+						EventBus.INSTANCE.publish(evt);
+					} else {
+						Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, pos);
+						EventBus.INSTANCE.publish(evt);
+					}
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -310,19 +329,39 @@ public class RenderArea extends JPanel implements EventHandler {
 		return false;
 	}
 	
+	public boolean pathClick(Point point) {
+		Position pos = getPosition(point);
+		if (isLegalPos(pos)) {
+			Event evt = new Event(Event.EventTag.SET_PATH, pos);
+			EventBus.INSTANCE.publish(evt);
+			return true;
+		}
+		return false;
+	}
+	
 	class ClickHandler implements MouseListener {
 		@Override public void mousePressed(MouseEvent me) {
-			/*
-			 * Check each level of interaction in order.
-			 */
-			if (menuClick(me.getPoint())) {return;}
-			if (shipClick(me.getPoint())) {return;}
-			if (colonyClick(me.getPoint())) {return;}
-			else {
+			if (me.getButton() == MouseEvent.BUTTON1) {
 				/*
-				 * Click was not in any trigger zone. Call deselect.
+				 * Check each level of interaction in order.
 				 */
-				EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
+				if (menuClick(me.getPoint())) {return;}
+				if (shipClick(me)) {return;}
+				if (colonyClick(me.getPoint())) {return;}
+				else {
+					/*
+					 * Click was not in any trigger zone. Call deselect.
+					 */
+					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
+				}
+			} else if (me.getButton() == MouseEvent.BUTTON3) {
+				if (pathClick(me.getPoint())) {return;}
+				else {
+					/*
+					 * Click was not in any trigger zone. Call deselect.
+					 */
+					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
+				}
 			}
 		}		
 		@Override public void mouseClicked(MouseEvent me) {}
