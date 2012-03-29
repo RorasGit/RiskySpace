@@ -1,0 +1,29 @@
+Skicka Events:
+-Klick på flotta		//Flygarn
+-Klick på planet		//Flygarn
+-Klick i meny			//Flygarn
+-After Battle			//Z3B0
+-
+
+Refactor:
+-Menyklass			//Flygarn
+-
+
+Create
+-Next player button, sync event
+-Move(Fleet f, Path p) 		//Roras
+-Path class			//Roras
+--Calc path			//Roras
+--step()			//Roras!
+-Camera constr (x, y)		//Flygarn!
+-build queue system		//Rapp
+
+Graphic
+-Mark selected fleet		
+-Draw paths			
+-Trasiga skepp grafik??		// senare
+-
+
+Small Fixes:
+-Camera starting pos		//Flygarn!
+-
