@@ -16,25 +16,21 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
-import riskyspace.model.Territory;
 import riskyspace.model.World;
-import riskyspace.services.ModelEvent;
-import riskyspace.services.ModelEventBus;
-import riskyspace.services.ModelEventHandler;
-import riskyspace.services.ViewEvent;
-import riskyspace.services.ViewEventBus;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
+import riskyspace.services.EventHandler;
 import riskyspace.view.Clickable;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.menu.ColonyMenu;
 import riskyspace.view.menu.IMenu;
 
-public class RenderArea extends JPanel implements ModelEventHandler {
+public class RenderArea extends JPanel implements EventHandler {
 
 	private static final long serialVersionUID = 8209691542499926289L;
 	
@@ -100,7 +96,7 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		savePlanets();
 		initCameras();
 		createMenu();
-		ModelEventBus.INSTANCE.addHandler(this);
+		EventBus.INSTANCE.addHandler(this);
 		addMouseListener(new ClickHandler());
 	}
 	
@@ -306,8 +302,8 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 		Position pos = getPosition(point);
 		if (isLegalPos(pos)) {
 			if (world.getTerritory(pos).hasColony()) {
-				ViewEvent evt = new ViewEvent(ViewEvent.EventTag.COLONY_SELECTED, pos, null);
-				ViewEventBus.INSTANCE.publish(evt);
+				Event evt = new Event(Event.EventTag.COLONY_SELECTED, pos);
+				EventBus.INSTANCE.publish(evt);
 				return true;
 			}
 		}
@@ -326,7 +322,7 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 				/*
 				 * Click was not in any trigger zone. Call deselect.
 				 */
-				ViewEventBus.INSTANCE.publish(new ViewEvent(ViewEvent.EventTag.DESELECT, null, null));
+				EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
 			}
 		}		
 		@Override public void mouseClicked(MouseEvent me) {}
@@ -336,7 +332,7 @@ public class RenderArea extends JPanel implements ModelEventHandler {
 	}
 
 	@Override
-	public void performEvent(ModelEvent evt) {
+	public void performEvent(Event evt) {
 		//TODO:
 	}
 }
