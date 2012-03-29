@@ -2,7 +2,9 @@ package riskyspace.services;
 
 import java.util.List;
 import java.util.ArrayList;
-
+/**
+ * @deprecated 
+ */
 public enum ViewEventBus {
 	INSTANCE;
 	

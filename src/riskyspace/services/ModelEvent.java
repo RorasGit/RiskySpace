@@ -1,7 +1,9 @@
 package riskyspace.services;
 
 import riskyspace.model.Player;
-
+/**
+ * @deprecated 
+ */
 public class ModelEvent {
 
 	/*

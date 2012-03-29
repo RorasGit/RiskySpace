@@ -1,5 +1,7 @@
 package riskyspace.services;
-
+/**
+ * @deprecated 
+ */
 public interface ViewEventHandler {
 
 	/*
