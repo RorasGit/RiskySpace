@@ -41,41 +41,37 @@ public class ViewEventController implements EventHandler {
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
-			if (!FleetMove.isMoving()) {
-				resetVariables(); // Reset all selections as we make a new selection
-				if(evt.getObjectValue() instanceof Position) {
-					Position pos = (Position) evt.getObjectValue();
-					if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
-						lastFleetSelectPos = pos;
-						fleetSelectionIndex = 0;
-					}
-					if (world.getTerritory(pos).hasFleet()) {
-						Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
-						selectedFleets.add(fleet);
-						fleetPaths.put(fleet, new Path(pos));
-						fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
-					}
+			resetVariables(); // Reset all selections as we make a new selection
+			if(evt.getObjectValue() instanceof Position) {
+				Position pos = (Position) evt.getObjectValue();
+				if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
+					lastFleetSelectPos = pos;
+					fleetSelectionIndex = 0;
+				}
+				if (world.getTerritory(pos).hasFleet()) {
+					Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
+					selectedFleets.add(fleet);
+					fleetPaths.put(fleet, new Path(pos));
+					fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
 				}
 			}
 		}
 		
 		if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
-			if (!FleetMove.isMoving()) {
-				selectedColony = null;
-				Event event = new Event(Event.EventTag.HIDE_MENU, null);
-				EventBus.INSTANCE.publish(event);
-				if(evt.getObjectValue() instanceof Position) {
-					Position pos = (Position) evt.getObjectValue();
-					if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
-						lastFleetSelectPos = pos;
-						fleetSelectionIndex = 0;
-					}
-					if (world.getTerritory(pos).hasFleet()) {
-						Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
-						selectedFleets.add(fleet);
-						fleetPaths.put(fleet, new Path(pos));
-						fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
-					}
+			selectedColony = null;
+			Event event = new Event(Event.EventTag.HIDE_MENU, null);
+			EventBus.INSTANCE.publish(event);
+			if(evt.getObjectValue() instanceof Position) {
+				Position pos = (Position) evt.getObjectValue();
+				if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
+					lastFleetSelectPos = pos;
+					fleetSelectionIndex = 0;
+				}
+				if (world.getTerritory(pos).hasFleet()) {
+					Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
+					selectedFleets.add(fleet);
+					fleetPaths.put(fleet, new Path(pos));
+					fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
 				}
 			}
 		}
@@ -166,7 +162,6 @@ public class ViewEventController implements EventHandler {
 			}
 		}
 		if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
-			fleetSelectionIndex = 0;
 			FleetMove.move(world, fleetPaths);
 		}
 		

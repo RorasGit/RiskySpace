@@ -33,6 +33,7 @@ public class Event {
 		 */		
 		SHOW_MENU,
 		SHOW_RECRUITMENU,
+		SHOW_FLEETMENU,
 		HIDE_MENU,
 		NEW_TURN;
 		
