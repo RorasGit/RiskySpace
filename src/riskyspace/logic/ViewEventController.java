@@ -65,9 +65,7 @@ public class ViewEventController implements ViewEventHandler {
 		}
 		
 		if(evt.getTag() == ViewEvent.EventTag.FLEET_MOVED) {
-			/*
-			 *  Move selectedFleets somehow....
-			 */
+			
 		}
 
 		if(evt.getTag() == ViewEvent.EventTag.BUILD_SHIP) {
