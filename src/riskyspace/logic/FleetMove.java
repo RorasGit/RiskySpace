@@ -46,6 +46,7 @@ public class FleetMove {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {}
 				}
+				System.out.println("RUN DONE");
 			}
 		};
 		mover = new Thread(runner);
@@ -66,7 +67,7 @@ public class FleetMove {
 		Set<Fleet> fleets = fleetPaths.keySet();
 		boolean done = true;
 		for (Fleet fleet : fleets) {
-			if (fleet.hasEnergy()) {
+			if (fleet.hasEnergy() && fleetPaths.get(fleet).getLength() > 0) {
 				done = false;
 			}
 		}
