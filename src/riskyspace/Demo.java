@@ -3,12 +3,12 @@ package riskyspace;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import riskyspace.logic.FleetMove;
 import riskyspace.logic.ViewEventController;
 import riskyspace.model.Player;
-import riskyspace.model.ShipType;
 import riskyspace.model.World;
-import riskyspace.services.ModelEvent;
-import riskyspace.services.ModelEventBus;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
 import riskyspace.view.View;
 import riskyspace.view.ViewFactory;
 
@@ -49,6 +49,9 @@ public class Demo {
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					System.exit(0);
+				} else if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
+					Event evt = new Event(FleetMove.isMoving() ? Event.EventTag.INTERRUPT_MOVES : Event.EventTag.PERFORM_MOVES, null);
+					EventBus.INSTANCE.publish(evt);
 				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 					currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
 					mainView.setViewer(currentPlayer);

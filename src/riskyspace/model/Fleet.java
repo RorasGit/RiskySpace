@@ -3,7 +3,7 @@ package riskyspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Fleet {
+public class Fleet implements MoveAble {
 	
 	private boolean hasColonizer = false;
 	private ShipType flagship = null;
@@ -193,5 +193,35 @@ public class Fleet {
 	@Override
 	public String toString() {
 		return "Fleet [size=" + fleetSize() +", flagship=" + flagship + "]";
+	}
+
+	@Override
+	public boolean hasEnergy() {
+		for (Ship ship : ships) {
+			if (!ship.hasEnergy()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public int getEnergy() {
+		int minEnergy = 4;
+		for (Ship ship : ships) {
+			minEnergy = Math.min(minEnergy, ship.getEnergy());
+		}
+		return minEnergy;
+	}
+
+	@Override
+	public boolean useEnergy() {
+		if (hasEnergy()) {
+			for (Ship ship : ships) {
+				ship.useEnergy();
+			}
+			return true;
+		}
+		return false;
 	}
 }

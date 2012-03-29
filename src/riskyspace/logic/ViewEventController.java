@@ -41,11 +41,7 @@ public class ViewEventController implements EventHandler {
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
-			/*
-			 * Only select one fleet
-			 */
-			resetVariables();
-			
+			resetVariables(); // Reset all selections as we make a new selection
 			if(evt.getObjectValue() instanceof Position) {
 				Position pos = (Position) evt.getObjectValue();
 				if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
@@ -59,7 +55,6 @@ public class ViewEventController implements EventHandler {
 					fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
 				}
 			}
-			//TODO: Send event Draw circle around the fleet that is selected.
 		}
 		
 		if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
@@ -85,7 +80,6 @@ public class ViewEventController implements EventHandler {
 			Position target = (Position) evt.getObjectValue();
 			for(Fleet fleet : selectedFleets) {
 				fleetPaths.get(fleet).setTarget(target);
-				System.out.println(fleetPaths.get(fleet));
 			}
 		}
 		
@@ -167,9 +161,12 @@ public class ViewEventController implements EventHandler {
 				}
 			}
 		}
-
-		if (evt.getTag() == Event.EventTag.DESELECT) {
-			resetVariables();
+		if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
+			FleetMove.move(world, fleetPaths);
+		}
+		
+		if (evt.getTag() == Event.EventTag.INTERRUPT_MOVES) {
+			FleetMove.interrupt();
 		}
 		
 		if(evt.getTag() == Event.EventTag.BUILD_COLONIZER) {
@@ -191,6 +188,10 @@ public class ViewEventController implements EventHandler {
 					}
 				}
 			}
+		}
+		
+		if (evt.getTag() == Event.EventTag.DESELECT) {
+			resetVariables();
 		}
 	}
 	

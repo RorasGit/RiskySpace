@@ -126,27 +126,27 @@ public class RenderArea extends JPanel implements EventHandler {
 		/*
 		 * Planets
 		 */
-		metalplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_0.png"));
-		metalplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_1.png"));
-		metalplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_2.png"));
-		metalplanets.put(3, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_3.png"));
-		gasplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_0.png"));
-		gasplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_1.png"));
-		gasplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_2.png"));
+		metalplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
+		metalplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
+		metalplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
+		metalplanets.put(3, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_3.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
+		gasplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
+		gasplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
+		gasplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
 		
 		/*
 		 * Ships Blue Player
 		 */
-		shipTextures.put("SCOUT_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png"));
-		shipTextures.put("HUNTER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png"));
-		shipTextures.put("DESTROYER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png"));
+		shipTextures.put("SCOUT_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png").getScaledInstance(squareSize/3, squareSize/3, Image.SCALE_DEFAULT));
+		shipTextures.put("HUNTER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png").getScaledInstance(squareSize/3, squareSize/3, Image.SCALE_DEFAULT));
+		shipTextures.put("DESTROYER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
 		
 		/*
 		 * Ships Red Player
 		 */
-		shipTextures.put("SCOUT_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png"));
-		shipTextures.put("HUNTER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png"));
-		shipTextures.put("DESTROYER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png"));
+		shipTextures.put("SCOUT_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png").getScaledInstance(squareSize/3, squareSize/3, Image.SCALE_DEFAULT));
+		shipTextures.put("HUNTER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png").getScaledInstance(squareSize/3, squareSize/3, Image.SCALE_DEFAULT));
+		shipTextures.put("DESTROYER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
 	}
 	
 	private void createBackground() {
@@ -254,6 +254,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 		// Draw Paths
 		
+		// Draw Fleets
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasFleet()) {
 				Player controller = world.getTerritory(pos).controlledBy();

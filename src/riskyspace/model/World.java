@@ -12,14 +12,12 @@ public class World {
 	private int cols = 0;
 	private Map<Position, Territory> territories = null;
 	private Map<Player, PlayerStats> playerstats = null;
-	private List<Position> hasContent = null;
 
 	public World(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
 		initPlayers();
 		territories = MapGenerator.generateMap(rows, cols);
-		hasContent = territoriesWithContent();
 	}
 
 	public World() {
@@ -40,6 +38,7 @@ public class World {
 	public int getRows() {
 		return rows;
 	}
+	
 	private List<Position> territoriesWithContent(){
 		List<Position> hasContent = new ArrayList<Position>();
 		for (int row = 1; row <= rows; row++) {
@@ -52,8 +51,9 @@ public class World {
 		}
 		return hasContent;
 	}
+	
 	public List<Position> getContentPositions(){
-		return hasContent;
+		return territoriesWithContent();
 	}
 	
 	public int getCols() {

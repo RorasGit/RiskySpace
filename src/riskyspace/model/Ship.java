@@ -2,7 +2,7 @@ package riskyspace.model;
 
 import java.util.List;
 
-public class Ship implements BattleAble {
+public class Ship implements BattleAble, MoveAble {
 	
 	private ShipType type = null;
 	private int shield = 0;
@@ -79,5 +79,24 @@ public class Ship implements BattleAble {
 		 * Fel impl?
 		 */
 		return type.getBaseDamage()*5;
+	}
+
+	@Override
+	public boolean hasEnergy() {
+		return energy > 0;
+	}
+
+	@Override
+	public int getEnergy() {
+		return 0;
+	}
+
+	@Override
+	public boolean useEnergy() {
+		if (hasEnergy()) {
+			energy--;
+			return true;
+		}
+		return false;
 	}
 }
