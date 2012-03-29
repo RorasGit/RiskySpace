@@ -77,5 +77,11 @@ public class Path {
 		}
 		return path.getFirst();
 	}
+	public Position getCurrentPos(){
+		return path.getFirst();
+	}
+	public int getLength(){
+		return length;
+	}
 	
 }
