@@ -15,7 +15,8 @@ public class Event {
 		/*
 		 * View triggered events
 		 */
-		FLEET_SELECTED,
+		NEW_FLEET_SELECTION,
+		ADD_FLEET_SELECTION,
 		SET_PATH,
 		PERFORM_MOVES, 
 		COLONY_SELECTED,
@@ -54,7 +55,7 @@ public class Event {
 	
 	@Override
     public String toString() {
-        return "ModelEvent [tag=" + tag + ", value=" + objectValue + "]";
+        return "Event [tag=" + tag + ", value=" + objectValue + "]";
     } 
     
 }
