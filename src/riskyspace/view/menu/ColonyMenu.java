@@ -41,7 +41,7 @@ public class ColonyMenu implements IMenu, Clickable, ModelEventHandler {
 	
 	private Image background = null;
 	private Image colonyPicture = null;
-	private Button buildShip = null;
+	private Button buildShipButton = null;
 	
 	/*
 	 * Images
@@ -60,9 +60,9 @@ public class ColonyMenu implements IMenu, Clickable, ModelEventHandler {
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
-		buildShip = new Button(x + margin, menuHeight - 2*menuWidth, menuWidth-2*margin, (menuWidth - 2*margin)/2);
-		buildShip.setImage("res/menu/btn.jpg");
-		buildShip.setText("Build Ship");
+		buildShipButton = new Button(x + margin, menuHeight - 2*menuWidth, menuWidth-2*margin, (menuWidth - 2*margin)/2);
+		buildShipButton.setImage("res/menu/btn.jpg");
+		buildShipButton.setText("Build Ship");
 		ModelEventBus.INSTANCE.addHandler(this);
 	}
 	
@@ -91,7 +91,7 @@ public class ColonyMenu implements IMenu, Clickable, ModelEventHandler {
 		 * Only handle mouse event if enabled
 		 */
 		if (enabled) {
-			if (buildShip.mousePressed(p)) {
+			if (buildShipButton.mousePressed(p)) {
 				ViewEvent evt = new ViewEvent(ViewEvent.EventTag.BUILD_SHIP, null, null);
 				ViewEventBus.INSTANCE.publish(evt);
 				return true;
@@ -111,7 +111,7 @@ public class ColonyMenu implements IMenu, Clickable, ModelEventHandler {
 		 * Only handle mouse event if enabled
 		 */
 		if (enabled) {
-			if (buildShip.mouseReleased(p)) {return true;}
+			if (buildShipButton.mouseReleased(p)) {return true;}
 			else {
 				return false;
 			}
@@ -128,7 +128,7 @@ public class ColonyMenu implements IMenu, Clickable, ModelEventHandler {
 			g.drawImage(background, x, y, null);
 			g.drawImage(colonyPicture, x + margin, y + margin ,null);
 			drawColonyName(g);
-			buildShip.draw(g);
+			buildShipButton.draw(g);
 		}
 	}
 	
