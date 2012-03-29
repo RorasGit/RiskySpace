@@ -10,13 +10,11 @@ import riskyspace.model.Ship;
 import riskyspace.model.ShipType;
 import riskyspace.model.Territory;
 import riskyspace.model.World;
-import riskyspace.services.ModelEvent;
-import riskyspace.services.ModelEventBus;
-import riskyspace.services.ViewEvent;
-import riskyspace.services.ViewEventBus;
-import riskyspace.services.ViewEventHandler;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
+import riskyspace.services.EventHandler;
 
-public class ViewEventController implements ViewEventHandler {
+public class ViewEventController implements EventHandler {
 	
 	private World world = null;
 	private List<Fleet> selectedFleets = new ArrayList<Fleet>();
@@ -24,12 +22,12 @@ public class ViewEventController implements ViewEventHandler {
 	
 	public ViewEventController(World world) {
 		this.world = world;
-		ViewEventBus.INSTANCE.addHandler(this);
+		EventBus.INSTANCE.addHandler(this);
 	}
 
 	@Override
-	public void performEvent(ViewEvent evt) {
-		if (evt.getTag() == ViewEvent.EventTag.FLEET_SELECTED) {
+	public void performEvent(Event evt) {
+		if (evt.getTag() == Event.EventTag.FLEET_SELECTED) {
 			resetVariables();
 			/*
 			 * Is it List<Fleet> or Fleet
@@ -46,7 +44,7 @@ public class ViewEventController implements ViewEventHandler {
 			
 		}
 		
-		if (evt.getTag() == ViewEvent.EventTag.DESELECT) {
+		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables();
 		}
 		
@@ -54,21 +52,18 @@ public class ViewEventController implements ViewEventHandler {
 		 * selects the fleet if the territory has one, otherwise the colony.
 		 * if it has neither nothing is selected.
 		 */
-		if(evt.getTag() == ViewEvent.EventTag.COLONY_SELECTED) {
+		if(evt.getTag() == Event.EventTag.COLONY_SELECTED) {
 			resetVariables();
 			Territory selectedTerritory = world.getTerritory((Position) evt.getObjectValue());
 			if(selectedTerritory.hasColony()) {
 				selectedColony = selectedTerritory.getColony();
-				ModelEvent mEvent = new ModelEvent(ModelEvent.EventTag.SHOW_MENU, selectedColony, null);
-				ModelEventBus.INSTANCE.publish(mEvent);
+				Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
+				EventBus.INSTANCE.publish(mEvent);
 			}
 		}
-		
-		if(evt.getTag() == ViewEvent.EventTag.FLEET_MOVED) {
-			
-		}
 
-		if(evt.getTag() == ViewEvent.EventTag.BUILD_SHIP) {
+
+		if(evt.getTag() == Event.EventTag.BUILD_SHIP) {
 			Position buildPos = null;
 			for (Position pos : world.getContentPositions()) {
 				if (world.getTerritory(pos).hasColony()) {
@@ -89,11 +84,6 @@ public class ViewEventController implements ViewEventHandler {
 			}
 		}
 		
-		if(evt.getTag() == ViewEvent.EventTag.AFTER_BATTLE) {
-			/*
-			 * Display battle results...
-			 */
-		}
 	}
 	
 	/*
@@ -102,7 +92,7 @@ public class ViewEventController implements ViewEventHandler {
 	private void resetVariables() {
 		selectedFleets.clear();
 		selectedColony = null;
-		ModelEvent mEvent = new ModelEvent(ModelEvent.EventTag.HIDE_MENU, null, null);
-		ModelEventBus.INSTANCE.publish(mEvent);
+		Event event = new Event(Event.EventTag.HIDE_MENU, null);
+		EventBus.INSTANCE.publish(event);
 	}
 }

@@ -7,15 +7,12 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
-import javax.tools.Tool;
 
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
-import riskyspace.services.ModelEvent;
-import riskyspace.services.ModelEventBus;
-import riskyspace.services.ModelEventHandler;
-import riskyspace.services.ViewEvent;
-import riskyspace.services.ViewEventBus;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
+import riskyspace.services.EventHandler;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 /**
@@ -23,7 +20,7 @@ import riskyspace.view.Clickable;
  * @author flygarn
  * Menu showing information and options for a Colony
  */
-public class ColonyMenu implements IMenu, Clickable, ModelEventHandler {
+public class ColonyMenu implements IMenu, Clickable, EventHandler {
 
 	/*
 	 * Strings to be printed on the menu
@@ -63,7 +60,7 @@ public class ColonyMenu implements IMenu, Clickable, ModelEventHandler {
 		buildShipButton = new Button(x + margin, menuHeight - 2*menuWidth, menuWidth-2*margin, (menuWidth - 2*margin)/2);
 		buildShipButton.setImage("res/menu/btn.jpg");
 		buildShipButton.setText("Build Ship");
-		ModelEventBus.INSTANCE.addHandler(this);
+		EventBus.INSTANCE.addHandler(this);
 	}
 	
 	public void setColony(Colony colony) {
@@ -92,8 +89,8 @@ public class ColonyMenu implements IMenu, Clickable, ModelEventHandler {
 		 */
 		if (enabled) {
 			if (buildShipButton.mousePressed(p)) {
-				ViewEvent evt = new ViewEvent(ViewEvent.EventTag.BUILD_SHIP, null, null);
-				ViewEventBus.INSTANCE.publish(evt);
+				Event evt = new Event(Event.EventTag.BUILD_SHIP, null);
+				EventBus.INSTANCE.publish(evt);
 				return true;
 			}
 			if (this.contains(p)) {return true;}
@@ -153,14 +150,14 @@ public class ColonyMenu implements IMenu, Clickable, ModelEventHandler {
 	}
 
 	@Override
-	public void performEvent(ModelEvent evt) {
+	public void performEvent(Event evt) {
 		// TEST EVENT (if object sent is colony or smth)
-		if (evt.getTag() == ModelEvent.EventTag.SHOW_MENU) {
+		if (evt.getTag() == Event.EventTag.SHOW_MENU) {
 			if (evt.getObjectValue() instanceof Colony) {
 				setColony((Colony) evt.getObjectValue());
 				setVisible(true);
 			}
-		} else if (evt.getTag() == ModelEvent.EventTag.HIDE_MENU) {
+		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
 			setVisible(false);
 		}
 	}
