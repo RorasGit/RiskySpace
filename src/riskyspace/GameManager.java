@@ -17,7 +17,7 @@ public class GameManager implements EventHandler {
 	
 	public GameManager(World world, int nbrOfPlayers) {
 		this.world = world;
-		currentPlayer = Player.BLUE;
+		changePlayer();
 		EventBus.INSTANCE.addHandler(this);
 	}
 
@@ -28,18 +28,22 @@ public class GameManager implements EventHandler {
 	public int getTurn() {
 		return turn;
 	}
+	
+	private void changePlayer() {
+		currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
+		Event event = new Event(Event.EventTag.ACTIVE_PLAYER_CHANGED, currentPlayer);
+		EventBus.INSTANCE.publish(event);
+	}
 
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.NEXT_TURN) {
-			currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
+			changePlayer();
 			world.giveIncome(currentPlayer);
 			if (currentPlayer == Player.BLUE) {
 				turn++;
 			}
 			world.resetShips();
-			Event event = new Event(Event.EventTag.ACTIVE_PLAYER_CHANGED, currentPlayer);
-			EventBus.INSTANCE.publish(event);
 		}
 	}
 }

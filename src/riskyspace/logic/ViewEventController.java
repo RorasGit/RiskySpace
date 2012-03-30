@@ -7,6 +7,7 @@ import java.util.Set;
 
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
+import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Ship;
 import riskyspace.model.ShipType;
@@ -25,6 +26,7 @@ public class ViewEventController implements EventHandler {
 	private int fleetSelectionIndex = 0;
 	private Position lastFleetSelectPos = null;
 	private Colony selectedColony = null;
+	private Player currentPlayer;
 	
 	private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
 	
@@ -42,6 +44,12 @@ public class ViewEventController implements EventHandler {
 
 	@Override
 	public void performEvent(Event evt) {
+		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
+			resetVariables();
+			lastFleetSelectPos = null;
+			fleetSelectionIndex = 0;
+			currentPlayer = (Player) evt.getObjectValue();
+		}
 		if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
 			if (!FleetMove.isMoving()) {
 				resetVariables(); // Reset all selections as we make a new selection
@@ -51,7 +59,7 @@ public class ViewEventController implements EventHandler {
 						lastFleetSelectPos = pos;
 						fleetSelectionIndex = 0;
 					}
-					if (world.getTerritory(pos).hasFleet()) {
+					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == currentPlayer)) {
 						Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
 						selectedFleets.add(fleet);
 						fleetPaths.put(fleet, new Path(pos));
@@ -72,7 +80,7 @@ public class ViewEventController implements EventHandler {
 						lastFleetSelectPos = pos;
 						fleetSelectionIndex = 0;
 					}
-					if (world.getTerritory(pos).hasFleet()) {
+					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == currentPlayer)) {
 						Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
 						selectedFleets.add(fleet);
 						fleetPaths.put(fleet, new Path(pos));
@@ -122,7 +130,9 @@ public class ViewEventController implements EventHandler {
 			if (!FleetMove.isMoving()) {
 				Position target = (Position) evt.getObjectValue();
 				for(Fleet fleet : selectedFleets) {
-					fleetPaths.get(fleet).setTarget(target);
+					if (currentPlayer == fleet.getOwner()) {
+						fleetPaths.get(fleet).setTarget(target);
+					}
 				}
 			}
 		}
@@ -132,8 +142,12 @@ public class ViewEventController implements EventHandler {
 			Territory selectedTerritory = world.getTerritory((Position) evt.getObjectValue());
 			if(selectedTerritory.hasColony()) {
 				selectedColony = selectedTerritory.getColony();
-				Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
-				EventBus.INSTANCE.publish(mEvent);
+				if (selectedColony.getOwner() == currentPlayer) {
+					Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
+					EventBus.INSTANCE.publish(mEvent);
+				} else {
+					selectedColony = null;
+				}
 			}
 		}
 
@@ -225,7 +239,7 @@ public class ViewEventController implements EventHandler {
 		
 		if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
 			fleetSelectionIndex = 0;
-			FleetMove.move(world, fleetPaths);
+			FleetMove.move(world, fleetPaths, currentPlayer);
 		}
 		
 		if (evt.getTag() == Event.EventTag.INTERRUPT_MOVES) {

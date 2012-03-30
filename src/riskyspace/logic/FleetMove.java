@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import riskyspace.model.Fleet;
+import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.World;
 import riskyspace.services.Event;
@@ -21,16 +22,16 @@ public class FleetMove {
 		}
 	}
 	
-	public static synchronized void move(final World world, final Map<Fleet, Path> fleetPaths) {
+	public static synchronized void move(final World world, final Map<Fleet, Path> fleetPaths, final Player player) {
 		interrupted = false;
 		final Set<Fleet> fleets = fleetPaths.keySet();
 		Runnable runner = new Runnable() {
 			@Override
 			public void run() {
-				while(!checkIfDone(fleetPaths) && !interrupted) {
+				while(!checkIfDone(fleetPaths, player) && !interrupted) {
 					synchronized(lock) {
 						for (Fleet fleet : fleets) {
-							if (fleetPaths.get(fleet).getLength() > 0 && fleet.useEnergy()) {
+							if (fleet.getOwner().equals(player) && fleetPaths.get(fleet).getLength() > 0 && fleet.useEnergy()) {
 								if (world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).getFleets().contains(fleet)) {
 									world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).getFleets().remove(fleet);
 									Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, world.getTerritory(fleetPaths.get(fleet).getCurrentPos()));
@@ -63,11 +64,11 @@ public class FleetMove {
 		return false;
 	}
 
-	private static boolean checkIfDone(Map<Fleet, Path> fleetPaths) {
+	private static boolean checkIfDone(Map<Fleet, Path> fleetPaths, Player player) {
 		Set<Fleet> fleets = fleetPaths.keySet();
 		boolean done = true;
 		for (Fleet fleet : fleets) {
-			if (fleet.hasEnergy() && fleetPaths.get(fleet).getLength() > 0) {
+			if (!fleet.getOwner().equals(player) || (fleet.hasEnergy() && fleetPaths.get(fleet).getLength() > 0)) {
 				done = false;
 			}
 		}
