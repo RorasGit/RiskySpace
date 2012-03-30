@@ -398,7 +398,10 @@ public class RenderArea extends JPanel implements EventHandler {
 
 	@Override
 	public void performEvent(Event evt) {
-		//TODO:
+		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
+			currentCamera = cameras.get((Player) evt.getObjectValue());
+			cc.setCamera(currentCamera);
+		}
 	}
 	
 	class ClickHandler implements MouseListener {
