@@ -8,6 +8,7 @@ import riskyspace.logic.ViewEventController;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
+import riskyspace.model.Resource;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
@@ -19,14 +20,13 @@ public class Demo {
 	/*
 	 * Players
 	 */
-	private Player[] players = {Player.BLUE, Player.RED};
-	private Player currentPlayer = null;
+	
 //	private Map<Player, PlayerInfo> = null;
 	
 	/*
 	 * Models
 	 */
-	private World world = null;
+	
 	
 	/*
 	 * Controllers
@@ -44,8 +44,9 @@ public class Demo {
 	}
 	
 	public Demo () {
-		world = new World();
+		final World world = new World();
 		new ViewEventController(world);
+		final GameManager gm  = new GameManager(world, 2);
 		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world, new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -54,22 +55,22 @@ public class Demo {
 				} else if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
 					Event evt = new Event(FleetMove.isMoving() ? Event.EventTag.INTERRUPT_MOVES : Event.EventTag.PERFORM_MOVES, null);
 					EventBus.INSTANCE.publish(evt);
-				} else if (arg0.getKeyCode() == KeyEvent.VK_R) {
+				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+					Event evt = new Event(Event.EventTag.NEXT_TURN, null);
+					EventBus.INSTANCE.publish(evt);
+					System.out.println(world.getResources(gm.getCurrentPlayer(), Resource.METAL));
+					mainView.setViewer(gm.getCurrentPlayer());
 					for (Position pos : world.getContentPositions()) {
 						for (Fleet fleet : world.getTerritory(pos).getFleets()) {
 							fleet.reset();
 						}
 					}
-				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-					currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
-					mainView.setViewer(currentPlayer);
 				}
 			}
 			@Override public void keyReleased(KeyEvent arg0) {}
 			@Override public void keyTyped(KeyEvent arg0) {}
 		});
-		currentPlayer = Player.BLUE;
-		mainView.setViewer(currentPlayer);
+		mainView.setViewer(gm.getCurrentPlayer());
 		while(true) {
 			mainView.draw();
 			try {

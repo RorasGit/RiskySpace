@@ -240,7 +240,7 @@ public class RenderArea extends JPanel implements EventHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			fps = "FPS: " + 2*times;
+			fps = "FPS: " + (2*times);
 			times = 0;
 		}
 		
@@ -320,7 +320,7 @@ public class RenderArea extends JPanel implements EventHandler {
 			}
 		}
 	}
-	
+	 
 	public Position getPosition(Point point) {
 		int row = ((point.y + translateRealY()) / squareSize) + 1 - EXTRA_SPACE_VERTICAL;
 		int col = ((point.x  + translateRealX()) / squareSize) + 1 - EXTRA_SPACE_HORIZONTAL;

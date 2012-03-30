@@ -30,7 +30,7 @@ public class FleetMove {
 				while(!checkIfDone(fleetPaths) && !interrupted) {
 					synchronized(lock) {
 						for (Fleet fleet : fleets) {
-							if (fleet.useEnergy()) {
+							if (fleetPaths.get(fleet).getLength() > 0 && fleet.useEnergy()) {
 								if (world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).getFleets().contains(fleet)) {
 									world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).getFleets().remove(fleet);
 									Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, world.getTerritory(fleetPaths.get(fleet).getCurrentPos()));

@@ -60,6 +60,10 @@ public class World {
 		return cols;
 	}
 	
+	public void giveIncome(Player player) {
+		playerstats.get(player).gainNewResources();
+	}
+	
 	public int getResources(Player player, Resource resource) {
 		return playerstats.get(player).getResource(resource);
 	}

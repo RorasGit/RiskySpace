@@ -36,8 +36,8 @@ public class Event {
 		SHOW_FLEETMENU,
 		MOVES_COMPLETE,
 		HIDE_MENU,
-		NEW_TURN,
-		EVENT_TEXT;
+		EVENT_TEXT,
+		ACTIVE_PLAYER_CHANGED;
 		
 		//TODO: add all events that can occur.
 	}

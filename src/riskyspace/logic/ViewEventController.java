@@ -29,7 +29,7 @@ public class ViewEventController implements EventHandler {
 	private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
 	
 	/*TODO 
-	 * sätt Path med bara "startnod" (Spara startnod serparat som currentPos?)
+	 * Set Path med bara "startnod" (Spara startnod serparat som currentPos?)
 	 * lägg till targets stegvis (om shift)
 	 * spara alla selectedships med en Path i Map (ger även önskad hashSet effekt)
 	 * lägg bara till targets om det finns energi
