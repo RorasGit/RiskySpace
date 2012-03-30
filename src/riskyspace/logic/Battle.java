@@ -5,10 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import demo.Colony;
-import demo.Fleet;
-import demo.Player;
-import demo.Territory;
+import riskyspace.model.Colony;
+import riskyspace.model.Fleet;
+import riskyspace.model.Player;
+import riskyspace.model.Territory;
+
 
 public class Battle {
 	
@@ -51,6 +52,7 @@ public class Battle {
 		/*
 		 * Battle loop until one or both fleets are defeated
 		 */
+		System.out.println("BATTLE AT " + territory);
 		while (!bg1.isDefeated() && !bg2.isDefeated()) {
 			List<Integer> planetAttacks1 = bg1.getPlanetAttacks();
 			List<Integer> planetAttacks2 = bg2.getPlanetAttacks();
@@ -111,6 +113,7 @@ public class Battle {
 				territory.getPlanet().destroyColony();
 			}
 		}
+		System.out.println("WINNER: " + territory.controlledBy());
 	}
 
 	private static class BattleGroup {

@@ -106,6 +106,26 @@ public class Territory {
 			}
 		} return false;
 	}
+
+	public boolean hasConflict() {
+		Player first = null;
+		if (hasColony()) {
+			first = getColony().getOwner();
+			for (Fleet fleet : getFleets()) {
+				if (!fleet.getOwner().equals(first)) {
+					return true;
+				}
+			}
+		} else if (hasFleet()) {
+			first = getFleet(0).getOwner();
+			for (int i = 1; i < getFleets().size(); i++) {
+				if (!getFleets().get(i).getOwner().equals(first)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	public Player controlledBy() {
 		if (!hasFleet() && (!hasPlanet() || !getPlanet().hasColony())) {

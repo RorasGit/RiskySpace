@@ -34,6 +34,7 @@ public class Event {
 		SHOW_MENU,
 		SHOW_RECRUITMENU,
 		SHOW_FLEETMENU,
+		MOVES_COMPLETE,
 		HIDE_MENU,
 		NEW_TURN;
 		

@@ -6,7 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.KeyAdapter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import riskyspace.model.Player;
 import riskyspace.model.Position;
@@ -224,8 +226,24 @@ public class RenderArea extends JPanel implements EventHandler {
 	public int translateRealY() {
 		return (int) (((world.getRows()+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
 	}
+	
+	private int times = 0;
+	Timer timer = new Timer(500, new ActionListener() {
 
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			fps = "FPS: " + 2*times;
+			times = 0;
+		}
+		
+	});
+	private String fps = "";
+	
 	public void paintComponent(Graphics g) {
+		if (!timer.isRunning()) {
+			timer.start();
+		}
+		times++;
 		/*
 		 * Translate with cameras
 		 */
@@ -236,42 +254,11 @@ public class RenderArea extends JPanel implements EventHandler {
 		// Draw background
 		g.drawImage(background, 0, 0, null);
 		
-		// Draw Colony Marker
-		for (Position pos : world.getContentPositions()) {
-			if (world.getTerritory(pos).hasColony()) {
-				g.setColor(world.getTerritory(pos).getColony().getOwner() == Player.BLUE ?
-						Color.BLUE : Color.RED);
-				g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
-						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 2),
-						squareSize/2 - 5, squareSize/2 - 5);
-			}
-			
-		}
+		drawPlanets(g);
 		
-		// Draw Planets
-		for (Position pos : planetPositions) {
-			g.drawImage(planetTextures.get(pos), (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 4),
-					(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize), null);
-		}
+		// drawPaths();
 		
-		// Draw Paths
-		
-		// Draw Fleets
-		for (Position pos : world.getContentPositions()) {
-			if (world.getTerritory(pos).hasFleet()) {
-				Player controller = world.getTerritory(pos).controlledBy();
-				Image image = null;
-				ShipType flagship = world.getTerritory(pos).getFleetsFlagships();
-				image = controller == Player.BLUE ? shipTextures.get(flagship + "_BLUE") : shipTextures.get(flagship + "_RED");
-				g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.75) * squareSize) - image.getWidth(null)/2,
-						(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
-				if (world.getTerritory(pos).containsColonizer()) {
-					image = controller == Player.BLUE ? shipTextures.get("COLONIZER_BLUE") : shipTextures.get("COLONIZER_RED");
-					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.25) * squareSize) - image.getWidth(null)/2,
-							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
-				}
-			}
-		}
+		drawFleets(g);
 		
 		// Draw menu
 		g.translate(-xTrans, -yTrans);
@@ -281,8 +268,45 @@ public class RenderArea extends JPanel implements EventHandler {
 		if (recruitMenu.isVisible()) {
 			recruitMenu.draw(g);
 		}
-		// draw next btn
-//		next.draw(g);
+		g.drawString(fps, 50, 50);
+	}
+	
+	public void drawPlanets(Graphics g) {
+		// Draw Colony Marker
+		for (Position pos : world.getContentPositions()) {
+			if (world.getTerritory(pos).hasColony()) {
+				g.setColor(world.getTerritory(pos).getColony().getOwner() == Player.BLUE ?
+					Color.BLUE : Color.RED);
+				g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
+					(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 2),
+					squareSize/2 - 5, squareSize/2 - 5);
+			}
+		}
+		// Draw Planets
+		for (Position pos : planetPositions) {
+			g.drawImage(planetTextures.get(pos), (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 4),
+					(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize), null);
+		}
+	}
+	
+	public void drawFleets(Graphics g) {
+		for (Position pos : world.getContentPositions()) {
+			if (world.getTerritory(pos).hasFleet()) {
+				Player controller = world.getTerritory(pos).controlledBy();
+				Image image = null;
+				ShipType flagship = world.getTerritory(pos).getFleetsFlagships();
+				if (!flagship.equals(ShipType.COLONIZER)) {
+					image = controller == Player.BLUE ? shipTextures.get(flagship + "_BLUE") : shipTextures.get(flagship + "_RED");
+					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.75) * squareSize) - image.getWidth(null)/2,
+							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
+				}
+				if (world.getTerritory(pos).containsColonizer()) {
+					image = controller == Player.BLUE ? shipTextures.get("COLONIZER_BLUE") : shipTextures.get("COLONIZER_RED");
+					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.25) * squareSize) - image.getWidth(null)/2,
+							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
+				}
+			}
+		}
 	}
 	
 	public Position getPosition(Point point) {

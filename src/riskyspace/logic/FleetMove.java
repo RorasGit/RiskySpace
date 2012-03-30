@@ -46,7 +46,7 @@ public class FleetMove {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {}
 				}
-				System.out.println("RUN DONE");
+				EventBus.INSTANCE.publish(new Event(Event.EventTag.MOVES_COMPLETE, null));
 			}
 		};
 		mover = new Thread(runner);

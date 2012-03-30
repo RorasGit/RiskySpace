@@ -5,7 +5,9 @@ import java.awt.event.KeyListener;
 
 import riskyspace.logic.FleetMove;
 import riskyspace.logic.ViewEventController;
+import riskyspace.model.Fleet;
 import riskyspace.model.Player;
+import riskyspace.model.Position;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
@@ -52,6 +54,12 @@ public class Demo {
 				} else if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
 					Event evt = new Event(FleetMove.isMoving() ? Event.EventTag.INTERRUPT_MOVES : Event.EventTag.PERFORM_MOVES, null);
 					EventBus.INSTANCE.publish(evt);
+				} else if (arg0.getKeyCode() == KeyEvent.VK_R) {
+					for (Position pos : world.getContentPositions()) {
+						for (Fleet fleet : world.getTerritory(pos).getFleets()) {
+							fleet.reset();
+						}
+					}
 				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 					currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
 					mainView.setViewer(currentPlayer);

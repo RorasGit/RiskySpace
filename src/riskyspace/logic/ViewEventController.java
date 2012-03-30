@@ -41,45 +41,51 @@ public class ViewEventController implements EventHandler {
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
-			resetVariables(); // Reset all selections as we make a new selection
-			if(evt.getObjectValue() instanceof Position) {
-				Position pos = (Position) evt.getObjectValue();
-				if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
-					lastFleetSelectPos = pos;
-					fleetSelectionIndex = 0;
-				}
-				if (world.getTerritory(pos).hasFleet()) {
-					Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
-					selectedFleets.add(fleet);
-					fleetPaths.put(fleet, new Path(pos));
-					fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+			if (!FleetMove.isMoving()) {
+				resetVariables(); // Reset all selections as we make a new selection
+				if(evt.getObjectValue() instanceof Position) {
+					Position pos = (Position) evt.getObjectValue();
+					if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
+						lastFleetSelectPos = pos;
+						fleetSelectionIndex = 0;
+					}
+					if (world.getTerritory(pos).hasFleet()) {
+						Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
+						selectedFleets.add(fleet);
+						fleetPaths.put(fleet, new Path(pos));
+						fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+					}
 				}
 			}
 		}
 		
 		if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
-			selectedColony = null;
-			Event event = new Event(Event.EventTag.HIDE_MENU, null);
-			EventBus.INSTANCE.publish(event);
-			if(evt.getObjectValue() instanceof Position) {
-				Position pos = (Position) evt.getObjectValue();
-				if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
-					lastFleetSelectPos = pos;
-					fleetSelectionIndex = 0;
-				}
-				if (world.getTerritory(pos).hasFleet()) {
-					Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
-					selectedFleets.add(fleet);
-					fleetPaths.put(fleet, new Path(pos));
-					fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+			if (!FleetMove.isMoving()) {
+				selectedColony = null;
+				Event event = new Event(Event.EventTag.HIDE_MENU, null);
+				EventBus.INSTANCE.publish(event);
+				if(evt.getObjectValue() instanceof Position) {
+					Position pos = (Position) evt.getObjectValue();
+					if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
+						lastFleetSelectPos = pos;
+						fleetSelectionIndex = 0;
+					}
+					if (world.getTerritory(pos).hasFleet()) {
+						Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
+						selectedFleets.add(fleet);
+						fleetPaths.put(fleet, new Path(pos));
+						fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+					}
 				}
 			}
 		}
 
 		if (evt.getTag() == Event.EventTag.SET_PATH) {
-			Position target = (Position) evt.getObjectValue();
-			for(Fleet fleet : selectedFleets) {
-				fleetPaths.get(fleet).setTarget(target);
+			if (!FleetMove.isMoving()) {
+				Position target = (Position) evt.getObjectValue();
+				for(Fleet fleet : selectedFleets) {
+					fleetPaths.get(fleet).setTarget(target);
+				}
 			}
 		}
 		
@@ -107,10 +113,6 @@ public class ViewEventController implements EventHandler {
 						/* TODO:
 						 * Check that this position is already not queued
 						 * Use resources if possible, else break?
-						 * TEST:
-						 * Builds a new Destroyer to change the picture!
-						 * --Should be sent as event somehow something and then
-						 * --queued and build when called from new turn thingy!
 						 */
 						System.out.println("Built at: " + pos);
 						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.SCOUT), world.getTerritory(pos).getColony().getOwner()));
@@ -128,10 +130,6 @@ public class ViewEventController implements EventHandler {
 						/* TODO:
 						 * Check that this position is already not queued
 						 * Use resources if possible, else break?
-						 * TEST:
-						 * Builds a new Destroyer to change the picture!
-						 * --Should be sent as event somehow something and then
-						 * --queued and build when called from new turn thingy!
 						 */
 						System.out.println("Built at: " + pos);
 						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.HUNTER), world.getTerritory(pos).getColony().getOwner()));
@@ -149,10 +147,6 @@ public class ViewEventController implements EventHandler {
 						/* TODO:
 						 * Check that this position is already not queued
 						 * Use resources if possible, else break?
-						 * TEST:
-						 * Builds a new Destroyer to change the picture!
-						 * --Should be sent as event somehow something and then
-						 * --queued and build when called from new turn thingy!
 						 */
 						System.out.println("Built at: " + pos);
 						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.DESTROYER), world.getTerritory(pos).getColony().getOwner()));
@@ -160,13 +154,6 @@ public class ViewEventController implements EventHandler {
 					}
 				}
 			}
-		}
-		if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
-			FleetMove.move(world, fleetPaths);
-		}
-		
-		if (evt.getTag() == Event.EventTag.INTERRUPT_MOVES) {
-			FleetMove.interrupt();
 		}
 		
 		if(evt.getTag() == Event.EventTag.BUILD_COLONIZER) {
@@ -177,10 +164,6 @@ public class ViewEventController implements EventHandler {
 						/* TODO:
 						 * Check that this position is already not queued
 						 * Use resources if possible, else break?
-						 * TEST:
-						 * Builds a new Destroyer to change the picture!
-						 * --Should be sent as event somehow something and then
-						 * --queued and build when called from new turn thingy!
 						 */
 						System.out.println("Built at: " + pos);
 						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.COLONIZER), world.getTerritory(pos).getColony().getOwner()));
@@ -190,12 +173,33 @@ public class ViewEventController implements EventHandler {
 			}
 		}
 		
+		if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {
+			for (Position pos : world.getContentPositions()) {
+				Territory terr = world.getTerritory(pos);
+				if (terr.hasConflict()) {
+					Battle.doBattle(terr);
+				}
+			}
+		}
+		
+		if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
+			fleetSelectionIndex = 0;
+			FleetMove.move(world, fleetPaths);
+		}
+		
+		if (evt.getTag() == Event.EventTag.INTERRUPT_MOVES) {
+			FleetMove.interrupt();
+		}
+		
 		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables();
 		}
 	}
 	
-	
+	private void queueFleet(ShipType shipType, Territory territory) {
+		int queueTime = 1;
+		//TODO:
+	}
 	
 	/*
 	 * Resets all the instance variables.
