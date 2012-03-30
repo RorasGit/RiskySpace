@@ -1,29 +1,29 @@
 Skicka Events:
--Klick på flotta		                    // Flygarn!
--Klick på planet		                    // Flygarn!
--Klick i meny			                      // Flygarn!
+-Klick på flotta                      // Flygarn!
+-Klick på planet                      // Flygarn!
+-Klick i meny                         // Flygarn!
 -
 
 Refactor:
--Menuclass			                         // Flygarn!
+-Menuclass                            // Flygarn!
 -Map Generator                        // Roras
 
 Create
 -Next player button, sync event
--Move(Fleet f, Path p) 		             // Roras!
--Path class			                        // Roras!
---Calc path			                        // Roras!
---step()			                           // Roras!
--Camera constr (x, y)		               // Flygarn!
+-Move(Fleet f, Path p)                // Roras!
+-Path class                           // Roras!
+--Calc path                           // Roras!
+--step()                              // Roras!
+-Camera constr (x, y)                 // Flygarn!
 -Sprites?                             // -----
 
 Graphic
--Mark selected fleet		                // Rapp
--Draw paths	                          // Flygarn
+-Mark selected fleet                  // Rapp
+-Draw paths                           // Flygarn
 -number of ships indicator            // Roras
 
 Small Fixes:
--Camera starting pos		                // Flygarn!     
+-Camera starting pos                  // Flygarn!     
 -Correct Player sel (planets/ships)   // Rapp
 -Back button buyships                 // Z3B0
 -Colonizer click                      // Flygarn
@@ -31,7 +31,7 @@ Small Fixes:
 
 Features
 -Colonize planets                     // Flygarn
--build queue system 	                 // Rapp
+-build queue system                   // Rapp
 -Control resources when buying ships  // Rapp
 -Control supply when buying ships     // Rapp
 -Ship Menu                            // Z3B0
