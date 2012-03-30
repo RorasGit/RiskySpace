@@ -1,14 +1,18 @@
-package demo;
+package riskyspace.logic;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.junit.Test;
 
-import riskyspace.logic.Battle;
+import riskyspace.model.Fleet;
+import riskyspace.model.Player;
+import riskyspace.model.Resource;
+import riskyspace.model.Ship;
+import riskyspace.model.ShipType;
+import riskyspace.model.Territory;
 
 public class BattleTest {
 
