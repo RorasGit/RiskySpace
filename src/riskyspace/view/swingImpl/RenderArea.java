@@ -342,7 +342,6 @@ public class RenderArea extends JPanel implements EventHandler {
 				return ((Clickable) colonyMenu).mousePressed(point);
 			}
 		}
-		
 		if (recruitMenu.isVisible()) {
 			if (recruitMenu instanceof Clickable) {
 				return ((Clickable) recruitMenu).mousePressed(point);
@@ -351,15 +350,31 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 		return false;
 	}
+
+	public boolean colonizerClick(Point point) {
+		Position pos = getPosition(point);
+		if (isLegalPos(pos)) {
+			int dX = (point.x + translateRealX()) % squareSize;
+			int dY = (point.y + translateRealY()) % squareSize;
+			if (world.getTerritory(pos).hasFleet()) {
+				if (dX > squareSize/2 && dY > squareSize/2) {
+					Event evt = new Event(Event.EventTag.COLONIZER_SELECTED, pos);
+					EventBus.INSTANCE.publish(evt);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
-	public boolean shipClick(MouseEvent me) {
+	public boolean fleetClick(MouseEvent me) {
 		Point point = me.getPoint();
 		Position pos = getPosition(point);
 		if (isLegalPos(pos)) {
 			int dX = (point.x + translateRealX()) % squareSize;
 			int dY = (point.y + translateRealY()) % squareSize;
 			if (world.getTerritory(pos).hasFleet()) {
-				if (dX <= squareSize/2 || dY >= squareSize/2) {
+				if (dX <= squareSize/2 && dY >= squareSize/2) {
 					if (me.isShiftDown()) {
 						Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
 						EventBus.INSTANCE.publish(evt);
@@ -411,7 +426,8 @@ public class RenderArea extends JPanel implements EventHandler {
 				 * Check each level of interaction in order.
 				 */
 				if (menuClick(me.getPoint())) {return;}
-				if (shipClick(me)) {return;}
+				if (fleetClick(me)) {return;}
+				if (colonizerClick(me.getPoint())) {return;}
 				if (colonyClick(me.getPoint())) {return;}
 				else {
 					/*
@@ -426,6 +442,11 @@ public class RenderArea extends JPanel implements EventHandler {
 					 * Click was not in any trigger zone. Call deselect.
 					 */
 					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
+				}
+			} /*PLACEHOLDER FOR COLONIZE TEST*/ else if (me.getButton() == MouseEvent.BUTTON2) {
+				Position pos = getPosition(me.getPoint());
+				if (isLegalPos(pos)) {
+					EventBus.INSTANCE.publish(new Event(Event.EventTag.COLONIZE_PLANET, pos));
 				}
 			}
 		}
@@ -452,7 +473,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		}
 		
 		public void drawEventText(Graphics g) {
-			g.setColor(Color.RED);
+			g.setColor(Color.GREEN);
 			g.setFont(new Font("Arial", Font.PLAIN, 12));
 			List<EventText> done = new ArrayList<EventText>();
 			for (EventText eventText : texts) {

@@ -21,6 +21,8 @@ public class Event {
 		PERFORM_MOVES, 
 		INTERRUPT_MOVES,
 		COLONY_SELECTED,
+		COLONIZER_SELECTED,
+		COLONIZE_PLANET,
 		DESELECT,
 		SHIP_MENU,
 		BUILD_SCOUT,
@@ -61,10 +63,8 @@ public class Event {
 		return objectValue;
 	}
 	
-	
 	@Override
     public String toString() {
         return "Event [tag=" + tag + ", value=" + objectValue + "]";
     } 
-    
 }
