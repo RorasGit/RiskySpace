@@ -1,8 +1,6 @@
 package riskyspace;
 
-import riskyspace.model.Fleet;
 import riskyspace.model.Player;
-import riskyspace.model.Position;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
@@ -10,6 +8,7 @@ import riskyspace.services.EventHandler;
 
 public class GameManager implements EventHandler {
 
+	// For future changePlayer() that isn't limited to/specified for Player.BLUE and Player.RED
 	private Player[] players = {Player.BLUE, Player.RED};
 	private Player currentPlayer = null;
 	
@@ -18,7 +17,7 @@ public class GameManager implements EventHandler {
 	
 	public GameManager(World world, int nbrOfPlayers) {
 		this.world = world;
-		changePlayer();
+		currentPlayer = Player.BLUE;
 		EventBus.INSTANCE.addHandler(this);
 	}
 
@@ -26,27 +25,21 @@ public class GameManager implements EventHandler {
 		return currentPlayer;
 	}
 	
-	private void changePlayer() {
-		currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
+	public int getTurn() {
+		return turn;
 	}
 
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.NEXT_TURN) {
-			changePlayer();
+			currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
 			world.giveIncome(currentPlayer);
 			if (currentPlayer == Player.BLUE) {
 				turn++;
 			}
-			for (Position pos : world.getContentPositions()) {
-				for (Fleet fleet : world.getTerritory(pos).getFleets()) {
-					fleet.reset();
-				}
-			}
+			world.resetShips();
 			Event event = new Event(Event.EventTag.ACTIVE_PLAYER_CHANGED, currentPlayer);
 			EventBus.INSTANCE.publish(event);
 		}
-		
 	}
-	
 }

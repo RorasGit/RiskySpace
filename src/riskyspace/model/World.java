@@ -46,10 +46,17 @@ public class World {
 				if(!territories.get(new Position(row, col)).isEmpty()){
 					hasContent.add(new Position(row, col));
 				}
-				
 			}
 		}
 		return hasContent;
+	}
+	
+	public void resetShips() {
+		for (Position pos : getContentPositions()) {
+			for (Fleet fleet : getTerritory(pos).getFleets()) {
+				fleet.reset();
+			}
+		}
 	}
 	
 	public List<Position> getContentPositions(){
