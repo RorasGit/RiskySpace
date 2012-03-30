@@ -9,6 +9,7 @@ import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Territory;
+import riskyspace.view.swingImpl.RenderArea;
 
 
 public class Battle {
@@ -17,7 +18,7 @@ public class Battle {
 	// should be possible to change (or change itself according to ships initiative in fleets)
 	private static final int MAX_INITIATIVE = 5;
 	
-	public static void doBattle(Territory territory) {
+	public static String doBattle(Territory territory) {
 		if (territory.getFleets().isEmpty()) {
 			throw new IllegalArgumentException("Battle can not occur in empty territories");
 		}
@@ -113,7 +114,10 @@ public class Battle {
 				territory.getPlanet().destroyColony();
 			}
 		}
-		System.out.println("WINNER: " + territory.controlledBy());
+		if (territory.controlledBy() == Player.WORLD) {
+			return "Both fleets were destroyed!";
+		}
+		return winner + " won the battle!";
 	}
 
 	private static class BattleGroup {

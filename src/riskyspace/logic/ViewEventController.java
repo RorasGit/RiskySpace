@@ -15,6 +15,8 @@ import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
+import riskyspace.services.EventText;
+import riskyspace.view.swingImpl.RenderArea;
 
 public class ViewEventController implements EventHandler {
 	
@@ -177,7 +179,10 @@ public class ViewEventController implements EventHandler {
 			for (Position pos : world.getContentPositions()) {
 				Territory terr = world.getTerritory(pos);
 				if (terr.hasConflict()) {
-					Battle.doBattle(terr);
+					String battleString = Battle.doBattle(terr);
+					EventText et = new EventText(battleString, pos);
+					Event event = new Event(Event.EventTag.EVENT_TEXT, et);
+					EventBus.INSTANCE.publish(event);
 				}
 			}
 		}

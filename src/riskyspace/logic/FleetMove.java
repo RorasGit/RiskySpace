@@ -43,7 +43,7 @@ public class FleetMove {
 						}
 					}
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {}
 				}
 				EventBus.INSTANCE.publish(new Event(Event.EventTag.MOVES_COMPLETE, null));

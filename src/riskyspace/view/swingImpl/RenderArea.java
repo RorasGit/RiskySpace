@@ -1,6 +1,7 @@
 package riskyspace.view.swingImpl;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -27,6 +28,7 @@ import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
+import riskyspace.services.EventText;
 import riskyspace.view.Clickable;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -93,6 +95,11 @@ public class RenderArea extends JPanel implements EventHandler {
 	 */
 	private Map<String, Image> shipTextures = new HashMap<String, Image>();
 	
+	/*
+	 * 
+	 */
+	private EventTextPrinter eventTextPrinter = null;
+	
 	public RenderArea(World world) {
 		this.world = world;
 		measureScreen();
@@ -101,6 +108,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		savePlanets();
 		initCameras();
 		createMenus();
+		eventTextPrinter = new EventTextPrinter();
 		EventBus.INSTANCE.addHandler(this);
 		addMouseListener(new ClickHandler());
 	}
@@ -260,6 +268,9 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 		drawFleets(g);
 		
+		// Draw texts
+		eventTextPrinter.drawEventText(g);
+		
 		// Draw menu
 		g.translate(-xTrans, -yTrans);
 		if (colonyMenu.isVisible()) {
@@ -268,6 +279,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		if (recruitMenu.isVisible()) {
 			recruitMenu.draw(g);
 		}
+		g.setColor(Color.GREEN);
 		g.drawString(fps, 50, 50);
 	}
 	
@@ -383,6 +395,11 @@ public class RenderArea extends JPanel implements EventHandler {
 		}
 		return false;
 	}
+
+	@Override
+	public void performEvent(Event evt) {
+		//TODO:
+	}
 	
 	class ClickHandler implements MouseListener {
 		@Override public void mousePressed(MouseEvent me) {
@@ -408,15 +425,44 @@ public class RenderArea extends JPanel implements EventHandler {
 					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
 				}
 			}
-		}		
+		}
 		@Override public void mouseClicked(MouseEvent me) {}
 		@Override public void mouseEntered(MouseEvent me) {}
 		@Override public void mouseExited(MouseEvent me) {}
 		@Override public void mouseReleased(MouseEvent me) {}
 	}
-
-	@Override
-	public void performEvent(Event evt) {
-		//TODO:
+	
+	public class EventTextPrinter implements EventHandler {
+		
+		final List<EventText> texts = new ArrayList<EventText>();
+		
+		public EventTextPrinter() {
+			EventBus.INSTANCE.addHandler(this);
+		}
+		
+		@Override
+		public void performEvent(Event evt) {
+			if (evt.getTag() == Event.EventTag.EVENT_TEXT) {
+				EventText et = (EventText) evt.getObjectValue();
+				texts.add(et);
+			}
+		}
+		
+		public void drawEventText(Graphics g) {
+			g.setColor(Color.RED);
+			g.setFont(new Font("Arial", Font.PLAIN, 12));
+			List<EventText> done = new ArrayList<EventText>();
+			for (EventText eventText : texts) {
+				Position pos = eventText.getPos();
+				int x = (int) ((pos.getCol()+EXTRA_SPACE_HORIZONTAL-0.5)*squareSize)-g.getFontMetrics().stringWidth(eventText.getText())/2;
+				int y = (int) ((pos.getRow()+EXTRA_SPACE_VERTICAL-0.5)*squareSize-eventText.getTimes()/12-g.getFontMetrics().getHeight()/2);
+				g.drawString(eventText.getText(), x, y);
+				eventText.incTimes();
+				if (eventText.getTimes() == 120) {
+					done.add(eventText);
+				}
+			}
+			texts.removeAll(done);
+		}
 	}
 }

@@ -30,13 +30,14 @@ public class Event {
 		NEXT_TURN,
 		/*
 		 * Controller triggered events
-		 */		
+		 */
 		SHOW_MENU,
 		SHOW_RECRUITMENU,
 		SHOW_FLEETMENU,
 		MOVES_COMPLETE,
 		HIDE_MENU,
-		NEW_TURN;
+		NEW_TURN,
+		EVENT_TEXT;
 		
 		//TODO: add all events that can occur.
 	}
