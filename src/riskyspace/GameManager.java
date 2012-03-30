@@ -11,15 +11,18 @@ public class GameManager implements EventHandler {
 
 	// For future changePlayer() that isn't limited to/specified for Player.BLUE and Player.RED
 	private Player[] players = {Player.BLUE, Player.RED};
+
 	private Player currentPlayer = null;
 	
 	private World world = null;
-	private int turn = 1;
+	private int turn;
 	
 	public GameManager(World world, int nbrOfPlayers) {
 		this.world = world;
-		changePlayer();
+		players = new Player[]{Player.BLUE, Player.RED};
+		currentPlayer = players[0];
 		EventBus.INSTANCE.addHandler(this);
+		turn = 1;
 	}
 
 	public Player getCurrentPlayer() {
