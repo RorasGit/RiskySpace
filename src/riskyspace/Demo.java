@@ -5,10 +5,6 @@ import java.awt.event.KeyListener;
 
 import riskyspace.logic.FleetMove;
 import riskyspace.logic.ViewEventController;
-import riskyspace.model.Fleet;
-import riskyspace.model.Player;
-import riskyspace.model.Position;
-import riskyspace.model.Resource;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
@@ -17,26 +13,6 @@ import riskyspace.view.ViewFactory;
 
 public class Demo {
 	
-	/*
-	 * Players
-	 */
-	
-//	private Map<Player, PlayerInfo> = null;
-	
-	/*
-	 * Models
-	 */
-	
-	
-	/*
-	 * Controllers
-	 */
-//	private GameThread gameThread = null;
-//	no threads and listeners instead somewhere?
-	
-	/*
-	 * Views
-	 */
 	private View mainView = null;
 	
 	public static void main(String[] args) {
@@ -44,6 +20,7 @@ public class Demo {
 	}
 	
 	public Demo () {
+		
 		final World world = new World();
 		new ViewEventController(world);
 		final GameManager gm  = new GameManager(world, 2);
@@ -58,13 +35,6 @@ public class Demo {
 				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 					Event evt = new Event(Event.EventTag.NEXT_TURN, null);
 					EventBus.INSTANCE.publish(evt);
-					System.out.println(world.getResources(gm.getCurrentPlayer(), Resource.METAL));
-					mainView.setViewer(gm.getCurrentPlayer());
-					for (Position pos : world.getContentPositions()) {
-						for (Fleet fleet : world.getTerritory(pos).getFleets()) {
-							fleet.reset();
-						}
-					}
 				}
 			}
 			@Override public void keyReleased(KeyEvent arg0) {}
