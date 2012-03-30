@@ -122,19 +122,10 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 		 * Only draw if enabled
 		 */
 		if (enabled) {
-			long time = System.currentTimeMillis();
 			g.drawImage(background, x, y, null);
-			System.out.println("DRAW TIME OF BKG: " + (System.currentTimeMillis() - time));
-			time = System.currentTimeMillis();
 			g.drawImage(colonyPicture, x + margin, y + margin,null);
-			System.out.println("DRAW TIME OF PIC: " + (System.currentTimeMillis() - time));
-			time = System.currentTimeMillis();
 			drawColonyName(g);
-			System.out.println("DRAW TIME OF NAME: " + (System.currentTimeMillis() - time));
-			time = System.currentTimeMillis();
 			buildShipButton.draw(g);
-			System.out.println("DRAW TIME OF BTN DRAW: " + (System.currentTimeMillis() - time));
-			System.out.println("--------------------");
 		}
 	}
 	
