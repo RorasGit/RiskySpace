@@ -12,23 +12,23 @@ import riskyspace.services.EventBus;
 
 public class FleetMove {
 	
-	private static boolean interrupted;
+	private static boolean moving = false;
 	private static Object lock = new Object();
 	private static Thread mover = null;
 	
 	public static void interrupt() {
 		synchronized (lock) {
-			interrupted = true;
+			moving = false;
 		}
 	}
 	
 	public static synchronized void move(final World world, final Map<Fleet, Path> fleetPaths, final Player player) {
-		interrupted = false;
+		moving = true;
 		final Set<Fleet> fleets = fleetPaths.keySet();
 		Runnable runner = new Runnable() {
 			@Override
 			public void run() {
-				while(!checkIfDone(fleetPaths, player) && !interrupted) {
+				while(!checkIfDone(fleetPaths, player) && moving) {
 					synchronized(lock) {
 						for (Fleet fleet : fleets) {
 							if (fleet.getOwner().equals(player) && fleetPaths.get(fleet).getLength() > 0 && fleet.useEnergy()) {
@@ -47,6 +47,7 @@ public class FleetMove {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {}
 				}
+				moving = false;
 				EventBus.INSTANCE.publish(new Event(Event.EventTag.MOVES_COMPLETE, null));
 			}
 		};
@@ -58,18 +59,17 @@ public class FleetMove {
 	 * Returns if there are currently fleets being moved.
 	 */
 	public static boolean isMoving() {
-		if (mover != null) {
-			return mover.isAlive();
-		}
-		return false;
+		return moving;
 	}
 
 	private static boolean checkIfDone(Map<Fleet, Path> fleetPaths, Player player) {
 		Set<Fleet> fleets = fleetPaths.keySet();
 		boolean done = true;
 		for (Fleet fleet : fleets) {
-			if (!fleet.getOwner().equals(player) || (fleet.hasEnergy() && fleetPaths.get(fleet).getLength() > 0)) {
-				done = false;
+			if (fleet.getOwner().equals(player)) {
+				if (fleet.hasEnergy() && fleetPaths.get(fleet).getLength() > 0) {
+					done = false;
+				}
 			}
 		}
 		return done;
