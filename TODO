@@ -1,20 +1,11 @@
 Publish Events:
--Click on fleet                       // Flygarn!
--Click on planet                      // Flygarn!
--Click in meny                        // Flygarn!
+
 -
 
 Refactor:
--Menuclass                            // Flygarn!
--Map Generator                        // Roras!
+-
 
 Create
--Next player button, sync event
--Move(Fleet f, Path p)                // Roras!
--Path class                           // Roras!
---Calc path                           // Roras!
---step()                              // Roras!
--Camera constr (x, y)                 // Flygarn!
 -Sprites?                             // -----
 
 Graphic
@@ -24,15 +15,11 @@ Graphic
 -Disabled buttons (_disabled).png     // Z3B0
 -Top Panel Menu                       // Rapp
 
-Small Fixes:
--Camera starting pos                  // Flygarn!     
--Correct Player sel (planets/ships)   // Rapp!
+Small Fixes: 
 -Back button buyships                 // Z3B0
--Colonizer click                      // Flygarn!
 -
 
 Features
--Colonize planets                     // Flygarn!
 -build queue system                   // Rapp
 -Control resources when buying ships  // Rapp
 -Control supply when buying ships     // Rapp
@@ -43,3 +30,22 @@ Features
 
 Future ideas:
  - Name solo scout 'Danny' (ein smidig kriminell)
+
+
+Processed:
+
+Create
+-Next player button, sync event
+-Move(Fleet f, Path p)                // Roras!
+-Path class                           // Roras!
+--Calc path                           // Roras!
+--step()                              // Roras!
+-Camera constr (x, y)                 // Flygarn!
+
+Small fixes:
+-Correct Player sel (planets/ships)   // Rapp!
+-Camera starting pos                  // Flygarn!   
+-Colonizer click                      // Flygarn!
+
+Features
+-Colonize planets                     // Flygarn!
