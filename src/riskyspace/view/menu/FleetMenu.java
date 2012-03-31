@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.util.List;
 
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
@@ -43,20 +44,22 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground.png")
 				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 		
+		EventBus.INSTANCE.addHandler(this);
+		
 	}
 	
-	public void setFleet(Colony colony) {
-		ownerColor = colony.getOwner() == Player.BLUE ? Color.BLUE : Color.RED;
-		fleetPicture = colony.getOwner() == Player.BLUE ? fleetBlue : fleetRed;
+	public void setFleet(Fleet fleet) {
+		ownerColor = fleet.getOwner() == Player.BLUE ? Color.BLUE : Color.RED;
+		fleetPicture = fleet.getOwner() == Player.BLUE ? fleetBlue : fleetRed;
 	}
 
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.SHOW_FLEETMENU) {
-			if (evt.getObjectValue() instanceof Fleet) {
-				setFleet((Colony) evt.getObjectValue());
+				System.out.println("Hej");
+				//setFleet((Fleet) evt.getObjectValue());
 				setVisible(true);
-			}
+	
 		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
 				setVisible(false);
 		}
@@ -81,11 +84,13 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 		 * Only handle mouse event if enabled
 		 */
 		if (enabled) {
-			if (splitButton.mousePressed(p)) {
-				//TODO:
-			} else if (mergeButton.mousePressed(p)) {
-				//TODO:
-			}
+//			if (splitButton.mousePressed(p)) {
+//				Event evt = new Event(Event.EventTag.SPLIT_FLEET, null);
+//				EventBus.INSTANCE.publish(evt);
+//			} else if (mergeButton.mousePressed(p)) {
+//				Event evt = new Event(Event.EventTag.MERGE_FLEET, null);
+//				EventBus.INSTANCE.publish(evt);
+//			}
 			if (this.contains(p)) {return true;}
 			else {
 				return false;
@@ -106,9 +111,9 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 		 */
 		if (enabled) {
 			g.drawImage(background, x, y, null);
-			g.drawImage(fleetPicture, x + margin, y + margin ,null);
-			mergeButton.draw(g);
-			splitButton.draw(g);
+			//g.drawImage(fleetPicture, x + margin, y + margin ,null);
+			//mergeButton.draw(g);
+			//splitButton.draw(g);
 		}
 	}
 

@@ -16,6 +16,8 @@ public class Event {
 		/*
 		 * View triggered events
 		 */
+		SPLIT_FLEET,
+		MERGE_FLEET,
 		NEW_FLEET_SELECTION,
 		ADD_FLEET_SELECTION,
 		SET_PATH,
