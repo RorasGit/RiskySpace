@@ -161,7 +161,7 @@ public class ViewEventController implements EventHandler {
 			Position buildPos = null;
 			for (Position pos : world.getContentPositions()) {
 				if (world.getTerritory(pos).hasColony()) {
-					if (world.getTerritory(pos).getColony().equals(selectedColony)) {
+					if (world.getTerritory(pos).getColony() == selectedColony) {
 						/* TODO:
 						 * Check that this position is already not queued
 						 * Use resources if possible, else break?
@@ -178,7 +178,7 @@ public class ViewEventController implements EventHandler {
 			Position buildPos = null;
 			for (Position pos : world.getContentPositions()) {
 				if (world.getTerritory(pos).hasColony()) {
-					if (world.getTerritory(pos).getColony().equals(selectedColony)) {
+					if (world.getTerritory(pos).getColony()==selectedColony) {
 						/* TODO:
 						 * Check that this position is already not queued
 						 * Use resources if possible, else break?
@@ -195,7 +195,7 @@ public class ViewEventController implements EventHandler {
 			Position buildPos = null;
 			for (Position pos : world.getContentPositions()) {
 				if (world.getTerritory(pos).hasColony()) {
-					if (world.getTerritory(pos).getColony().equals(selectedColony)) {
+					if (world.getTerritory(pos).getColony() == selectedColony) {
 						/* TODO:
 						 * Check that this position is already not queued
 						 * Use resources if possible, else break?
@@ -212,7 +212,7 @@ public class ViewEventController implements EventHandler {
 			Position buildPos = null;
 			for (Position pos : world.getContentPositions()) {
 				if (world.getTerritory(pos).hasColony()) {
-					if (world.getTerritory(pos).getColony().equals(selectedColony)) {
+					if (world.getTerritory(pos).getColony() == selectedColony) {
 						/* TODO:
 						 * Check that this position is already not queued
 						 * Use resources if possible, else break?
