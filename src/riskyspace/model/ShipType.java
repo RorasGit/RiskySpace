@@ -8,12 +8,12 @@ public enum ShipType {
 	 * Declaration order important for compareTo
 	 * DO NOT CHANGE!
 	 */
-	//		    Dmg Var  HP Atk  Init   E
-	COLONIZER	( 1, 1,  38, 1,   0, 	2), // Kollonajser
-	SCOUT		( 5, 3,  12, 1,   3,	4), // Skauwt
-	HUNTER		(11, 3,  38, 1,   2,	3), // Hannter
-	DESTROYER	(11, 3, 100, 3,   1,	3), // Dezztrojjer
-	MAGIKARP	( 0, 0,   1, 0,   0,	0); // FOR THE AWESOMENESS
+	//		    Dmg Var  HP Atk  Init  E  Metal  Gas
+	COLONIZER	( 1, 1,  38, 1,   0,   2,  200,   0), // Kollonajser
+	SCOUT		( 5, 3,  12, 1,   3,   4,   50,   0), // Skauwt
+	HUNTER		(11, 3,  38, 1,   2,   3,  120,  20), // Hannter
+	DESTROYER	(11, 3, 100, 3,   1,   3,  400, 100), // Dezztrojjer
+	MAGIKARP	( 0, 0,   1, 0,   0,   0, 7000, 500); // FOR THE AWESOMENESS
 	
 	private final int damage;
 	private final int variation;
@@ -21,14 +21,19 @@ public enum ShipType {
 	private final int energy;
 	private final int initiative;
 	private final int nbrAttacks;
+	private final int metalCost;
+	private final int gasCost;
 	
-	private ShipType(int damage, int variation, int shield, int nbrAttacks, int initiative, int energy) {
+	private ShipType(int damage, int variation, int shield, int nbrAttacks, int initiative, int energy,
+			int metalCost, int gasCost) {
 		this.damage = damage;
 		this.variation = variation;
 		this.shield = shield;
 		this.energy = energy;
 		this.initiative = initiative;
 		this.nbrAttacks = nbrAttacks;
+		this.metalCost = metalCost;
+		this.gasCost = gasCost;
 	}
 	
 	/*
@@ -61,5 +66,13 @@ public enum ShipType {
 	
 	public int getInitiative() {
 		return initiative;
+	}
+	
+	public int getGasCost() {
+		return gasCost;
+	}
+	
+	public int getMetalCost() {
+		return metalCost;
 	}
 }
