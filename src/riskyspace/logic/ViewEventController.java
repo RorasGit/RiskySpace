@@ -9,6 +9,7 @@ import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
+import riskyspace.model.Resource;
 import riskyspace.model.Ship;
 import riskyspace.model.ShipType;
 import riskyspace.model.Territory;
@@ -29,13 +30,6 @@ public class ViewEventController implements EventHandler {
 	private Player currentPlayer;
 	
 	private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
-	
-	/*TODO 
-	 * Set Path med bara "startnod" (Spara startnod serparat som currentPos?)
-	 * lägg till targets stegvis (om shift)
-	 * spara alla selectedships med en Path i Map (ger även önskad hashSet effekt)
-	 * lägg bara till targets om det finns energi
-	 */
 	
 	public ViewEventController(World world) {
 		this.world = world;
@@ -199,11 +193,28 @@ public class ViewEventController implements EventHandler {
 		}
 	}
 	
-	private void queueShip(ShipType shipType) {
+	private synchronized void queueShip(ShipType shipType) {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == selectedColony) {
-					world.getTerritory(pos).addFleet(new Fleet(new Ship(shipType), world.getTerritory(pos).getColony().getOwner()));
+					int metal = world.getResources(currentPlayer, Resource.METAL);
+					int gas = world.getResources(currentPlayer, Resource.GAS);
+					if (metal >= shipType.getMetalCost() && gas >= shipType.getGasCost()) {
+						world.getTerritory(pos).addFleet(new Fleet(new Ship(shipType), world.getTerritory(pos).getColony().getOwner()));
+						world.useResource(currentPlayer, Resource.METAL, metal);
+						world.useResource(currentPlayer, Resource.GAS, gas);
+						EventText et = new EventText(shipType.toString().toLowerCase() + " built!", pos);
+						Event event = new Event(Event.EventTag.EVENT_TEXT, et);
+						EventBus.INSTANCE.publish(event);
+					} else {
+						/*
+						 * Placeholder for grey buttons
+						 */
+						EventText et = new EventText("Not enough resources " + 
+						 metal + " M " + gas + " G", pos);
+						Event event = new Event(Event.EventTag.EVENT_TEXT, et);
+						EventBus.INSTANCE.publish(event);
+					}
 				}
 			}
 		}
