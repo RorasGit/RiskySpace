@@ -21,7 +21,7 @@ public class PlayerStats {
 	
 	private void initResources() {
 		resources = new HashMap<Resource, Integer>();
-		resources.put(METAL, 200);
+		resources.put(METAL, 150);
 		resources.put(GAS, 0);
 	}
 	

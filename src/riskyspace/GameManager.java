@@ -1,5 +1,6 @@
 package riskyspace;
 
+import riskyspace.logic.FleetMove;
 import riskyspace.model.Player;
 import riskyspace.model.World;
 import riskyspace.services.Event;
@@ -31,6 +32,10 @@ public class GameManager implements EventHandler {
 	
 	private void changePlayer() {
 		currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
+		/*
+		 * Give income in ViewEventController instead?
+		 */
+		world.giveIncome(currentPlayer);
 		Event event = new Event(Event.EventTag.ACTIVE_PLAYER_CHANGED, currentPlayer);
 		EventBus.INSTANCE.publish(event);
 	}
@@ -38,12 +43,13 @@ public class GameManager implements EventHandler {
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.NEXT_TURN) {
-			changePlayer();
-			world.giveIncome(currentPlayer);
-			if (currentPlayer == Player.BLUE) {
-				turn++;
+			if (!FleetMove.isMoving()) {
+				changePlayer();
+				if (currentPlayer == Player.BLUE) {
+					turn++;
+				}
+				world.resetShips();
 			}
-			world.resetShips();
 		}
 	}
 }

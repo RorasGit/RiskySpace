@@ -15,6 +15,7 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
+import riskyspace.view.View;
 /**
  * 
  * @author flygarn
@@ -51,11 +52,11 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 		this.y = y;
 		menuHeight = height;
 		menuWidth = width;
-		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground.png")
+		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground" + View.res + ".jpg")
 				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/city_blue.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
-		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.png").
+		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.jpg").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		buildShipButton = new Button(x + margin, menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		buildShipButton.setImage("res/menu/btn.jpg");

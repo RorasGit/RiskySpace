@@ -14,6 +14,7 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
+import riskyspace.view.View;
 
 public class RecruitMenu implements IMenu, Clickable, EventHandler {
 	
@@ -47,7 +48,7 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 		this.y = y;
 		menuHeight = height;
 		menuWidth = width;
-		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground.png")
+		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground" + View.res + ".jpg")
 				.getScaledInstance(menuWidth, menuHeight-40, Image.SCALE_DEFAULT);
 		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/city_blue.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
@@ -55,16 +56,16 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		
 		buildScoutButton = new Button(x + margin, menuHeight - (2*menuWidth), 90, 90);
-		buildScoutButton.setImage("res/icons/ships/scoutbutton.png");
+		buildScoutButton.setImage("res/icons/ships/scoutbutton" + View.res + ".jpg");
 		
 		buildHunterButton = new Button(x + width - (margin+90), menuHeight - (2*menuWidth), 90, 90);
-		buildHunterButton.setImage("res/icons/ships/hunterButton.png");
+		buildHunterButton.setImage("res/icons/ships/hunterButton" + View.res + ".jpg");
 		
 		buildDestroyerButton = new Button(x + margin , menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
-		buildDestroyerButton.setImage("res/icons/ships/destroyerButton.png");
+		buildDestroyerButton.setImage("res/icons/ships/destroyerButton" + View.res + ".jpg");
 		
 		buildColonizerButton = new Button(x + width - (margin+90), menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
-		buildColonizerButton.setImage("res/icons/ships/colonizerButton.png");
+		buildColonizerButton.setImage("res/icons/ships/colonizerButton" + View.res + ".jpg");
 		
 		EventBus.INSTANCE.addHandler(this);
 		

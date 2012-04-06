@@ -205,8 +205,8 @@ public class RenderArea extends JPanel implements EventHandler {
 	
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
-		cameras.put(Player.BLUE, new Camera(0.95f,0.95f));
-		cameras.put(Player.RED, new Camera(0.05f,0.05f));
+		cameras.put(Player.BLUE, new Camera(0.93f,0.92f));
+		cameras.put(Player.RED, new Camera(0.07f,0.08f));
 		currentCamera = cameras.get(Player.BLUE);
 		cc = new CameraController();
 		cc.setCamera(currentCamera);
@@ -227,16 +227,16 @@ public class RenderArea extends JPanel implements EventHandler {
 		cc.setCamera(currentCamera);
 	}
 	
-	public int translateRealX() {
+	public int translatePixelsX() {
 		return (int) (((world.getCols()+2*EXTRA_SPACE_HORIZONTAL)*squareSize - width)*currentCamera.getX());
 	}
 	
-	public int translateRealY() {
+	public int translatePixelsY() {
 		return (int) (((world.getRows()+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
 	}
 	
 	private int times = 0;
-	Timer timer = new Timer(500, new ActionListener() {
+	Timer fpsTimer = new Timer(500, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -248,8 +248,8 @@ public class RenderArea extends JPanel implements EventHandler {
 	private String fps = "";
 	
 	public void paintComponent(Graphics g) {
-		if (!timer.isRunning()) {
-			timer.start();
+		if (!fpsTimer.isRunning()) {
+			fpsTimer.start();
 		}
 		times++;
 		/*
@@ -322,8 +322,8 @@ public class RenderArea extends JPanel implements EventHandler {
 	}
 	 
 	public Position getPosition(Point point) {
-		int row = ((point.y + translateRealY()) / squareSize) + 1 - EXTRA_SPACE_VERTICAL;
-		int col = ((point.x  + translateRealX()) / squareSize) + 1 - EXTRA_SPACE_HORIZONTAL;
+		int row = ((point.y + translatePixelsY()) / squareSize) + 1 - EXTRA_SPACE_VERTICAL;
+		int col = ((point.x  + translatePixelsX()) / squareSize) + 1 - EXTRA_SPACE_HORIZONTAL;
 		return new Position(row, col); 
 	}
 	
@@ -354,8 +354,8 @@ public class RenderArea extends JPanel implements EventHandler {
 	public boolean colonizerClick(Point point) {
 		Position pos = getPosition(point);
 		if (isLegalPos(pos)) {
-			int dX = (point.x + translateRealX()) % squareSize;
-			int dY = (point.y + translateRealY()) % squareSize;
+			int dX = (point.x + translatePixelsX()) % squareSize;
+			int dY = (point.y + translatePixelsY()) % squareSize;
 			if (world.getTerritory(pos).hasFleet()) {
 				if (dX > squareSize/2 && dY > squareSize/2) {
 					Event evt = new Event(Event.EventTag.COLONIZER_SELECTED, pos);
@@ -371,8 +371,8 @@ public class RenderArea extends JPanel implements EventHandler {
 		Point point = me.getPoint();
 		Position pos = getPosition(point);
 		if (isLegalPos(pos)) {
-			int dX = (point.x + translateRealX()) % squareSize;
-			int dY = (point.y + translateRealY()) % squareSize;
+			int dX = (point.x + translatePixelsX()) % squareSize;
+			int dY = (point.y + translatePixelsY()) % squareSize;
 			if (world.getTerritory(pos).hasFleet()) {
 				if (dX <= squareSize/2 && dY >= squareSize/2) {
 					if (me.isShiftDown()) {
