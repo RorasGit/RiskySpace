@@ -3,6 +3,9 @@ package riskyspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
+
 public class Colony implements BattleAble {
 	
 	private Player owner = null;

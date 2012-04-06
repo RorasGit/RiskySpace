@@ -74,9 +74,9 @@ public class PlayerStats {
 	}
 	
 	/**
-	 * Set the income of a Resource to a new value.
+	 * Increase the income of a Resource with a set amount.
 	 * @param res The Resource type to be changed.
-	 * @param newIncome The new income value.
+	 * @param additionalIncome The reduction value.
 	 */
 	public void increaseIncome(Resource res, int additionalIncome) {
 		if (additionalIncome < 0) {
@@ -85,6 +85,11 @@ public class PlayerStats {
 		income.put(res, income.get(res) + additionalIncome);
 	}
 	
+	/**
+	 * Decrease the income of a Resource with a set amount.
+	 * @param res The Resource type to be changed.
+	 * @param reducedIncome The reduction value.
+	 */
 	public void decreaseIncome(Resource res, int reducedIncome) {
 		if (reducedIncome < 0) {
 			throw new IllegalArgumentException("Positive integer only: reducedIncome");

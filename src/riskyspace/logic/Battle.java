@@ -9,6 +9,8 @@ import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Territory;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
 import riskyspace.view.swingImpl.RenderArea;
 
 
@@ -111,7 +113,9 @@ public class Battle {
 		Player winner = !bg1.isDefeated() ? bg1.getOwner() : bg2.getOwner();
 		if (territory.hasColony()) {
 			if (territory.getColony().getOwner() != winner) {
+				Event evt = new Event(Event.EventTag.INCOME_CHANGED, territory.getColony().getOwner());
 				territory.getPlanet().destroyColony();
+				EventBus.INSTANCE.publish(evt);
 			}
 		}
 		if (territory.controlledBy() == Player.WORLD) {

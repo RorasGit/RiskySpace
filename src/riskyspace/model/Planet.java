@@ -1,5 +1,8 @@
 package riskyspace.model;
 
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
+
 public class Planet {
 
 	/**
@@ -38,6 +41,8 @@ public class Planet {
 	 */
 	public void buildColony(Player owner) {
 		colony = new Colony(type, owner);
+		Event evt = new Event(Event.EventTag.INCOME_CHANGED, owner);
+		EventBus.INSTANCE.publish(evt);
 	}
 	
 	/**

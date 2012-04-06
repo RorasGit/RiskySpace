@@ -120,6 +120,29 @@ public class ViewEventController implements EventHandler {
 			}
 		}
 		
+		if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
+			Player affectedPlayer = (Player) evt.getObjectValue();
+			int metalIncome = 10;
+			int gasIncome = 0;
+			for (Position pos : world.getContentPositions()) {
+				Territory terr = world.getTerritory(pos);
+				if (terr.hasColony()) {
+					if (terr.getColony().getOwner() == affectedPlayer) {
+						System.out.println(terr.getPlanet().getType() + " at " + pos);
+						if (terr.getPlanet().getType() == Resource.METAL) {
+							metalIncome += terr.getColony().getIncome();
+						} else if (terr.getPlanet().getType() == Resource.GAS) {
+							gasIncome += terr.getColony().getIncome();
+						}
+					}
+				}	
+			}
+			System.out.println("METAL: " + metalIncome);
+			System.out.println("GAS: " + gasIncome);
+			world.setIncome(affectedPlayer, Resource.METAL, metalIncome);
+			world.setIncome(affectedPlayer, Resource.GAS, gasIncome);
+		}
+		
 		if (evt.getTag() == Event.EventTag.SET_PATH) {
 			if (!FleetMove.isMoving()) {
 				Position target = (Position) evt.getObjectValue();

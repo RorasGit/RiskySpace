@@ -79,6 +79,11 @@ public class World {
 		return playerstats.get(player).purchase(type, amount);
 	}
 	
+
+	public void setIncome(Player player, Resource type, int amount) {
+		playerstats.get(player).setIncome(type, amount);
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
