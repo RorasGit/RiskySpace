@@ -1,9 +1,5 @@
 package riskyspace.services;
 
-import riskyspace.model.Position;
-import riskyspace.services.Event.EventTag;
-import riskyspace.view.camera.Camera;
-
 public class Event {
 
 	/*
