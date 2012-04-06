@@ -158,71 +158,19 @@ public class ViewEventController implements EventHandler {
 		
 		
 		if(evt.getTag() == Event.EventTag.BUILD_SCOUT) {
-			Position buildPos = null;
-			for (Position pos : world.getContentPositions()) {
-				if (world.getTerritory(pos).hasColony()) {
-					if (world.getTerritory(pos).getColony() == selectedColony) {
-						/* TODO:
-						 * Check that this position is already not queued
-						 * Use resources if possible, else break?
-						 */
-						System.out.println("Built at: " + pos);
-						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.SCOUT), world.getTerritory(pos).getColony().getOwner()));
-						buildPos = pos;
-					}
-				}
-			}
+			queueShip(ShipType.SCOUT);
 		}
 		
 		if(evt.getTag() == Event.EventTag.BUILD_HUNTER) {
-			Position buildPos = null;
-			for (Position pos : world.getContentPositions()) {
-				if (world.getTerritory(pos).hasColony()) {
-					if (world.getTerritory(pos).getColony()==selectedColony) {
-						/* TODO:
-						 * Check that this position is already not queued
-						 * Use resources if possible, else break?
-						 */
-						System.out.println("Built at: " + pos);
-						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.HUNTER), world.getTerritory(pos).getColony().getOwner()));
-						buildPos = pos;
-					}
-				}
-			}
+			queueShip(ShipType.HUNTER);
 		}
 		
 		if(evt.getTag() == Event.EventTag.BUILD_DESTROYER) {
-			Position buildPos = null;
-			for (Position pos : world.getContentPositions()) {
-				if (world.getTerritory(pos).hasColony()) {
-					if (world.getTerritory(pos).getColony() == selectedColony) {
-						/* TODO:
-						 * Check that this position is already not queued
-						 * Use resources if possible, else break?
-						 */
-						System.out.println("Built at: " + pos);
-						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.DESTROYER), world.getTerritory(pos).getColony().getOwner()));
-						buildPos = pos;
-					}
-				}
-			}
+			queueShip(ShipType.DESTROYER);
 		}
 		
 		if(evt.getTag() == Event.EventTag.BUILD_COLONIZER) {
-			Position buildPos = null;
-			for (Position pos : world.getContentPositions()) {
-				if (world.getTerritory(pos).hasColony()) {
-					if (world.getTerritory(pos).getColony() == selectedColony) {
-						/* TODO:
-						 * Check that this position is already not queued
-						 * Use resources if possible, else break?
-						 */
-						System.out.println("Built at: " + pos);
-						world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.COLONIZER), world.getTerritory(pos).getColony().getOwner()));
-						buildPos = pos;
-					}
-				}
-			}
+			queueShip(ShipType.COLONIZER);
 		}
 		
 		if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {
@@ -251,11 +199,17 @@ public class ViewEventController implements EventHandler {
 		}
 	}
 	
-	private void queueFleet(ShipType shipType, Territory territory) {
-		int queueTime = 1;
-		//TODO:
+	private void queueShip(ShipType shipType) {
+		for (Position pos : world.getContentPositions()) {
+			if (world.getTerritory(pos).hasColony()) {
+				if (world.getTerritory(pos).getColony() == selectedColony) {
+					world.getTerritory(pos).addFleet(new Fleet(new Ship(shipType), world.getTerritory(pos).getColony().getOwner()));
+				}
+			}
+		}
+		
 	}
-	
+
 	/*
 	 * Resets all the instance variables.
 	 */
