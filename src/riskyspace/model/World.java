@@ -75,6 +75,10 @@ public class World {
 		return playerstats.get(player).getResource(resource);
 	}
 	
+	public boolean useResource(Player player, Resource type, int amount) {
+		return playerstats.get(player).purchase(type, amount);
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -96,5 +100,4 @@ public class World {
 	public int hashCode() {
 		return rows * 17 + cols * 23;
 	}
-
 }
