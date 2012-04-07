@@ -23,6 +23,7 @@ public class Sprite {
 	 */
 	public Sprite(Image image, float dx, float dy, float scale) {
 		img = image;
+		resizedImage = img;
 		this.dx = dx;
 		this.dy = dy;
 		this.scale = scale;

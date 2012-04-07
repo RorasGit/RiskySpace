@@ -187,8 +187,6 @@ public class ViewEventController implements EventHandler {
 				Territory terr = world.getTerritory(pos);
 				if (terr.hasColony()) {
 					if (terr.getColony().getOwner() == affectedPlayer) {
-						System.out.println(terr.getPlanet().getType()
-								+ " at " + pos);
 						if (terr.getPlanet().getType() == Resource.METAL) {
 							metalIncome += terr.getColony().getIncome();
 						} else if (terr.getPlanet().getType() == Resource.GAS) {
@@ -197,8 +195,6 @@ public class ViewEventController implements EventHandler {
 					}
 				}
 			}
-			System.out.println("METAL: " + metalIncome);
-			System.out.println("GAS: " + gasIncome);
 			world.setIncome(affectedPlayer, Resource.METAL, metalIncome);
 			world.setIncome(affectedPlayer, Resource.GAS, gasIncome);
 		}

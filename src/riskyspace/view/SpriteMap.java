@@ -66,7 +66,6 @@ public class SpriteMap {
 	public static void setPlanetSprites() {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasPlanet()) {
-				System.out.println(pos + " haz planet");
 				Planet p = world.getTerritory(pos).getPlanet();
 				if (p.getType() == Resource.METAL) {
 					int index = (int) (Math.random()*4);
@@ -103,7 +102,6 @@ public class SpriteMap {
 			}
 		}
 		Position[][] paths = vec.getPaths();
-		System.out.println(paths.length);
 		for (int i = 0; i < paths.length; i++) {
 			if (paths[i].length > 1) {
 				for (int j = 0; j < paths[i].length; j++) {
@@ -256,7 +254,7 @@ public class SpriteMap {
 		shipSprites.put("SCOUT_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png"), 0, 0.5f, 0.5f));
 		shipSprites.put("HUNTER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png"), 0, 0.5f, 0.5f));
 		shipSprites.put("DESTROYER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png"), 0, 0.5f, 0.5f));
-		shipSprites.put("COLONIZER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/colonizer.png"), 0, 0.5f, 0.5f));
+		shipSprites.put("COLONIZER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/colonizer.png"), 0.5f, 0.5f, 0.5f));
 		
 		/*
 		 * Ships Red Player
@@ -264,7 +262,7 @@ public class SpriteMap {
 		shipSprites.put("SCOUT_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png"), 0, 0.5f, 0.5f));
 		shipSprites.put("HUNTER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png"), 0, 0.5f, 0.5f));
 		shipSprites.put("DESTROYER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png"), 0, 0.5f, 0.5f));
-		shipSprites.put("COLONIZER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/colonizer.png"), 0, 0.5f, 0.5f));
+		shipSprites.put("COLONIZER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/colonizer.png"), 0.5f, 0.5f, 0.5f));
 		
 		/*
 		 * Path Arrows
