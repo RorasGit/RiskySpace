@@ -8,6 +8,7 @@ import riskyspace.logic.ViewEventController;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
+import riskyspace.view.SpriteMap;
 import riskyspace.view.View;
 import riskyspace.view.ViewFactory;
 
@@ -20,8 +21,8 @@ public class Demo {
 	}
 	
 	public Demo () {
-		
 		final World world = new World();
+		SpriteMap.init(world);
 		new ViewEventController(world);
 		final GameManager gm  = new GameManager(world, 2);
 		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world, new KeyListener() {

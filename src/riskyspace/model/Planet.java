@@ -43,13 +43,20 @@ public class Planet {
 		colony = new Colony(type, owner);
 		Event evt = new Event(Event.EventTag.INCOME_CHANGED, owner);
 		EventBus.INSTANCE.publish(evt);
+		evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
+		EventBus.INSTANCE.publish(evt);
 	}
 	
 	/**
 	 * Removes the Colony on this Planet if there is one, otherwise it does nothing.
 	 */
 	public void destroyColony() {
+		Player owner = colony.getOwner();
 		colony = null;
+		Event evt = new Event(Event.EventTag.INCOME_CHANGED, owner);
+		EventBus.INSTANCE.publish(evt);
+		evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
+		EventBus.INSTANCE.publish(evt);
 	}
 	
 	public boolean hasColony() {

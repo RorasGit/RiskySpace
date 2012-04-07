@@ -26,10 +26,12 @@ import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
 import riskyspace.model.World;
 import riskyspace.services.Event;
+import riskyspace.services.Event.EventTag;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
 import riskyspace.view.Clickable;
+import riskyspace.view.SpriteMap;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.menu.ColonyMenu;
@@ -80,85 +82,27 @@ public class RenderArea extends JPanel implements EventHandler {
 	private BufferedImage background = null;
 	
 	/*
-	 * Planet Textures
+	 * SpriteMap
 	 */
-	private Map<Integer, Image> metalplanets = new HashMap<Integer, Image>();
-	private Map<Integer, Image> gasplanets = new HashMap<Integer, Image>();
-	private Map<Position, Image> planetTextures = new HashMap<Position, Image>();
-	/*
-	 * Planet Positions to draw planet textures
-	 */
-	private List<Position> planetPositions = new ArrayList<Position>();
+	SpriteMap spriteMap = null;
 	
-	/*
-	 * Ship Textures
-	 */
-	private Map<String, Image> shipTextures = new HashMap<String, Image>();
-	
-	/*
-	 * 
-	 */
 	private EventTextPrinter eventTextPrinter = null;
 	
 	public RenderArea(World world) {
 		this.world = world;
 		measureScreen();
-		setTextures();
 		createBackground();
-		savePlanets();
 		initCameras();
 		createMenus();
 		eventTextPrinter = new EventTextPrinter();
 		EventBus.INSTANCE.addHandler(this);
 		addMouseListener(new ClickHandler());
 	}
-	
-	private void savePlanets() {
-		for (Position pos : world.getContentPositions()) {
-			if (world.getTerritory(pos).hasPlanet()) {
-				if (world.getTerritory(pos).getPlanet().getType() == Resource.METAL) {
-					planetTextures.put(pos, metalplanets.get((int) (Math.random()*4)));
-				} else {
-					planetTextures.put(pos, gasplanets.get((int) (Math.random()*3)));
-				}
-				planetPositions.add(pos);
-			}
-		}
-	}
 
 	private void createMenus() {
 		int menuWidth = height / 3;
 		colonyMenu = new ColonyMenu(width - menuWidth, 0, menuWidth, height);
 		recruitMenu = new RecruitMenu(width - menuWidth, 0, menuWidth, height);
-	}
-
-	private void setTextures() {
-		/*
-		 * Planets
-		 */
-		metalplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		metalplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		metalplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		metalplanets.put(3, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_3.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		gasplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		gasplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		gasplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		
-		/*
-		 * Ships Blue Player
-		 */
-		shipTextures.put("SCOUT_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png"));
-		shipTextures.put("HUNTER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png"));
-		shipTextures.put("DESTROYER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png"));
-		shipTextures.put("COLONIZER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/colonizer.png"));
-		
-		/*
-		 * Ships Red Player
-		 */
-		shipTextures.put("SCOUT_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png"));
-		shipTextures.put("HUNTER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png"));
-		shipTextures.put("DESTROYER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png"));
-		shipTextures.put("COLONIZER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/colonizer.png"));
 	}
 	
 	private void createBackground() {
@@ -223,6 +167,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	}
 	
 	public void setPlayer(Player player) {
+		spriteMap = SpriteMap.getSprites(player);
 		currentCamera = cameras.get(player);
 		cc.setCamera(currentCamera);
 	}
@@ -262,11 +207,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		// Draw background
 		g.drawImage(background, 0, 0, null);
 		
-		drawPlanets(g);
-		
-		// drawPaths();
-		
-		drawFleets(g);
+		spriteMap.draw(g, squareSize, EXTRA_SPACE_HORIZONTAL, EXTRA_SPACE_VERTICAL);
 		
 		// Draw texts
 		eventTextPrinter.drawEventText(g);
@@ -281,44 +222,6 @@ public class RenderArea extends JPanel implements EventHandler {
 		}
 		g.setColor(Color.GREEN);
 		g.drawString(fps, 50, 50);
-	}
-	
-	public void drawPlanets(Graphics g) {
-		// Draw Colony Marker
-		for (Position pos : world.getContentPositions()) {
-			if (world.getTerritory(pos).hasColony()) {
-				g.setColor(world.getTerritory(pos).getColony().getOwner() == Player.BLUE ?
-					Color.BLUE : Color.RED);
-				g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
-					(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 2),
-					squareSize/2 - 5, squareSize/2 - 5);
-			}
-		}
-		// Draw Planets
-		for (Position pos : planetPositions) {
-			g.drawImage(planetTextures.get(pos), (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 4),
-					(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize), null);
-		}
-	}
-	
-	public void drawFleets(Graphics g) {
-		for (Position pos : world.getContentPositions()) {
-			if (world.getTerritory(pos).hasFleet()) {
-				Player controller = world.getTerritory(pos).controlledBy();
-				Image image = null;
-				ShipType flagship = world.getTerritory(pos).getFleetsFlagships();
-				if (!flagship.equals(ShipType.COLONIZER)) {
-					image = controller == Player.BLUE ? shipTextures.get(flagship + "_BLUE") : shipTextures.get(flagship + "_RED");
-					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.75) * squareSize) - image.getWidth(null)/2,
-							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
-				}
-				if (world.getTerritory(pos).containsColonizer()) {
-					image = controller == Player.BLUE ? shipTextures.get("COLONIZER_BLUE") : shipTextures.get("COLONIZER_RED");
-					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.25) * squareSize) - image.getWidth(null)/2,
-							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
-				}
-			}
-		}
 	}
 	 
 	public Position getPosition(Point point) {
@@ -347,7 +250,6 @@ public class RenderArea extends JPanel implements EventHandler {
 				return ((Clickable) recruitMenu).mousePressed(point);
 			}
 		}
-		
 		return false;
 	}
 
@@ -414,12 +316,14 @@ public class RenderArea extends JPanel implements EventHandler {
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
-			currentCamera = cameras.get((Player) evt.getObjectValue());
-			cc.setCamera(currentCamera);
+			setPlayer((Player) evt.getObjectValue());
+		}
+		if (evt.getTag() == EventTag.TERRITORY_CHANGED) {
+			spriteMap = SpriteMap.getSprites(cameras.get(Player.BLUE) == currentCamera ? Player.BLUE : Player.RED);
 		}
 	}
 	
-	class ClickHandler implements MouseListener {
+	private class ClickHandler implements MouseListener {
 		@Override public void mousePressed(MouseEvent me) {
 			if (me.getButton() == MouseEvent.BUTTON1) {
 				/*
@@ -456,7 +360,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		@Override public void mouseReleased(MouseEvent me) {}
 	}
 	
-	public class EventTextPrinter implements EventHandler {
+	private class EventTextPrinter implements EventHandler {
 		
 		final List<EventText> texts = new ArrayList<EventText>();
 		
