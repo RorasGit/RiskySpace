@@ -46,7 +46,7 @@ public class Sprite {
 	
 	public void draw(Graphics g, int x, int y, int squareSize) {
 		if (resizedImage == null || (resizedImage.getHeight(null) != squareSize*scale || resizedImage.getWidth(null) != squareSize*scale) ) {
-			resizedImage = img.getScaledInstance((int) (squareSize*scale), (int) (squareSize*scale), Image.SCALE_DEFAULT);
+			resizedImage = img.getScaledInstance((int) (squareSize*scale), (int) (squareSize*scale), Image.SCALE_FAST);
 		}
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.rotate(rotation, x + dx + resizedImage.getWidth(null)/2, y + dy + resizedImage.getHeight(null)/2);

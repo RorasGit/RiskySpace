@@ -39,7 +39,8 @@ public class Event {
 		MOVES_COMPLETE,
 		HIDE_MENU,
 		EVENT_TEXT,
-		ACTIVE_PLAYER_CHANGED;
+		ACTIVE_PLAYER_CHANGED,
+		PATHS_UPDATED;
 		
 		//TODO: add all events that can occur.
 	}

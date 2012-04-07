@@ -22,8 +22,6 @@ import javax.swing.Timer;
 
 import riskyspace.model.Player;
 import riskyspace.model.Position;
-import riskyspace.model.Resource;
-import riskyspace.model.ShipType;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.Event.EventTag;
@@ -85,6 +83,11 @@ public class RenderArea extends JPanel implements EventHandler {
 	 * SpriteMap
 	 */
 	SpriteMap spriteMap = null;
+	
+	/*
+	 * Lock object for drawing
+	 */
+	private Object drawing = new Object();
 	
 	private EventTextPrinter eventTextPrinter = null;
 	
@@ -191,7 +194,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 	});
 	private String fps = "";
-	
+
 	public void paintComponent(Graphics g) {
 		if (!fpsTimer.isRunning()) {
 			fpsTimer.start();
@@ -236,94 +239,95 @@ public class RenderArea extends JPanel implements EventHandler {
 		return rowLegal && colLegal;
 	}
 
-	/*
-	 * Click handling for different parts
-	 */
-	public boolean menuClick(Point point) {
-		if (colonyMenu.isVisible()) {
-			if (colonyMenu instanceof Clickable) {
-				return ((Clickable) colonyMenu).mousePressed(point);
-			}
-		}
-		if (recruitMenu.isVisible()) {
-			if (recruitMenu instanceof Clickable) {
-				return ((Clickable) recruitMenu).mousePressed(point);
-			}
-		}
-		return false;
-	}
-
-	public boolean colonizerClick(Point point) {
-		Position pos = getPosition(point);
-		if (isLegalPos(pos)) {
-			int dX = (point.x + translatePixelsX()) % squareSize;
-			int dY = (point.y + translatePixelsY()) % squareSize;
-			if (world.getTerritory(pos).hasFleet()) {
-				if (dX > squareSize/2 && dY > squareSize/2) {
-					Event evt = new Event(Event.EventTag.COLONIZER_SELECTED, pos);
-					EventBus.INSTANCE.publish(evt);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	public boolean fleetClick(MouseEvent me) {
-		Point point = me.getPoint();
-		Position pos = getPosition(point);
-		if (isLegalPos(pos)) {
-			int dX = (point.x + translatePixelsX()) % squareSize;
-			int dY = (point.y + translatePixelsY()) % squareSize;
-			if (world.getTerritory(pos).hasFleet()) {
-				if (dX <= squareSize/2 && dY >= squareSize/2) {
-					if (me.isShiftDown()) {
-						Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
-						EventBus.INSTANCE.publish(evt);
-					} else {
-						Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, pos);
-						EventBus.INSTANCE.publish(evt);
-					}
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	public boolean colonyClick(Point point) {
-		Position pos = getPosition(point);
-		if (isLegalPos(pos)) {
-			if (world.getTerritory(pos).hasColony()) {
-				Event evt = new Event(Event.EventTag.COLONY_SELECTED, pos);
-				EventBus.INSTANCE.publish(evt);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean pathClick(Point point) {
-		Position pos = getPosition(point);
-		if (isLegalPos(pos)) {
-			Event evt = new Event(Event.EventTag.SET_PATH, pos);
-			EventBus.INSTANCE.publish(evt);
-			return true;
-		}
-		return false;
-	}
-
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
 			setPlayer((Player) evt.getObjectValue());
 		}
-		if (evt.getTag() == EventTag.TERRITORY_CHANGED) {
+		if (evt.getTag() == EventTag.TERRITORY_CHANGED || evt.getTag() == EventTag.PATHS_UPDATED) {
 			spriteMap = SpriteMap.getSprites(cameras.get(Player.BLUE) == currentCamera ? Player.BLUE : Player.RED);
 		}
 	}
 	
 	private class ClickHandler implements MouseListener {
+
+		/*
+		 * Click handling for different parts
+		 */
+		public boolean menuClick(Point point) {
+			if (colonyMenu.isVisible()) {
+				if (colonyMenu instanceof Clickable) {
+					return ((Clickable) colonyMenu).mousePressed(point);
+				}
+			}
+			if (recruitMenu.isVisible()) {
+				if (recruitMenu instanceof Clickable) {
+					return ((Clickable) recruitMenu).mousePressed(point);
+				}
+			}
+			return false;
+		}
+
+		public boolean colonizerClick(Point point) {
+			Position pos = getPosition(point);
+			if (isLegalPos(pos)) {
+				int dX = (point.x + translatePixelsX()) % squareSize;
+				int dY = (point.y + translatePixelsY()) % squareSize;
+				if (world.getTerritory(pos).hasFleet()) {
+					if (dX > squareSize/2 && dY > squareSize/2) {
+						Event evt = new Event(Event.EventTag.COLONIZER_SELECTED, pos);
+						EventBus.INSTANCE.publish(evt);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		
+		public boolean fleetClick(MouseEvent me) {
+			Point point = me.getPoint();
+			Position pos = getPosition(point);
+			if (isLegalPos(pos)) {
+				int dX = (point.x + translatePixelsX()) % squareSize;
+				int dY = (point.y + translatePixelsY()) % squareSize;
+				if (world.getTerritory(pos).hasFleet()) {
+					if (dX <= squareSize/2 && dY >= squareSize/2) {
+						if (me.isShiftDown()) {
+							Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
+							EventBus.INSTANCE.publish(evt);
+						} else {
+							Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, pos);
+							EventBus.INSTANCE.publish(evt);
+						}
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		public boolean colonyClick(Point point) {
+			Position pos = getPosition(point);
+			if (isLegalPos(pos)) {
+				if (world.getTerritory(pos).hasColony()) {
+					Event evt = new Event(Event.EventTag.COLONY_SELECTED, pos);
+					EventBus.INSTANCE.publish(evt);
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		public boolean pathClick(Point point) {
+			Position pos = getPosition(point);
+			if (isLegalPos(pos)) {
+				Event evt = new Event(Event.EventTag.SET_PATH, pos);
+				EventBus.INSTANCE.publish(evt);
+				return true;
+			}
+			return false;
+		}
+		
 		@Override public void mousePressed(MouseEvent me) {
 			if (me.getButton() == MouseEvent.BUTTON1) {
 				/*

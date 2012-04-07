@@ -22,8 +22,8 @@ public class Demo {
 	
 	public Demo () {
 		final World world = new World();
-		SpriteMap.init(world);
-		new ViewEventController(world);
+		ViewEventController vec = new ViewEventController(world);
+		SpriteMap.init(world, vec);
 		final GameManager gm  = new GameManager(world, 2);
 		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world, new KeyListener() {
 			@Override

@@ -1,7 +1,10 @@
 package riskyspace.logic;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,12 +26,12 @@ import riskyspace.view.swingImpl.RenderArea;
 public class ViewEventController implements EventHandler {
 
 	private World world = null;
-	private Set<Fleet> selectedFleets = new HashSet<Fleet>();
 	private int fleetSelectionIndex = 0;
 	private Position lastFleetSelectPos = null;
 	private Colony selectedColony = null;
 	private Player currentPlayer;
 
+	private Set<Fleet> selectedFleets = new HashSet<Fleet>();
 	private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
 
 	public ViewEventController(World world) {
@@ -143,6 +146,8 @@ public class ViewEventController implements EventHandler {
 						}
 					}
 				}
+				Event event = new Event(Event.EventTag.PATHS_UPDATED, null);
+				EventBus.INSTANCE.publish(event);
 			}
 
 			if (evt.getTag() == Event.EventTag.BUILD_SCOUT) {
@@ -238,6 +243,15 @@ public class ViewEventController implements EventHandler {
 		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables();
 		}
+	}
+	
+	public Position[][] getPaths() {
+		List<Path> values = new ArrayList<Path>(fleetPaths.values());
+		Position[][] paths = new Position[values.size()][];
+		for (int i = 0; i < paths.length; i++) {
+			paths[i] = values.get(i).getPositions();
+		}
+		return paths;
 	}
 
 	private synchronized void queueShip(ShipType shipType) {

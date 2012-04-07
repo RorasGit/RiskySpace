@@ -28,6 +28,15 @@ public class Path {
 		addPath(target);
 	}
 	
+	public Position[] getPositions() {
+		Position[] path = new Position[this.path.size() + 1];
+		path[0] = current;
+		for (int i = 0; i < this.path.size(); i++) {
+			path[i+1] = this.path.get(i);
+		}
+		return path;
+	}
+	
 	private void addPath(Position target) {
 		Position start = path.size() > 0 ? path.getLast() : current;
 		int rows = Math.abs(start.getRow() - target.getRow());
