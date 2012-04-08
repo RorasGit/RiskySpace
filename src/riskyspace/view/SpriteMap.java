@@ -101,7 +101,7 @@ public class SpriteMap {
 				}
 			}
 		}
-		Position[][] paths = vec.getPaths();
+		Position[][] paths = vec.getPaths(player);
 		for (int i = 0; i < paths.length; i++) {
 			if (paths[i].length > 1) {
 				for (int j = 0; j < paths[i].length; j++) {
@@ -267,10 +267,10 @@ public class SpriteMap {
 		/*
 		 * Path Arrows
 		 */
-		pathTextures.put("HEAD", Toolkit.getDefaultToolkit().getImage("res/head.png"));
-		pathTextures.put("START", Toolkit.getDefaultToolkit().getImage("res/start.png"));
-		pathTextures.put("STRAIGHT", Toolkit.getDefaultToolkit().getImage("res/straight.png"));
-		pathTextures.put("TURN", Toolkit.getDefaultToolkit().getImage("res/turn.png"));
+		pathTextures.put("HEAD", Toolkit.getDefaultToolkit().getImage("res/path/head.png"));
+		pathTextures.put("START", Toolkit.getDefaultToolkit().getImage("res/path/start.png"));
+		pathTextures.put("STRAIGHT", Toolkit.getDefaultToolkit().getImage("res/path/straight.png"));
+		pathTextures.put("TURN", Toolkit.getDefaultToolkit().getImage("res/path/turn.png"));
 	}
 	
 	/**

@@ -1,10 +1,8 @@
 package riskyspace.logic;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +19,6 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
-import riskyspace.view.swingImpl.RenderArea;
 
 public class ViewEventController implements EventHandler {
 
@@ -241,11 +238,18 @@ public class ViewEventController implements EventHandler {
 		}
 	}
 	
-	public Position[][] getPaths() {
-		List<Path> values = new ArrayList<Path>(fleetPaths.values());
-		Position[][] paths = new Position[values.size()][];
-		for (int i = 0; i < paths.length; i++) {
-			paths[i] = values.get(i).getPositions();
+	public Position[][] getPaths(Player player) {
+		Position[][] tmp = new Position[fleetPaths.size()][];
+		int i = 0;
+		for (Fleet fleet : fleetPaths.keySet()) {
+			if (fleet.getOwner() == player) {
+				tmp[i] = fleetPaths.get(fleet).getPositions();
+				i++;
+			}
+		}
+		Position[][] paths = new Position[i][];
+		for (int j = 0; j < paths.length; j++) {
+			paths[j] = tmp[j];
 		}
 		return paths;
 	}
