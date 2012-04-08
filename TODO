@@ -1,26 +1,21 @@
 --------------<<TODO>>-----------------
-
 Publish Events:
-
 -
 
 Refactor:
 -
 
 Create
--Sprites?                             // -----
+-
 
 Graphic
 -Mark selected fleet                  // Rapp
--Draw paths                           // Flygarn
 -number of ships indicator            // Roras
 -Disabled buttons (_disabled).png     // Z3B0
 -Top Panel Menu                       // Rapp
 
 Small Fixes: 
 -Back button buyships                 // Z3B0
--Update income after colonies taken   // -----
-and battles (colonies destroyed)
 
 Features
 -build queue system                   // Rapp
@@ -44,11 +39,17 @@ Create
 --Calc path                           // Roras!
 --step()                              // Roras!
 -Camera constr (x, y)                 // Flygarn!
+-Sprites?                             // Flygarn!
+
+Graphics
+-Draw paths                           // Flygarn!
 
 Small fixes:
 -Correct Player sel (planets/ships)   // Rapp!
 -Camera starting pos                  // Flygarn!   
 -Colonizer click                      // Flygarn!
+-Update income after colonies taken   // Flygarn!
+and battles (colonies destroyed)
 
 Features
 -Colonize planets                     // Flygarn!
