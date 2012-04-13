@@ -288,7 +288,7 @@ public class RenderArea extends JPanel implements EventHandler {
 			fleetMenu.draw(g);
 		}
 		// draw next btn
-//		next.draw(g);
+		//		next.draw(g);
 	}
 	
 	public void drawPlanets(Graphics g) {
