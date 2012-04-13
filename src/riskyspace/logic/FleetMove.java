@@ -33,7 +33,7 @@ public class FleetMove {
 						for (Fleet fleet : fleets) {
 							if (fleet.getOwner().equals(player) && fleetPaths.get(fleet).getLength() > 0 && fleet.useEnergy()) {
 								if (world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).getFleets().contains(fleet)) {
-									world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).getFleets().remove(fleet);
+									world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).removeFleet(fleet);
 									world.getTerritory(fleetPaths.get(fleet).step()).addFleet(fleet);
 								}
 							}

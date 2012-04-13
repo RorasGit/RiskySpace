@@ -39,7 +39,7 @@ public class Territory {
 		EventBus.INSTANCE.publish(evt);
 	}
 	public void removeFleet(Fleet fleet){
-		this.removeFleet(fleet);
+		this.fleets.remove(fleet);
 		Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
 		EventBus.INSTANCE.publish(evt);
 	}
