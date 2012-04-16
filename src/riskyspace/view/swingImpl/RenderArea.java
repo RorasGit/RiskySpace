@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -83,6 +82,11 @@ public class RenderArea extends JPanel implements EventHandler {
 	 * SpriteMap
 	 */
 	SpriteMap spriteMap = null;
+	
+	/*
+	 * Lock object for drawing
+	 */
+	private Object drawing = new Object();
 	
 	private EventTextPrinter eventTextPrinter = null;
 	

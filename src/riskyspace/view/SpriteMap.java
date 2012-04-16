@@ -283,6 +283,12 @@ public class SpriteMap {
 	 * sides of the world.
 	 */
 	public void draw(Graphics g, int squareSize, int offsetX, int offsetY) {
+		System.out.println("---------------");
+		System.out.println("#colonies: " + colonies.size());
+		System.out.println("#planets: " + planets.size());
+		System.out.println("#paths: " + paths.size());
+		System.out.println("#fleets: " + fleets.size());
+		
 		for (Position pos : colonies.keySet()) {
 			colonies.get(pos).draw(g, calcX(pos, offsetX, squareSize), calcY(pos, offsetY, squareSize), squareSize);
 		}
