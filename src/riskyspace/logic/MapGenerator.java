@@ -46,27 +46,25 @@ public class MapGenerator {
 	}
 
 	private static void setStartPlanets(Map<Position, Territory> territories, int rows, int cols) {
-	 	//Player 1
-	 	Position pos = new Position(3 + ((int) (Math.random() * 2)),3 + ((int) (Math.random() * 2)));
-		Territory t = territories.get(pos);
-		addStartPlanet(t, Player.BLUE);
-		addClosestPlanets(pos, territories);
-		addStartingFleets(t);
- 		//Player 2
- 		pos = new Position((rows - 3) + ((int) (Math.random() * 2)), (cols - 3) + ((int) (Math.random() * 2)));
-		t = territories.get(pos);
-		addStartPlanet(t, Player.RED);
-		addClosestPlanets(pos, territories);
-		addStartingFleets(t);
-	}
-	
-	private static void addClosestPlanets(Position pos, Map<Position, Territory> territories) {
-	 	territories.get(new Position(pos.getRow()+2,pos.getCol()-1)).setPlanet(Resource.METAL);
-		territories.get(new Position(pos.getRow()-1,pos.getCol()+2)).setPlanet(Resource.METAL);		
-	}
-	private static void addStartPlanet(Territory t, Player player){
-		t.setPlanet(Resource.METAL);
-		t.getPlanet().buildColony(player);
+		//Player 1
+		Position pos = new Position(3 + ((int) (Math.random() * 2)),3 + ((int) (Math.random() * 2)));
+		territories.get(pos).setPlanet(Resource.METAL);
+		territories.get(pos).getPlanet().buildColony(Player.RED);
+		addStartingFleets(territories.get(pos));
+		//Player 1:s closest planets
+		territories.get(new Position(pos.getRow()+2,pos.getCol()-1)).setPlanet(Resource.METAL);
+		territories.get(new Position(pos.getRow()-1,pos.getCol()+2)).setPlanet(Resource.METAL);
+		
+		//Player 2
+		pos = new Position((rows - 3) + ((int) (Math.random() * 2)), (cols - 3) + ((int) (Math.random() * 2)));
+		territories.get(pos).setPlanet(Resource.METAL);
+		territories.get(pos).getPlanet().buildColony(Player.BLUE);
+		addStartingFleets(territories.get(pos));
+		//Player 2:s closest planets
+		territories.get(new Position(pos.getRow()-2,pos.getCol()+1)).setPlanet(Resource.METAL);
+		territories.get(new Position(pos.getRow()+1,pos.getCol()-2)).setPlanet(Resource.METAL);
+		
+		
 	}
 
 	/**

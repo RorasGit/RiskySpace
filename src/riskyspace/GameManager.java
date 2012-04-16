@@ -9,15 +9,15 @@ import riskyspace.services.EventHandler;
 
 public class GameManager implements EventHandler {
 
-	private Player[] players = null;
+	//private Player[] players = null;
 	private Player currentPlayer = null;
 	private World world = null;
 	private int turn;
 	
 	public GameManager(World world, int nbrOfPlayers) {
 		this.world = world;
-		players = new Player[]{Player.BLUE, Player.RED};
-		currentPlayer = players[0];
+		//players = new Player[]{Player.BLUE, Player.RED};
+		changePlayer();
 		EventBus.INSTANCE.addHandler(this);
 		turn = 1;
 		
