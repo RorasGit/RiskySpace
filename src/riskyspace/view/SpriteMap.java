@@ -68,12 +68,11 @@ public class SpriteMap {
 	private Map<Position, Sprite> planets = new HashMap<Position, Sprite>();
 
 	
-	public static void init(SpriteMapData smd) {
-		SpriteMap.smd = smd;
-		smd.refreshData();
+	public static void init(int squareSize) {
+		SpriteMap.smd = SpriteMapData.getData(null);
 		planetsMap.put(Resource.METAL, metalplanets);
 		planetsMap.put(Resource.GAS, gasplanets);
-		loadSprites();
+		loadSprites(squareSize);
 		setPlanetSprites();
 	}
 	
@@ -85,10 +84,10 @@ public class SpriteMap {
 	
 	public static SpriteMap getSprites(Player player) {
 		SpriteMap map = new SpriteMap();
-		smd.refreshData();
+		smd = SpriteMapData.getData(player);
 		
 		for (ColonyData cd : smd.getColonyData()) {
-			map.colonies.put(cd.getPosition(), colonySprites.get(""+cd.getPlayer()));
+			map.colonies.put(cd.getPosition(), colonySprites.get(cd.getPlayer().toString()));
 		}
 		for (PlanetData pd : smd.getPlanetData()) {
 			map.planets.put(pd.getPosition(), allPlanets.get(pd.getPosition()));
@@ -100,8 +99,7 @@ public class SpriteMap {
 			map.fleets.put(fd.getPosition(), shipSprites.get(fd.getFlagships() + "_" + fd.getPlayer()));
 		}
 		
-		
-		Position[][] paths = smd.getPaths(player);
+		Position[][] paths = smd.getPaths();
 		for (int i = 0; i < paths.length; i++) {
 			if (paths[i].length > 1) {
 				for (int j = 0; j < paths[i].length; j++) {
@@ -236,53 +234,53 @@ public class SpriteMap {
 		return 0;
 	}
 	
-	private static void loadSprites(){
+	private static void loadSprites(int squareSize){
 		/*
 		 * Ships Blue Player
 		 */
-		shipSprites.put("SCOUT_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png"), 0, 0.5f));
-		shipSprites.put("HUNTER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png"), 0, 0.5f));
-		shipSprites.put("DESTROYER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png"), 0, 0.5f));
-		shipSprites.put("COLONIZER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/colonizer.png"), 0.5f, 0.5f));
+		shipSprites.put("SCOUT_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0, 0.5f));
+		shipSprites.put("HUNTER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0, 0.5f));
+		shipSprites.put("DESTROYER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0, 0.5f));
+		shipSprites.put("COLONIZER_BLUE", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/blue/colonizer.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0.5f));
 		
 		/*
 		 * Ships Red Player
 		 */
-		shipSprites.put("SCOUT_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png"), 0, 0.5f));
-		shipSprites.put("HUNTER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png"), 0, 0.5f));
-		shipSprites.put("DESTROYER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png"), 0, 0.5f));
-		shipSprites.put("COLONIZER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/colonizer.png"), 0.5f, 0.5f));
+		shipSprites.put("SCOUT_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0, 0.5f));
+		shipSprites.put("HUNTER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0, 0.5f));
+		shipSprites.put("DESTROYER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0, 0.5f));
+		shipSprites.put("COLONIZER_RED", new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/red/colonizer.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0.5f));
 
 		/*
 		 * Path Arrows
 		 */
-		pathTextures.put("HEAD", Toolkit.getDefaultToolkit().getImage("res/path/head.png"));
-		pathTextures.put("START", Toolkit.getDefaultToolkit().getImage("res/path/start.png"));
-		pathTextures.put("STRAIGHT", Toolkit.getDefaultToolkit().getImage("res/path/straight.png"));
-		pathTextures.put("TURN", Toolkit.getDefaultToolkit().getImage("res/path/turn.png"));
+		pathTextures.put("HEAD", Toolkit.getDefaultToolkit().getImage("res/path/head.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("START", Toolkit.getDefaultToolkit().getImage("res/path/start.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("STRAIGHT", Toolkit.getDefaultToolkit().getImage("res/path/straight.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("TURN", Toolkit.getDefaultToolkit().getImage("res/path/turn.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
 		
 		/*
 		 * Planets
 		 */
-		metalplanets.put(0, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_0.png"), 0.5f, 0));
-		metalplanets.put(1, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_1.png"), 0.5f, 0));
-		metalplanets.put(2, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_2.png"), 0.5f, 0));
-		metalplanets.put(3, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_3.png"), 0.5f, 0));
-		gasplanets.put(0, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_0.png"), 0.5f, 0));
-		gasplanets.put(1, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_1.png"), 0.5f, 0));
-		gasplanets.put(2, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_2.png"), 0.5f, 0));
+		metalplanets.put(0, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		metalplanets.put(1, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		metalplanets.put(2, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		metalplanets.put(3, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_3.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		gasplanets.put(0, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		gasplanets.put(1, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		gasplanets.put(2, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
 		
 		/*
 		 * Colony Sprite
 		 */
-		loadColonySprites(Color.RED, "RED");
-		loadColonySprites(Color.BLUE, "BLUE");
+		loadColonySprites(Color.RED, "RED", squareSize);
+		loadColonySprites(Color.BLUE, "BLUE", squareSize);
 	}
-	private static void loadColonySprites(Color color, String name){
-		BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+	private static void loadColonySprites(Color color, String name, int squareSize){
+		BufferedImage img = new BufferedImage(squareSize/2, squareSize/2, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.createGraphics();
 		g.setColor(color);
-		g.fillOval(5, 5, 64, 64);
+		g.fillOval(squareSize/60, squareSize/60, squareSize/2 + squareSize%2 - squareSize/30 - 1, squareSize/2 + squareSize%2 - squareSize/30 - 1);
 		colonySprites.put(name, new Sprite(img, 0.5f, 0));
 	}
 	

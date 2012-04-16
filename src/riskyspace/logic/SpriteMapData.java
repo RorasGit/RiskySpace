@@ -9,44 +9,49 @@ import riskyspace.model.*;
 public class SpriteMapData {
 	private static World world;
 	private static ViewEventController vec;
-
+	
 	private List<PlanetData> planetData = new ArrayList<PlanetData>();
 	private List<ColonizerData> colonizerData = new ArrayList<ColonizerData>();
 	private List<FleetData> fleetData = new ArrayList<FleetData>();
 	private List<ColonyData> colonyData = new ArrayList<ColonyData>();
-
+	private Player player;
+	
+	private SpriteMapData() {}
+	
 	public static void init(World world, ViewEventController vec) {
 		SpriteMapData.world = world;
 		SpriteMapData.vec = vec;
 	}
-
-	public void refreshData() {
-		planetData.clear();
-		colonizerData.clear();
-		fleetData.clear();
-		colonyData.clear();
+	
+	public static SpriteMapData getData(Player player) { //Player for sight and paths
+		SpriteMapData data = new SpriteMapData();
+		data.player = player;
+		data.planetData.clear();
+		data.colonizerData.clear();
+		data.fleetData.clear();
+		data.colonyData.clear();
 		for (Position pos : world.getContentPositions()) {
 			Territory terr = world.getTerritory(pos);
 
 			if (terr.hasPlanet()) {
-				planetData.add(new PlanetData(pos, null, terr.getPlanet().getType()));
+				data.planetData.add(new PlanetData(pos, null, terr.getPlanet().getType()));
 				if (terr.hasColony()) {
-					colonyData.add(new ColonyData(pos, terr.controlledBy()));
+					data.colonyData.add(new ColonyData(pos, terr.controlledBy()));
 				}
 			}
 			if (terr.hasColonizer()) {
-				colonizerData.add(new ColonizerData(pos, terr.controlledBy()));
+				data.colonizerData.add(new ColonizerData(pos, terr.controlledBy()));
 			}
 			if (terr.hasFleet()) {
 				if (terr.getFleetsFlagships() != ShipType.COLONIZER) {
-					fleetData.add(new FleetData(pos, terr.controlledBy(), terr.getFleetsFlagships()));
+					data.fleetData.add(new FleetData(pos, terr.controlledBy(), terr.getFleetsFlagships()));
 				}
 			}
 		}
-
+		return data;
 	}
 
-	public Position[][] getPaths(Player player) {
+	public Position[][] getPaths() {
 		return vec.getPaths(player);
 	}
 
