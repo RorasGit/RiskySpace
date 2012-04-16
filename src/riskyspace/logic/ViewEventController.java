@@ -18,6 +18,7 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
+import riskyspace.sound.Sound;
 
 public class ViewEventController implements EventHandler {
 
@@ -39,94 +40,87 @@ public class ViewEventController implements EventHandler {
 	public void performEvent(Event evt) {
 		if (!FleetMove.isMoving()) {
 			if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
-				if (!FleetMove.isMoving()) {
-					resetVariables(); // Reset all selections as we make a new
-										// selection
-					if (evt.getObjectValue() instanceof Position) {
-						Position pos = (Position) evt.getObjectValue();
-						if (lastFleetSelectPos == null
-								|| !lastFleetSelectPos.equals(pos)) {
-							lastFleetSelectPos = pos;
-							fleetSelectionIndex = 0;
-						}
-						if (world.getTerritory(pos).hasFleet()
-								&& (world.getTerritory(pos).controlledBy() == currentPlayer)) {
-							Fleet fleet = world.getTerritory(pos).getFleet(
-									fleetSelectionIndex); // Change this value
-															// somehow
-							selectedFleets.add(fleet);
-							fleetPaths.put(fleet, new Path(pos));
-							fleetSelectionIndex = (fleetSelectionIndex + 1)
-									% world.getTerritory(pos).getFleets()
-											.size();
-						}
+				resetVariables(); // Reset all selections as we make a new
+									// selection
+				if (evt.getObjectValue() instanceof Position) {
+					Position pos = (Position) evt.getObjectValue();
+					if (lastFleetSelectPos == null
+							|| !lastFleetSelectPos.equals(pos)) {
+						lastFleetSelectPos = pos;
+						fleetSelectionIndex = 0;
+					}
+					if (world.getTerritory(pos).hasFleet()
+							&& (world.getTerritory(pos).controlledBy() == currentPlayer)) {
+						Fleet fleet = world.getTerritory(pos).getFleet(
+								fleetSelectionIndex); // Change this value
+														// somehow
+						selectedFleets.add(fleet);
+						fleetPaths.put(fleet, new Path(pos));
+						fleetSelectionIndex = (fleetSelectionIndex + 1)
+								% world.getTerritory(pos).getFleets()
+										.size();
 					}
 				}
+				Sound.playSound("select.wav");
 			}
 
 			if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
-				if (!FleetMove.isMoving()) {
-					selectedColony = null;
-					Event event = new Event(Event.EventTag.HIDE_MENU, null);
-					EventBus.INSTANCE.publish(event);
-					if (evt.getObjectValue() instanceof Position) {
-						Position pos = (Position) evt.getObjectValue();
-						if (lastFleetSelectPos == null
-								|| !lastFleetSelectPos.equals(pos)) {
-							lastFleetSelectPos = pos;
-							fleetSelectionIndex = 0;
-						}
-						if (world.getTerritory(pos).hasFleet()
-								&& (world.getTerritory(pos).controlledBy() == currentPlayer)) {
-							Fleet fleet = world.getTerritory(pos).getFleet(
-									fleetSelectionIndex); // Change this value
-															// somehow
-							selectedFleets.add(fleet);
-							fleetPaths.put(fleet, new Path(pos));
-							fleetSelectionIndex = (fleetSelectionIndex + 1)
-									% world.getTerritory(pos).getFleets()
-											.size();
-						}
+				selectedColony = null;
+				Event event = new Event(Event.EventTag.HIDE_MENU, null);
+				EventBus.INSTANCE.publish(event);
+				if (evt.getObjectValue() instanceof Position) {
+					Position pos = (Position) evt.getObjectValue();
+					if (lastFleetSelectPos == null
+							|| !lastFleetSelectPos.equals(pos)) {
+						lastFleetSelectPos = pos;
+						fleetSelectionIndex = 0;
+					}
+					if (world.getTerritory(pos).hasFleet()
+							&& (world.getTerritory(pos).controlledBy() == currentPlayer)) {
+						Fleet fleet = world.getTerritory(pos).getFleet(
+								fleetSelectionIndex); // Change this value
+														// somehow
+						selectedFleets.add(fleet);
+						fleetPaths.put(fleet, new Path(pos));
+						fleetSelectionIndex = (fleetSelectionIndex + 1)
+								% world.getTerritory(pos).getFleets()
+										.size();
 					}
 				}
 			}
 
 			if (evt.getTag() == Event.EventTag.COLONIZER_SELECTED) {
-				if (!FleetMove.isMoving()) {
-					resetVariables();
-					if (evt.getObjectValue() instanceof Position) {
-						Position pos = (Position) evt.getObjectValue();
-						fleetSelectionIndex = 0;
-						lastFleetSelectPos = null;
-						for (Fleet fleet : world.getTerritory(pos).getFleets()) {
-							if (fleet.hasColonizer()) {
-								selectedFleets.add(fleet);
-								fleetPaths.put(fleet, new Path(pos));
-								break;
-							}
+				resetVariables();
+				if (evt.getObjectValue() instanceof Position) {
+					Position pos = (Position) evt.getObjectValue();
+					fleetSelectionIndex = 0;
+					lastFleetSelectPos = null;
+					for (Fleet fleet : world.getTerritory(pos).getFleets()) {
+						if (fleet.hasColonizer()) {
+							selectedFleets.add(fleet);
+							fleetPaths.put(fleet, new Path(pos));
+							break;
 						}
 					}
 				}
 			}
 
 			if (evt.getTag() == Event.EventTag.COLONIZE_PLANET) {
-				if (!FleetMove.isMoving()) {
-					if (evt.getObjectValue() instanceof Position) {
-						Position pos = (Position) evt.getObjectValue();
-						if (world.getTerritory(pos).hasFleet()
-								&& world.getTerritory(pos).hasPlanet()
-								&& !world.getTerritory(pos).hasColony()) {
-							for (Fleet fleet : world.getTerritory(pos)
-									.getFleets()) {
-								if (fleet.hasColonizer()) {
-									fleet.useColonizer();
-									world.getTerritory(pos).getPlanet()
-											.buildColony(fleet.getOwner());
-									EventText et = new EventText(
-											"Colony built", pos);
-									EventBus.INSTANCE.publish(new Event(
-											Event.EventTag.EVENT_TEXT, et));
-								}
+				if (evt.getObjectValue() instanceof Position) {
+					Position pos = (Position) evt.getObjectValue();
+					if (world.getTerritory(pos).hasFleet()
+							&& world.getTerritory(pos).hasPlanet()
+							&& !world.getTerritory(pos).hasColony()) {
+						for (Fleet fleet : world.getTerritory(pos)
+								.getFleets()) {
+							if (fleet.hasColonizer()) {
+								fleet.useColonizer();
+								world.getTerritory(pos).getPlanet()
+										.buildColony(fleet.getOwner());
+								EventText et = new EventText(
+										"Colony built", pos);
+								EventBus.INSTANCE.publish(new Event(
+										Event.EventTag.EVENT_TEXT, et));
 							}
 						}
 					}
@@ -134,12 +128,10 @@ public class ViewEventController implements EventHandler {
 			}
 
 			if (evt.getTag() == Event.EventTag.SET_PATH) {
-				if (!FleetMove.isMoving()) {
-					Position target = (Position) evt.getObjectValue();
-					for (Fleet fleet : selectedFleets) {
-						if (currentPlayer == fleet.getOwner()) {
-							fleetPaths.get(fleet).setTarget(target);
-						}
+				Position target = (Position) evt.getObjectValue();
+				for (Fleet fleet : selectedFleets) {
+					if (currentPlayer == fleet.getOwner()) {
+						fleetPaths.get(fleet).setTarget(target);
 					}
 				}
 				Event event = new Event(Event.EventTag.PATHS_UPDATED, null);
