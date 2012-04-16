@@ -9,11 +9,8 @@ import riskyspace.services.EventHandler;
 
 public class GameManager implements EventHandler {
 
-	// For future changePlayer() that isn't limited to/specified for Player.BLUE and Player.RED
-	private Player[] players = {Player.BLUE, Player.RED};
-
+	private Player[] players = null;
 	private Player currentPlayer = null;
-	
 	private World world = null;
 	private int turn;
 	
