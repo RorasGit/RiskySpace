@@ -34,6 +34,7 @@ import riskyspace.view.camera.CameraController;
 import riskyspace.view.menu.ColonyMenu;
 import riskyspace.view.menu.IMenu;
 import riskyspace.view.menu.RecruitMenu;
+import riskyspace.view.menu.TopMenu;
 
 public class RenderArea extends JPanel implements EventHandler {
 
@@ -65,6 +66,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	 */
 	private IMenu colonyMenu = null;
 	private IMenu recruitMenu = null;
+	private IMenu topMenu = null;
 	
 	/*
 	 * Screen measures
@@ -105,6 +107,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		int menuWidth = height / 3;
 		colonyMenu = new ColonyMenu(width - menuWidth, 0, menuWidth, height);
 		recruitMenu = new RecruitMenu(width - menuWidth, 0, menuWidth, height);
+		topMenu = new TopMenu(0, 0, width, height);
 	}
 	
 	private void createBackground() {
@@ -195,10 +198,10 @@ public class RenderArea extends JPanel implements EventHandler {
 	private String fps = "";
 
 	public void paintComponent(Graphics g) {
-		if (!fpsTimer.isRunning()) {
-			fpsTimer.start();
-		}
-		times++;
+//		if (!fpsTimer.isRunning()) {
+//			fpsTimer.start();
+//		}
+//		times++;
 		/*
 		 * Translate with cameras
 		 */
@@ -222,6 +225,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		if (recruitMenu.isVisible()) {
 			recruitMenu.draw(g);
 		}
+		topMenu.draw(g);
 		g.setColor(Color.GREEN);
 		g.drawString(fps, 50, 50);
 	}

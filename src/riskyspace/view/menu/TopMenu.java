@@ -43,7 +43,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 		endTurn = new Button(width-100, margin, 80, 80);
 		endTurn.setImage("res/menu/endTurn" + View.res);
 		
-		performMoves = new Button(width-190, margin, 80, 80);
+		performMoves = new Button(width-180, margin, 80, 80);
 		performMoves.setImage("res/menu/moves" + View.res);
 	}
 
