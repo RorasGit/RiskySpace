@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import riskyspace.logic.FleetMove;
+import riskyspace.logic.SpriteMapData;
 import riskyspace.logic.ViewEventController;
 import riskyspace.model.World;
 import riskyspace.services.Event;
@@ -23,7 +24,8 @@ public class Demo {
 	public Demo () {
 		final World world = new World();
 		ViewEventController vec = new ViewEventController(world);
-		SpriteMap.init(world, vec);
+		SpriteMapData.init(world, vec);
+		SpriteMap.init(new SpriteMapData());
 		final GameManager gm  = new GameManager(world, 2);
 		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world, new KeyListener() {
 			@Override

@@ -8,9 +8,7 @@ public class Sprite {
 	private double rotation = 0;
 	private float dx;
 	private float dy;
-	private float scale;
-	private Image img = null;
-	private Image resizedImage = null;
+	private Image image = null;
 	
 	/**
 	 * Creates a new Sprite object
@@ -19,14 +17,11 @@ public class Sprite {
 	 * inside the position
 	 * @param dy The offset from 0 to 1 of the top side 
 	 * inside the position
-	 * @param scale How much space of one square this image should take
 	 */
-	public Sprite(Image image, float dx, float dy, float scale) {
-		img = image;
-		resizedImage = img;
+	public Sprite(Image image, float dx, float dy) {
+		this.image = image;
 		this.dx = dx;
 		this.dy = dy;
-		this.scale = scale;
 	}
 	
 	/**
@@ -46,12 +41,9 @@ public class Sprite {
 	}
 	
 	public void draw(Graphics g, int x, int y, int squareSize) {
-		if (resizedImage == null || (resizedImage.getHeight(null) != squareSize*scale || resizedImage.getWidth(null) != squareSize*scale) ) {
-			resizedImage = img.getScaledInstance((int) (squareSize*scale), (int) (squareSize*scale), Image.SCALE_FAST);
-		}
 		Graphics2D g2D = (Graphics2D) g;
-		g2D.rotate(rotation, x + dx + resizedImage.getWidth(null)/2, y + dy + resizedImage.getHeight(null)/2);
-		g2D.drawImage(resizedImage, (int) (x + dx*squareSize), (int) (y + dy*squareSize), null);
-		g2D.rotate(-rotation, x + dx + resizedImage.getWidth(null)/2, y + dy + resizedImage.getHeight(null)/2);
+		g2D.rotate(rotation, x + dx + image.getWidth(null)/2, y + dy + image.getHeight(null)/2);
+		g2D.drawImage(image, (int) (x + dx*squareSize), (int) (y + dy*squareSize), null);
+		g2D.rotate(-rotation, x + dx + image.getWidth(null)/2, y + dy + image.getHeight(null)/2);
 	}
 }
