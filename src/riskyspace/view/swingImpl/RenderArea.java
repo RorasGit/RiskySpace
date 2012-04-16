@@ -84,11 +84,6 @@ public class RenderArea extends JPanel implements EventHandler {
 	 */
 	SpriteMap spriteMap = null;
 	
-	/*
-	 * Lock object for drawing
-	 */
-	private Object drawing = new Object();
-	
 	private EventTextPrinter eventTextPrinter = null;
 	
 	public RenderArea(World world) {

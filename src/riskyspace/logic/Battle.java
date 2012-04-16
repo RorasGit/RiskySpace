@@ -107,6 +107,10 @@ public class Battle {
 			}
 		}
 		territory.removeFleets(destroyedFleets);
+		for (Fleet fleet : destroyedFleets) {
+			Event evt = new Event(Event.EventTag.FLEET_REMOVED, fleet);
+			EventBus.INSTANCE.publish(evt);
+		}
 		/*
 		 * Remove colony if the owner lost
 		 */

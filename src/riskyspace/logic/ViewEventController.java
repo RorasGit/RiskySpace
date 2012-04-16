@@ -2,7 +2,6 @@ package riskyspace.logic;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -227,6 +226,10 @@ public class ViewEventController implements EventHandler {
 					EventBus.INSTANCE.publish(event);
 				}
 			}
+		}
+		
+		if (evt.getTag() == Event.EventTag.FLEET_REMOVED) {
+			fleetPaths.remove((Fleet) evt.getObjectValue());
 		}
 		
 		if (evt.getTag() == Event.EventTag.INTERRUPT_MOVES) {

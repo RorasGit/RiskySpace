@@ -12,6 +12,7 @@ public class Event {
 		TERRITORY_CHANGED,
 		RESOURCE_CHANGED,
 		INCOME_CHANGED,
+		FLEET_REMOVED,
 		/*
 		 * View triggered events
 		 */
