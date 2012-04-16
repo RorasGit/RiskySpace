@@ -105,8 +105,8 @@ public class RenderArea extends JPanel implements EventHandler {
 
 	private void createMenus() {
 		int menuWidth = height / 3;
-		colonyMenu = new ColonyMenu(width - menuWidth, 0, menuWidth, height);
-		recruitMenu = new RecruitMenu(width - menuWidth, 0, menuWidth, height);
+		colonyMenu = new ColonyMenu(width - menuWidth, 80, menuWidth, height-80);
+		recruitMenu = new RecruitMenu(width - menuWidth, 80, menuWidth, height-80);
 		topMenu = new TopMenu(0, 0, width, height);
 	}
 	

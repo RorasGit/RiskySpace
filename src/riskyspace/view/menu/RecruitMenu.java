@@ -48,24 +48,24 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 		this.y = y;
 		menuHeight = height;
 		menuWidth = width;
-		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground" + View.res + ".jpg")
-				.getScaledInstance(menuWidth, menuHeight-40, Image.SCALE_DEFAULT);
+		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground" + View.res)
+				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/city_blue.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		
-		buildScoutButton = new Button(x + margin, menuHeight - (2*menuWidth), 90, 90);
-		buildScoutButton.setImage("res/icons/ships/scoutbutton" + View.res + ".jpg");
+		buildScoutButton = new Button(x + margin, 2*y + menuHeight - (2*menuWidth), 90, 90);
+		buildScoutButton.setImage("res/icons/ships/scoutbutton" + View.res);
 		
-		buildHunterButton = new Button(x + width - (margin+90), menuHeight - (2*menuWidth), 90, 90);
-		buildHunterButton.setImage("res/icons/ships/hunterButton" + View.res + ".jpg");
+		buildHunterButton = new Button(x + width - (margin+90), 2*y + menuHeight - (2*menuWidth), 90, 90);
+		buildHunterButton.setImage("res/icons/ships/hunterButton" + View.res);
 		
-		buildDestroyerButton = new Button(x + margin , menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
-		buildDestroyerButton.setImage("res/icons/ships/destroyerButton" + View.res + ".jpg");
+		buildDestroyerButton = new Button(x + margin, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
+		buildDestroyerButton.setImage("res/icons/ships/destroyerButton" + View.res);
 		
-		buildColonizerButton = new Button(x + width - (margin+90), menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
-		buildColonizerButton.setImage("res/icons/ships/colonizerButton" + View.res + ".jpg");
+		buildColonizerButton = new Button(x + width - (margin+90), 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
+		buildColonizerButton.setImage("res/icons/ships/colonizerButton" + View.res);
 		
 		EventBus.INSTANCE.addHandler(this);
 		
