@@ -2,6 +2,7 @@ package riskyspace.view;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -10,7 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 import riskyspace.logic.SpriteMapData;
-import riskyspace.logic.data.*;
+import riskyspace.logic.data.ColonizerData;
+import riskyspace.logic.data.ColonyData;
+import riskyspace.logic.data.FleetData;
+import riskyspace.logic.data.PlanetData;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
@@ -30,7 +34,7 @@ public class SpriteMap {
 	/*
 	 * Path Sprites
 	 */
-	private static Map<String, Sprite> pathSprites = new HashMap<String, Sprite>();
+	private static Map<String, Image> pathTextures = new HashMap<String, Image>();
 	
 	/*
 	 * Ship Sprites
@@ -106,16 +110,16 @@ public class SpriteMap {
 					}
 					Sprite sprite = null;
 					if (j == 0) {
-						sprite = SpriteMap.pathSprites.get("START");
+						sprite = new Sprite(SpriteMap.pathTextures.get("START"), 0, 0);
 						sprite.setRotation(getRotation(null, paths[i][j], paths[i][j+1]));
 					} else if (j == paths[i].length - 1) {
-						sprite = SpriteMap.pathSprites.get("HEAD");
+						sprite = new Sprite(SpriteMap.pathTextures.get("HEAD"), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], null));
 					} else if (paths[i][j-1].getCol() != paths[i][j+1].getCol() && paths[i][j-1].getRow() != paths[i][j+1].getRow()) {
-						sprite = SpriteMap.pathSprites.get("TURN");
+						sprite = new Sprite(SpriteMap.pathTextures.get("TURN"), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]));
 					} else {
-						sprite = SpriteMap.pathSprites.get("STRAIGHT");
+						sprite = new Sprite(SpriteMap.pathTextures.get("STRAIGHT"), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]));
 					}
 					map.paths.get(paths[i][j]).add(sprite);
@@ -252,10 +256,10 @@ public class SpriteMap {
 		/*
 		 * Path Arrows
 		 */
-		pathSprites.put("HEAD", new Sprite(Toolkit.getDefaultToolkit().getImage("res/path/head.png"), 0, 0));
-		pathSprites.put("START", new Sprite(Toolkit.getDefaultToolkit().getImage("res/path/start.png"), 0, 0));
-		pathSprites.put("STRAIGHT", new Sprite(Toolkit.getDefaultToolkit().getImage("res/path/straight.png"), 0, 0));
-		pathSprites.put("TURN", new Sprite(Toolkit.getDefaultToolkit().getImage("res/path/turn.png"), 0, 0));
+		pathTextures.put("HEAD", Toolkit.getDefaultToolkit().getImage("res/path/head.png"));
+		pathTextures.put("START", Toolkit.getDefaultToolkit().getImage("res/path/start.png"));
+		pathTextures.put("STRAIGHT", Toolkit.getDefaultToolkit().getImage("res/path/straight.png"));
+		pathTextures.put("TURN", Toolkit.getDefaultToolkit().getImage("res/path/turn.png"));
 		
 		/*
 		 * Planets
