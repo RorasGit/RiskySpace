@@ -14,9 +14,9 @@ public class SwingView implements View {
 	private JFrame frame = null;
 	private RenderArea renderArea = null;
 	
-	public SwingView(World world, KeyListener keyListener) {
+	public SwingView(int rows, int cols, KeyListener keyListener) {
 		setFrame();
-		renderArea = new RenderArea(world);
+		renderArea = new RenderArea(rows, cols);
 		frame.add(renderArea);
 		frame.setVisible(true);
 		frame.addKeyListener(keyListener);

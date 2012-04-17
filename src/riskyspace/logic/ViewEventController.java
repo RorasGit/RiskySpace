@@ -270,13 +270,11 @@ public class ViewEventController implements EventHandler {
 		
 		if(evt.getTag() == Event.EventTag.COLONY_SELECTED) {
 			resetVariables();
-			Territory selectedTerritory = world.getTerritory((Position) evt
-					.getObjectValue());
+			Territory selectedTerritory = world.getTerritory((Position) evt.getObjectValue());
 			if (selectedTerritory.hasColony()) {
 				selectedColony = selectedTerritory.getColony();
 				if (selectedColony.getOwner() == currentPlayer) {
-					Event mEvent = new Event(Event.EventTag.SHOW_MENU,
-							selectedColony);
+					Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
 					EventBus.INSTANCE.publish(mEvent);
 				} else {
 					selectedColony = null;

@@ -26,7 +26,7 @@ public class Demo {
 		ViewEventController vec = new ViewEventController(world);
 		SpriteMapData.init(world, vec);
 		final GameManager gm  = new GameManager(world, 2);
-		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world, new KeyListener() {
+		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world.getRows(), world.getCols(), new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {

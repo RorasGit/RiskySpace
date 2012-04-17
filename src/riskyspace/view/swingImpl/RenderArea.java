@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -22,20 +21,20 @@ import javax.swing.Timer;
 
 import riskyspace.model.Player;
 import riskyspace.model.Position;
-import riskyspace.model.Resource;
-import riskyspace.model.ShipType;
 import riskyspace.model.World;
 import riskyspace.services.Event;
+import riskyspace.services.Event.EventTag;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
 import riskyspace.view.Clickable;
+import riskyspace.view.SpriteMap;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.menu.ColonyMenu;
-import riskyspace.view.menu.FleetMenu;
 import riskyspace.view.menu.IMenu;
 import riskyspace.view.menu.RecruitMenu;
+import riskyspace.view.menu.TopMenu;
 
 public class RenderArea extends JPanel implements EventHandler {
 
@@ -53,8 +52,6 @@ public class RenderArea extends JPanel implements EventHandler {
 	 */
 	private static final int EXTRA_SPACE_VERTICAL = 2;
 	
-	private final World world;
-	
 	/*
 	 * Cameras
 	 */
@@ -67,7 +64,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	 */
 	private IMenu colonyMenu = null;
 	private IMenu recruitMenu = null;
-	private IMenu fleetMenu = null;
+	private IMenu topMenu = null;
 	
 	/*
 	 * Screen measures
@@ -82,91 +79,37 @@ public class RenderArea extends JPanel implements EventHandler {
 	private BufferedImage background = null;
 	
 	/*
-	 * Planet Textures
+	 * SpriteMap
 	 */
-	private Map<Integer, Image> metalplanets = new HashMap<Integer, Image>();
-	private Map<Integer, Image> gasplanets = new HashMap<Integer, Image>();
-	private Map<Position, Image> planetTextures = new HashMap<Position, Image>();
-	/*
-	 * Planet Positions to draw planet textures
-	 */
-	private List<Position> planetPositions = new ArrayList<Position>();
+	private SpriteMap spriteMap = null;
 	
-	/*
-	 * Ship Textures
-	 */
-	private Map<String, Image> shipTextures = new HashMap<String, Image>();
-	
-	/*
-	 * 
-	 */
 	private EventTextPrinter eventTextPrinter = null;
 	
-	public RenderArea(World world) {
-		this.world = world;
+	private int rows, cols;
+	
+	public RenderArea(int rows, int cols) {
+		this.rows = rows;
+		this.cols = cols;
 		measureScreen();
-		setTextures();
+		SpriteMap.init(squareSize);
 		createBackground();
-		savePlanets();
 		initCameras();
 		createMenus();
 		eventTextPrinter = new EventTextPrinter();
 		EventBus.INSTANCE.addHandler(this);
 		addMouseListener(new ClickHandler());
 	}
-	
-	private void savePlanets() {
-		for (Position pos : world.getContentPositions()) {
-			if (world.getTerritory(pos).hasPlanet()) {
-				if (world.getTerritory(pos).getPlanet().getType() == Resource.METAL) {
-					planetTextures.put(pos, metalplanets.get((int) (Math.random()*4)));
-				} else {
-					planetTextures.put(pos, gasplanets.get((int) (Math.random()*3)));
-				}
-				planetPositions.add(pos);
-			}
-		}
-	}
 
 	private void createMenus() {
 		int menuWidth = height / 3;
-		colonyMenu = new ColonyMenu(width - menuWidth, 0, menuWidth, height);
-		recruitMenu = new RecruitMenu(width - menuWidth, 0, menuWidth, height);
-		fleetMenu = new FleetMenu(width - menuWidth, 0, menuWidth, height);
-	}
-
-	private void setTextures() {
-		/*
-		 * Planets
-		 */
-		metalplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		metalplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		metalplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		metalplanets.put(3, Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_3.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		gasplanets.put(0, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		gasplanets.put(1, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		gasplanets.put(2, Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT));
-		
-		/*
-		 * Ships Blue Player
-		 */
-		shipTextures.put("SCOUT_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/scout.png"));
-		shipTextures.put("HUNTER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/hunter.png"));
-		shipTextures.put("DESTROYER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/destroyer.png"));
-		shipTextures.put("COLONIZER_BLUE", Toolkit.getDefaultToolkit().getImage("res/icons/blue/colonizer.png"));
-		
-		/*
-		 * Ships Red Player
-		 */
-		shipTextures.put("SCOUT_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/scout.png"));
-		shipTextures.put("HUNTER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/hunter.png"));
-		shipTextures.put("DESTROYER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/destroyer.png"));
-		shipTextures.put("COLONIZER_RED", Toolkit.getDefaultToolkit().getImage("res/icons/red/colonizer.png"));
+		colonyMenu = new ColonyMenu(width - menuWidth, 80, menuWidth, height-80);
+		recruitMenu = new RecruitMenu(width - menuWidth, 80, menuWidth, height-80);
+		topMenu = new TopMenu(0, 0, width, height);
 	}
 	
 	private void createBackground() {
-		int totalWidth = (world.getCols() + 2*EXTRA_SPACE_HORIZONTAL)*squareSize;
-		int totalHeight = (world.getRows() + 2*EXTRA_SPACE_VERTICAL)*squareSize;
+		int totalWidth = (cols + 2*EXTRA_SPACE_HORIZONTAL)*squareSize;
+		int totalHeight = (rows + 2*EXTRA_SPACE_VERTICAL)*squareSize;
 		background = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2D = background.createGraphics();
 		
@@ -177,22 +120,20 @@ public class RenderArea extends JPanel implements EventHandler {
 		/*
 		 * Draw Horizontal lines
 		 */
-		for (int row = 0; row <= world.getRows(); row++) {
+		for (int row = 0; row <= rows; row++) {
 			int x1 = (EXTRA_SPACE_HORIZONTAL) * squareSize;
-			int y1 = (EXTRA_SPACE_VERTICAL + row) * squareSize;
-			int x2 = (EXTRA_SPACE_HORIZONTAL + world.getCols()) * squareSize;
-			int y2 = (EXTRA_SPACE_VERTICAL + row) * squareSize;
-			g2D.drawLine(x1, y1, x2, y2);
+			int x2 = (EXTRA_SPACE_HORIZONTAL + cols) * squareSize;
+			int y = (EXTRA_SPACE_VERTICAL + row) * squareSize;
+			g2D.drawLine(x1, y, x2, y);
 		}
 		/*
 		 * Draw Vertical lines
 		 */
-		for (int col = 0; col <= world.getCols(); col++) {
-			int x1 = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
+		for (int col = 0; col <= rows; col++) {
+			int x = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
 			int y1 = (EXTRA_SPACE_VERTICAL) * squareSize;
-			int x2 = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
-			int y2 = (EXTRA_SPACE_VERTICAL + world.getRows()) * squareSize;
-			g2D.drawLine(x1, y1, x2, y2);
+			int y2 = (EXTRA_SPACE_VERTICAL + rows) * squareSize;
+			g2D.drawLine(x, y1, x, y2);
 		}
 		
 		/*
@@ -200,16 +141,16 @@ public class RenderArea extends JPanel implements EventHandler {
 		 */
 		g2D.setColor(Color.WHITE);
 		for (int i = 0; i < 5000; i++) {
-			int x = (int) (Math.random()*(world.getCols()+2*EXTRA_SPACE_HORIZONTAL)*squareSize);
-			int y = (int) (Math.random()*(world.getRows()+2*EXTRA_SPACE_VERTICAL)*squareSize);
+			int x = (int) (Math.random()*(cols+2*EXTRA_SPACE_HORIZONTAL)*squareSize);
+			int y = (int) (Math.random()*(rows+2*EXTRA_SPACE_VERTICAL)*squareSize);
 			g2D.fillRect(x, y, 1, 1);
 		}
 	}
 	
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
-		cameras.put(Player.BLUE, new Camera(0.95f,0.95f));
-		cameras.put(Player.RED, new Camera(0.05f,0.05f));
+		cameras.put(Player.BLUE, new Camera(0.93f,0.92f));
+		cameras.put(Player.RED, new Camera(0.07f,0.08f));
 		currentCamera = cameras.get(Player.BLUE);
 		cc = new CameraController();
 		cc.setCamera(currentCamera);
@@ -226,20 +167,21 @@ public class RenderArea extends JPanel implements EventHandler {
 	}
 	
 	public void setPlayer(Player player) {
+		spriteMap = SpriteMap.getSprites(player);
 		currentCamera = cameras.get(player);
 		cc.setCamera(currentCamera);
 	}
 	
-	public int translateRealX() {
-		return (int) (((world.getCols()+2*EXTRA_SPACE_HORIZONTAL)*squareSize - width)*currentCamera.getX());
+	public int translatePixelsX() {
+		return (int) (((cols+2*EXTRA_SPACE_HORIZONTAL)*squareSize - width)*currentCamera.getX());
 	}
 	
-	public int translateRealY() {
-		return (int) (((world.getRows()+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
+	public int translatePixelsY() {
+		return (int) (((rows+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
 	}
 	
 	private int times = 0;
-	Timer timer = new Timer(500, new ActionListener() {
+	Timer fpsTimer = new Timer(500, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -249,27 +191,23 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 	});
 	private String fps = "";
-	
+
 	public void paintComponent(Graphics g) {
-		if (!timer.isRunning()) {
-			timer.start();
-		}
-		times++;
+//		if (!fpsTimer.isRunning()) {
+//			fpsTimer.start();
+//		}
+//		times++;
 		/*
 		 * Translate with cameras
 		 */
-		int xTrans = -(int) (((world.getCols()+2*EXTRA_SPACE_HORIZONTAL)*squareSize - width)*currentCamera.getX());
-		int yTrans = -(int) (((world.getRows()+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
+		int xTrans = -(int) (((cols+2*EXTRA_SPACE_HORIZONTAL)*squareSize - width)*currentCamera.getX());
+		int yTrans = -(int) (((rows+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
 		g.translate(xTrans, yTrans);
 		
 		// Draw background
 		g.drawImage(background, 0, 0, null);
 		
-		drawPlanets(g);
-		
-		// drawPaths();
-		
-		drawFleets(g);
+		spriteMap.draw(g, squareSize, EXTRA_SPACE_HORIZONTAL, EXTRA_SPACE_VERTICAL);
 		
 		// Draw texts
 		eventTextPrinter.drawEventText(g);
@@ -282,164 +220,106 @@ public class RenderArea extends JPanel implements EventHandler {
 		if (recruitMenu.isVisible()) {
 			recruitMenu.draw(g);
 		}
+		topMenu.draw(g);
 		g.setColor(Color.GREEN);
 		g.drawString(fps, 50, 50);
-		if (fleetMenu.isVisible()) {
-			fleetMenu.draw(g);
-		}
-		// draw next btn
-		//		next.draw(g);
-	}
-	
-	public void drawPlanets(Graphics g) {
-		// Draw Colony Marker
-		for (Position pos : world.getContentPositions()) {
-			if (world.getTerritory(pos).hasColony()) {
-				g.setColor(world.getTerritory(pos).getColony().getOwner() == Player.BLUE ?
-					Color.BLUE : Color.RED);
-				g.fillOval((int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 2),
-					(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize + 2),
-					squareSize/2 - 5, squareSize/2 - 5);
-			}
-		}
-		// Draw Planets
-		for (Position pos : planetPositions) {
-			g.drawImage(planetTextures.get(pos), (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.5) * squareSize - 4),
-					(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 1) * squareSize), null);
-		}
-	}
-	
-	public void drawFleets(Graphics g) {
-		for (Position pos : world.getContentPositions()) {
-			if (world.getTerritory(pos).hasFleet()) {
-				Player controller = world.getTerritory(pos).controlledBy();
-				Image image = null;
-				ShipType flagship = world.getTerritory(pos).getFleetsFlagships();
-				if (!flagship.equals(ShipType.COLONIZER)) {
-					image = controller == Player.BLUE ? shipTextures.get(flagship + "_BLUE") : shipTextures.get(flagship + "_RED");
-					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.75) * squareSize) - image.getWidth(null)/2,
-							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
-				}
-				if (world.getTerritory(pos).hasColonizer()) {
-					image = controller == Player.BLUE ? shipTextures.get("COLONIZER_BLUE") : shipTextures.get("COLONIZER_RED");
-					g.drawImage(image, (int) ((EXTRA_SPACE_HORIZONTAL + pos.getCol() - 0.25) * squareSize) - image.getWidth(null)/2,
-							(int) ((EXTRA_SPACE_VERTICAL + pos.getRow() - 0.25) * squareSize) - image.getWidth(null)/2, null);
-				}
-			}
-		}
 	}
 	 
 	public Position getPosition(Point point) {
-		int row = ((point.y + translateRealY()) / squareSize) + 1 - EXTRA_SPACE_VERTICAL;
-		int col = ((point.x  + translateRealX()) / squareSize) + 1 - EXTRA_SPACE_HORIZONTAL;
+		int row = ((point.y + translatePixelsY()) / squareSize) + 1 - EXTRA_SPACE_VERTICAL;
+		int col = ((point.x  + translatePixelsX()) / squareSize) + 1 - EXTRA_SPACE_HORIZONTAL;
 		return new Position(row, col); 
 	}
 	
 	private boolean isLegalPos(Position pos) {
-		boolean rowLegal = pos.getRow() >= 1 && pos.getRow() <= world.getRows();
-		boolean colLegal = pos.getCol() >= 1 && pos.getCol() <= world.getCols();
+		boolean rowLegal = pos.getRow() >= 1 && pos.getRow() <= rows;
+		boolean colLegal = pos.getCol() >= 1 && pos.getCol() <= cols;
 		return rowLegal && colLegal;
 	}
 
-	/*
-	 * Click handling for different parts
-	 */
-	public boolean menuClick(Point point) {
-		if (colonyMenu.isVisible()) {
-			if (colonyMenu instanceof Clickable) {
-				return ((Clickable) colonyMenu).mousePressed(point);
-			}
+	@Override
+	public void performEvent(Event evt) {
+		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
+			setPlayer((Player) evt.getObjectValue());
 		}
-		if (recruitMenu.isVisible()) {
-			if (recruitMenu instanceof Clickable) {
-				return ((Clickable) recruitMenu).mousePressed(point);
-			}
+		if (evt.getTag() == EventTag.TERRITORY_CHANGED || evt.getTag() == EventTag.PATHS_UPDATED) {
+			spriteMap = SpriteMap.getSprites(cameras.get(Player.BLUE) == currentCamera ? Player.BLUE : Player.RED);
 		}
-		
-		if (fleetMenu.isVisible()) {
-			if (fleetMenu instanceof Clickable) {
-				return ((Clickable) fleetMenu).mousePressed(point);
-			}
-		}
-		
-		return false;
 	}
+	
+	private class ClickHandler implements MouseListener {
 
-	public boolean colonizerClick(Point point) {
-		Position pos = getPosition(point);
-		if (isLegalPos(pos)) {
-			int dX = (point.x + translateRealX()) % squareSize;
-			int dY = (point.y + translateRealY()) % squareSize;
-			if (world.getTerritory(pos).hasFleet()) {
+		/*
+		 * Click handling for different parts
+		 */
+		public boolean menuClick(Point point) {
+			if (colonyMenu.isVisible()) {
+				if (colonyMenu instanceof Clickable) {
+					return ((Clickable) colonyMenu).mousePressed(point);
+				}
+			}
+			if (recruitMenu.isVisible()) {
+				if (recruitMenu instanceof Clickable) {
+					return ((Clickable) recruitMenu).mousePressed(point);
+				}
+			}
+			return false;
+		}
+
+		public boolean colonizerClick(Point point) {
+			Position pos = getPosition(point);
+			if (isLegalPos(pos)) {
+				int dX = (point.x + translatePixelsX()) % squareSize;
+				int dY = (point.y + translatePixelsY()) % squareSize;
 				if (dX > squareSize/2 && dY > squareSize/2) {
 					Event evt = new Event(Event.EventTag.COLONIZER_SELECTED, pos);
 					EventBus.INSTANCE.publish(evt);
 					return true;
 				}
 			}
+			return false;
 		}
-		return false;
-	}
-	
-	public boolean fleetClick(MouseEvent me) {
-		Point point = me.getPoint();
-		Position pos = getPosition(point);
-		if (isLegalPos(pos)) {
-			int dX = (point.x + translateRealX()) % squareSize;
-			int dY = (point.y + translateRealY()) % squareSize;
-			if (world.getTerritory(pos).hasFleet()) {
+		
+		public boolean fleetClick(MouseEvent me) {
+			Point point = me.getPoint();
+			Position pos = getPosition(point);
+			if (isLegalPos(pos)) {
+				int dX = (point.x + translatePixelsX()) % squareSize;
+				int dY = (point.y + translatePixelsY()) % squareSize;
 				if (dX <= squareSize/2 && dY >= squareSize/2) {
 					if (me.isShiftDown()) {
 						Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
 						EventBus.INSTANCE.publish(evt);
-						//dont know if this should be here or how flygarn has tänkt sig detta, swenglish ftw
-						Event evt2 = new Event(Event.EventTag.SHOW_FLEETMENU, world.getTerritory(pos).getFleets());
-						EventBus.INSTANCE.publish(evt2);
 					} else {
 						Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, pos);
 						EventBus.INSTANCE.publish(evt);
-						//dont know if this should be here or how flygarn has tänkt sig detta, swenglish ftw
-						Event evt2 = new Event(Event.EventTag.SHOW_FLEETMENU, world.getTerritory(pos).getFleets());
-						EventBus.INSTANCE.publish(evt2);
 					}
 					return true;
 				}
 			}
+			return false;
 		}
-		return false;
-	}
 
-	public boolean colonyClick(Point point) {
-		Position pos = getPosition(point);
-		if (isLegalPos(pos)) {
-			if (world.getTerritory(pos).hasColony()) {
+		public boolean colonyClick(Point point) {
+			Position pos = getPosition(point);
+			if (isLegalPos(pos)) {
 				Event evt = new Event(Event.EventTag.COLONY_SELECTED, pos);
 				EventBus.INSTANCE.publish(evt);
 				return true;
 			}
+			return false;
 		}
-		return false;
-	}
-	
-	public boolean pathClick(Point point) {
-		Position pos = getPosition(point);
-		if (isLegalPos(pos)) {
-			Event evt = new Event(Event.EventTag.SET_PATH, pos);
-			EventBus.INSTANCE.publish(evt);
-			return true;
+		
+		public boolean pathClick(Point point) {
+			Position pos = getPosition(point);
+			if (isLegalPos(pos)) {
+				Event evt = new Event(Event.EventTag.SET_PATH, pos);
+				EventBus.INSTANCE.publish(evt);
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
-
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
-			currentCamera = cameras.get((Player) evt.getObjectValue());
-			cc.setCamera(currentCamera);
-		}
-	}
-	
-	class ClickHandler implements MouseListener {
+		
 		@Override public void mousePressed(MouseEvent me) {
 			if (me.getButton() == MouseEvent.BUTTON1) {
 				/*
@@ -476,7 +356,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		@Override public void mouseReleased(MouseEvent me) {}
 	}
 	
-	public class EventTextPrinter implements EventHandler {
+	private class EventTextPrinter implements EventHandler {
 		
 		final List<EventText> texts = new ArrayList<EventText>();
 		
