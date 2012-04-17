@@ -260,7 +260,9 @@ public class RenderArea extends JPanel implements EventHandler {
 		 */
 		public boolean menuClick(Point point) {
 			if (topMenu instanceof Clickable) {
-				return ((Clickable) topMenu).mousePressed(point);
+				if (((Clickable) topMenu).mousePressed(point)) {
+					return true;
+				}
 			}
 			if (colonyMenu.isVisible()) {
 				if (colonyMenu instanceof Clickable) {
