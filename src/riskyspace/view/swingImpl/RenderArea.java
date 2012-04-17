@@ -32,6 +32,7 @@ import riskyspace.view.SpriteMap;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.menu.ColonyMenu;
+import riskyspace.view.menu.FleetMenu;
 import riskyspace.view.menu.IMenu;
 import riskyspace.view.menu.RecruitMenu;
 import riskyspace.view.menu.TopMenu;
@@ -64,6 +65,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	 */
 	private IMenu colonyMenu = null;
 	private IMenu recruitMenu = null;
+	private IMenu fleetMenu = null;
 	private IMenu topMenu = null;
 	
 	/*
@@ -104,6 +106,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		int menuWidth = height / 3;
 		colonyMenu = new ColonyMenu(width - menuWidth, 80, menuWidth, height-80);
 		recruitMenu = new RecruitMenu(width - menuWidth, 80, menuWidth, height-80);
+		fleetMenu = new FleetMenu(width - menuWidth, 80, menuWidth, height-80);
 		topMenu = new TopMenu(0, 0, width, height);
 	}
 	
@@ -220,6 +223,9 @@ public class RenderArea extends JPanel implements EventHandler {
 		if (recruitMenu.isVisible()) {
 			recruitMenu.draw(g);
 		}
+		if (fleetMenu.isVisible()) {
+			fleetMenu.draw(g);
+		}
 		topMenu.draw(g);
 		g.setColor(Color.GREEN);
 		g.drawString(fps, 50, 50);
@@ -261,6 +267,11 @@ public class RenderArea extends JPanel implements EventHandler {
 			if (recruitMenu.isVisible()) {
 				if (recruitMenu instanceof Clickable) {
 					return ((Clickable) recruitMenu).mousePressed(point);
+				}
+			}
+			if (fleetMenu.isVisible()) {
+				if (fleetMenu instanceof Clickable) {
+					return ((Clickable) fleetMenu).mousePressed(point);
 				}
 			}
 			return false;
