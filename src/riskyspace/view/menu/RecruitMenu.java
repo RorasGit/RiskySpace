@@ -42,23 +42,26 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 	/*
 	 * Images
 	 */
-	private Image colonyBlue = null;
-	private Image colonyRed = null;
+	private Image cityBlue = null;
+	private Image cityRed = null;
+	private Image backgroundRed = null;
+	private Image backgroundBlue = null;
 	
 	public RecruitMenu(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		menuHeight = height;
 		menuWidth = width;
-		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground" + View.res)
+		backgroundRed = Toolkit.getDefaultToolkit().getImage("res/menu/red/menubackground" + View.res)
 				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
-		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/city_blue.png").
+		backgroundBlue = Toolkit.getDefaultToolkit().getImage("res/menu/blue/menubackground" + View.res)
+				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
+		cityBlue = Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
-		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.png").
+		cityRed = Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		
 		buildScoutButton = new Button(x + width/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth), 90, 90);
-		buildScoutButton.setImage("res/icons/ships/scoutbutton" + View.res);
 		buildScoutButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -67,7 +70,6 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		buildHunterButton = new Button(x + width/2 + margin/3, 2*y + menuHeight - (2*menuWidth), 90, 90);
-		buildHunterButton.setImage("res/icons/ships/hunterButton" + View.res);
 		buildHunterButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -76,7 +78,6 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		buildDestroyerButton = new Button(x + width/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
-		buildDestroyerButton.setImage("res/icons/ships/destroyerButton" + View.res);
 		buildDestroyerButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -85,7 +86,6 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		buildColonizerButton = new Button(x + width/2 + margin/3, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
-		buildColonizerButton.setImage("res/icons/ships/colonizerButton" + View.res);
 		buildColonizerButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -99,7 +99,13 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 	public void setColony(Colony colony) {
 		colonyName = colony.getName();
 		ownerColor = colony.getOwner() == Player.BLUE ? Color.BLUE : Color.RED;
-		colonyPicture = colony.getOwner() == Player.BLUE ? colonyBlue : colonyRed;
+		background = colony.getOwner() == Player.BLUE ? backgroundBlue : backgroundRed;
+		colonyPicture = colony.getOwner() == Player.BLUE ? cityBlue : cityRed;
+		String player = colony.getOwner().toString().toLowerCase();
+		buildScoutButton.setImage("res/menu/" + player + "/button/scoutButton" + View.res);
+		buildHunterButton.setImage("res/menu/" + player + "/button/hunterButton" + View.res);
+		buildDestroyerButton.setImage("res/menu/" + player + "/button/destroyerButton" + View.res);
+		buildColonizerButton.setImage("res/menu/" + player + "/button/colonizerButton" + View.res);
 	}
 
 	@Override
@@ -168,7 +174,7 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 		 */
 		if (enabled) {
 			g.drawImage(background, x, y, null);
-			g.drawImage(colonyPicture, x + margin, y + margin ,null);
+			g.drawImage(colonyPicture, x + margin, y + margin + 15,null);
 			drawColonyName(g);
 			buildScoutButton.draw(g);
 			buildHunterButton.draw(g);

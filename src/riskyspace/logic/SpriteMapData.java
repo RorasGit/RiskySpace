@@ -75,4 +75,17 @@ public class SpriteMapData {
 	public List<ColonyData> getColonyData() {
 		return colonyData;
 	}
+
+	public int getFleetSize(Position position) {
+		// TODO Test Method!
+		int size = 0;
+		for(Fleet fleet : world.getTerritory(position).getFleets()) {
+			size += fleet.fleetSize();
+		}
+		return size - getColonizerAmount(position);
+	}
+	
+	public int getColonizerAmount(Position position) {
+		return world.getTerritory(position).shipCount(ShipType.COLONIZER);
+	}
 }

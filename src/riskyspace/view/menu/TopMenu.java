@@ -37,7 +37,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 		this.x = x;
 		this.y = y;
 		
-		menuButton = new Button(margin, margin, 90, 50);
+		menuButton = new Button(margin, margin, 79, 30);
 		menuButton.setImage("res/menu/menuButton3" + View.res);
 		menuButton.setAction(new Action() {
 			@Override
@@ -46,10 +46,10 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		
-		buildQueueButton = new Button(85, margin, 95, 50);
+		buildQueueButton = new Button(margin + 84, margin, 79, 30);
 		buildQueueButton.setImage("res/menu/menuButton2" + View.res);
 		
-		endTurnButton = new Button(width-100, margin, 80, 80);
+		endTurnButton = new Button(width - margin - 79, margin, 79, 66);
 		endTurnButton.setImage("res/menu/endTurn" + View.res);
 		endTurnButton.setAction(new Action() {
 			@Override
@@ -59,7 +59,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		
-		performMovesButton = new Button(width-180, margin, 80, 80);
+		performMovesButton = new Button(width - margin - 2*79 - 5, margin, 79, 66);
 		performMovesButton.setImage("res/menu/moves" + View.res);
 		performMovesButton.setAction(new Action() {
 			@Override

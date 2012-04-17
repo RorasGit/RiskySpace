@@ -46,17 +46,21 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 	 */
 	private Image colonyBlue = null;
 	private Image colonyRed = null;
+	private Image backgroundRed = null;
+	private Image backgroundBlue = null;
 	
 	public ColonyMenu(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		menuHeight = height;
 		menuWidth = width;
-		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground" + View.res)
+		backgroundRed = Toolkit.getDefaultToolkit().getImage("res/menu/red/menubackground" + View.res)
 				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
-		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/city_blue.png").
+		backgroundBlue = Toolkit.getDefaultToolkit().getImage("res/menu/blue/menubackground" + View.res)
+				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
+		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
-		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.jpg").
+		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		buildShipButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		buildShipButton.setImage("res/menu/btn.jpg");
@@ -74,6 +78,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 	public void setColony(Colony colony) {
 		colonyName = colony.getName();
 		ownerColor = colony.getOwner() == Player.BLUE ? Color.BLUE : Color.RED;
+		background = colony.getOwner() == Player.BLUE ? backgroundBlue : backgroundRed;
 		colonyPicture = colony.getOwner() == Player.BLUE ? colonyBlue : colonyRed;
 	}
 	

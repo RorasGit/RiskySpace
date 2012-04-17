@@ -1,5 +1,6 @@
 package riskyspace.logic;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -48,13 +49,18 @@ public class ViewEventController implements EventHandler {
 						fleetSelectionIndex = 0;
 					}
 					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == currentPlayer)) {
-						Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
-						selectedFleets.add(fleet);
-						fleetPaths.put(fleet, new Path(pos));
-						fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
-						Event event = new Event(Event.EventTag.SHOW_FLEETMENU, selectedFleets);
-						EventBus.INSTANCE.publish(event);
-						Sound.playSound("select.wav");
+						if (world.getTerritory(pos).getFleets().size() != world.getTerritory(pos).shipCount(ShipType.COLONIZER)) {
+							Fleet fleet;
+							do {
+								fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex);
+								fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+							} while(fleet.hasColonizer());
+							selectedFleets.add(fleet);
+							fleetPaths.put(fleet, new Path(pos));
+							Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
+							EventBus.INSTANCE.publish(event);
+							Sound.playSound("select.wav");
+						}
 					}
 				}
 			}
@@ -72,12 +78,20 @@ public class ViewEventController implements EventHandler {
 						fleetSelectionIndex = 0;
 					}
 					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == currentPlayer)) {
-						Fleet fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex); // Change this value somehow
-						selectedFleets.add(fleet);
-						fleetPaths.put(fleet, new Path(pos));
-						fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
-						Event event = new Event(Event.EventTag.SHOW_FLEETMENU, selectedFleets);
-						EventBus.INSTANCE.publish(event);
+						/*
+						 * Check that there are other ships than colonizers
+						 */
+						if (world.getTerritory(pos).getFleets().size() != world.getTerritory(pos).shipCount(ShipType.COLONIZER)) {
+							Fleet fleet;
+							do {
+								fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex);
+								fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+							} while(fleet.hasColonizer());
+							selectedFleets.add(fleet);
+							fleetPaths.put(fleet, new Path(pos));
+							Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
+							EventBus.INSTANCE.publish(event);
+						}
 					}
 				}
 			}
@@ -88,12 +102,16 @@ public class ViewEventController implements EventHandler {
 					Position pos = (Position) evt.getObjectValue();
 					fleetSelectionIndex = 0;
 					lastFleetSelectPos = null;
-					for (Fleet fleet : world.getTerritory(pos).getFleets()) {
-						if (fleet.hasColonizer()) {
-							selectedFleets.add(fleet);
-							fleetPaths.put(fleet, new Path(pos));
-							break;
+					if (world.getTerritory(pos).hasColonizer()) {
+						for (Fleet fleet : world.getTerritory(pos).getFleets()) {
+							if (fleet.hasColonizer()) {
+								selectedFleets.add(fleet);
+								fleetPaths.put(fleet, new Path(pos));
+								break;
+							}
 						}
+						Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
+						EventBus.INSTANCE.publish(event);
 					}
 				}
 			}

@@ -96,13 +96,13 @@ public class RenderArea extends JPanel implements EventHandler {
 		SpriteMap.init(squareSize);
 		createBackground();
 		initCameras();
-		createMenus();
+		createMenues();
 		eventTextPrinter = new EventTextPrinter();
 		EventBus.INSTANCE.addHandler(this);
 		addMouseListener(new ClickHandler());
 	}
 
-	private void createMenus() {
+	private void createMenues() {
 		int menuWidth = height / 3;
 		colonyMenu = new ColonyMenu(width - menuWidth, 80, menuWidth, height-80);
 		recruitMenu = new RecruitMenu(width - menuWidth, 80, menuWidth, height-80);

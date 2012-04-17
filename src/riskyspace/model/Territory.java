@@ -183,4 +183,12 @@ public class Territory {
 	public int hashCode() {
 		return id*17;
 	}
+
+	public int shipCount(ShipType type) {
+		int count = 0;
+		for (Fleet fleet : fleets) {
+			count += fleet.shipCount(type);
+		}
+		return count;
+	}
 }

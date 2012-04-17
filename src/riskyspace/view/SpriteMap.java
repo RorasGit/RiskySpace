@@ -69,6 +69,13 @@ public class SpriteMap {
 	private Map<Position, Sprite> colonizers = new HashMap<Position, Sprite>();
 	private Map<Position, Sprite> planets = new HashMap<Position, Sprite>();
 
+	
+	/*
+	 * BAD SOLUTION TEMPORARY TODO
+	 */
+	private Map<Position, Integer> shipCount = new HashMap<Position, Integer>();
+	private Map<Position, Integer> colonizerCount = new HashMap<Position, Integer>();
+	
 	/**
 	 * Initiate this SpriteMap object so that it is set up for creating
 	 * SpriteMaps.
@@ -112,9 +119,11 @@ public class SpriteMap {
 		}
 		for (ColonizerData colonizerData : data.getColonizerData()) {
 			map.colonizers.put(colonizerData.getPosition(), shipSprites.get("COLONIZER_" + colonizerData.getPlayer()));
+			map.colonizerCount.put(colonizerData.getPosition(), data.getColonizerAmount(colonizerData.getPosition()));
 		}
 		for (FleetData fleetData : data.getFleetData()) {
 			map.fleets.put(fleetData.getPosition(), shipSprites.get(fleetData.getFlagships() + "_" + fleetData.getPlayer()));
+			map.shipCount.put(fleetData.getPosition(), data.getFleetSize(fleetData.getPosition()));
 		}
 		
 		Position[][] paths = data.getPaths();
@@ -341,9 +350,13 @@ public class SpriteMap {
 		}
 		for (Position pos : fleets.keySet()) {
 			fleets.get(pos).draw(g, calcX(pos, offsetX, squareSize), calcY(pos, offsetY, squareSize), squareSize);
+			g.setColor(Color.CYAN);
+			g.drawString("" + shipCount.get(pos), calcX(pos, offsetX, squareSize) + squareSize/2 - squareSize/8, calcY(pos, offsetY, squareSize) + squareSize - 5);
 		}
 		for (Position pos : colonizers.keySet()) {
 			colonizers.get(pos).draw(g, calcX(pos, offsetX, squareSize), calcY(pos, offsetY, squareSize), squareSize);
+			g.setColor(Color.CYAN);
+			g.drawString("" + colonizerCount.get(pos), calcX(pos, offsetX, squareSize) + squareSize - squareSize/8, calcY(pos, offsetY, squareSize) + squareSize - 5);
 		}
 	}
 
