@@ -7,17 +7,17 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 
 public class Territory {
+	
 	private List<Fleet> fleets = null;
 	private Planet planet = null;
 	
-	
 	/**
-	 * This territory�s id
+	 * This territory id
 	 */
 	private int id = 0;
 	
 	/**
-	 * Static save of the territory�s id whenever a new planet is created.
+	 * Id counter for Territories
 	 */
 	private static int nextId = 0;
 	
@@ -26,11 +26,13 @@ public class Territory {
 		id = nextId;
 		nextId++;
 	}
+	
 	public void addFleet(Fleet fleet){
 		this.fleets.add(fleet);
 		Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
 		EventBus.INSTANCE.publish(evt);
 	}
+	
 	public void addFleets(List<Fleet> fleets) {
 		for (int i = 0; i < fleets.size(); i++) {
 			this.fleets.add(fleets.get(i));
@@ -38,6 +40,7 @@ public class Territory {
 		Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
 		EventBus.INSTANCE.publish(evt);
 	}
+	
 	public void removeFleet(Fleet fleet){
 		this.fleets.remove(fleet);
 		Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);

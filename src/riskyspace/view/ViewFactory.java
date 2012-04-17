@@ -13,7 +13,7 @@ public class ViewFactory {
 		if (SWING_IMPL.equals(type)) {
 			return new SwingView(rows, cols, keyListener);
 		} else {
-			return null;
+			throw new IllegalArgumentException("Type does not exist");
 		}
 	}
 }

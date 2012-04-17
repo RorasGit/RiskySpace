@@ -9,9 +9,11 @@ import java.awt.Toolkit;
 
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
+import riskyspace.model.ShipType;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
+import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 import riskyspace.view.View;
@@ -55,20 +57,43 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		
-		buildScoutButton = new Button(x + margin, 2*y + menuHeight - (2*menuWidth), 90, 90);
+		buildScoutButton = new Button(x + width/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth), 90, 90);
 		buildScoutButton.setImage("res/icons/ships/scoutbutton" + View.res);
-		
-		buildHunterButton = new Button(x + width - (margin+90), 2*y + menuHeight - (2*menuWidth), 90, 90);
+		buildScoutButton.setAction(new Action() {
+			@Override
+			public void performAction() {
+				Event evt = new Event(Event.EventTag.BUILD_SHIP, ShipType.SCOUT);
+				EventBus.INSTANCE.publish(evt);
+			}
+		});
+		buildHunterButton = new Button(x + width/2 + margin/3, 2*y + menuHeight - (2*menuWidth), 90, 90);
 		buildHunterButton.setImage("res/icons/ships/hunterButton" + View.res);
-		
-		buildDestroyerButton = new Button(x + margin, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
+		buildHunterButton.setAction(new Action() {
+			@Override
+			public void performAction() {
+				Event evt = new Event(Event.EventTag.BUILD_SHIP, ShipType.HUNTER);
+				EventBus.INSTANCE.publish(evt);
+			}
+		});
+		buildDestroyerButton = new Button(x + width/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
 		buildDestroyerButton.setImage("res/icons/ships/destroyerButton" + View.res);
-		
-		buildColonizerButton = new Button(x + width - (margin+90), 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
+		buildDestroyerButton.setAction(new Action() {
+			@Override
+			public void performAction() {
+				Event evt = new Event(Event.EventTag.BUILD_SHIP, ShipType.DESTROYER);
+				EventBus.INSTANCE.publish(evt);
+			}
+		});
+		buildColonizerButton = new Button(x + width/2 + margin/3, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
 		buildColonizerButton.setImage("res/icons/ships/colonizerButton" + View.res);
-		
+		buildColonizerButton.setAction(new Action() {
+			@Override
+			public void performAction() {
+				Event evt = new Event(Event.EventTag.BUILD_SHIP, ShipType.COLONIZER);
+				EventBus.INSTANCE.publish(evt);
+			}
+		});
 		EventBus.INSTANCE.addHandler(this);
-		
 	}
 	
 	public void setColony(Colony colony) {
@@ -110,23 +135,10 @@ public class RecruitMenu implements IMenu, Clickable, EventHandler {
 		 * Only handle mouse event if enabled
 		 */
 		if (enabled) {
-			if (buildScoutButton.mousePressed(p)) {
-				Event evt = new Event(Event.EventTag.BUILD_SCOUT, null);
-				EventBus.INSTANCE.publish(evt);
-				return true;
-			} else if (buildHunterButton.mousePressed(p)) {
-				Event evt = new Event(Event.EventTag.BUILD_HUNTER, null);
-				EventBus.INSTANCE.publish(evt);
-				return true;
-			} else if (buildDestroyerButton.mousePressed(p)) {
-				Event evt = new Event(Event.EventTag.BUILD_DESTROYER, null);
-				EventBus.INSTANCE.publish(evt);
-				return true;
-			} else if (buildColonizerButton.mousePressed(p)) {
-				Event evt = new Event(Event.EventTag.BUILD_COLONIZER, null);
-				EventBus.INSTANCE.publish(evt);
-				return true;
-			}
+			if (buildScoutButton.mousePressed(p)) {return true;}
+			else if (buildHunterButton.mousePressed(p)) {return true;}
+			else if (buildDestroyerButton.mousePressed(p)) {return true;} 
+			else if (buildColonizerButton.mousePressed(p)) {return true;}
 			if (this.contains(p)) {return true;}
 			else {
 				return false;

@@ -7,12 +7,12 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
-
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
+import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 import riskyspace.view.View;
@@ -58,9 +58,16 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/city_red.jpg").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
-		buildShipButton = new Button(x + margin, menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		buildShipButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		buildShipButton.setImage("res/menu/btn.jpg");
 		buildShipButton.setText("Build Ship");
+		buildShipButton.setAction(new Action(){
+			@Override
+			public void performAction() {
+				Event evt = new Event(Event.EventTag.SHIP_MENU, null);
+				EventBus.INSTANCE.publish(evt);
+			}
+		});
 		EventBus.INSTANCE.addHandler(this);
 	}
 	
@@ -89,11 +96,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 		 * Only handle mouse event if enabled
 		 */
 		if (enabled) {
-			if (buildShipButton.mousePressed(p)) {
-				Event evt = new Event(Event.EventTag.SHIP_MENU, null);
-				EventBus.INSTANCE.publish(evt);
-				return true;
-			}
+			if (buildShipButton.mousePressed(p)) {return true;}
 			if (this.contains(p)) {return true;}
 			else {
 				return false;
@@ -124,7 +127,7 @@ public class ColonyMenu implements IMenu, Clickable, EventHandler {
 		 */
 		if (enabled) {
 			g.drawImage(background, x, y, null);
-			g.drawImage(colonyPicture, x + margin, y + margin,null);
+			g.drawImage(colonyPicture, x + margin, y + margin + 15,null);
 			drawColonyName(g);
 			buildShipButton.draw(g);
 		}

@@ -13,7 +13,7 @@ public class Button implements Clickable {
 	private int x, y, width, height;
 	private Image image = null;
 	private Image scaledImage = null;
-	
+	private Action action = null;
 	private String text = null;
 	
 	public Button(int x, int y, int width, int height) {
@@ -23,9 +23,17 @@ public class Button implements Clickable {
 		this.height = height;
 	}
 	
+	public void setAction(Action action) {
+		this.action = action;
+	}
+	
 	public void setImage(String location) {
 		image = Toolkit.getDefaultToolkit().getImage(location);
 		scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 	
 	public void draw(Graphics g) {
@@ -43,9 +51,9 @@ public class Button implements Clickable {
 		Color prev = g.getColor();
 		g.setColor(Color.LIGHT_GRAY);
 		Font saveFont = g.getFont();
-		g.setFont(new Font("Comic Sanc MS", Font.ITALIC, 40));
+		g.setFont(new Font("Comic Sanc MS", Font.BOLD, 30));
 		int textX = x - (g.getFontMetrics().stringWidth(text) / 2) + (width / 2);
-		int textY = y + (g.getFontMetrics().getHeight() / 2) + (height / 2);
+		int textY = y + (g.getFontMetrics().getHeight() / 3) + (height / 2);
 		g.drawString(text, textX, textY);
 		g.setFont(saveFont);
 		g.setColor(prev);
@@ -70,10 +78,6 @@ public class Button implements Clickable {
 		this.width = d.width;
 		this.height = d.height;
 	}
-	
-	public void setText(String text) {
-		this.text = text;
-	}
 
 	@Override
 	public boolean contains(Point p) {
@@ -85,6 +89,9 @@ public class Button implements Clickable {
 	@Override
 	public boolean mousePressed(Point p) {
 		if (contains(p)) {
+			if (action != null) {
+				action.performAction();
+			}
 			return true;
 		}
 		return false;

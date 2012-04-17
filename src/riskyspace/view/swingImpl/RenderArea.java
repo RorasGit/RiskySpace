@@ -196,10 +196,10 @@ public class RenderArea extends JPanel implements EventHandler {
 	private String fps = "";
 
 	public void paintComponent(Graphics g) {
-//		if (!fpsTimer.isRunning()) {
-//			fpsTimer.start();
-//		}
-//		times++;
+		if (!fpsTimer.isRunning()) {
+			fpsTimer.start();
+		}
+		times++;
 		/*
 		 * Translate with cameras
 		 */
@@ -228,7 +228,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		}
 		topMenu.draw(g);
 		g.setColor(Color.GREEN);
-		g.drawString(fps, 50, 50);
+		g.drawString(fps, 20, 100);
 	}
 	 
 	public Position getPosition(Point point) {
@@ -259,6 +259,9 @@ public class RenderArea extends JPanel implements EventHandler {
 		 * Click handling for different parts
 		 */
 		public boolean menuClick(Point point) {
+			if (topMenu instanceof Clickable) {
+				return ((Clickable) topMenu).mousePressed(point);
+			}
 			if (colonyMenu.isVisible()) {
 				if (colonyMenu instanceof Clickable) {
 					return ((Clickable) colonyMenu).mousePressed(point);

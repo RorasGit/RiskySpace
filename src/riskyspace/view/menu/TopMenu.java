@@ -4,9 +4,12 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 
+import riskyspace.logic.FleetMove;
 import riskyspace.model.Colony;
 import riskyspace.services.Event;
+import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
+import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 import riskyspace.view.View;
@@ -20,8 +23,8 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	private Image supply = null;
 	private Image currentRound;
 	
-	private Button endTurn = null;
-	private Button performMoves = null;
+	private Button endTurnButton = null;
+	private Button performMovesButton = null;
 	private Button menuButton = null;
 	private Button buildQueueButton = null;
 	
@@ -36,15 +39,35 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 		
 		menuButton = new Button(margin, margin, 90, 50);
 		menuButton.setImage("res/menu/menuButton3" + View.res);
+		menuButton.setAction(new Action() {
+			@Override
+			public void performAction() {
+				System.exit(0);
+			}
+		});
 		
 		buildQueueButton = new Button(85, margin, 95, 50);
 		buildQueueButton.setImage("res/menu/menuButton2" + View.res);
 		
-		endTurn = new Button(width-100, margin, 80, 80);
-		endTurn.setImage("res/menu/endTurn" + View.res);
+		endTurnButton = new Button(width-100, margin, 80, 80);
+		endTurnButton.setImage("res/menu/endTurn" + View.res);
+		endTurnButton.setAction(new Action() {
+			@Override
+			public void performAction() {
+				Event evt = new Event(Event.EventTag.NEXT_TURN, null);
+				EventBus.INSTANCE.publish(evt);
+			}
+		});
 		
-		performMoves = new Button(width-180, margin, 80, 80);
-		performMoves.setImage("res/menu/moves" + View.res);
+		performMovesButton = new Button(width-180, margin, 80, 80);
+		performMovesButton.setImage("res/menu/moves" + View.res);
+		performMovesButton.setAction(new Action() {
+			@Override
+			public void performAction() {
+				Event evt = new Event(FleetMove.isMoving() ? Event.EventTag.INTERRUPT_MOVES : Event.EventTag.PERFORM_MOVES, null);
+				EventBus.INSTANCE.publish(evt);
+			}
+		});
 	}
 
 	@Override
@@ -56,19 +79,26 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 
 	@Override
 	public boolean contains(Point p) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean mousePressed(Point p) {
-		// TODO Auto-generated method stub
+		if (menuButton.mousePressed(p)) {return true;}
+		else if (buildQueueButton.mousePressed(p)) {return true;}
+		else if (endTurnButton.mousePressed(p)) {return true;}
+		else if (performMovesButton.mousePressed(p)) {return true;}
+		else if (this.contains(p)) {return true;}
 		return false;
 	}
 
 	@Override
 	public boolean mouseReleased(Point p) {
-		// TODO Auto-generated method stub
+		if (menuButton.mouseReleased(p)) {return true;}
+		else if (buildQueueButton.mouseReleased(p)) {return true;}
+		else if (endTurnButton.mouseReleased(p)) {return true;}
+		else if (performMovesButton.mouseReleased(p)) {return true;}
+		else if (this.contains(p)) {return true;}
 		return false;
 	}
 
@@ -79,8 +109,8 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 		g.drawImage(supply, x, y, null);
 		menuButton.draw(g);
 		buildQueueButton.draw(g);
-		endTurn.draw(g);
-		performMoves.draw(g);
+		endTurnButton.draw(g);
+		performMovesButton.draw(g);
 	}
 
 	@Override

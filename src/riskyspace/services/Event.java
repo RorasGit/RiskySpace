@@ -28,10 +28,7 @@ public class Event {
 		COLONIZE_PLANET,
 		DESELECT,
 		SHIP_MENU,
-		BUILD_SCOUT,
-		BUILD_HUNTER,
-		BUILD_DESTROYER,
-		BUILD_COLONIZER,
+		BUILD_SHIP,
 		NEXT_TURN,
 		/*
 		 * Controller triggered events

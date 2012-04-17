@@ -20,7 +20,6 @@ public class GameManager implements EventHandler {
 		changePlayer();
 		EventBus.INSTANCE.addHandler(this);
 		turn = 1;
-		
 	}
 
 	public Player getCurrentPlayer() {

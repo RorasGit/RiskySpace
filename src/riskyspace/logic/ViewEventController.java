@@ -133,20 +133,8 @@ public class ViewEventController implements EventHandler {
 				EventBus.INSTANCE.publish(event);
 			}
 
-			if (evt.getTag() == Event.EventTag.BUILD_SCOUT) {
-				queueShip(ShipType.SCOUT);
-			}
-
-			if (evt.getTag() == Event.EventTag.BUILD_HUNTER) {
-				queueShip(ShipType.HUNTER);
-			}
-
-			if (evt.getTag() == Event.EventTag.BUILD_DESTROYER) {
-				queueShip(ShipType.DESTROYER);
-			}
-
-			if (evt.getTag() == Event.EventTag.BUILD_COLONIZER) {
-				queueShip(ShipType.COLONIZER);
+			if (evt.getTag() == Event.EventTag.BUILD_SHIP) {
+				queueShip((ShipType) evt.getObjectValue());
 			}
 
 			if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
