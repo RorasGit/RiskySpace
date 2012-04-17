@@ -56,7 +56,6 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.SHOW_FLEETMENU) {
-				System.out.println("Hej");
 				//setFleet((Fleet) evt.getObjectValue());
 				setVisible(true);
 	
