@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.List;
 
 import riskyspace.model.Colony;
@@ -26,6 +27,8 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 	private int menuHeight = 0;
 	private int menuWidth = 0;
 	private int margin = 30;
+	
+	private List<Button> fleetButtons = new ArrayList<Button>();
 	
 	private Image background = null;
 	private Image fleetPicture = null;
@@ -51,6 +54,7 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 	public void setFleet(Fleet fleet) {
 		ownerColor = fleet.getOwner() == Player.BLUE ? Color.BLUE : Color.RED;
 		fleetPicture = fleet.getOwner() == Player.BLUE ? fleetBlue : fleetRed;
+		createFleetButtons(fleet);
 	}
 
 	@Override
@@ -114,6 +118,10 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 			//mergeButton.draw(g);
 			//splitButton.draw(g);
 		}
+	}
+	
+	private void createFleetButtons(Fleet fleet) {
+		
 	}
 
 	@Override

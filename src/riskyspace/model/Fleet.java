@@ -1,6 +1,8 @@
 package riskyspace.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class Fleet implements MoveAble {
@@ -58,16 +60,18 @@ public class Fleet implements MoveAble {
 	 * Create a Fleet by merging a List of other Fleets.
 	 * @param fleets The List of Fleets to merge.
 	 */
-	public Fleet(List<Fleet> fleets) {
+	public Fleet(Collection<Fleet> fleets) {
 		if (fleets.isEmpty()) {
 			throw new IllegalArgumentException("No Fleets sent");
 		}
-		this.owner = fleets.get(0).getOwner();
-		for (int i = 0; i < fleets.size(); i++) {
-			if (fleets.get(i).getOwner() != owner) {
+		this.owner = fleets.iterator().next().getOwner();
+		Iterator<Fleet> it = fleets.iterator();
+		while (it.hasNext()) {
+			Fleet fleet = it.next();
+			if (fleet.getOwner() != owner) {
 				throw new IllegalArgumentException("The Fleets can not have different owners");
 			}
-			ships.addAll(fleets.get(i).ships);
+			ships.addAll(fleet.ships);
 		}
 		if (fleetSize() == 0) {
 			throw new IllegalArgumentException("Can not create empty Fleet");

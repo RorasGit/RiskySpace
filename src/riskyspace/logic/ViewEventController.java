@@ -52,11 +52,11 @@ public class ViewEventController implements EventHandler {
 						selectedFleets.add(fleet);
 						fleetPaths.put(fleet, new Path(pos));
 						fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+						Event event = new Event(Event.EventTag.SHOW_FLEETMENU, selectedFleets);
+						EventBus.INSTANCE.publish(event);
+						Sound.playSound("select.wav");
 					}
 				}
-				Sound.playSound("select.wav");
-				Event event = new Event(Event.EventTag.SHOW_FLEETMENU, selectedFleets);
-				EventBus.INSTANCE.publish(event);
 			}
 
 			if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
@@ -76,10 +76,10 @@ public class ViewEventController implements EventHandler {
 						selectedFleets.add(fleet);
 						fleetPaths.put(fleet, new Path(pos));
 						fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+						Event event = new Event(Event.EventTag.SHOW_FLEETMENU, selectedFleets);
+						EventBus.INSTANCE.publish(event);
 					}
 				}
-				Event event = new Event(Event.EventTag.SHOW_FLEETMENU, selectedFleets);
-				EventBus.INSTANCE.publish(event);
 			}
 
 			if (evt.getTag() == Event.EventTag.COLONIZER_SELECTED) {
