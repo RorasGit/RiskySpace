@@ -6,13 +6,13 @@ import riskyspace.model.ShipType;
 
 public class FleetData extends SpriteData {
 	
-	private ShipType flagships;
-	public FleetData(Position pos, Player player, ShipType flagships) {
+	private ShipType flagship;
+	
+	public FleetData(Position pos, Player player, ShipType flagship) {
 		super(pos, player);
-		this.flagships = flagships;
+		this.flagship = flagship;
 	}
 	public ShipType getFlagships(){
-		return flagships;
+		return flagship;
 	}
-
 }

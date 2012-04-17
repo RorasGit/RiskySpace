@@ -8,6 +8,4 @@ public class ColonyData extends SpriteData {
 	public ColonyData(Position pos, Player player) {
 		super(pos, player);
 	}
-
-
 }

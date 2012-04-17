@@ -23,6 +23,11 @@ public class SpriteMapData {
 		SpriteMapData.vec = vec;
 	}
 	
+	/**
+	 * Create Sprite Data for a Player. This data is used by SpriteMap to draw contents of the game.
+	 * @param player The Player that data is requested for.
+	 * @return SpriteMapData for a Player.
+	 */
 	public static SpriteMapData getData(Player player) { //Player for sight and paths
 		SpriteMapData data = new SpriteMapData();
 		data.player = player;

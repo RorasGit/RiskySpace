@@ -28,13 +28,13 @@ public class Demo {
 		final GameManager gm  = new GameManager(world, 2);
 		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world.getRows(), world.getCols(), new KeyListener() {
 			@Override
-			public void keyPressed(KeyEvent arg0) {
-				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					System.exit(0);
-				} else if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
+				} else if (event.getKeyCode() == KeyEvent.VK_SPACE) {
 					Event evt = new Event(FleetMove.isMoving() ? Event.EventTag.INTERRUPT_MOVES : Event.EventTag.PERFORM_MOVES, null);
 					EventBus.INSTANCE.publish(evt);
-				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+				} else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
 					Event evt = new Event(Event.EventTag.NEXT_TURN, null);
 					EventBus.INSTANCE.publish(evt);
 				}

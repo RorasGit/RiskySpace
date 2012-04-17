@@ -25,6 +25,9 @@ import riskyspace.model.Resource;
  * 
  */
 public class SpriteMap {
+	
+	private static boolean initiated = false;
+	
 	/*
 	 * Planet Sprites
 	 */
@@ -51,55 +54,70 @@ public class SpriteMap {
 	 */
 	private static Map<String, Sprite> colonySprites = new HashMap<String, Sprite>();
 	
-	
 	/*
 	 * SpriteMapData
 	 */
-	private static SpriteMapData smd = null;
+	private static SpriteMapData data = null;
 	
 	/*
-	 * Every spritemaps
+	 * Sprites to be drawn.
 	 */
-//	private Map<Position, Sprite> fogOfWar = new HashMap<Position, Sprite>();
+	private Map<Position, Sprite> fogOfWar = new HashMap<Position, Sprite>();
 	private Map<Position, Sprite> colonies = new HashMap<Position, Sprite>();
 	private Map<Position, List<Sprite>> paths = new HashMap<Position, List<Sprite>>();
 	private Map<Position, Sprite> fleets = new HashMap<Position, Sprite>();
 	private Map<Position, Sprite> colonizers = new HashMap<Position, Sprite>();
 	private Map<Position, Sprite> planets = new HashMap<Position, Sprite>();
 
-	
+	/**
+	 * Initiate this SpriteMap object so that it is set up for creating
+	 * SpriteMaps.
+	 * 
+	 * @param squareSize The size of a square.
+	 */
 	public static void init(int squareSize) {
-		SpriteMap.smd = SpriteMapData.getData(null);
+		SpriteMap.data = SpriteMapData.getData(null);
 		planetsMap.put(Resource.METAL, metalplanets);
 		planetsMap.put(Resource.GAS, gasplanets);
 		loadSprites(squareSize);
 		setPlanetSprites();
+		initiated = true;
 	}
 	
-	public static void setPlanetSprites() {
-		for (PlanetData pd : smd.getPlanetData()) {
+	private static void setPlanetSprites() {
+		for (PlanetData pd : data.getPlanetData()) {
 			allPlanets.put(pd.getPosition(), planetsMap.get(pd.getResource()).get(pd.getIndex()));
 		}
 	}
 	
+	/**
+	 * Creates a SpriteMap containing Sprites that can be drawn using the
+	 * <code>draw(Graphics g)</code> method.
+	 * @param player The Player's view this SpriteMap should contain.
+	 * @return A SpriteMap with graphic info for this Player.
+	 */
 	public static SpriteMap getSprites(Player player) {
+		if (!initiated) {
+			throw new IllegalStateException("SpriteMap not initiated");
+		}
+		
 		SpriteMap map = new SpriteMap();
-		smd = SpriteMapData.getData(player);
+		data = SpriteMapData.getData(player);
 		
-		for (ColonyData cd : smd.getColonyData()) {
-			map.colonies.put(cd.getPosition(), colonySprites.get(cd.getPlayer().toString()));
+		for (ColonyData colonyData : data.getColonyData()) {
+			map.colonies.put(colonyData.getPosition(), colonySprites.get(colonyData.getPlayer().toString()));
 		}
-		for (PlanetData pd : smd.getPlanetData()) {
-			map.planets.put(pd.getPosition(), allPlanets.get(pd.getPosition()));
+		for (PlanetData planetData : data.getPlanetData()) {
+			map.planets.put(planetData.getPosition(), allPlanets.get(planetData.getPosition()));
 		}
-		for (ColonizerData cd : smd.getColonizerData()) {
-			map.colonizers.put(cd.getPosition(), shipSprites.get("COLONIZER_" + cd.getPlayer()));
+		for (ColonizerData colonizerData : data.getColonizerData()) {
+			map.colonizers.put(colonizerData.getPosition(), shipSprites.get("COLONIZER_" + colonizerData.getPlayer()));
 		}
-		for (FleetData fd : smd.getFleetData()) {
-			map.fleets.put(fd.getPosition(), shipSprites.get(fd.getFlagships() + "_" + fd.getPlayer()));
+		for (FleetData fleetData : data.getFleetData()) {
+			map.fleets.put(fleetData.getPosition(), shipSprites.get(fleetData.getFlagships() + "_" + fleetData.getPlayer()));
 		}
 		
-		Position[][] paths = smd.getPaths();
+		Position[][] paths = data.getPaths();
 		for (int i = 0; i < paths.length; i++) {
 			if (paths[i].length > 1) {
 				for (int j = 0; j < paths[i].length; j++) {
@@ -127,6 +145,13 @@ public class SpriteMap {
 		return map;
 	}
 	
+	/**
+	 * Determine the Rotation in radians for a Path arrow part depending on path segments.
+	 * @param previous The path segment previous to the current one.
+	 * @param current The current path segment.
+	 * @param next The next path segment.
+	 * @return Rotation for the current segment in radians.
+	 */
 	private static double getRotation(Position previous, Position current, Position next) {
 		/*
 		 * Variables for determining where the previous and next positions
@@ -234,6 +259,9 @@ public class SpriteMap {
 		return 0;
 	}
 	
+	/**
+	 * Loads and scales Sprites and Textures used in the game.
+	 */
 	private static void loadSprites(int squareSize){
 		/*
 		 * Ships Blue Player
@@ -273,15 +301,21 @@ public class SpriteMap {
 		/*
 		 * Colony Sprite
 		 */
-		loadColonySprites(Color.RED, "RED", squareSize);
-		loadColonySprites(Color.BLUE, "BLUE", squareSize);
+		colonySprites.put("RED", createColonySprite(Color.RED, squareSize));
+		colonySprites.put("BLUE", createColonySprite(Color.BLUE, squareSize));
 	}
-	private static void loadColonySprites(Color color, String name, int squareSize){
+	
+	/**
+	 * Creates a Circle Sprite of any Color used as Colony marker
+	 * @param color The Color of the Circle
+	 * @param squareSize Size of one Square in the game
+	 */
+	private static Sprite createColonySprite(Color color, int squareSize){
 		BufferedImage img = new BufferedImage(squareSize/2, squareSize/2, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = img.createGraphics();
 		g.setColor(color);
 		g.fillOval(squareSize/60, squareSize/60, squareSize/2 + squareSize%2 - squareSize/30 - 1, squareSize/2 + squareSize%2 - squareSize/30 - 1);
-		colonySprites.put(name, new Sprite(img, 0.5f, 0));
+		return new Sprite(img, 0.5f, 0);
 	}
 	
 	/**
@@ -294,7 +328,6 @@ public class SpriteMap {
 	 * sides of the world.
 	 */
 	public void draw(Graphics g, int squareSize, int offsetX, int offsetY) {
-		
 		for (Position pos : colonies.keySet()) {
 			colonies.get(pos).draw(g, calcX(pos, offsetX, squareSize), calcY(pos, offsetY, squareSize), squareSize);
 		}

@@ -8,5 +8,4 @@ public class ColonizerData extends SpriteData {
 	public ColonizerData(Position pos, Player player) {
 		super(pos, player);
 	}
-
 }
