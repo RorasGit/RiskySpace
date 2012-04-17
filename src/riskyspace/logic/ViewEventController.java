@@ -70,6 +70,10 @@ public class ViewEventController implements EventHandler {
 				if (selectedFleets.isEmpty()) {
 					Event event = new Event(Event.EventTag.HIDE_MENU, null);
 					EventBus.INSTANCE.publish(event);
+				} else if (selectedFleets.iterator().next().hasColonizer()) {
+					selectedFleets.clear();
+					Event event = new Event(Event.EventTag.HIDE_MENU, null);
+					EventBus.INSTANCE.publish(event);
 				}
 				if (evt.getObjectValue() instanceof Position) {
 					Position pos = (Position) evt.getObjectValue();
