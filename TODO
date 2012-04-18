@@ -1,13 +1,15 @@
 --------------<<TODO>>-----------------
-Publish Events:
+Publish Events:.
 -
 
 Refactor:
 -Ship Costs away from ShipType        // Flygarn
--
+-GameManager/VEC                      // -----
+-Useage of Player                     // -----
+-Imutability                          // -----
 
 Create
--
+- PlayerInfo                          // -----
 
 Graphic
 -Mark selected fleet                  // Rapp
@@ -25,7 +27,6 @@ Features
 -Ship Menu                            // Z3B0
 -Rotate ships based on entry/path     // -----
 -Home Planet setup/attributes         // Roras
--Sound, find a good framework         // Roras
 
 Future ideas:
  - Name solo scout 'Danny' (ein smidig kriminell)
@@ -54,3 +55,4 @@ and battles (colonies destroyed)
 
 Features
 -Colonize planets                     // Flygarn!
+-Sound, find a good framework         // FlygarN^^^^!
