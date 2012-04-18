@@ -59,7 +59,6 @@ public class ViewEventController implements EventHandler {
 							fleetPaths.put(fleet, new Path(pos));
 							Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
 							EventBus.INSTANCE.publish(event);
-							Sound.playSound("select.wav");
 						}
 					}
 				}
