@@ -1,5 +1,9 @@
 package riskyspace;
 
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
+
 import riskyspace.logic.FleetMove;
 import riskyspace.model.Player;
 import riskyspace.model.World;
@@ -14,12 +18,20 @@ public class GameManager implements EventHandler {
 	private World world = null;
 	private int turn;
 	
+	private Map<Player, PlayerInfo> players = new HashMap<Player, PlayerInfo>();
+	
 	public GameManager(World world, int nbrOfPlayers) {
 		this.world = world;
 		//players = new Player[]{Player.BLUE, Player.RED};
+		initPlayers();
 		changePlayer();
 		EventBus.INSTANCE.addHandler(this);
 		turn = 1;
+	}
+	
+	public void initPlayers() {
+		players.put(Player.RED, new PlayerInfo(Color.RED));
+		players.put(Player.BLUE, new PlayerInfo(Color.BLUE));
 	}
 
 	public Player getCurrentPlayer() {

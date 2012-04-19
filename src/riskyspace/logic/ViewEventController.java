@@ -211,6 +211,11 @@ public class ViewEventController implements EventHandler {
 			EventBus.INSTANCE.publish(mEvent);
 		}
 		
+		if (evt.getTag() == Event.EventTag.BACK) {
+			Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
+			EventBus.INSTANCE.publish(mEvent);
+		}
+		
 		if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {
 			for (Position pos : world.getContentPositions()) {
 				Territory terr = world.getTerritory(pos);
