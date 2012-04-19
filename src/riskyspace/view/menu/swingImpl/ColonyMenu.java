@@ -50,7 +50,6 @@ public class ColonyMenu extends AbstractSideMenu{
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		buildShipButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
-		buildShipButton.setImage("res/menu/recruitButton.png");
 		buildShipButton.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -66,6 +65,7 @@ public class ColonyMenu extends AbstractSideMenu{
 		setPlayer(colony.getOwner());
 		ownerColor = colony.getOwner() == Player.BLUE ? Color.BLUE : Color.RED;
 		colonyPicture = colony.getOwner() == Player.BLUE ? colonyBlue : colonyRed;
+		buildShipButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/recruitButton" + View.res);
 	}
 
 	@Override

@@ -80,7 +80,6 @@ public class RecruitMenu extends AbstractSideMenu {
 			}
 		});
 		backButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
-		backButton.setImage("res/menu/backButton.png");
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -101,6 +100,7 @@ public class RecruitMenu extends AbstractSideMenu {
 		buildHunterButton.setImage("res/menu/" + player + "/button/hunterButton" + View.res);
 		buildDestroyerButton.setImage("res/menu/" + player + "/button/destroyerButton" + View.res);
 		buildColonizerButton.setImage("res/menu/" + player + "/button/colonizerButton" + View.res);
+		backButton.setImage("res/menu/" + player + "/backButton" + View.res);
 	}
 
 	@Override
