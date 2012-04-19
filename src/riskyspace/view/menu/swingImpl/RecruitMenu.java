@@ -32,6 +32,7 @@ public class RecruitMenu extends AbstractSideMenu {
 	private Button buildHunterButton = null;
 	private Button buildDestroyerButton = null;
 	private Button buildColonizerButton = null;
+	private Button backButton = null;
 	
 	/*
 	 * Images
@@ -78,6 +79,16 @@ public class RecruitMenu extends AbstractSideMenu {
 				EventBus.INSTANCE.publish(evt);
 			}
 		});
+		backButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		backButton.setImage("res/menu/btn.jpg");
+		backButton.setText("Back");
+		backButton.setAction(new Action(){
+			@Override
+			public void performAction() {
+				Event evt = new Event(Event.EventTag.BACK, null);
+				EventBus.INSTANCE.publish(evt);
+			}
+		});
 		EventBus.INSTANCE.addHandler(this);
 	}
 	
@@ -100,7 +111,7 @@ public class RecruitMenu extends AbstractSideMenu {
 				setColony((Colony) evt.getObjectValue());
 				setVisible(true);
 			}
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
+		} else if (evt.getTag() == Event.EventTag.HIDE_MENU || evt.getTag() == Event.EventTag.BACK) {
 				setVisible(false);
 		}
 	}
@@ -118,6 +129,7 @@ public class RecruitMenu extends AbstractSideMenu {
 			else if (buildHunterButton.mousePressed(p)) {return true;}
 			else if (buildDestroyerButton.mousePressed(p)) {return true;} 
 			else if (buildColonizerButton.mousePressed(p)) {return true;}
+			else if (backButton.mousePressed(p)) {return true;}
 			if (this.contains(p)) {return true;}
 			else {
 				return false;
@@ -153,6 +165,7 @@ public class RecruitMenu extends AbstractSideMenu {
 			buildHunterButton.draw(g);
 			buildDestroyerButton.draw(g);
 			buildColonizerButton.draw(g);
+			backButton.draw(g);
 		}
 	}
 	
