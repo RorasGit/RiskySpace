@@ -51,7 +51,7 @@ public class RecruitMenu extends AbstractSideMenu {
 		buildScoutButton.setAction(new Action() {
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.BUILD_SHIP, ShipType.SCOUT);
+				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.SCOUT);
 				EventBus.INSTANCE.publish(evt);
 			}
 		});
@@ -59,7 +59,7 @@ public class RecruitMenu extends AbstractSideMenu {
 		buildHunterButton.setAction(new Action() {
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.BUILD_SHIP, ShipType.HUNTER);
+				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.HUNTER);
 				EventBus.INSTANCE.publish(evt);
 			}
 		});
@@ -67,7 +67,7 @@ public class RecruitMenu extends AbstractSideMenu {
 		buildDestroyerButton.setAction(new Action() {
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.BUILD_SHIP, ShipType.DESTROYER);
+				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.DESTROYER);
 				EventBus.INSTANCE.publish(evt);
 			}
 		});
@@ -75,7 +75,7 @@ public class RecruitMenu extends AbstractSideMenu {
 		buildColonizerButton.setAction(new Action() {
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.BUILD_SHIP, ShipType.COLONIZER);
+				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.COLONIZER);
 				EventBus.INSTANCE.publish(evt);
 			}
 		});
