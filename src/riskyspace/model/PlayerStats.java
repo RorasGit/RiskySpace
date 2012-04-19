@@ -1,6 +1,9 @@
 package riskyspace.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import riskyspace.services.Event;
@@ -8,10 +11,14 @@ import riskyspace.services.EventBus;
 
 import static riskyspace.model.Resource.METAL;
 import static riskyspace.model.Resource.GAS;
+import static riskyspace.model.ShipType.*;
 
 public class PlayerStats {
 	private Map<Resource, Integer> resources = null;
 	private Map<Resource, Integer> income = null;
+	private Map<Object, Integer> buildTime = null;
+	
+	private Map<Position,LinkedList<QueueItem>> buildQueue = new HashMap<Position,LinkedList<QueueItem>>();
 	
 	private Supply supply = null;
 	
@@ -19,6 +26,17 @@ public class PlayerStats {
 		supply = new Supply();
 		initResources();
 		initIncome();
+		initBuildTimes();
+	}
+	
+	private void initBuildTimes() {
+		buildTime = new HashMap<Object, Integer>();
+		buildTime.put(SCOUT, 1);
+		buildTime.put(HUNTER, 1);
+		buildTime.put(COLONIZER, 1);
+		buildTime.put(DESTROYER, 2);
+		// buildTime.put(Turret, 1);     <- future suggestion?
+		// buildTime.put(upgrade, 2);
 	}
 	
 	private void initResources() {
@@ -115,6 +133,29 @@ public class PlayerStats {
 		EventBus.INSTANCE.publish(evt);
 	}
 	
+	public List<QueueItem> reduceBuildQueue() {
+		List<QueueItem> buildShips = new ArrayList<QueueItem>();
+		
+		for (Position pos : buildQueue.keySet()) {
+			if (!buildQueue.get(pos).isEmpty()) {
+				if (buildQueue.get(pos).getFirst().getBuildTime() == 1) {
+					buildShips.add(buildQueue.get(pos).getFirst());
+					buildQueue.get(pos).removeFirst();
+				} else {
+					buildQueue.get(pos).getFirst().subtractBuildTime();
+				}
+			}
+		}
+		return buildShips;
+	}
+	
+	public void queueShip(Object object, Position position) {
+		if(!buildQueue.containsKey(position)){
+			buildQueue.put(position, new LinkedList<QueueItem>());
+		}
+		buildQueue.get(position).add(new QueueItem(object, position, buildTime.get(object)));
+	}
+	
 	public int getResource(Resource resource) {
 		return resources.get(resource);
 	}
@@ -134,6 +175,7 @@ public class PlayerStats {
 	public Supply getSupply() {
 		return supply.clone();
 	}
+	
 	
 	@Override
 	public boolean equals(Object other) {
@@ -161,4 +203,5 @@ public class PlayerStats {
 	public int hashCode() {
 		return resources.get(GAS)*3 + resources.get(METAL)*5 + supply.hashCode()*7;
 	}
+
 }

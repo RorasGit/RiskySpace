@@ -59,6 +59,19 @@ public class World {
 		}
 	}
 	
+	public void addToBuildQueue(Object object, Player player, Position position) {
+			playerstats.get(player).queueShip(object, position);
+	}
+	
+	public void processBuildQueue(Player player) {
+		List<QueueItem> itemsToBuild = playerstats.get(player).reduceBuildQueue();
+		for (QueueItem q : itemsToBuild) {
+			if (q.getItem() instanceof ShipType) {
+				getTerritory(q.getPosition()).addFleet(new Fleet(new Ship((ShipType) q.getItem()), getTerritory(q.getPosition()).getColony().getOwner()));
+			}
+		}
+	}
+	
 	public List<Position> getContentPositions(){
 		return territoriesWithContent();
 	}
@@ -102,6 +115,10 @@ public class World {
 		playerstats.get(player).update(numberOfColonies, supply);
 	}
 	
+	public Supply getSupply(Player player) {
+		return playerstats.get(player).getSupply();
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -122,9 +139,5 @@ public class World {
 	@Override
 	public int hashCode() {
 		return rows * 17 + cols * 23;
-	}
-
-	public Supply getSupply(Player player) {
-		return playerstats.get(player).getSupply();
 	}
 }

@@ -147,7 +147,7 @@ public class ViewEventController implements EventHandler {
 				EventBus.INSTANCE.publish(event);
 			}
 
-			if (evt.getTag() == Event.EventTag.BUILD_SHIP) {
+			if (evt.getTag() == Event.EventTag.QUEUE_SHIP) {
 				queueShip((ShipType) evt.getObjectValue());
 			}
 
@@ -162,6 +162,7 @@ public class ViewEventController implements EventHandler {
 			lastFleetSelectPos = null;
 			fleetSelectionIndex = 0;
 			currentPlayer = (Player) evt.getObjectValue();
+			world.processBuildQueue(currentPlayer);
 		}
 
 		if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
@@ -265,10 +266,10 @@ public class ViewEventController implements EventHandler {
 							Resource.METAL);
 					int gas = world.getResources(currentPlayer, Resource.GAS);
 					if (metal >= shipType.getMetalCost() && gas >= shipType.getGasCost()) {
-						world.getTerritory(pos).addFleet(new Fleet(new Ship(shipType), world.getTerritory(pos).getColony().getOwner()));
 						world.useResource(currentPlayer, Resource.METAL, shipType.getMetalCost());
 						world.useResource(currentPlayer, Resource.GAS, shipType.getGasCost());
-						EventText et = new EventText(shipType.toString().toLowerCase() + " built!", pos);
+						world.addToBuildQueue(shipType, currentPlayer, pos);
+						EventText et = new EventText(shipType.toString().toLowerCase() + " added to build queue!", pos);
 						Event event = new Event(Event.EventTag.EVENT_TEXT, et);
 						EventBus.INSTANCE.publish(event);
 					} else {

@@ -16,7 +16,7 @@ public class ViewEvent {
 		DESELECT,
 		AFTER_BATTLE,//Is this really a View Event??
 		NEXT_TURN, 
-		BUILD_SHIP;
+		QUEUE_SHIP;
 		
 		//TODO: add all events that can occur.
 	}

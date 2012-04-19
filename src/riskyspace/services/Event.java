@@ -30,7 +30,7 @@ public class Event {
 		COLONIZE_PLANET,
 		DESELECT,
 		SHIP_MENU,
-		BUILD_SHIP,
+		QUEUE_SHIP,
 		NEXT_TURN,
 		/*
 		 * Controller triggered events
