@@ -10,6 +10,10 @@ Refactor:
 
 Create
 
+Known bugs:
+-build queue, supply colony bug       //Rapp
+-colony destroyed, build queue and    //Rapp
+ supply bug
 
 Graphic
 -Mark selected fleet                  // Rapp
@@ -27,6 +31,9 @@ Features
 -Ship Menu                            // Z3B0
 -Rotate ships based on entry/path     // -----
 -Home Planet setup/attributes         // Roras
+-arrow key move camera
+-draw build queue at colony menu
+-remake "RecruitMenu" graphics
 
 Future ideas:
  - Name solo scout 'Danny' (ein smidig kriminell)
