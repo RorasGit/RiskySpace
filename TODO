@@ -9,7 +9,7 @@ Refactor:
 -Imutability                          // -----
 
 Create
-- PlayerInfo                          // Z3B0
+
 
 Graphic
 -Mark selected fleet                  // Rapp
@@ -42,6 +42,7 @@ Create
 --step()                              // Roras!
 -Camera constr (x, y)                 // Flygarn!
 -Sprites?                             // Flygarn!
+- PlayerInfo                          // Z3B0
 
 Graphics
 -Draw paths                           // Flygarn!
