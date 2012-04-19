@@ -50,8 +50,7 @@ public class ColonyMenu extends AbstractSideMenu{
 		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		buildShipButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
-		buildShipButton.setImage("res/menu/btn.jpg");
-		buildShipButton.setText("Build Ship");
+		buildShipButton.setImage("res/menu/recruitButton.png");
 		buildShipButton.setAction(new Action(){
 			@Override
 			public void performAction() {

@@ -80,8 +80,7 @@ public class RecruitMenu extends AbstractSideMenu {
 			}
 		});
 		backButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
-		backButton.setImage("res/menu/btn.jpg");
-		backButton.setText("Back");
+		backButton.setImage("res/menu/backButton.png");
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {
