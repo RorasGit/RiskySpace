@@ -25,7 +25,6 @@ public class Demo {
 		final World world = new World();
 		ViewEventController vec = new ViewEventController(world);
 		SpriteMapData.init(world, vec);
-		final GameManager gm  = new GameManager(world, 2);
 		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world.getRows(), world.getCols(), new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent event) {
@@ -42,6 +41,7 @@ public class Demo {
 			@Override public void keyReleased(KeyEvent arg0) {}
 			@Override public void keyTyped(KeyEvent arg0) {}
 		});
+		final GameManager gm  = new GameManager(world, 2);
 		mainView.setViewer(gm.getCurrentPlayer());
 		while(true) {
 			mainView.draw();

@@ -10,9 +10,11 @@ public class Event {
 		 * Model triggered events
 		 */
 		TERRITORY_CHANGED,
-		RESOURCE_CHANGED,
 		INCOME_CHANGED,
 		FLEET_REMOVED,
+		GAS_CHANGED,
+		METAL_CHANGED,
+		SUPPLY_CHANGED,
 		/*
 		 * View triggered events
 		 */

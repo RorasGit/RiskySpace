@@ -3,6 +3,9 @@ package riskyspace.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
+
 import static riskyspace.model.Resource.METAL;
 import static riskyspace.model.Resource.GAS;
 
@@ -10,11 +13,10 @@ public class PlayerStats {
 	private Map<Resource, Integer> resources = null;
 	private Map<Resource, Integer> income = null;
 	
-	private static final int BASE_SUPPLY = 3;
-	private int numberOfColonies;
-	private int usedSupply;
+	private Supply supply = null;
 	
 	public PlayerStats() {
+		supply = new Supply();
 		initResources();
 		initIncome();
 	}
@@ -45,23 +47,26 @@ public class PlayerStats {
 	public boolean purchase(Resource resource, int amount) {
 		if (resources.get(resource) >= amount) {
 			resources.put(resource, resources.get(resource) - amount);
+			Event evt;
+			if (resource == METAL) {
+				evt = new Event(Event.EventTag.METAL_CHANGED, resources.get(resource));
+			} else {
+				evt = new Event(Event.EventTag.GAS_CHANGED, resources.get(resource));
+			}
+			EventBus.INSTANCE.publish(evt);
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	/*
-	 * TODO: Method to check if one has enough resources (boolean)
-	 */
-	
 	public void update(int numberOfColonies, int usedSupply) {
-		this.numberOfColonies = numberOfColonies;
-		this.usedSupply = usedSupply;
+		supply.update(numberOfColonies);
+		supply.setUsed(usedSupply);
 	}
 	
 	public boolean hasEnoughSupply(int supplyIncrease) {
-		return usedSupply + supplyIncrease <= getMaxSupply();
+		return supply.hasEnough(supplyIncrease);
 	}
 
 	/**
@@ -103,26 +108,31 @@ public class PlayerStats {
 	public void gainNewResources() {
 		resources.put(METAL, resources.get(METAL) + income.get(METAL));
 		resources.put(GAS, resources.get(GAS) + income.get(GAS));
+		Event evt;
+		evt = new Event(Event.EventTag.METAL_CHANGED, resources.get(METAL));
+		EventBus.INSTANCE.publish(evt);
+		evt = new Event(Event.EventTag.GAS_CHANGED, resources.get(GAS));
+		EventBus.INSTANCE.publish(evt);
 	}
 	
 	public int getResource(Resource resource) {
 		return resources.get(resource);
 	}
-	
-	public int getNumberOfColonies() {
-		return numberOfColonies;
-	}
-	
+
 	public int getUsedSupply() {
-		return usedSupply;
+		return supply.getUsed();
 	}
 	
 	public int getMaxSupply() {
-		return BASE_SUPPLY + (2 * numberOfColonies);
+		return supply.getMax();
 	}
 	
 	public boolean isSupplyCapped() {
-		return usedSupply >= getMaxSupply();
+		return supply.isCapped();
+	}
+	
+	public Supply getSupply() {
+		return supply.clone();
 	}
 	
 	@Override
@@ -135,8 +145,7 @@ public class PlayerStats {
 			PlayerStats otherPlayerStats = (PlayerStats) other;
 			return (resources.get(GAS) == otherPlayerStats.resources.get(GAS) && 
 					resources.get(METAL) == otherPlayerStats.resources.get(METAL) &&
-					usedSupply == otherPlayerStats.usedSupply && 
-					numberOfColonies == otherPlayerStats.numberOfColonies);
+					supply.getUsed() == otherPlayerStats.supply.getUsed());
 		}
 	}
 	
@@ -144,12 +153,12 @@ public class PlayerStats {
 	public String toString() {
 		return "PlayerStats [" + "Metal: " + resources.get(METAL) + "  Income: " + income.get(METAL) + ", " + 
 				"Gas: " + resources.get(GAS) + "  Income: " + income.get(GAS) + 
-				", " +  "Number of colonies: " + numberOfColonies + ", " + "Supply: " + usedSupply + "/" +
+				", " + "Supply: " + supply.getUsed() + "/" +
 				getMaxSupply() + " ]";
 	}
 	
 	@Override
 	public int hashCode() {
-		return resources.get(GAS)*3 + resources.get(METAL)*5 + usedSupply*7 + numberOfColonies*11;
+		return resources.get(GAS)*3 + resources.get(METAL)*5 + supply.hashCode()*7;
 	}
 }

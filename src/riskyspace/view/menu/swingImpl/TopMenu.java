@@ -7,7 +7,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 
 import riskyspace.logic.FleetMove;
-import riskyspace.model.Colony;
+import riskyspace.model.Supply;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
@@ -24,10 +24,9 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	private Image metalImage = null;
 	private Image gasImage = null;
 	private Image supplyImage = null;
-	private int metal = 120;
-	private int gas = 30;
-	private int supply = 5;
-	private int supplyMax = 12;
+	private int metal;
+	private int gas;
+	private Supply supply;
 	
 	private Button endTurnButton = null;
 	private Button performMovesButton = null;
@@ -80,13 +79,8 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 				EventBus.INSTANCE.publish(evt);
 			}
 		});
-	}
-
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
-				setVisible(true);
-			}
+		EventBus.INSTANCE.addHandler(this);
+		setVisible(true);
 	}
 
 	@Override
@@ -117,13 +111,8 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	@Override
 	public void draw(Graphics g) {
 		int a = menuWidth/10;
-		int stringHeight = g.getFontMetrics().getHeight();
 		g.setColor(Color.BLUE);
-		/*
-		 * Draw the player's supply
-		 */
-		g.drawImage(supplyImage, a*5, margin, null);
-		g.drawString(supply + "/" + supplyMax, a*5 + supplyImage.getWidth(null) + 5, margin + supplyImage.getHeight(null)/2);
+		
 		/*
 		 * Draw the player's metal
 		 */
@@ -134,6 +123,13 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 		 */
 		g.drawImage(gasImage, a*7, margin, null);
 		g.drawString("" + gas, a*7 + gasImage.getWidth(null) + 5, margin + gasImage.getHeight(null)/2);
+		/*
+		 * Draw the player's supply
+		 */
+		if (supply.isCapped())
+			g.setColor(Color.RED);
+		g.drawImage(supplyImage, a*5, margin, null);
+		g.drawString(supply.getUsed() + "/" + supply.getMax(), a*5 + supplyImage.getWidth(null) + 5, margin + supplyImage.getHeight(null)/2);
 		
 		menuButton.draw(g);
 		buildQueueButton.draw(g);
@@ -150,5 +146,18 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	public void setVisible(boolean set) {
 		enabled = set;
 	}
-
+	
+	@Override
+	public void performEvent(Event evt) {
+		if (evt.getTag() == Event.EventTag.METAL_CHANGED) {
+				metal = (Integer) evt.getObjectValue();
+		}
+		if (evt.getTag() == Event.EventTag.GAS_CHANGED) {
+			gas = (Integer) evt.getObjectValue();
+		}
+		if (evt.getTag() == Event.EventTag.SUPPLY_CHANGED) {
+			Supply supply = (Supply) evt.getObjectValue();
+			this.supply = supply;
+		}
+	}
 }

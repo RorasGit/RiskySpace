@@ -6,6 +6,7 @@ import java.util.Map;
 
 import riskyspace.logic.FleetMove;
 import riskyspace.model.Player;
+import riskyspace.model.Resource;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
@@ -48,7 +49,14 @@ public class GameManager implements EventHandler {
 		 * Give income in ViewEventController instead?
 		 */
 		world.giveIncome(currentPlayer);
+		world.updatePlayerStats(currentPlayer);
 		Event event = new Event(Event.EventTag.ACTIVE_PLAYER_CHANGED, currentPlayer);
+		EventBus.INSTANCE.publish(event);
+		event = new Event(Event.EventTag.METAL_CHANGED, world.getResources(currentPlayer, Resource.METAL));
+		EventBus.INSTANCE.publish(event);
+		event = new Event(Event.EventTag.GAS_CHANGED, world.getResources(currentPlayer, Resource.GAS));
+		EventBus.INSTANCE.publish(event);
+		event = new Event(Event.EventTag.SUPPLY_CHANGED, world.getSupply(currentPlayer));
 		EventBus.INSTANCE.publish(event);
 	}
 

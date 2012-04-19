@@ -84,6 +84,24 @@ public class World {
 		playerstats.get(player).setIncome(type, amount);
 	}
 	
+	public void updatePlayerStats(Player player) {
+		int numberOfColonies = 0;
+		int supply = 0;
+		for(Position pos : getContentPositions()) {
+			if (getTerritory(pos).hasColony() && getTerritory(pos).getColony().getOwner() == player) {
+				numberOfColonies++;
+			}
+			if (getTerritory(pos).hasFleet()) {
+				for (Fleet fleet : getTerritory(pos).getFleets()) {
+					if (fleet.getOwner() == player) {
+						supply += (fleet.fleetSize() + fleet.shipCount(ShipType.DESTROYER));
+					}
+				}
+			}
+		}
+		playerstats.get(player).update(numberOfColonies, supply);
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -104,5 +122,9 @@ public class World {
 	@Override
 	public int hashCode() {
 		return rows * 17 + cols * 23;
+	}
+
+	public Supply getSupply(Player player) {
+		return playerstats.get(player).getSupply();
 	}
 }
