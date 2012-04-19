@@ -17,7 +17,6 @@ Known bugs:
 
 Graphic
 -Mark selected fleet                  // Rapp
--number of ships indicator            // Roras
 -Disabled buttons (_disabled).png     // Z3B0
 -Top Panel Menu                       // Rapp
 
@@ -26,7 +25,6 @@ Small Fixes:
 
 Features
 -build queue system                   // Rapp
--Control resources when buying ships  // Rapp
 -Control supply when buying ships     // Rapp
 -Ship Menu                            // Z3B0
 -Rotate ships based on entry/path     // -----
@@ -51,10 +49,11 @@ Create
 --step()                              // Roras!
 -Camera constr (x, y)                 // Flygarn!
 -Sprites?                             // Flygarn!
-- PlayerInfo                          // Z3B0
+- PlayerInfo                          // Z3B0!
 
 Graphics
 -Draw paths                           // Flygarn!
+-number of ships indicator            // Roras!
 
 Small fixes:
 -Correct Player sel (planets/ships)   // Rapp!
@@ -65,5 +64,6 @@ and battles (colonies destroyed)
 
 Features
 -Colonize planets                     // Flygarn!
+-Control resources when buying ships  // Rapp!
 -Sound, find a good framework         // FlygarN^^^^!
--Back button buyships                 // Z3B0
+-Back button buyships                 // Z3B0!
