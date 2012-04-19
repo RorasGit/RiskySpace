@@ -150,7 +150,7 @@ public class Battle {
 			}
 		}
 		
-		void takeDamage(List<Integer> attacks, List<Integer> targetIndexes) {
+		private void takeDamage(List<Integer> attacks, List<Integer> targetIndexes) {
 			/*
 			 * Each fleet will have a list of attacks and targetIndexes
 			 */
@@ -205,7 +205,7 @@ public class Battle {
 			}
 		}
 		
-		int numberOfUnits() {
+		private int numberOfUnits() {
 			int units = 0;
 			for (int i = 0; i < fleets.size(); i++) {
 				units += fleets.get(i).fleetSize();
