@@ -30,7 +30,7 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 	private int menuWidth;
 	private int itemSize;
 	
-	private int margin = 22;
+	private int margin;
 	
 	private Image background = null;
 	private Image backgroundRed = null;
@@ -45,6 +45,7 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 		this.y = y;
 		menuHeight = height;
 		menuWidth = width;
+		margin = menuWidth/10;
 		backgroundRed = Toolkit.getDefaultToolkit().getImage("res/menu/red/menubackground.png").getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 		backgroundBlue = Toolkit.getDefaultToolkit().getImage("res/menu/blue/menubackground.png").getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 		fleetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/palpatine.png").getScaledInstance(menuWidth - 3*margin, 2*(menuWidth - 3*margin)/3, Image.SCALE_DEFAULT);
