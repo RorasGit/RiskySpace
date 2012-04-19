@@ -4,6 +4,7 @@ public class Supply {
 	private int baseSupply;
 	private int usedSupply;
 	private int maxSupply;
+	private int queuedSupply;
 
 	public Supply() {
 		baseSupply = 3;
@@ -13,12 +14,8 @@ public class Supply {
 		this.baseSupply = baseSupply;
 	}
 	
-	public void setUsed(int used) {
-		usedSupply = used;
-	}
-	
 	public int getUsed() {
-		return usedSupply;
+		return usedSupply + queuedSupply;
 	}
 	
 	public int getMax() {
@@ -29,12 +26,21 @@ public class Supply {
 		return getUsed() + supplyIncrease <= getMax();
 	}
 	
-	public void update(int numberOfColonies) {
+	public void update(int numberOfColonies, int usedSupply) {
 		maxSupply = baseSupply + 2*numberOfColonies;
+		this.usedSupply = usedSupply;
 	}
 	
 	public boolean isCapped() {
-		return getUsed() >= getMax();
+		return getUsed() + getQueuedSupply() >= getMax();
+	}
+
+	public void setQueuedSupply(int queuedSupply) {
+		this.queuedSupply = queuedSupply;
+	}
+	
+	public int getQueuedSupply() {
+		return queuedSupply;
 	}
 	
 	@Override
@@ -43,11 +49,12 @@ public class Supply {
 		supply.baseSupply = this.baseSupply;
 		supply.maxSupply = this.maxSupply;
 		supply.usedSupply = this.usedSupply;
+		supply.queuedSupply = this.queuedSupply;
 		return supply;
 	}
 	
 	@Override
 	public String toString() {
-		return "Supply " + usedSupply + "/" + maxSupply;
+		return "Supply " + (usedSupply + queuedSupply) + "/" + maxSupply;
 	}
 }

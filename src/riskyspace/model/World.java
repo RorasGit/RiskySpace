@@ -60,7 +60,7 @@ public class World {
 	}
 	
 	public void addToBuildQueue(Object object, Player player, Position position) {
-			playerstats.get(player).queueShip(object, position);
+		playerstats.get(player).queueShip(object, position);
 	}
 	
 	public void processBuildQueue(Player player) {

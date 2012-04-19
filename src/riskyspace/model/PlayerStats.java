@@ -79,8 +79,7 @@ public class PlayerStats {
 	}
 
 	public void update(int numberOfColonies, int usedSupply) {
-		supply.update(numberOfColonies);
-		supply.setUsed(usedSupply);
+		supply.update(numberOfColonies, usedSupply);
 	}
 	
 	public boolean hasEnoughSupply(int supplyIncrease) {
@@ -135,17 +134,19 @@ public class PlayerStats {
 	
 	public List<QueueItem> reduceBuildQueue() {
 		List<QueueItem> buildShips = new ArrayList<QueueItem>();
-		
 		for (Position pos : buildQueue.keySet()) {
 			if (!buildQueue.get(pos).isEmpty()) {
 				if (buildQueue.get(pos).getFirst().getBuildTime() == 1) {
 					buildShips.add(buildQueue.get(pos).getFirst());
 					buildQueue.get(pos).removeFirst();
+					supply.setQueuedSupply(supply.getQueuedSupply() - 1);
 				} else {
 					buildQueue.get(pos).getFirst().subtractBuildTime();
 				}
 			}
 		}
+		Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
+		EventBus.INSTANCE.publish(evt);
 		return buildShips;
 	}
 	
@@ -153,7 +154,12 @@ public class PlayerStats {
 		if(!buildQueue.containsKey(position)){
 			buildQueue.put(position, new LinkedList<QueueItem>());
 		}
-		buildQueue.get(position).add(new QueueItem(object, position, buildTime.get(object)));
+		if (!supply.isCapped()) {
+			buildQueue.get(position).add(new QueueItem(object, position, buildTime.get(object)));
+			supply.setQueuedSupply(supply.getQueuedSupply() + 1);
+		}
+		Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
+		EventBus.INSTANCE.publish(evt);
 	}
 	
 	public int getResource(Resource resource) {
