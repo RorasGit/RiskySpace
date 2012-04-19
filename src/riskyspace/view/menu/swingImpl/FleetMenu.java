@@ -20,35 +20,22 @@ import riskyspace.services.EventHandler;
 import riskyspace.view.Clickable;
 import riskyspace.view.Sprite;
 import riskyspace.view.View;
+import riskyspace.view.menu.AbstractSideMenu;
 import riskyspace.view.menu.IMenu;
 
-public class FleetMenu implements IMenu, Clickable, EventHandler {
+public class FleetMenu extends AbstractSideMenu {
 	
-	private boolean enabled;
-	
-	private int x, y;
-	private int menuHeight;
-	private int menuWidth;
 	private int itemSize;
 	
 	private int margin;
-	
-	private Image background = null;
-	private Image backgroundRed = null;
-	private Image backgroundBlue = null;
 	private Image fleetPicture = null;
 	
 	private Map<String, Image> shipIcons = new HashMap<String, Image>();
 	private List<Image> fleetIcons = new ArrayList<Image>();
 	
-	public FleetMenu(int x, int y, int width, int height) {
-		this.x = x;
-		this.y = y;
-		menuHeight = height;
-		menuWidth = width;
+	public FleetMenu(int x, int y, int menuWidth, int menuHeight) {
+		super(x, y, menuWidth, menuHeight);
 		margin = menuWidth/10;
-		backgroundRed = Toolkit.getDefaultToolkit().getImage("res/menu/red/menubackground.png").getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
-		backgroundBlue = Toolkit.getDefaultToolkit().getImage("res/menu/blue/menubackground.png").getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 		fleetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/palpatine.png").getScaledInstance(menuWidth - 3*margin, 2*(menuWidth - 3*margin)/3, Image.SCALE_DEFAULT);
 		itemSize = (menuWidth - margin*2) / 5;
 		initSprites(itemSize - margin/10);
@@ -68,7 +55,7 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 	}
 	
 	public void setFleet(Fleet fleet) {
-		background = fleet.getOwner() == Player.BLUE ? backgroundBlue : backgroundRed;
+		setPlayer(fleet.getOwner());
 		createFleetIcons(fleet);
 	}
 
@@ -82,25 +69,13 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 		}
 	}
 
-	public boolean contains(Point p) {
-		/*
-		 * Only handle mouse event if enabled
-		 */
-		if (enabled) {
-			boolean xLegal = p.x >= x && p.x <= x + menuWidth;
-			boolean yLegal = p.y >= y && p.y <= y + menuHeight;
-			return xLegal && yLegal;
-		}
-		return false;
-	}
-
 
 	@Override
 	public boolean mousePressed(Point p) {
 		/*
 		 * Only handle mouse event if enabled
 		 */
-		if (enabled) {
+		if (isVisible()) {
 			if (this.contains(p)) {return true;}
 			else {
 				return false;
@@ -110,7 +85,7 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 	}
 	@Override
 	public boolean mouseReleased(Point p) {
-		if (enabled) {
+		if (isVisible()) {
 			if (this.contains(p)) {return true;}
 			else {
 				return false;
@@ -121,17 +96,17 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 
 	@Override
 	public void draw(Graphics g) {
+		super.draw(g);
 		/*
 		 * Only draw if enabled
 		 */
-		if (enabled) {
-			g.drawImage(background, x, y, null);
-			g.drawImage(fleetPicture, x + margin + margin/2 + 2, y + margin + 15, null);
+		if (isVisible()) {
+			g.drawImage(fleetPicture, getX() + margin + margin/2 + 2, getY() + margin + 15, null);
 			int height = fleetPicture != null ? fleetPicture.getHeight(null) : 0;
 			for (int i = 0; i < fleetIcons.size(); i++) {
 				int col = i % 5;
 				int row = i / 5;
-				g.drawImage(fleetIcons.get(i), x + margin + col*itemSize + 2, y + 2*margin + height + row*itemSize, null);
+				g.drawImage(fleetIcons.get(i), getX() + margin + col*itemSize + 2, getY() + 2*margin + height + row*itemSize, null);
 			}
 		}
 	}
@@ -151,13 +126,4 @@ public class FleetMenu implements IMenu, Clickable, EventHandler {
 		}
 	}
 
-	@Override
-	public void setVisible(boolean set) {
-		enabled = set;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return enabled;
-	}
 }
