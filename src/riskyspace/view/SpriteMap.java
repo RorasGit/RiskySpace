@@ -135,16 +135,16 @@ public class SpriteMap {
 					}
 					Sprite sprite = null;
 					if (j == 0) {
-						sprite = new Sprite(SpriteMap.pathTextures.get("START"), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("START_" + player), 0, 0);
 						sprite.setRotation(getRotation(null, paths[i][j], paths[i][j+1]));
 					} else if (j == paths[i].length - 1) {
-						sprite = new Sprite(SpriteMap.pathTextures.get("HEAD"), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("HEAD_" + player), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], null));
 					} else if (paths[i][j-1].getCol() != paths[i][j+1].getCol() && paths[i][j-1].getRow() != paths[i][j+1].getRow()) {
-						sprite = new Sprite(SpriteMap.pathTextures.get("TURN"), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("TURN_" + player), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]));
 					} else {
-						sprite = new Sprite(SpriteMap.pathTextures.get("STRAIGHT"), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("STRAIGHT_" + player), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]));
 					}
 					map.paths.get(paths[i][j]).add(sprite);
@@ -291,11 +291,15 @@ public class SpriteMap {
 		/*
 		 * Path Arrows
 		 */
-		pathTextures.put("HEAD", Toolkit.getDefaultToolkit().getImage("res/path/head.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
-		pathTextures.put("START", Toolkit.getDefaultToolkit().getImage("res/path/start.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
-		pathTextures.put("STRAIGHT", Toolkit.getDefaultToolkit().getImage("res/path/straight.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
-		pathTextures.put("TURN", Toolkit.getDefaultToolkit().getImage("res/path/turn.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
-		
+		pathTextures.put("HEAD_BLUE", Toolkit.getDefaultToolkit().getImage("res/path/blue/head.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("START_BLUE", Toolkit.getDefaultToolkit().getImage("res/path/blue/start.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("STRAIGHT_BLUE", Toolkit.getDefaultToolkit().getImage("res/path/blue/straight.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("TURN_BLUE", Toolkit.getDefaultToolkit().getImage("res/path/blue/turn.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("HEAD_RED", Toolkit.getDefaultToolkit().getImage("res/path/red/head.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("START_RED", Toolkit.getDefaultToolkit().getImage("res/path/red/start.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("STRAIGHT_RED", Toolkit.getDefaultToolkit().getImage("res/path/red/straight.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+		pathTextures.put("TURN_RED", Toolkit.getDefaultToolkit().getImage("res/path/red/turn.png").getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT));
+			
 		/*
 		 * Planets
 		 */
