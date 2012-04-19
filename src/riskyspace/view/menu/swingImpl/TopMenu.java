@@ -1,8 +1,10 @@
-package riskyspace.view.menu;
+package riskyspace.view.menu.swingImpl;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 
 import riskyspace.logic.FleetMove;
 import riskyspace.model.Colony;
@@ -13,15 +15,19 @@ import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 import riskyspace.view.View;
+import riskyspace.view.menu.IMenu;
 
 public class TopMenu implements IMenu, Clickable, EventHandler {
 	
 	private boolean enabled;
 	
-	private Image metal = null;
-	private Image gas = null;
-	private Image supply = null;
-	private Image currentRound;
+	private Image metalImage = null;
+	private Image gasImage = null;
+	private Image supplyImage = null;
+	private int metal = 120;
+	private int gas = 30;
+	private int supply = 5;
+	private int supplyMax = 12;
 	
 	private Button endTurnButton = null;
 	private Button performMovesButton = null;
@@ -36,6 +42,12 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	public TopMenu (int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
+		menuHeight = height;
+		menuWidth = width;
+		
+		supplyImage = Toolkit.getDefaultToolkit().getImage("res/menu/supply.png");
+		metalImage = Toolkit.getDefaultToolkit().getImage("res/menu/resource_metal.png");
+		gasImage = Toolkit.getDefaultToolkit().getImage("res/menu/resource_gas.png");
 		
 		menuButton = new Button(margin, margin, 79, 30);
 		menuButton.setImage("res/menu/menuButton3" + View.res);
@@ -46,7 +58,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		
-		buildQueueButton = new Button(margin + 84, margin, 79, 30);
+		buildQueueButton = new Button(margin + 79 + 4, margin, 79, 30);
 		buildQueueButton.setImage("res/menu/menuButton2" + View.res);
 		
 		endTurnButton = new Button(width - margin - 79, margin, 79, 66);
@@ -104,9 +116,25 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawImage(metal, x, y, null);
-		g.drawImage(gas, x, y, null);
-		g.drawImage(supply, x, y, null);
+		int a = menuWidth/10;
+		int stringHeight = g.getFontMetrics().getHeight();
+		g.setColor(Color.BLUE);
+		/*
+		 * Draw the player's supply
+		 */
+		g.drawImage(supplyImage, a*5, margin, null);
+		g.drawString(supply + "/" + supplyMax, a*5 + supplyImage.getWidth(null) + 5, margin + supplyImage.getHeight(null)/2);
+		/*
+		 * Draw the player's metal
+		 */
+		g.drawImage(metalImage, a*6, margin, null);
+		g.drawString("" + metal, a*6 + metalImage.getWidth(null) + 5, margin + metalImage.getHeight(null)/2);
+		/*
+		 * Draw the player's gas
+		 */
+		g.drawImage(gasImage, a*7, margin, null);
+		g.drawString("" + gas, a*7 + gasImage.getWidth(null) + 5, margin + gasImage.getHeight(null)/2);
+		
 		menuButton.draw(g);
 		buildQueueButton.draw(g);
 		endTurnButton.draw(g);

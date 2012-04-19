@@ -1,4 +1,4 @@
-package riskyspace.view.menu;
+package riskyspace.view.menu.swingImpl;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -20,6 +20,7 @@ import riskyspace.services.EventHandler;
 import riskyspace.view.Clickable;
 import riskyspace.view.Sprite;
 import riskyspace.view.View;
+import riskyspace.view.menu.IMenu;
 
 public class FleetMenu implements IMenu, Clickable, EventHandler {
 	

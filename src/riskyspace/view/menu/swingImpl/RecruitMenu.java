@@ -1,4 +1,4 @@
-package riskyspace.view.menu;
+package riskyspace.view.menu.swingImpl;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -17,6 +17,7 @@ import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 import riskyspace.view.View;
+import riskyspace.view.menu.IMenu;
 
 public class RecruitMenu implements IMenu, Clickable, EventHandler {
 	
