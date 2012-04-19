@@ -31,11 +31,11 @@ import riskyspace.view.Clickable;
 import riskyspace.view.SpriteMap;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
-import riskyspace.view.menu.ColonyMenu;
-import riskyspace.view.menu.FleetMenu;
 import riskyspace.view.menu.IMenu;
-import riskyspace.view.menu.RecruitMenu;
-import riskyspace.view.menu.TopMenu;
+import riskyspace.view.menu.swingImpl.ColonyMenu;
+import riskyspace.view.menu.swingImpl.FleetMenu;
+import riskyspace.view.menu.swingImpl.RecruitMenu;
+import riskyspace.view.menu.swingImpl.TopMenu;
 
 public class RenderArea extends JPanel implements EventHandler {
 
