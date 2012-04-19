@@ -24,15 +24,15 @@ public class Battle {
 		if (territory.getFleets().isEmpty()) {
 			throw new IllegalArgumentException("Battle can not occur in empty territories");
 		}
-		List<Fleet> player1 = new ArrayList<Fleet>();
-		List<Fleet> player2 = new ArrayList<Fleet>();
+		List<Fleet> player1fleets = new ArrayList<Fleet>();
+		List<Fleet> player2fleets = new ArrayList<Fleet>();
 		
-		player1.add(territory.getFleets().get(0));
+		player1fleets.add(territory.getFleets().get(0));
 		for (int i = 1; i < territory.getFleets().size(); i++) {
-			if (territory.getFleets().get(i).getOwner() != player1.get(0).getOwner()) {
-				player2.add(territory.getFleet(i));
+			if (territory.getFleets().get(i).getOwner() != player1fleets.get(0).getOwner()) {
+				player2fleets.add(territory.getFleet(i));
 			} else {
-				player1.add(territory.getFleet(i));
+				player1fleets.add(territory.getFleet(i));
 			}
 		}
 		/*
@@ -40,18 +40,14 @@ public class Battle {
 		 * and it belongs to that player.
 		 */
 		Colony colony = territory.getColony();
-		BattleGroup bg1 = new BattleGroup(player1, 
-				territory.hasColony() && colony.getOwner() == player1.get(0).getOwner() ?
-				colony : null);
-		BattleGroup bg2 = new BattleGroup(player2, 
-				territory.hasColony() && colony.getOwner() != player1.get(0).getOwner() ?
-				colony : null);
+		BattleGroup bg1 = new BattleGroup(player1fleets, territory.hasColony() && colony.getOwner() == player1fleets.get(0).getOwner() ? colony : null);
+		BattleGroup bg2 = new BattleGroup(player2fleets, territory.hasColony() && colony.getOwner() != player1fleets.get(0).getOwner() ? colony : null);
 		if (bg1.isDefeated() || bg2.isDefeated()) {
 			throw new IllegalArgumentException("There need to be two players' fleets or Planet " +
 					"in the territory to battle");
 		}
-		bg1.setOwner(player1.isEmpty() ? colony.getOwner() : player1.get(0).getOwner());
-		bg2.setOwner(player2.isEmpty() ? colony.getOwner() : player2.get(0).getOwner());
+		bg1.setOwner(player1fleets.isEmpty() ? colony.getOwner() : player1fleets.get(0).getOwner());
+		bg2.setOwner(player2fleets.isEmpty() ? colony.getOwner() : player2fleets.get(0).getOwner());
 		/*
 		 * Battle loop until one or both fleets are defeated
 		 */
