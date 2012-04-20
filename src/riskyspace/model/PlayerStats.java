@@ -17,6 +17,9 @@ public class PlayerStats {
 	private Map<Resource, Integer> resources = null;
 	private Map<Resource, Integer> income = null;
 	private Map<Object, Integer> buildTime = null;
+	private Map<Object, Integer> metalCost = null;
+	private Map<Object, Integer> gasCost = null;
+	private Map<Object, Integer> supplyCost = null;
 	
 	private Map<Position,LinkedList<QueueItem>> buildQueue = new HashMap<Position,LinkedList<QueueItem>>();
 	
@@ -27,16 +30,9 @@ public class PlayerStats {
 		initResources();
 		initIncome();
 		initBuildTimes();
-	}
-	
-	private void initBuildTimes() {
-		buildTime = new HashMap<Object, Integer>();
-		buildTime.put(SCOUT, 1);
-		buildTime.put(HUNTER, 1);
-		buildTime.put(COLONIZER, 1);
-		buildTime.put(DESTROYER, 2);
-		// buildTime.put(Turret, 1);     <- future suggestion?
-		// buildTime.put(upgrade, 2);
+		initMetalCost();
+		initGasCost();
+		initSupplyCost();
 	}
 	
 	private void initResources() {
@@ -49,6 +45,40 @@ public class PlayerStats {
 		income = new HashMap<Resource, Integer>();
 		income.put(METAL, 50);
 		income.put(GAS, 0);
+	}
+	
+	private void initMetalCost() {
+		metalCost = new HashMap<Object, Integer>();
+		metalCost.put(SCOUT, 50);
+		metalCost.put(HUNTER, 120);
+		metalCost.put(COLONIZER, 200);
+		metalCost.put(DESTROYER, 400);
+	}
+	
+	private void initGasCost() {
+		gasCost = new HashMap<Object, Integer>();
+		gasCost.put(SCOUT, 0);
+		gasCost.put(HUNTER, 20);
+		gasCost.put(COLONIZER, 0);
+		gasCost.put(DESTROYER, 100);
+	}
+	
+	private void initSupplyCost() {
+		supplyCost = new HashMap<Object, Integer>();
+		supplyCost.put(SCOUT, 1);
+		supplyCost.put(HUNTER, 1);
+		supplyCost.put(COLONIZER, 1);
+		supplyCost.put(DESTROYER, 2);
+	}
+	
+	private void initBuildTimes() {
+		buildTime = new HashMap<Object, Integer>();
+		buildTime.put(SCOUT, 1);
+		buildTime.put(HUNTER, 1);
+		buildTime.put(COLONIZER, 1);
+		buildTime.put(DESTROYER, 2);
+		// buildTime.put(Turret, 1);     <- future suggestion?
+		// buildTime.put(upgrade, 2);
 	}
 	
 	/*
@@ -150,18 +180,26 @@ public class PlayerStats {
 		return buildShips;
 	}
 	
-	public void queueShip(Object object, Position position) {
-		if(!buildQueue.containsKey(position)){
-			buildQueue.put(position, new LinkedList<QueueItem>());
-		}
-		if (!supply.isCapped()) {
+	public boolean queueItem(Object object, Position position) {
+		if (hasEnoughSupply(supplyCost.get(object)) && hasEnoughResources(metalCost.get(object), gasCost.get(object))) {
+			purchase(Resource.METAL, metalCost.get(object));
+			purchase(Resource.GAS, gasCost.get(object));
+			if(!buildQueue.containsKey(position)){
+				buildQueue.put(position, new LinkedList<QueueItem>());
+			}
 			buildQueue.get(position).add(new QueueItem(object, position, buildTime.get(object)));
-			supply.setQueuedSupply(supply.getQueuedSupply() + 1);
+			supply.setQueuedSupply(supply.getQueuedSupply() + supplyCost.get(object));
+			Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
+			EventBus.INSTANCE.publish(evt);
+			return true;
 		}
-		Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
-		EventBus.INSTANCE.publish(evt);
+		return false;
 	}
 	
+	private boolean hasEnoughResources(int metalCost, int gasCost) {
+		return metalCost <= resources.get(METAL) && gasCost <= resources.get(GAS);
+	}
+
 	public int getResource(Resource resource) {
 		return resources.get(resource);
 	}

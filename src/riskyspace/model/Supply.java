@@ -32,7 +32,7 @@ public class Supply {
 	}
 	
 	public boolean isCapped() {
-		return getUsed() + getQueuedSupply() >= getMax();
+		return getUsed() >= getMax();
 	}
 
 	public void setQueuedSupply(int queuedSupply) {
