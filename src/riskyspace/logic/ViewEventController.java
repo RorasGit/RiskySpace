@@ -258,27 +258,11 @@ public class ViewEventController implements EventHandler {
 		return paths;
 	}
 
-	private synchronized void queueShip(ShipType shipType) {
+	private void queueShip(ShipType shipType) {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == selectedColony) {
-					int metal = world.getResources(currentPlayer, Resource.METAL);
-					int gas = world.getResources(currentPlayer, Resource.GAS);
-					if (metal >= shipType.getMetalCost() && gas >= shipType.getGasCost()) {
-						if (world.addToBuildQueue(shipType, currentPlayer, pos)) {
-							EventText et = new EventText(shipType.toString().toLowerCase() + " added to build queue!", pos);
-							Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-							EventBus.INSTANCE.publish(event);
-						} else {
-							EventText et = new EventText("Not enough supply!", pos);
-							Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-							EventBus.INSTANCE.publish(event);
-						}
-					} else {
-						EventText et = new EventText("Not enough resources!", pos);
-						Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-						EventBus.INSTANCE.publish(event);
-					}
+					world.addToBuildQueue(shipType, currentPlayer, pos);
 				}
 			}
 		}

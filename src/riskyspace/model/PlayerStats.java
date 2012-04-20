@@ -8,6 +8,7 @@ import java.util.Map;
 
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
+import riskyspace.services.EventText;
 
 import static riskyspace.model.Resource.METAL;
 import static riskyspace.model.Resource.GAS;
@@ -168,8 +169,8 @@ public class PlayerStats {
 			if (!buildQueue.get(pos).isEmpty()) {
 				if (buildQueue.get(pos).getFirst().getBuildTime() == 1) {
 					buildShips.add(buildQueue.get(pos).getFirst());
+					supply.setQueuedSupply(supply.getQueuedSupply() - supplyCost.get(buildQueue.get(pos).getFirst().getItem()));
 					buildQueue.get(pos).removeFirst();
-					supply.setQueuedSupply(supply.getQueuedSupply() - 1);
 				} else {
 					buildQueue.get(pos).getFirst().subtractBuildTime();
 				}
@@ -180,20 +181,31 @@ public class PlayerStats {
 		return buildShips;
 	}
 	
-	public boolean queueItem(Object object, Position position) {
-		if (hasEnoughSupply(supplyCost.get(object)) && hasEnoughResources(metalCost.get(object), gasCost.get(object))) {
-			purchase(Resource.METAL, metalCost.get(object));
-			purchase(Resource.GAS, gasCost.get(object));
-			if(!buildQueue.containsKey(position)){
-				buildQueue.put(position, new LinkedList<QueueItem>());
-			}
-			buildQueue.get(position).add(new QueueItem(object, position, buildTime.get(object)));
-			supply.setQueuedSupply(supply.getQueuedSupply() + supplyCost.get(object));
-			Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
-			EventBus.INSTANCE.publish(evt);
-			return true;
+	public void queueItem(Object object, Position position) {
+		if (!hasEnoughSupply(supplyCost.get(object))) {
+			EventText et = new EventText("Not enough supply!", position);
+			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
+			EventBus.INSTANCE.publish(event);
+			return;
 		}
-		return false;
+		if (!hasEnoughResources(metalCost.get(object), gasCost.get(object))) {
+			EventText et = new EventText("Not enough resources!", position);
+			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
+			EventBus.INSTANCE.publish(event);
+			return;
+		}
+		purchase(Resource.METAL, metalCost.get(object));
+		purchase(Resource.GAS, gasCost.get(object));
+		if(!buildQueue.containsKey(position)){
+			buildQueue.put(position, new LinkedList<QueueItem>());
+		}
+		buildQueue.get(position).add(new QueueItem(object, position, buildTime.get(object)));
+		supply.setQueuedSupply(supply.getQueuedSupply() + supplyCost.get(object));
+		Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
+		EventBus.INSTANCE.publish(evt);
+		EventText et = new EventText(object.toString().toLowerCase() + " added to build queue!", position);
+		evt = new Event(Event.EventTag.EVENT_TEXT, et);
+		EventBus.INSTANCE.publish(evt);
 	}
 	
 	private boolean hasEnoughResources(int metalCost, int gasCost) {
