@@ -259,6 +259,12 @@ public class ViewEventController implements EventHandler {
 		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables();
 		}
+		
+		if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
+			if (world.getTerritory(lastFleetSelectPos).hasFleet()) {
+				world.getTerritory(lastFleetSelectPos).removeFleet(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
+			}
+		}
 	}
 	
 	public Position[][] getPaths(Player player) {

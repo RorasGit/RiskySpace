@@ -31,6 +31,7 @@ public class Event {
 		DESELECT,
 		SHIP_MENU,
 		QUEUE_SHIP,
+		SHIP_SELFDESTCRUCT,
 		NEXT_TURN,
 		/*
 		 * Controller triggered events
