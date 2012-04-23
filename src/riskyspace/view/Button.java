@@ -15,12 +15,14 @@ public class Button implements Clickable {
 	private Image scaledImage = null;
 	private Action action = null;
 	private String text = null;
+	private Boolean enabled;
 	
 	public Button(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		enabled = true;
 	}
 	
 	public void setAction(Action action) {
@@ -37,13 +39,15 @@ public class Button implements Clickable {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawImage(scaledImage, x, y, null);
-		
-		/*
-		 * Draw centered text
-		 */
-		if (text != null) {
-			drawButtonText(g);
+		if (isEnabled()) {	
+			g.drawImage(scaledImage, x, y, null);
+			
+			/*
+			 * Draw centered text
+			 */
+			if (text != null) {
+				drawButtonText(g);
+			}
 		}
 	}
 	
@@ -78,6 +82,14 @@ public class Button implements Clickable {
 		this.width = d.width;
 		this.height = d.height;
 	}
+	
+	public void setEnabled(Boolean b) {
+		enabled = b;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
 
 	@Override
 	public boolean contains(Point p) {
@@ -88,19 +100,23 @@ public class Button implements Clickable {
 	
 	@Override
 	public boolean mousePressed(Point p) {
-		if (contains(p)) {
-			if (action != null) {
-				action.performAction();
+		if (isEnabled()) {
+			if (contains(p)) {
+				if (action != null) {
+					action.performAction();
+				}
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}
 
 	@Override
 	public boolean mouseReleased(Point p) {
-		if (contains(p)) {
-			return true;
+		if (isEnabled()) {
+			if (contains(p)) {
+				return true;
+			}
 		}
 		return false;
 	}

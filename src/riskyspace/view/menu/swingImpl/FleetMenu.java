@@ -71,6 +71,7 @@ public class FleetMenu extends AbstractSideMenu {
 		setPlayer(fleet.getOwner());
 		createFleetIcons(fleet);
 		colonizeButton.setImage("res/menu/" + fleet.getOwner().toString().toLowerCase() + "/colonizeButton" + View.res);
+		colonizeButton.setEnabled(false);
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class FleetMenu extends AbstractSideMenu {
 			setVisible(false);
 		}
 		if (evt.getTag() == Event.EventTag.COLONIZER_SELECTED) {
-			
+			colonizeButton.setEnabled(true);
 		}
 	}
 

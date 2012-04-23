@@ -150,7 +150,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.METAL_CHANGED) {
-				metal = (Integer) evt.getObjectValue();
+			metal = (Integer) evt.getObjectValue();
 		}
 		if (evt.getTag() == Event.EventTag.GAS_CHANGED) {
 			gas = (Integer) evt.getObjectValue();
