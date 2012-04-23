@@ -168,10 +168,6 @@ public class Fleet implements MoveAble {
 			ships.get(i).reset();
 		}
 	}
-	
-	public void removeAll() {
-		
-	}
 
 	public Player getOwner() {
 		return owner;
