@@ -176,8 +176,10 @@ public class PlayerStats {
 				}
 			}
 		}
-		Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
-		EventBus.INSTANCE.publish(evt);
+		if (buildShips.size() >= 1) {
+			Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
+			EventBus.INSTANCE.publish(evt);
+		}
 		return buildShips;
 	}
 	
@@ -196,7 +198,7 @@ public class PlayerStats {
 		}
 		purchase(Resource.METAL, metalCost.get(object));
 		purchase(Resource.GAS, gasCost.get(object));
-		if(!buildQueue.containsKey(position)){
+		if (!buildQueue.containsKey(position)) {
 			buildQueue.put(position, new LinkedList<QueueItem>());
 		}
 		buildQueue.get(position).add(new QueueItem(object, position, buildTime.get(object)));

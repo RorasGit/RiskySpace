@@ -128,14 +128,17 @@ public class ViewEventController implements EventHandler {
 								fleet.useColonizer();
 								world.getTerritory(pos).getPlanet().buildColony(fleet.getOwner());
 								EventText et = new EventText("Colony built !!", pos);
+								world.updatePlayerStats(currentPlayer);
 								EventBus.INSTANCE.publish(new Event(Event.EventTag.EVENT_TEXT, et));
+								Event event = new Event(Event.EventTag.SUPPLY_CHANGED, world.getSupply(currentPlayer));
+								EventBus.INSTANCE.publish(event);
 								break; // Stop looping through fleets.
 							}
 						}
 					}
 					
 					/*
-					 * Temporary solution for people with out a scroll button on their mouse :P
+					 * Temporary solution for people without a scroll button on their mouse :P
 					 */
 				} else if (evt.getObjectValue() == null) { 
 					if (world.getTerritory(lastFleetSelectPos).hasFleet() && world.getTerritory(lastFleetSelectPos).hasPlanet() && !world.getTerritory(lastFleetSelectPos).hasColony()) {
