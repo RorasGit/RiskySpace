@@ -17,6 +17,8 @@ import riskyspace.model.ShipType;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
+import riskyspace.view.Action;
+import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 import riskyspace.view.Sprite;
 import riskyspace.view.View;
@@ -33,12 +35,23 @@ public class FleetMenu extends AbstractSideMenu {
 	private Map<String, Image> shipIcons = new HashMap<String, Image>();
 	private List<Image> fleetIcons = new ArrayList<Image>();
 	
+	private Button colonizeButton;
+	
 	public FleetMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		margin = menuWidth/10;
 		fleetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/palpatine.png").getScaledInstance(menuWidth - 3*margin, 2*(menuWidth - 3*margin)/3, Image.SCALE_DEFAULT);
 		itemSize = (menuWidth - margin*2) / 5;
 		initSprites(itemSize - margin/10);
+		
+		colonizeButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		colonizeButton.setAction(new Action(){
+			@Override
+			public void performAction() {
+				Event evt = new Event(Event.EventTag.COLONIZE_PLANET, null);
+				EventBus.INSTANCE.publish(evt);
+			}
+		});
 		EventBus.INSTANCE.addHandler(this);
 	}
 	
@@ -57,6 +70,7 @@ public class FleetMenu extends AbstractSideMenu {
 	public void setFleet(Fleet fleet) {
 		setPlayer(fleet.getOwner());
 		createFleetIcons(fleet);
+		colonizeButton.setImage("res/menu/" + fleet.getOwner().toString().toLowerCase() + "/colonizeButton" + View.res);
 	}
 
 	@Override
@@ -67,6 +81,9 @@ public class FleetMenu extends AbstractSideMenu {
 		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
 			setVisible(false);
 		}
+		if (evt.getTag() == Event.EventTag.COLONIZER_SELECTED) {
+			
+		}
 	}
 
 
@@ -76,6 +93,7 @@ public class FleetMenu extends AbstractSideMenu {
 		 * Only handle mouse event if enabled
 		 */
 		if (isVisible()) {
+			if (colonizeButton.mousePressed(p)) {return true;}
 			if (this.contains(p)) {return true;}
 			else {
 				return false;
@@ -108,6 +126,7 @@ public class FleetMenu extends AbstractSideMenu {
 				int row = i / 5;
 				g.drawImage(fleetIcons.get(i), getX() + margin + col*itemSize + 2, getY() + 2*margin + height + row*itemSize, null);
 			}
+			colonizeButton.draw(g);
 		}
 	}
 	

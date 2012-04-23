@@ -104,7 +104,7 @@ public class ViewEventController implements EventHandler {
 				if (evt.getObjectValue() instanceof Position) {
 					Position pos = (Position) evt.getObjectValue();
 					fleetSelectionIndex = 0;
-					lastFleetSelectPos = null;
+					lastFleetSelectPos = pos;
 					if (world.getTerritory(pos).hasColonizer()) {
 						for (Fleet fleet : world.getTerritory(pos).getFleets()) {
 							if (fleet.hasColonizer()) {
@@ -127,7 +127,23 @@ public class ViewEventController implements EventHandler {
 							if (fleet.hasColonizer()) {
 								fleet.useColonizer();
 								world.getTerritory(pos).getPlanet().buildColony(fleet.getOwner());
-								EventText et = new EventText("Colony built", pos);
+								EventText et = new EventText("Colony built !!", pos);
+								EventBus.INSTANCE.publish(new Event(Event.EventTag.EVENT_TEXT, et));
+								break; // Stop looping through fleets.
+							}
+						}
+					}
+					
+					/*
+					 * Temporary solution for people with out a scroll button on their mouse :P
+					 */
+				} else if (evt.getObjectValue() == null) { 
+					if (world.getTerritory(lastFleetSelectPos).hasFleet() && world.getTerritory(lastFleetSelectPos).hasPlanet() && !world.getTerritory(lastFleetSelectPos).hasColony()) {
+						for (Fleet fleet : world.getTerritory(lastFleetSelectPos).getFleets()) {
+							if (fleet.hasColonizer()) {
+								fleet.useColonizer();
+								world.getTerritory(lastFleetSelectPos).getPlanet().buildColony(fleet.getOwner());
+								EventText et = new EventText("Colony built Z3B0 style", lastFleetSelectPos);
 								EventBus.INSTANCE.publish(new Event(Event.EventTag.EVENT_TEXT, et));
 								break; // Stop looping through fleets.
 							}
