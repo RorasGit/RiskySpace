@@ -34,6 +34,10 @@ public class Supply {
 	public boolean isCapped() {
 		return getUsed() >= getMax();
 	}
+	
+	public boolean isOverCapped() {
+		return getUsed() > getMax();
+	}
 
 	public void setQueuedSupply(int queuedSupply) {
 		this.queuedSupply = queuedSupply;

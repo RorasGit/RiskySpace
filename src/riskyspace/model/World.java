@@ -72,6 +72,14 @@ public class World {
 		}
 	}
 	
+	public void resetBuildQueue(Player player, Position pos) {
+		playerstats.get(player).resetQueues(pos);
+	}
+	
+	public void resetAllQueues(Player player) {
+		playerstats.get(player).resetAll();
+	}
+	
 	public List<Position> getContentPositions(){
 		return territoriesWithContent();
 	}
@@ -92,7 +100,6 @@ public class World {
 		return playerstats.get(player).purchase(type, amount);
 	}
 	
-
 	public void setIncome(Player player, Resource type, int amount) {
 		playerstats.get(player).setIncome(type, amount);
 	}

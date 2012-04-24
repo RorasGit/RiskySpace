@@ -26,6 +26,7 @@ public class ViewEventController implements EventHandler {
 	private World world = null;
 	private int fleetSelectionIndex = 0;
 	private Position lastFleetSelectPos = null;
+	private Position lastBattlePos = null;
 	private Colony selectedColony = null;
 	private Player currentPlayer;
 
@@ -154,6 +155,15 @@ public class ViewEventController implements EventHandler {
 					}
 				}
 			}
+			
+			if (evt.getTag() == Event.EventTag.COLONY_DESTROYED) {
+				Player owner = (Player) evt.getObjectValue();
+				world.resetBuildQueue(owner, lastBattlePos);
+				if (world.getSupply(owner).isOverCapped()) {
+					// Reset all buildqueues to avoid bug when colony destroyed results in supply overcap
+					world.resetAllQueues(currentPlayer); 
+				}
+			}
 
 			if (evt.getTag() == Event.EventTag.SET_PATH) {
 				Position target = (Position) evt.getObjectValue();
@@ -241,12 +251,15 @@ public class ViewEventController implements EventHandler {
 				Territory terr = world.getTerritory(pos);
 				if (terr.hasConflict()) {
 					String battleString = Battle.doBattle(terr);
+					lastBattlePos = pos;
 					EventText et = new EventText(battleString, pos);
 					Event event = new Event(Event.EventTag.EVENT_TEXT, et);
 					EventBus.INSTANCE.publish(event);
 				}
 			}
 		}
+		
+		
 		
 		if (evt.getTag() == Event.EventTag.FLEET_REMOVED) {
 			fleetPaths.remove((Fleet) evt.getObjectValue());

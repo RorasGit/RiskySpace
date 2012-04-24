@@ -210,6 +210,18 @@ public class PlayerStats {
 		EventBus.INSTANCE.publish(evt);
 	}
 	
+	public void resetQueues(Position pos) {
+		// TODO
+	}
+	
+	public void resetAll() {
+		for (Position pos : buildQueue.keySet()) {
+			if (!buildQueue.get(pos).isEmpty()) {  // TODO   ge tillbaka resources!
+				buildQueue.get(pos).clear();
+			}
+		}
+	}
+	
 	private boolean hasEnoughResources(int metalCost, int gasCost) {
 		return metalCost <= resources.get(METAL) && gasCost <= resources.get(GAS);
 	}
@@ -228,6 +240,10 @@ public class PlayerStats {
 	
 	public boolean isSupplyCapped() {
 		return supply.isCapped();
+	}
+	
+	public boolean isSupplyOverCapped() {
+		return supply.isOverCapped();
 	}
 	
 	public Supply getSupply() {

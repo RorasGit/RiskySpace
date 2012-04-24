@@ -15,6 +15,7 @@ public class Event {
 		GAS_CHANGED,
 		METAL_CHANGED,
 		SUPPLY_CHANGED,
+		COLONY_DESTROYED,
 		/*
 		 * View triggered events
 		 */
