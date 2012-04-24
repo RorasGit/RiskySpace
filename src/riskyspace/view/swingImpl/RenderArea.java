@@ -34,6 +34,7 @@ import riskyspace.view.camera.CameraController;
 import riskyspace.view.menu.IMenu;
 import riskyspace.view.menu.swingImpl.ColonyMenu;
 import riskyspace.view.menu.swingImpl.FleetMenu;
+import riskyspace.view.menu.swingImpl.PlanetMenu;
 import riskyspace.view.menu.swingImpl.RecruitMenu;
 import riskyspace.view.menu.swingImpl.TopMenu;
 
@@ -67,6 +68,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	private IMenu recruitMenu = null;
 	private IMenu fleetMenu = null;
 	private IMenu topMenu = null;
+	private IMenu planetMenu = null;
 	
 	/*
 	 * Screen measures
@@ -107,6 +109,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		colonyMenu = new ColonyMenu(width - menuWidth, 80, menuWidth, height-80);
 		recruitMenu = new RecruitMenu(width - menuWidth, 80, menuWidth, height-80);
 		fleetMenu = new FleetMenu(width - menuWidth, 80, menuWidth, height-80);
+		planetMenu = new PlanetMenu(width - menuWidth, 80, menuWidth, height-80);
 		topMenu = new TopMenu(0, 0, width, height);
 	}
 	
@@ -226,6 +229,9 @@ public class RenderArea extends JPanel implements EventHandler {
 		if (fleetMenu.isVisible()) {
 			fleetMenu.draw(g);
 		}
+		if (planetMenu.isVisible()) {
+			planetMenu.draw(g);
+		}
 		topMenu.draw(g);
 		g.setColor(Color.GREEN);
 		g.drawString(fps, 20, 100);
@@ -279,6 +285,12 @@ public class RenderArea extends JPanel implements EventHandler {
 					return ((Clickable) fleetMenu).mousePressed(point);
 				}
 			}
+			if (planetMenu.isVisible()) {
+				if (planetMenu instanceof Clickable) {
+					return ((Clickable) planetMenu).mousePressed(point);
+				}
+			}
+			
 			return false;
 		}
 
@@ -316,10 +328,10 @@ public class RenderArea extends JPanel implements EventHandler {
 			return false;
 		}
 
-		public boolean colonyClick(Point point) {
+		public boolean planetClick(Point point) {
 			Position pos = getPosition(point);
 			if (isLegalPos(pos)) {
-				Event evt = new Event(Event.EventTag.COLONY_SELECTED, pos);
+				Event evt = new Event(Event.EventTag.PLANET_SELECTED, pos);
 				EventBus.INSTANCE.publish(evt);
 				return true;
 			}
@@ -344,7 +356,7 @@ public class RenderArea extends JPanel implements EventHandler {
 				if (menuClick(me.getPoint())) {return;}
 				if (fleetClick(me)) {return;}
 				if (colonizerClick(me.getPoint())) {return;}
-				if (colonyClick(me.getPoint())) {return;}
+				if (planetClick(me.getPoint())) {return;}
 				else {
 					/*
 					 * Click was not in any trigger zone. Call deselect.

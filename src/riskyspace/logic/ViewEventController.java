@@ -8,6 +8,7 @@ import java.util.Set;
 
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
+import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
@@ -121,37 +122,22 @@ public class ViewEventController implements EventHandler {
 			}
 
 			if (evt.getTag() == Event.EventTag.COLONIZE_PLANET) {
-				if (evt.getObjectValue() instanceof Position) {
-					Position pos = (Position) evt.getObjectValue();
-					if (world.getTerritory(pos).hasFleet() && world.getTerritory(pos).hasPlanet() && !world.getTerritory(pos).hasColony()) {
-						for (Fleet fleet : world.getTerritory(pos).getFleets()) {
+				if (evt.getObjectValue() instanceof Territory) {
+					Territory ter = (Territory) evt.getObjectValue();
+					if (ter.hasFleet() && ter.hasPlanet() && !ter.hasColony()) {
+						for (Fleet fleet : ter.getFleets()) {
 							if (fleet.hasColonizer()) {
 								fleet.useColonizer();
-								world.getTerritory(pos).getPlanet().buildColony(fleet.getOwner());
-								EventText et = new EventText("Colony built !!", pos);
+								ter.getPlanet().buildColony(fleet.getOwner());
+								//EventText et = new EventText("Colony built !!", )
 								world.updatePlayerStats(currentPlayer);
-								EventBus.INSTANCE.publish(new Event(Event.EventTag.EVENT_TEXT, et));
+								//EventBus.INSTANCE.publish(new Event(Event.EventTag.EVENT_TEXT, et));
 								Event event = new Event(Event.EventTag.SUPPLY_CHANGED, world.getSupply(currentPlayer));
 								EventBus.INSTANCE.publish(event);
 								break; // Stop looping through fleets.
 							}
 						}
-					}
-					
-					/*
-					 * Temporary solution for people without a scroll button on their mouse :P
-					 */
-				} else if (evt.getObjectValue() == null) { 
-					if (world.getTerritory(lastFleetSelectPos).hasFleet() && world.getTerritory(lastFleetSelectPos).hasPlanet() && !world.getTerritory(lastFleetSelectPos).hasColony()) {
-						for (Fleet fleet : world.getTerritory(lastFleetSelectPos).getFleets()) {
-							if (fleet.hasColonizer()) {
-								fleet.useColonizer();
-								world.getTerritory(lastFleetSelectPos).getPlanet().buildColony(fleet.getOwner());
-								EventText et = new EventText("Colony built Z3B0 style", lastFleetSelectPos);
-								EventBus.INSTANCE.publish(new Event(Event.EventTag.EVENT_TEXT, et));
-								break; // Stop looping through fleets.
-							}
-						}
+						selectedColony = ter.getColony();
 					}
 				}
 			}
@@ -222,7 +208,7 @@ public class ViewEventController implements EventHandler {
 			//TODO: make two different fleets of the selected fleet.
 		}
 
-		if(evt.getTag() == Event.EventTag.COLONY_SELECTED) {
+		if(evt.getTag() == Event.EventTag.PLANET_SELECTED) {
 			resetVariables();
 			Territory selectedTerritory = world.getTerritory((Position) evt.getObjectValue());
 			if (selectedTerritory.hasColony()) {
@@ -232,6 +218,13 @@ public class ViewEventController implements EventHandler {
 					EventBus.INSTANCE.publish(mEvent);
 				} else {
 					selectedColony = null;
+				}
+			} else if (selectedTerritory.hasPlanet()) {
+				Event mEvent = new Event(Event.EventTag.SHOW_PLANETMENU, (Territory) selectedTerritory);
+				EventBus.INSTANCE.publish(mEvent);
+				if (selectedTerritory.hasColonizer()) {
+					mEvent = new Event(Event.EventTag.COLONIZER_PRESENT, selectedTerritory);
+					EventBus.INSTANCE.publish(mEvent);
 				}
 			}
 		}
