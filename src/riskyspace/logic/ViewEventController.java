@@ -106,7 +106,7 @@ public class ViewEventController implements EventHandler {
 				if (evt.getObjectValue() instanceof Position) {
 					Position pos = (Position) evt.getObjectValue();
 					fleetSelectionIndex = 0;
-					lastFleetSelectPos = pos;
+					lastFleetSelectPos = null;
 					if (world.getTerritory(pos).hasColonizer()) {
 						for (Fleet fleet : world.getTerritory(pos).getFleets()) {
 							if (fleet.hasColonizer()) {
@@ -129,6 +129,7 @@ public class ViewEventController implements EventHandler {
 							if (fleet.hasColonizer()) {
 								fleet.useColonizer();
 								ter.getPlanet().buildColony(fleet.getOwner());
+								ter.removeFleet(fleet);
 								//EventText et = new EventText("Colony built !!", )
 								world.updatePlayerStats(currentPlayer);
 								//EventBus.INSTANCE.publish(new Event(Event.EventTag.EVENT_TEXT, et));
@@ -138,6 +139,10 @@ public class ViewEventController implements EventHandler {
 							}
 						}
 						selectedColony = ter.getColony();
+						Event event = new Event(Event.EventTag.HIDE_MENU, null);
+						EventBus.INSTANCE.publish(event);
+						event = new Event(Event.EventTag.SHOW_MENU, selectedColony);
+						EventBus.INSTANCE.publish(event);
 					}
 				}
 			}

@@ -45,10 +45,6 @@ public class PlanetMenu extends AbstractSideMenu{
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.COLONIZE_PLANET, planetTer);
 				EventBus.INSTANCE.publish(evt);
-				evt = new Event(Event.EventTag.HIDE_MENU, null);
-				EventBus.INSTANCE.publish(evt);
-				evt = new Event(Event.EventTag.SHOW_MENU, planetTer.getColony());
-				EventBus.INSTANCE.publish(evt);
 			}
 		});
 		EventBus.INSTANCE.addHandler(this);

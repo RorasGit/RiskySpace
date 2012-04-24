@@ -11,7 +11,6 @@ import riskyspace.model.Player;
 import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.view.swingImpl.RenderArea;
 
 
 public class Battle {
