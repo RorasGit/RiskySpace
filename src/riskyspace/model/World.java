@@ -73,7 +73,7 @@ public class World {
 	}
 	
 	public void resetBuildQueue(Player player, Position pos) {
-		playerstats.get(player).resetQueues(pos);
+		playerstats.get(player).resetQueue(pos);
 	}
 	
 	public void resetAllQueues(Player player) {
@@ -107,7 +107,7 @@ public class World {
 	public void updatePlayerStats(Player player) {
 		int numberOfColonies = 0;
 		int supply = 0;
-		for(Position pos : getContentPositions()) {
+		for (Position pos : getContentPositions()) {
 			if (getTerritory(pos).hasColony() && getTerritory(pos).getColony().getOwner() == player) {
 				numberOfColonies++;
 			}

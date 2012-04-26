@@ -111,10 +111,12 @@ public class Battle {
 		 */
 		Player winner = !bg1.isDefeated() ? bg1.getOwner() : bg2.getOwner();
 		if (territory.hasColony()) {
+			Player owner = territory.getColony().getOwner();
 			if (territory.getColony().getOwner() != winner) {
-				Event event = new Event(Event.EventTag.COLONY_DESTROYED, territory.getColony().getOwner());
-				EventBus.INSTANCE.publish(event);
 				territory.getPlanet().destroyColony();
+				Event event = new Event(Event.EventTag.COLONY_DESTROYED, owner);
+				EventBus.INSTANCE.publish(event);
+
 			}
 		}
 		if (territory.controlledBy() == Player.WORLD) {

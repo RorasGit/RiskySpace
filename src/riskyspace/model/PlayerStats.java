@@ -210,14 +210,32 @@ public class PlayerStats {
 		EventBus.INSTANCE.publish(evt);
 	}
 	
-	public void resetQueues(Position pos) {
-		// TODO
+	public void resetQueue(Position pos) {
+ 		if (!buildQueue.containsKey(pos)) {
+ 			buildQueue.put(pos, new LinkedList<QueueItem>());
+ 		}
+		if (!buildQueue.get(pos).isEmpty()) {
+			if (buildQueue.get(pos).getFirst() instanceof QueueItem) {
+				supply.setQueuedSupply(supply.getQueuedSupply() - supplyCost.get(buildQueue.get(pos).getFirst().getItem()));
+				purchase(Resource.METAL, -metalCost.get(buildQueue.get(pos).getFirst().getItem()));
+				purchase(Resource.GAS, -gasCost.get(buildQueue.get(pos).getFirst().getItem()));
+				buildQueue.get(pos).removeFirst();
+			}
+		}
 	}
 	
 	public void resetAll() {
 		for (Position pos : buildQueue.keySet()) {
-			if (!buildQueue.get(pos).isEmpty()) {  // TODO   ge tillbaka resources!
-				buildQueue.get(pos).clear();
+	 		if (!buildQueue.containsKey(pos)) {
+	 			buildQueue.put(pos, new LinkedList<QueueItem>());
+	 		}
+			while (buildQueue.get(pos).size() > 1) {
+				if (buildQueue.get(pos).getLast() instanceof QueueItem) {
+					supply.setQueuedSupply(supply.getQueuedSupply() - supplyCost.get(buildQueue.get(pos).getLast().getItem()));
+					purchase(Resource.METAL, -metalCost.get(buildQueue.get(pos).getLast().getItem()));
+					purchase(Resource.GAS, -gasCost.get(buildQueue.get(pos).getLast().getItem()));
+					buildQueue.get(pos).removeLast();
+				}
 			}
 		}
 	}

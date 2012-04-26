@@ -149,10 +149,11 @@ public class ViewEventController implements EventHandler {
 			
 			if (evt.getTag() == Event.EventTag.COLONY_DESTROYED) {
 				Player owner = (Player) evt.getObjectValue();
-				world.resetBuildQueue(owner, lastBattlePos);
+				world.updatePlayerStats(owner);
 				if (world.getSupply(owner).isOverCapped()) {
-					// Reset all buildqueues to avoid bug when colony destroyed results in supply overcap
-					world.resetAllQueues(currentPlayer); 
+					world.resetAllQueues(owner); 
+				} else {
+					world.resetBuildQueue(owner, lastBattlePos);
 				}
 			}
 
