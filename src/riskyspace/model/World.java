@@ -27,6 +27,9 @@ public class World {
 	private void initPlayers(/*Player[] players ??*/) {
 //		for players.size()
 		playerstats = new HashMap<Player, PlayerStats>();
+		/*
+		 * Support for more players
+		 */
 		playerstats.put(Player.BLUE, new PlayerStats());
 		playerstats.put(Player.RED, new PlayerStats());
 	}

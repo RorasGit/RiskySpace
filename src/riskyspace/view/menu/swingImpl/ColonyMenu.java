@@ -6,18 +6,18 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.util.HashMap;
+import java.util.Map;
 
+import riskyspace.GameManager;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
-import riskyspace.view.Clickable;
 import riskyspace.view.View;
 import riskyspace.view.menu.AbstractSideMenu;
-import riskyspace.view.menu.IMenu;
 /**
  * 
  * @author flygarn
@@ -39,16 +39,15 @@ public class ColonyMenu extends AbstractSideMenu{
 	/*
 	 * Images
 	 */
-	private Image colonyBlue = null;
-	private Image colonyRed = null;
+	private Map<Player, Image> cities = new HashMap<Player, Image>();
 	
 	public ColonyMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		
-		colonyBlue = Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
-				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
-		colonyRed = Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
-				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
+		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
+				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
+		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
+				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		buildShipButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		buildShipButton.setAction(new Action(){
 			@Override
@@ -63,8 +62,8 @@ public class ColonyMenu extends AbstractSideMenu{
 	public void setColony(Colony colony) {
 		setMenuName(colony.getName());
 		setPlayer(colony.getOwner());
-		ownerColor = colony.getOwner() == Player.BLUE ? Color.BLUE : Color.RED;
-		colonyPicture = colony.getOwner() == Player.BLUE ? colonyBlue : colonyRed;
+		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
+		colonyPicture = cities.get(colony.getOwner());
 		buildShipButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/recruitButton" + View.res);
 	}
 

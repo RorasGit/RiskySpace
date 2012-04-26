@@ -41,8 +41,8 @@ public class Demo {
 			@Override public void keyReleased(KeyEvent arg0) {}
 			@Override public void keyTyped(KeyEvent arg0) {}
 		});
-		final GameManager gm  = new GameManager(world, 2);
-		mainView.setViewer(gm.getCurrentPlayer());
+		GameManager.INSTANCE.init(world, 2);
+		mainView.setViewer(GameManager.INSTANCE.getCurrentPlayer());
 		while(true) {
 			mainView.draw();
 			try {

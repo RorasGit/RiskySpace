@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import riskyspace.GameManager;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.World;
@@ -155,6 +156,9 @@ public class RenderArea extends JPanel implements EventHandler {
 	
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
+		/*
+		 * TODO: Cameras only support 2 players
+		 */
 		cameras.put(Player.BLUE, new Camera(0.93f,0.92f));
 		cameras.put(Player.RED, new Camera(0.07f,0.08f));
 		currentCamera = cameras.get(Player.BLUE);
@@ -220,6 +224,10 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 		// Draw menu
 		g.translate(-xTrans, -yTrans);
+		
+		/*
+		 * TODO: Do not check isVisible, the menus should handle that part
+		 */
 		if (colonyMenu.isVisible()) {
 			colonyMenu.draw(g);
 		}
@@ -255,7 +263,7 @@ public class RenderArea extends JPanel implements EventHandler {
 			setPlayer((Player) evt.getObjectValue());
 		}
 		if (evt.getTag() == EventTag.TERRITORY_CHANGED || evt.getTag() == EventTag.PATHS_UPDATED) {
-			spriteMap = SpriteMap.getSprites(cameras.get(Player.BLUE) == currentCamera ? Player.BLUE : Player.RED);
+			spriteMap = SpriteMap.getSprites(GameManager.INSTANCE.getCurrentPlayer());
 		}
 	}
 	

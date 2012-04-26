@@ -6,8 +6,6 @@ public class QueueItem {
 	private Position pos;
 	private Object item;
 	
-	
-
 	public QueueItem (Object object, Position pos, int buildTime) {
 		this.item = object;
 		this.pos = pos;

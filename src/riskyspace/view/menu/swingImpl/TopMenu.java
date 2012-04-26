@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
+import riskyspace.GameManager;
 import riskyspace.logic.FleetMove;
 import riskyspace.model.Supply;
 import riskyspace.services.Event;
@@ -111,7 +112,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	@Override
 	public void draw(Graphics g) {
 		int a = menuWidth/10;
-		g.setColor(Color.BLUE);
+		g.setColor(Color.GREEN);
 		
 		/*
 		 * Draw the player's metal

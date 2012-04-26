@@ -1,7 +1,9 @@
 package riskyspace;
 
-import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import riskyspace.logic.FleetMove;
@@ -12,27 +14,33 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 
-public class GameManager implements EventHandler {
+public enum GameManager implements EventHandler {
 
-	//private Player[] players = null;
-	private Player currentPlayer = null;
+	INSTANCE;
+	
+	private Player[] players = {Player.BLUE, Player.RED, Player.GREEN, Player.PINK};
+	private static Player currentPlayer = null;
 	private World world = null;
 	private int turn;
 	
-	private Map<Player, PlayerInfo> players = new HashMap<Player, PlayerInfo>();
+	private List<Player> activePlayers = new ArrayList<Player>();
+	private Map<Player, PlayerInfo> playerInfo = new HashMap<Player, PlayerInfo>();
 	
-	public GameManager(World world, int nbrOfPlayers) {
+	public void init(World world, int nbrOfPlayers) {
 		this.world = world;
-		//players = new Player[]{Player.BLUE, Player.RED};
-		initPlayers();
+		initPlayers(nbrOfPlayers);
 		changePlayer();
 		EventBus.INSTANCE.addHandler(this);
 		turn = 1;
 	}
 	
-	public void initPlayers() {
-		players.put(Player.RED, new PlayerInfo(Color.RED));
-		players.put(Player.BLUE, new PlayerInfo(Color.BLUE));
+	public void initPlayers(int nbrOfPlayers) {
+		for (int i = 0; i < nbrOfPlayers; i++) {
+			activePlayers.add(players[i]);
+		}
+		for (Player player : activePlayers) {
+			playerInfo.put(player, new PlayerInfo(player));
+		}
 	}
 
 	public Player getCurrentPlayer() {
@@ -43,8 +51,12 @@ public class GameManager implements EventHandler {
 		return turn;
 	}
 	
+	public PlayerInfo getInfo(Player player) {
+		return playerInfo.get(player);
+	}
+	
 	private void changePlayer() {
-		currentPlayer = (currentPlayer == Player.BLUE) ? Player.RED : Player.BLUE;
+		currentPlayer = activePlayers.get(((activePlayers.indexOf(currentPlayer) + 1) % activePlayers.size()));
 		/*
 		 * Give income in ViewEventController instead?
 		 */

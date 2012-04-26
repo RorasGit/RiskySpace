@@ -15,14 +15,13 @@ public class Button implements Clickable {
 	private Image scaledImage = null;
 	private Action action = null;
 	private String text = null;
-	private Boolean enabled;
+	private Boolean enabled = true;
 	
 	public Button(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		enabled = true;
 	}
 	
 	public void setAction(Action action) {

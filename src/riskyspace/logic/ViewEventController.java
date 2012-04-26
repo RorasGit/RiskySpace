@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import riskyspace.GameManager;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
@@ -29,7 +30,6 @@ public class ViewEventController implements EventHandler {
 	private Position lastFleetSelectPos = null;
 	private Position lastBattlePos = null;
 	private Colony selectedColony = null;
-	private Player currentPlayer;
 
 	private Set<Fleet> selectedFleets = new HashSet<Fleet>();
 	private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
@@ -50,7 +50,7 @@ public class ViewEventController implements EventHandler {
 						lastFleetSelectPos = pos;
 						fleetSelectionIndex = 0;
 					}
-					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == currentPlayer)) {
+					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == GameManager.INSTANCE.getCurrentPlayer())) {
 						if (world.getTerritory(pos).getFleets().size() != world.getTerritory(pos).shipCount(ShipType.COLONIZER)) {
 							Fleet fleet;
 							do {
@@ -82,7 +82,7 @@ public class ViewEventController implements EventHandler {
 						lastFleetSelectPos = pos;
 						fleetSelectionIndex = 0;
 					}
-					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == currentPlayer)) {
+					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == GameManager.INSTANCE.getCurrentPlayer())) {
 						/*
 						 * Check that there are other ships than colonizers
 						 */
@@ -131,9 +131,9 @@ public class ViewEventController implements EventHandler {
 								ter.getPlanet().buildColony(fleet.getOwner());
 								ter.removeFleet(fleet);
 								//EventText et = new EventText("Colony built !!", )
-								world.updatePlayerStats(currentPlayer);
+								world.updatePlayerStats(GameManager.INSTANCE.getCurrentPlayer());
 								//EventBus.INSTANCE.publish(new Event(Event.EventTag.EVENT_TEXT, et));
-								Event event = new Event(Event.EventTag.SUPPLY_CHANGED, world.getSupply(currentPlayer));
+								Event event = new Event(Event.EventTag.SUPPLY_CHANGED, world.getSupply(GameManager.INSTANCE.getCurrentPlayer()));
 								EventBus.INSTANCE.publish(event);
 								break; // Stop looping through fleets.
 							}
@@ -160,7 +160,7 @@ public class ViewEventController implements EventHandler {
 			if (evt.getTag() == Event.EventTag.SET_PATH) {
 				Position target = (Position) evt.getObjectValue();
 				for (Fleet fleet : selectedFleets) {
-					if (currentPlayer == fleet.getOwner()) {
+					if (GameManager.INSTANCE.getCurrentPlayer() == fleet.getOwner()) {
 						fleetPaths.get(fleet).setTarget(target);
 					}
 				}
@@ -174,7 +174,7 @@ public class ViewEventController implements EventHandler {
 
 			if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
 				fleetSelectionIndex = 0;
-				FleetMove.move(world, fleetPaths, currentPlayer);
+				FleetMove.move(world, fleetPaths, GameManager.INSTANCE.getCurrentPlayer());
 			}
 		}
 		
@@ -182,8 +182,7 @@ public class ViewEventController implements EventHandler {
 			resetVariables();
 			lastFleetSelectPos = null;
 			fleetSelectionIndex = 0;
-			currentPlayer = (Player) evt.getObjectValue();
-			world.processBuildQueue(currentPlayer);
+			world.processBuildQueue(GameManager.INSTANCE.getCurrentPlayer());
 		}
 
 		if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
@@ -219,7 +218,7 @@ public class ViewEventController implements EventHandler {
 			Territory selectedTerritory = world.getTerritory((Position) evt.getObjectValue());
 			if (selectedTerritory.hasColony()) {
 				selectedColony = selectedTerritory.getColony();
-				if (selectedColony.getOwner() == currentPlayer) {
+				if (selectedColony.getOwner() == GameManager.INSTANCE.getCurrentPlayer()) {
 					Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
 					EventBus.INSTANCE.publish(mEvent);
 				} else {
@@ -271,23 +270,6 @@ public class ViewEventController implements EventHandler {
 		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables();
 		}
-		
-		/*
-		 * TODO: Removes ships, but does so in an uncontrolled manner and needs to be redone somehow.
-		 * 		 It's in other words unfinished...
-		 */
-		if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
-			if (world.getTerritory(lastFleetSelectPos).hasFleet() && fleetSelectionIndex >=0) {
-				world.getTerritory(lastFleetSelectPos).removeFleet(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
-				System.out.println(lastFleetSelectPos);
-				System.out.println(world.getTerritory(lastFleetSelectPos).getFleets().size());
-				if (!world.getTerritory(lastFleetSelectPos).hasFleet()) {
-					resetVariables();
-				} else {
-					fleetSelectionIndex = Math.max(fleetSelectionIndex - 1, 0);
-				}
-			}
-		}
 	}
 	
 	public Position[][] getPaths(Player player) {
@@ -310,7 +292,7 @@ public class ViewEventController implements EventHandler {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == selectedColony) {
-					world.addToBuildQueue(shipType, currentPlayer, pos);
+					world.addToBuildQueue(shipType, GameManager.INSTANCE.getCurrentPlayer(), pos);
 				}
 			}
 		}
