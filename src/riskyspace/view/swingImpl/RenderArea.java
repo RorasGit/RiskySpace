@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -88,6 +89,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	 */
 	private SpriteMap spriteMap = null;
 	
+	private ClickHandler clickHandler = null;
 	private EventTextPrinter eventTextPrinter = null;
 	
 	private int rows, cols;
@@ -102,7 +104,8 @@ public class RenderArea extends JPanel implements EventHandler {
 		createMenues();
 		eventTextPrinter = new EventTextPrinter();
 		EventBus.INSTANCE.addHandler(this);
-		addMouseListener(new ClickHandler());
+		clickHandler = new ClickHandler();
+		addMouseListener(clickHandler);
 	}
 
 	private void createMenues() {
@@ -210,8 +213,8 @@ public class RenderArea extends JPanel implements EventHandler {
 		/*
 		 * Translate with cameras
 		 */
-		int xTrans = -(int) (((cols+2*EXTRA_SPACE_HORIZONTAL)*squareSize - width)*currentCamera.getX());
-		int yTrans = -(int) (((rows+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
+		int xTrans = -translatePixelsX();
+		int yTrans = -translatePixelsY();
 		g.translate(xTrans, yTrans);
 		
 		// Draw background
@@ -221,6 +224,8 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 		// Draw texts
 		eventTextPrinter.drawEventText(g);
+		
+		drawSelectionArea(g, xTrans, yTrans);
 		
 		// Draw menu
 		g.translate(-xTrans, -yTrans);
@@ -244,10 +249,30 @@ public class RenderArea extends JPanel implements EventHandler {
 		g.setColor(Color.GREEN);
 		g.drawString(fps, 20, 100);
 	}
+	
+	private void drawSelectionArea(Graphics g, int xTrans, int yTrans) {
+		g.setColor(Color.GREEN);
+		if (clickHandler.pressedPoint != null) {
+			Point p = MouseInfo.getPointerInfo().getLocation();
+			int x = clickHandler.pressedPoint.x;
+			int y = clickHandler.pressedPoint.y;
+			int otherX = p.x - xTrans;
+			int otherY = p.y - yTrans;
+			int width = Math.abs(x - otherX);
+			int height = Math.abs(y - otherY);
+			x = x > otherX ? otherX : x;
+			y = y > otherY ? otherY : y;
+			g.drawRect(x, y, width, height);
+			g.setColor(new Color(g.getColor().getRed(), g.getColor().getGreen(), g.getColor().getBlue(), 0x4F));
+			g.fillRect(x + 1, y + 1, width, height);
+		}
+	}
 	 
-	public Position getPosition(Point point) {
-		int row = ((point.y + translatePixelsY()) / squareSize) + 1 - EXTRA_SPACE_VERTICAL;
-		int col = ((point.x  + translatePixelsX()) / squareSize) + 1 - EXTRA_SPACE_HORIZONTAL;
+	public Position getPosition(Point point, boolean translated) {
+		int xTrans = translated ? 0 : translatePixelsX();
+		int yTrans = translated ? 0 : translatePixelsY();
+		int row = ((point.y + yTrans) / squareSize) + 1 - EXTRA_SPACE_VERTICAL;
+		int col = ((point.x  + xTrans) / squareSize) + 1 - EXTRA_SPACE_HORIZONTAL;
 		return new Position(row, col); 
 	}
 	
@@ -269,6 +294,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	
 	private class ClickHandler implements MouseListener {
 
+		public Point pressedPoint;
 		/*
 		 * Click handling for different parts
 		 */
@@ -303,7 +329,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		}
 
 		public boolean colonizerClick(Point point) {
-			Position pos = getPosition(point);
+			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				int dX = (point.x + translatePixelsX()) % squareSize;
 				int dY = (point.y + translatePixelsY()) % squareSize;
@@ -318,7 +344,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 		public boolean fleetClick(MouseEvent me) {
 			Point point = me.getPoint();
-			Position pos = getPosition(point);
+			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				int dX = (point.x + translatePixelsX()) % squareSize;
 				int dY = (point.y + translatePixelsY()) % squareSize;
@@ -337,7 +363,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		}
 
 		public boolean planetClick(Point point) {
-			Position pos = getPosition(point);
+			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				Event evt = new Event(Event.EventTag.PLANET_SELECTED, pos);
 				EventBus.INSTANCE.publish(evt);
@@ -347,7 +373,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		}
 		
 		public boolean pathClick(Point point) {
-			Position pos = getPosition(point);
+			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				Event evt = new Event(Event.EventTag.SET_PATH, pos);
 				EventBus.INSTANCE.publish(evt);
@@ -358,9 +384,24 @@ public class RenderArea extends JPanel implements EventHandler {
 		
 		@Override public void mousePressed(MouseEvent me) {
 			if (me.getButton() == MouseEvent.BUTTON1) {
-				/*
-				 * Check each level of interaction in order.
-				 */
+				pressedPoint = me.getPoint();
+				pressedPoint.x += translatePixelsX();
+				pressedPoint.y += translatePixelsY();
+			} else if (me.getButton() == MouseEvent.BUTTON3) {
+				if (pathClick(me.getPoint())) {return;}
+				else {
+					/*
+					 * Click was not in any trigger zone. Call deselect.
+					 */
+					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
+				}
+			}
+		}
+		@Override public void mouseClicked(MouseEvent me) {
+			/*
+			 * Check each level of interaction in order.
+			 */
+			if (me.getButton() == MouseEvent.BUTTON1) {
 				if (menuClick(me.getPoint())) {return;}
 				if (fleetClick(me)) {return;}
 				if (colonizerClick(me.getPoint())) {return;}
@@ -371,25 +412,57 @@ public class RenderArea extends JPanel implements EventHandler {
 					 */
 					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
 				}
-			} else if (me.getButton() == MouseEvent.BUTTON3) {
-				if (pathClick(me.getPoint())) {return;}
-				else {
-					/*
-					 * Click was not in any trigger zone. Call deselect.
-					 */
-					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
-				}
-			} /*PLACEHOLDER FOR COLONIZE TEST*/ else if (me.getButton() == MouseEvent.BUTTON2) {
-				Position pos = getPosition(me.getPoint());
-				if (isLegalPos(pos)) {
-					EventBus.INSTANCE.publish(new Event(Event.EventTag.COLONIZE_PLANET, pos));
-				}
 			}
 		}
-		@Override public void mouseClicked(MouseEvent me) {}
 		@Override public void mouseEntered(MouseEvent me) {}
 		@Override public void mouseExited(MouseEvent me) {}
-		@Override public void mouseReleased(MouseEvent me) {}
+		@Override public void mouseReleased(MouseEvent me) {
+			if (me.getButton() == MouseEvent.BUTTON1) {
+				Point releasePoint = me.getPoint();
+				releasePoint.x += translatePixelsX();
+				releasePoint.y += translatePixelsY();
+				if (Math.abs(releasePoint.x - pressedPoint.x) < squareSize/10 || Math.abs(releasePoint.y - pressedPoint.y) < squareSize/10) {
+					System.out.println("troll");
+					pressedPoint = null;
+					return;
+				}
+				
+				Point ltCorner = new Point(Math.min(releasePoint.x, pressedPoint.x), Math.min(releasePoint.y, pressedPoint.y));
+				Point rbCorner = new Point(Math.max(releasePoint.x, pressedPoint.x), Math.max(releasePoint.y, pressedPoint.y));
+				Position ltPos = getPosition(ltCorner, true);
+				Position rbPos = getPosition(rbCorner, true);
+				if (ltCorner.getX() % squareSize >= squareSize/2) {
+					ltPos = new Position(ltPos.getRow(), ltPos.getCol() + 1);
+				}
+				if (ltCorner.getY() % squareSize >= squareSize/2) {
+					ltPos = new Position(ltPos.getRow() + 1, ltPos.getCol());
+				}
+				if (rbCorner.getX() % squareSize < squareSize/2) {
+					rbPos = new Position(rbPos.getRow(), rbPos.getCol() - 1);
+				}
+				if (rbCorner.getY() % squareSize < squareSize/2) {
+					rbPos = new Position(rbPos.getRow() - 1, rbPos.getCol());
+				}
+				
+				List<Position> selectPos = new ArrayList<Position>();
+				for (int col = ltPos.getCol(); col <= rbPos.getCol(); col++) {
+					for (int row = ltPos.getRow(); row <= rbPos.getRow(); row++) {
+						Position pos = new Position(row, col);
+						if (isLegalPos(pos)) {
+							selectPos.add(pos);
+						}
+					}
+				}
+				if (!selectPos.isEmpty()) {
+					Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, selectPos);
+					EventBus.INSTANCE.publish(evt);
+				} else {
+					Event evt = new Event(Event.EventTag.DESELECT, null);
+					EventBus.INSTANCE.publish(evt);
+				}
+				pressedPoint = null;
+			}
+		}
 	}
 	
 	private class EventTextPrinter implements EventHandler {

@@ -3,6 +3,7 @@ package riskyspace.logic;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,11 +59,34 @@ public class ViewEventController implements EventHandler {
 								fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
 							} while(fleet.hasColonizer());
 							selectedFleets.add(fleet);
-							fleetPaths.put(fleet, new Path(pos));
-							Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
-							EventBus.INSTANCE.publish(event);
+							if (!fleetPaths.containsKey(fleet)) {
+								fleetPaths.put(fleet, new Path(pos));
+							}
 						}
 					}
+				} else if (evt.getObjectValue() instanceof List) {
+					List positions = (List) evt.getObjectValue();
+					for (int i = 0; i < positions.size(); i++) {
+						if (positions.get(i) instanceof Position) {
+							Position pos = (Position) positions.get(i);
+							if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == GameManager.INSTANCE.getCurrentPlayer())) {
+								if (world.getTerritory(pos).getFleets().size() != world.getTerritory(pos).shipCount(ShipType.COLONIZER)) {
+									for (Fleet fleet : world.getTerritory(pos).getFleets()) {
+										if (!fleet.hasColonizer()) {
+											selectedFleets.add(fleet);
+											if (!fleetPaths.containsKey(fleet)) {
+												fleetPaths.put(fleet, new Path(pos));
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				if (!selectedFleets.isEmpty()) {
+					Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
+					EventBus.INSTANCE.publish(event);
 				}
 			}
 
