@@ -3,17 +3,16 @@ package riskyspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum ShipType {
+public enum ShipType implements BuildAble {
 	/*
 	 * Declaration order important for compareTo
 	 * DO NOT CHANGE!
 	 */
-	//		    Dmg Var  HP Atk  Init  E
-	COLONIZER	( 1, 1,  38, 1,   0,   2), // Kollonajser
-	SCOUT		( 5, 3,  12, 1,   3,   4), // Skauwt
-	HUNTER		(11, 3,  38, 1,   2,   3), // Hannter
-	DESTROYER	(11, 3, 100, 3,   1,   3), // Dezztrojjer
-	MAGIKARP	( 0, 0,   1, 0,   0,   0); // FOR THE AWESOMENESS
+	//		    Dmg Var  HP Atk  Init  E  BuildTime Supply	Metal	Gas
+	COLONIZER	( 1, 1,  38, 1,   0,   2,	1,		  0,	200,	0), // Kollonajser
+	SCOUT		( 5, 3,  12, 1,   1,   4,	1,		  1,	50,		0), // Skauwt
+	HUNTER		(11, 3,  38, 1,   1,   3,	1,		  1,	100,	30), // Hannter
+	DESTROYER	(11, 3, 100, 3,   1,   3,	2,		  2,	350,	100); // Dezztrojjer
 	
 	private final int damage;
 	private final int variation;
@@ -21,14 +20,23 @@ public enum ShipType {
 	private final int energy;
 	private final int initiative;
 	private final int nbrAttacks;
+	private final int buildTime;
+	private final int supplyCost;
+	private final int metalCost;
+	private final int gasCost;
 	
-	private ShipType(int damage, int variation, int shield, int nbrAttacks, int initiative, int energy) {
+	private ShipType(int damage, int variation, int shield, int nbrAttacks, int initiative, 
+			int energy, int buildTime, int supplyCost, int metalCost, int gasCost) {
 		this.damage = damage;
 		this.variation = variation;
 		this.shield = shield;
 		this.energy = energy;
 		this.initiative = initiative;
 		this.nbrAttacks = nbrAttacks;
+		this.buildTime = buildTime;
+		this.supplyCost = supplyCost;
+		this.metalCost = metalCost;
+		this.gasCost = gasCost;
 	}
 	
 	/*
@@ -61,5 +69,25 @@ public enum ShipType {
 	
 	public int getInitiative() {
 		return initiative;
+	}
+
+	@Override
+	public int getSupplyCost() {
+		return supplyCost;
+	}
+
+	@Override
+	public int getMetalCost() {
+		return metalCost;
+	}
+
+	@Override
+	public int getGasCost() {
+		return gasCost;
+	}
+
+	@Override
+	public int getBuildTime() {
+		return buildTime;
 	}
 }
