@@ -28,8 +28,8 @@ public class ViewEventController implements EventHandler {
 	private World world = null;
 	private int fleetSelectionIndex = 0;
 	private Position lastFleetSelectPos = null;
-	private Position lastBattlePos = null;
 	private Colony selectedColony = null;
+	private BattleStats battleStats;
 
 	private Set<Fleet> selectedFleets = new HashSet<Fleet>();
 	private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
@@ -147,14 +147,11 @@ public class ViewEventController implements EventHandler {
 				}
 			}
 			
-			if (evt.getTag() == Event.EventTag.COLONY_DESTROYED) {
-				Player owner = (Player) evt.getObjectValue();
-				world.updatePlayerStats(owner);
-				if (world.getSupply(owner).isOverCapped()) {
-					world.resetAllQueues(owner); 
-				} else {
-					world.resetBuildQueue(owner, lastBattlePos);
-				}
+			if (evt.getTag() == Event.EventTag.COLONY_REMOVED) {
+				Position pos = (Position) evt.getObjectValue();
+				world.getTerritory(pos).getPlanet().destroyColony();
+				// TODO : use position to remove buildQueue
+				
 			}
 
 			if (evt.getTag() == Event.EventTag.SET_PATH) {
@@ -248,20 +245,20 @@ public class ViewEventController implements EventHandler {
 			for (Position pos : world.getContentPositions()) {
 				Territory terr = world.getTerritory(pos);
 				if (terr.hasConflict()) {
-					String battleString = Battle.doBattle(terr);
-					lastBattlePos = pos;
-					EventText et = new EventText(battleString, pos);
+					battleStats = Battle.doBattle(terr);
+					for (Fleet f : battleStats.getDestroyedFleets()) {
+						fleetPaths.remove(f);
+					}
+					EventText et = new EventText(battleStats.getWinner() + "has won the battle!", pos);
 					Event event = new Event(Event.EventTag.EVENT_TEXT, et);
 					EventBus.INSTANCE.publish(event);
+					if (battleStats.isColonyDestroyed()) {
+						event = new Event(Event.EventTag.COLONY_REMOVED, pos);
+					}
 				}
 			}
 		}
 		
-		
-		
-		if (evt.getTag() == Event.EventTag.FLEET_REMOVED) {
-			fleetPaths.remove((Fleet) evt.getObjectValue());
-		}
 		
 		if (evt.getTag() == Event.EventTag.INTERRUPT_MOVES) {
 			FleetMove.interrupt();

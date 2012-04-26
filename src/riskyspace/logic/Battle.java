@@ -19,7 +19,8 @@ public class Battle {
 	// should be possible to change (or change itself according to ships initiative in fleets)
 	private static final int MAX_INITIATIVE = 5;
 	
-	public static String doBattle(Territory territory) {
+	public static BattleStats doBattle(Territory territory) {
+		BattleStats battleStats = new BattleStats();
 		if (territory.getFleets().isEmpty()) {
 			throw new IllegalArgumentException("Battle can not occur in empty territories");
 		}
@@ -41,10 +42,7 @@ public class Battle {
 		Colony colony = territory.getColony();
 		BattleGroup bg1 = new BattleGroup(player1fleets, territory.hasColony() && colony.getOwner() == player1fleets.get(0).getOwner() ? colony : null);
 		BattleGroup bg2 = new BattleGroup(player2fleets, territory.hasColony() && colony.getOwner() != player1fleets.get(0).getOwner() ? colony : null);
-		if (bg1.isDefeated() || bg2.isDefeated()) {
-			throw new IllegalArgumentException("There need to be two players' fleets or Planet " +
-					"in the territory to battle");
-		}
+	
 		bg1.setOwner(player1fleets.isEmpty() ? colony.getOwner() : player1fleets.get(0).getOwner());
 		bg2.setOwner(player2fleets.isEmpty() ? colony.getOwner() : player2fleets.get(0).getOwner());
 		/*
@@ -101,28 +99,25 @@ public class Battle {
 				destroyedFleets.add(fleet);
 			}
 		}
-		territory.removeFleets(destroyedFleets);
-		for (Fleet fleet : destroyedFleets) {
-			Event evt = new Event(Event.EventTag.FLEET_REMOVED, fleet);
-			EventBus.INSTANCE.publish(evt);
-		}
+		battleStats.setDestroyedFleets(destroyedFleets);
+//		territory.removeFleets(destroyedFleets);
+//		for (Fleet fleet : destroyedFleets) {
+//			Event evt = new Event(Event.EventTag.FLEET_REMOVED, fleet);
+//			EventBus.INSTANCE.publish(evt);
+//		}
 		/*
 		 * Remove colony if the owner lost
 		 */
 		Player winner = !bg1.isDefeated() ? bg1.getOwner() : bg2.getOwner();
+		battleStats.setWinner(winner);
 		if (territory.hasColony()) {
-			Player owner = territory.getColony().getOwner();
 			if (territory.getColony().getOwner() != winner) {
-				territory.getPlanet().destroyColony();
-				Event event = new Event(Event.EventTag.COLONY_DESTROYED, owner);
-				EventBus.INSTANCE.publish(event);
-
+				battleStats.setColonyDestroyed(true);
+//				Event event = new Event(Event.EventTag.COLONY_DESTROYED, territory);
+//				EventBus.INSTANCE.publish(event);
 			}
 		}
-		if (territory.controlledBy() == Player.WORLD) {
-			return "Both fleets were destroyed!";
-		}
-		return winner + " won the battle!";
+		return battleStats;
 	}
 
 	private static class BattleGroup {
