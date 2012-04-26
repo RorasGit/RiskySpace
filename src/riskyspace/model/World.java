@@ -37,7 +37,7 @@ public class World {
 	public Territory getTerritory(Position p) {
 		return territories.get(p);
 	}
-
+	
 	public int getRows() {
 		return rows;
 	}
@@ -62,8 +62,11 @@ public class World {
 		}
 	}
 	
-	public void addToBuildQueue(Object object, Player player, Position position) {
-		playerstats.get(player).queueItem(object, position);
+	public void addToBuildQueue(BuildAble buildAble, Player player, Position position) {
+		playerstats.get(player).queueItem(buildAble, position);
+	}
+	public void removeBuildQueue(Player player, Position position){
+		playerstats.get(player).resetQueue(position);	
 	}
 	
 	public void processBuildQueue(Player player) {
@@ -100,7 +103,7 @@ public class World {
 	}
 	
 	public boolean useResource(Player player, Resource type, int amount) {
-		return playerstats.get(player).purchase(type, amount);
+		return playerstats.get(player).changeResource(type, amount);
 	}
 	
 	public void setIncome(Player player, Resource type, int amount) {
@@ -110,7 +113,7 @@ public class World {
 	public void updatePlayerStats(Player player) {
 		int numberOfColonies = 0;
 		int supply = 0;
-		for (Position pos : getContentPositions()) {
+		for (Position pos : this.getContentPositions()) {
 			if (getTerritory(pos).hasColony() && getTerritory(pos).getColony().getOwner() == player) {
 				numberOfColonies++;
 			}

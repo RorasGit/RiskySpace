@@ -4,15 +4,15 @@ public class QueueItem {
 	
 	private int buildTime;
 	private Position pos;
-	private Object item;
+	private BuildAble item;
 	
-	public QueueItem (Object object, Position pos, int buildTime) {
+	public QueueItem (BuildAble object, Position pos, int buildTime) {
 		this.item = object;
 		this.pos = pos;
 		this.buildTime = buildTime;
 	}
 	
-	public Object getItem() {
+	public BuildAble getItem() {
 		return item;
 	}
 	

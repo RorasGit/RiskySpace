@@ -2,6 +2,7 @@ package riskyspace.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,6 @@ import static riskyspace.model.ShipType.*;
 public class PlayerStats {
 	private Map<Resource, Integer> resources = null;
 	private Map<Resource, Integer> income = null;
-	private Map<Object, Integer> buildTime = null;
-	private Map<Object, Integer> metalCost = null;
-	private Map<Object, Integer> gasCost = null;
-	private Map<Object, Integer> supplyCost = null;
 	
 	private Map<Position,LinkedList<QueueItem>> buildQueue = new HashMap<Position,LinkedList<QueueItem>>();
 	
@@ -30,10 +27,6 @@ public class PlayerStats {
 		supply = new Supply();
 		initResources();
 		initIncome();
-		initBuildTimes();
-		initMetalCost();
-		initGasCost();
-		initSupplyCost();
 	}
 	
 	private void initResources() {
@@ -47,41 +40,6 @@ public class PlayerStats {
 		income.put(METAL, 50);
 		income.put(GAS, 0);
 	}
-	
-	private void initMetalCost() {
-		metalCost = new HashMap<Object, Integer>();
-		metalCost.put(SCOUT, 50);
-		metalCost.put(HUNTER, 120);
-		metalCost.put(COLONIZER, 200);
-		metalCost.put(DESTROYER, 400);
-	}
-	
-	private void initGasCost() {
-		gasCost = new HashMap<Object, Integer>();
-		gasCost.put(SCOUT, 0);
-		gasCost.put(HUNTER, 20);
-		gasCost.put(COLONIZER, 0);
-		gasCost.put(DESTROYER, 100);
-	}
-	
-	private void initSupplyCost() {
-		supplyCost = new HashMap<Object, Integer>();
-		supplyCost.put(SCOUT, 1);
-		supplyCost.put(HUNTER, 1);
-		supplyCost.put(COLONIZER, 1);
-		supplyCost.put(DESTROYER, 2);
-	}
-	
-	private void initBuildTimes() {
-		buildTime = new HashMap<Object, Integer>();
-		buildTime.put(SCOUT, 1);
-		buildTime.put(HUNTER, 1);
-		buildTime.put(COLONIZER, 1);
-		buildTime.put(DESTROYER, 2);
-		// buildTime.put(Turret, 1);     <- future suggestion?
-		// buildTime.put(upgrade, 2);
-	}
-	
 	/*
 	 * NEW/YOUR TURN LISTENER: Changes income to relevant numbers and
 	 * increases resources.
@@ -93,7 +51,7 @@ public class PlayerStats {
 	 * @param amount How much of the resource needed
 	 * @return true if the purchase was possible
 	 */
-	public boolean purchase(Resource resource, int amount) {
+	public boolean changeResource(Resource resource, int amount) {
 		if (resources.get(resource) >= amount) {
 			resources.put(resource, resources.get(resource) - amount);
 			Event evt;
@@ -169,7 +127,7 @@ public class PlayerStats {
 			if (!buildQueue.get(pos).isEmpty()) {
 				if (buildQueue.get(pos).getFirst().getBuildTime() == 1) {
 					buildShips.add(buildQueue.get(pos).getFirst());
-					supply.setQueuedSupply(supply.getQueuedSupply() - supplyCost.get(buildQueue.get(pos).getFirst().getItem()));
+					supply.setQueuedSupply(supply.getQueuedSupply() - buildQueue.get(pos).getFirst().getItem().getSupplyCost());
 					buildQueue.get(pos).removeFirst();
 				} else {
 					buildQueue.get(pos).getFirst().subtractBuildTime();
@@ -183,60 +141,49 @@ public class PlayerStats {
 		return buildShips;
 	}
 	
-	public void queueItem(Object object, Position position) {
-		if (!hasEnoughSupply(supplyCost.get(object))) {
+	public void queueItem(BuildAble buildAble, Position position) {
+		if (!hasEnoughSupply(buildAble.getSupplyCost())) {
 			EventText et = new EventText("Not enough supply!", position);
 			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
 			EventBus.INSTANCE.publish(event);
 			return;
 		}
-		if (!hasEnoughResources(metalCost.get(object), gasCost.get(object))) {
+		if (!hasEnoughResources(buildAble.getMetalCost(), buildAble.getGasCost())) {
 			EventText et = new EventText("Not enough resources!", position);
 			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
 			EventBus.INSTANCE.publish(event);
 			return;
 		}
-		purchase(Resource.METAL, metalCost.get(object));
-		purchase(Resource.GAS, gasCost.get(object));
+		changeResource(Resource.METAL, buildAble.getMetalCost());
+		changeResource(Resource.GAS, buildAble.getGasCost());
 		if (!buildQueue.containsKey(position)) {
 			buildQueue.put(position, new LinkedList<QueueItem>());
 		}
-		buildQueue.get(position).add(new QueueItem(object, position, buildTime.get(object)));
-		supply.setQueuedSupply(supply.getQueuedSupply() + supplyCost.get(object));
+		buildQueue.get(position).add(new QueueItem(buildAble, position, buildAble.getBuildTime()));
+		supply.setQueuedSupply(supply.getQueuedSupply() + buildAble.getSupplyCost());
 		Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
 		EventBus.INSTANCE.publish(evt);
-		EventText et = new EventText(object.toString().toLowerCase() + " added to build queue!", position);
+		EventText et = new EventText(buildAble.toString().toLowerCase() + " added to build queue!", position);
 		evt = new Event(Event.EventTag.EVENT_TEXT, et);
 		EventBus.INSTANCE.publish(evt);
 	}
 	
 	public void resetQueue(Position pos) {
- 		if (!buildQueue.containsKey(pos)) {
- 			buildQueue.put(pos, new LinkedList<QueueItem>());
- 		}
-		if (!buildQueue.get(pos).isEmpty()) {
-			if (buildQueue.get(pos).getFirst() instanceof QueueItem) {
-				supply.setQueuedSupply(supply.getQueuedSupply() - supplyCost.get(buildQueue.get(pos).getFirst().getItem()));
-				purchase(Resource.METAL, -metalCost.get(buildQueue.get(pos).getFirst().getItem()));
-				purchase(Resource.GAS, -gasCost.get(buildQueue.get(pos).getFirst().getItem()));
-				buildQueue.get(pos).removeFirst();
+ 		if (buildQueue.containsKey(pos)) {
+			while (!buildQueue.get(pos).isEmpty()) {
+					BuildAble building = buildQueue.get(pos).getFirst().getItem();
+					supply.setQueuedSupply(supply.getQueuedSupply() - building.getSupplyCost());
+					changeResource(Resource.METAL, - building.getMetalCost());
+					changeResource(Resource.GAS, - building.getGasCost());
+					buildQueue.get(pos).removeFirst();
 			}
-		}
+ 		}
 	}
 	
 	public void resetAll() {
-		for (Position pos : buildQueue.keySet()) {
-	 		if (!buildQueue.containsKey(pos)) {
-	 			buildQueue.put(pos, new LinkedList<QueueItem>());
-	 		}
-			while (buildQueue.get(pos).size() > 1) {
-				if (buildQueue.get(pos).getLast() instanceof QueueItem) {
-					supply.setQueuedSupply(supply.getQueuedSupply() - supplyCost.get(buildQueue.get(pos).getLast().getItem()));
-					purchase(Resource.METAL, -metalCost.get(buildQueue.get(pos).getLast().getItem()));
-					purchase(Resource.GAS, -gasCost.get(buildQueue.get(pos).getLast().getItem()));
-					buildQueue.get(pos).removeLast();
-				}
-			}
+		Iterator<Position> iter = buildQueue.keySet().iterator();
+		while(iter.hasNext()){
+			resetQueue(iter.next());
 		}
 	}
 	
