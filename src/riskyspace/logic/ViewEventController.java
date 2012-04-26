@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import riskyspace.GameManager;
+import riskyspace.logic.data.BattleStats;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
@@ -254,6 +255,7 @@ public class ViewEventController implements EventHandler {
 					EventBus.INSTANCE.publish(event);
 					if (battleStats.isColonyDestroyed()) {
 						event = new Event(Event.EventTag.COLONY_REMOVED, pos);
+						EventBus.INSTANCE.publish(event);
 					}
 				}
 			}

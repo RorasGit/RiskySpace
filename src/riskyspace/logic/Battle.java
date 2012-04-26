@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import riskyspace.logic.data.BattleStats;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
@@ -113,8 +114,6 @@ public class Battle {
 		if (territory.hasColony()) {
 			if (territory.getColony().getOwner() != winner) {
 				battleStats.setColonyDestroyed(true);
-//				Event event = new Event(Event.EventTag.COLONY_DESTROYED, territory);
-//				EventBus.INSTANCE.publish(event);
 			}
 		}
 		return battleStats;
