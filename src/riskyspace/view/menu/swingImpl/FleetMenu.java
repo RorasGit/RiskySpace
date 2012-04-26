@@ -3,6 +3,7 @@ package riskyspace.view.menu.swingImpl;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,6 @@ public class FleetMenu extends AbstractSideMenu {
 	
 	private Map<String, Image> shipIcons = new HashMap<String, Image>();
 	private List<Image> fleetIcons = new ArrayList<Image>();
-//	private Button selfDestructButton;
 	
 	public FleetMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
@@ -36,17 +36,6 @@ public class FleetMenu extends AbstractSideMenu {
 		fleetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/palpatine.png").getScaledInstance(menuWidth - 3*margin, 2*(menuWidth - 3*margin)/3, Image.SCALE_DEFAULT);
 		itemSize = (menuWidth - margin*2) / 5;
 		initSprites(itemSize - margin/10);
-		
-//		selfDestructButton = new Button(x + menuWidth - 2*margin, y + menuHeight - 2*(menuWidth - 2*margin)/4 - 2*margin, margin, margin);
-//		selfDestructButton.setAction(new Action(){
-//			@Override
-//			public void performAction() {
-//				Event evt = new Event(Event.EventTag.SHIP_SELFDESTCRUCT, null);
-//				EventBus.INSTANCE.publish(evt);
-//			}
-//		});
-//		selfDestructButton.setImage("res/menu/selfDestruct.png");
-		
 		EventBus.INSTANCE.addHandler(this);
 	}
 	
@@ -68,23 +57,11 @@ public class FleetMenu extends AbstractSideMenu {
 	}
 
 	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.SHOW_FLEETMENU) {
-			setFleet(new Fleet((Set<Fleet>) evt.getObjectValue()));
-			setVisible(true);
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
-			setVisible(false);
-		}
-	}
-
-
-	@Override
 	public boolean mousePressed(Point p) {
 		/*
 		 * Only handle mouse event if enabled
 		 */
 		if (isVisible()) {
-//			if (selfDestructButton.mousePressed(p)) {return true;}
 			if (this.contains(p)) {return true;}
 			else {
 				return false;
@@ -117,7 +94,6 @@ public class FleetMenu extends AbstractSideMenu {
 				int row = i / 5;
 				g.drawImage(fleetIcons.get(i), getX() + margin + col*itemSize + 2, getY() + 2*margin + height + row*itemSize, null);
 			}
-//			selfDestructButton.draw(g);
 		}
 	}
 	
@@ -136,4 +112,13 @@ public class FleetMenu extends AbstractSideMenu {
 		}
 	}
 
+	@Override
+	public void performEvent(Event evt) {
+		if (evt.getTag() == Event.EventTag.SHOW_FLEETMENU) {
+			setFleet(new Fleet((Set<Fleet>) evt.getObjectValue()));
+			setVisible(true);
+		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
+			setVisible(false);
+		}
+	}
 }
