@@ -20,10 +20,12 @@ public class Battle {
 	private static final int MAX_INITIATIVE = 5;
 	
 	public static BattleStats doBattle(Territory territory) {
-		BattleStats battleStats = new BattleStats();
 		if (territory.getFleets().isEmpty()) {
 			throw new IllegalArgumentException("Battle can not occur in empty territories");
 		}
+		
+		BattleStats battleStats = new BattleStats();
+		
 		List<Fleet> player1fleets = new ArrayList<Fleet>();
 		List<Fleet> player2fleets = new ArrayList<Fleet>();
 		
@@ -43,12 +45,16 @@ public class Battle {
 		BattleGroup bg1 = new BattleGroup(player1fleets, territory.hasColony() && colony.getOwner() == player1fleets.get(0).getOwner() ? colony : null);
 		BattleGroup bg2 = new BattleGroup(player2fleets, territory.hasColony() && colony.getOwner() != player1fleets.get(0).getOwner() ? colony : null);
 	
+		if (bg1.isDefeated() || bg2.isDefeated()) {
+			throw new IllegalArgumentException("Both players do not have fleets present");
+		}
+		
 		bg1.setOwner(player1fleets.isEmpty() ? colony.getOwner() : player1fleets.get(0).getOwner());
 		bg2.setOwner(player2fleets.isEmpty() ? colony.getOwner() : player2fleets.get(0).getOwner());
+		
 		/*
 		 * Battle loop until one or both fleets are defeated
 		 */
-		System.out.println("BATTLE AT " + territory);
 		while (!bg1.isDefeated() && !bg2.isDefeated()) {
 			List<Integer> planetAttacks1 = bg1.getPlanetAttacks();
 			List<Integer> planetAttacks2 = bg2.getPlanetAttacks();
@@ -100,11 +106,7 @@ public class Battle {
 			}
 		}
 		battleStats.setDestroyedFleets(destroyedFleets);
-//		territory.removeFleets(destroyedFleets);
-//		for (Fleet fleet : destroyedFleets) {
-//			Event evt = new Event(Event.EventTag.FLEET_REMOVED, fleet);
-//			EventBus.INSTANCE.publish(evt);
-//		}
+		territory.removeFleets(destroyedFleets);
 		/*
 		 * Remove colony if the owner lost
 		 */
@@ -113,8 +115,6 @@ public class Battle {
 		if (territory.hasColony()) {
 			if (territory.getColony().getOwner() != winner) {
 				battleStats.setColonyDestroyed(true);
-//				Event event = new Event(Event.EventTag.COLONY_DESTROYED, territory);
-//				EventBus.INSTANCE.publish(event);
 			}
 		}
 		return battleStats;

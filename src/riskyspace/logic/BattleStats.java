@@ -40,4 +40,7 @@ public class BattleStats {
 		this.colonyDestroyed = colonyDestroyed;
 	}
 
+	public String getWinnerString() {
+		return getWinner().toString().substring(0, 1) + getWinner().toString().substring(1).toLowerCase() + " has won the battle!";
+	}
 }
