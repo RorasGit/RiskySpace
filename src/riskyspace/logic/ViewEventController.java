@@ -273,7 +273,7 @@ public class ViewEventController implements EventHandler {
 					for (Fleet f : battleStats.getDestroyedFleets()) {
 						fleetPaths.remove(f);
 					}
-					EventText et = new EventText(battleStats.getWinner() + "has won the battle!", pos);
+					EventText et = new EventText(battleStats.getWinnerString(), pos);
 					Event event = new Event(Event.EventTag.EVENT_TEXT, et);
 					EventBus.INSTANCE.publish(event);
 					if (battleStats.isColonyDestroyed()) {

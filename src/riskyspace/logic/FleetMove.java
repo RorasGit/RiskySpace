@@ -28,10 +28,11 @@ public class FleetMove {
 		Runnable runner = new Runnable() {
 			@Override
 			public void run() {
-				while(!checkIfDone(fleetPaths, player) && moving) {
+				while(!checkIfDone(fleetPaths, player, world) && moving) {
 					synchronized(lock) {
 						for (Fleet fleet : fleets) {
-							if (fleet.getOwner().equals(player) && fleetPaths.get(fleet).getLength() > 0 && fleet.useEnergy()) {
+							if (fleet.getOwner().equals(player) && fleetPaths.get(fleet).getLength() > 0 &&
+									!world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).hasConflict() && fleet.useEnergy()) {
 								if (world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).getFleets().contains(fleet)) {
 									world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).removeFleet(fleet);
 									world.getTerritory(fleetPaths.get(fleet).step()).addFleet(fleet);
@@ -58,12 +59,12 @@ public class FleetMove {
 		return moving;
 	}
 
-	private static boolean checkIfDone(Map<Fleet, Path> fleetPaths, Player player) {
+	private static boolean checkIfDone(Map<Fleet, Path> fleetPaths, Player player, World world) {
 		Set<Fleet> fleets = fleetPaths.keySet();
 		boolean done = true;
 		for (Fleet fleet : fleets) {
 			if (fleet.getOwner().equals(player)) {
-				if (fleet.hasEnergy() && fleetPaths.get(fleet).getLength() > 0) {
+				if (fleet.hasEnergy() && fleetPaths.get(fleet).getLength() > 0 && !world.getTerritory(fleetPaths.get(fleet).getCurrentPos()).hasConflict()) {
 					done = false;
 				}
 			}
