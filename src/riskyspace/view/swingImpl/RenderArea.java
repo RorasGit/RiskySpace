@@ -263,7 +263,7 @@ public class RenderArea extends JPanel implements EventHandler {
 			x = x > otherX ? otherX : x;
 			y = y > otherY ? otherY : y;
 			g.drawRect(x, y, width, height);
-			g.setColor(new Color(g.getColor().getRed(), g.getColor().getGreen(), g.getColor().getBlue(), 0x4F));
+			g.setColor(new Color(g.getColor().getRed(), g.getColor().getGreen(), g.getColor().getBlue(), 0x3F));
 			g.fillRect(x + 1, y + 1, width, height);
 		}
 	}
@@ -422,7 +422,6 @@ public class RenderArea extends JPanel implements EventHandler {
 				releasePoint.x += translatePixelsX();
 				releasePoint.y += translatePixelsY();
 				if (Math.abs(releasePoint.x - pressedPoint.x) < squareSize/10 || Math.abs(releasePoint.y - pressedPoint.y) < squareSize/10) {
-					System.out.println("troll");
 					pressedPoint = null;
 					return;
 				}

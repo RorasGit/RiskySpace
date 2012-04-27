@@ -120,7 +120,7 @@ public class World {
 			if (getTerritory(pos).hasFleet()) {
 				for (Fleet fleet : getTerritory(pos).getFleets()) {
 					if (fleet.getOwner() == player) {
-						supply += (fleet.fleetSize() + fleet.shipCount(ShipType.DESTROYER));
+						supply += fleet.supplyCost();
 					}
 				}
 			}

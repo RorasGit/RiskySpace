@@ -177,6 +177,14 @@ public class Fleet implements MoveAble {
 		return ships.size();
 	}
 	
+	public int supplyCost() {
+		int supply = 0;
+		for (int i = 0; i < fleetSize(); i++) {
+			supply += ships.get(i).getType().getSupplyCost();
+		}
+		return supply;
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
