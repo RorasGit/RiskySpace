@@ -15,7 +15,6 @@ import riskyspace.model.Fleet;
 import riskyspace.model.ShipType;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.View;
 import riskyspace.view.menu.AbstractSideMenu;

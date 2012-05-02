@@ -51,10 +51,10 @@ public class PlanetMenu extends AbstractSideMenu{
 	}
 	
 	public void setPlanet(Territory ter) {
-		setPlayer(Player.BLUE);
+		setPlayer(Player.WORLD);
 		planetTer = ter;
 		planetPicture = ter.getPlanet().getType() == Resource.METAL? metalPlanetPicture : gasPlanetPicture;
-		colonizeButton.setImage("res/menu/blur/colonizeButton" + View.res);
+		colonizeButton.setImage("res/menu/world/colonizeButton" + View.res);
 		colonizeButton.setEnabled(false);
 	}
 

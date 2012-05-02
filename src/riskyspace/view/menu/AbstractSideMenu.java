@@ -41,6 +41,8 @@ public abstract class AbstractSideMenu implements IMenu, Clickable,
 				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT));
 		allBackgrounds.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/menubackground" + View.res)
 				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT));
+		allBackgrounds.put(Player.WORLD, Toolkit.getDefaultToolkit().getImage("res/menu/world/menubackground" + View.res)
+				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT));
 	}
 
 	public void setPlayer(Player p) {
