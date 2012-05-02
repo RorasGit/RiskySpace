@@ -14,8 +14,6 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 
 public enum GameManager implements EventHandler {
-
-
 	INSTANCE;
 	
 	private Player[] players = {Player.BLUE, Player.RED, Player.GREEN, Player.PINK};
@@ -66,12 +64,16 @@ public enum GameManager implements EventHandler {
 		EventBus.INSTANCE.publish(event);
 		world.giveIncome(currentPlayer);
 		world.updatePlayerStats(currentPlayer);
-		event = new Event(Event.EventTag.METAL_CHANGED, world.getResources(currentPlayer, Resource.METAL));
-		EventBus.INSTANCE.publish(event);
-		event = new Event(Event.EventTag.GAS_CHANGED, world.getResources(currentPlayer, Resource.GAS));
-		EventBus.INSTANCE.publish(event);
+		world.resetShips();
+		/*
+		 * Is this only to make the view show the correct supply?
+		 * TODO: Fix this when implementing networking or at other previous time.
+		 */
 		event = new Event(Event.EventTag.SUPPLY_CHANGED, world.getSupply(currentPlayer));
 		EventBus.INSTANCE.publish(event);
+		if (currentPlayer == players[0]) {
+			turn++;
+		}
 	}
 
 	@Override
@@ -79,10 +81,6 @@ public enum GameManager implements EventHandler {
 		if (evt.getTag() == Event.EventTag.NEXT_TURN) {
 			if (!FleetMove.isMoving()) {
 				changePlayer();
-				if (currentPlayer == Player.BLUE) {
-					turn++;
-				}
-				world.resetShips();
 			}
 		}
 	}

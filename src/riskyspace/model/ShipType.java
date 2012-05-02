@@ -9,9 +9,9 @@ public enum ShipType implements BuildAble {
 	 * DO NOT CHANGE!
 	 */
 	//		    Dmg Var  HP Atk  Init  E  BuildTime Supply	Metal	Gas
-	COLONIZER	( 1, 1,  38, 1,   0,   2,	1,		  0,	200,	0), // Kollonajser
-	SCOUT		( 5, 3,  12, 1,   1,   4,	1,		  1,	50,		0), // Skauwt
-	HUNTER		(11, 3,  38, 1,   1,   3,	1,		  1,	100,	30), // Hannter
+	COLONIZER	( 1, 1,  38, 1,   0,   2,	1,		  0,	200,	  0), // Kollonajser
+	SCOUT		( 5, 3,  12, 1,   1,   4,	1,		  1,	50,		  0), // Skauwt
+	HUNTER		(11, 3,  38, 1,   1,   3,	1,		  1,	100,	 30), // Hannter
 	DESTROYER	(11, 3, 100, 3,   1,   3,	2,		  2,	350,	100); // Dezztrojjer
 	
 	private final int damage;
