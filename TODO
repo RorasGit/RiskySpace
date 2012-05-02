@@ -3,30 +3,24 @@ Publish Events:.
 -
 
 Refactor:
--Ship Costs away from ShipType        // Flygarn
--GameManager/VEC                      // -----
--Useage of Player                     // -----
+-GameManager/VEC                      // Roras
 -Imutability                          // -----
 
-Create
+Create:
 
 Known bugs:
 -build queue, supply colony bug       //Rapp
 -colony destroyed, build queue and    //Rapp
  supply bug
 
-Graphic
+Graphic:
 -Mark selected fleet                  // Rapp
 -Disabled buttons (_disabled).png     // Z3B0
--Top Panel Menu                       // Rapp
 
 Small Fixes: 
 
 
-Features
--build queue system                   // Rapp
--Control supply when buying ships     // Rapp
--Ship Menu                            // Z3B0
+Features:
 -Rotate ships based on entry/path     // -----
 -Home Planet setup/attributes         // Roras
 -arrow key move camera
@@ -41,7 +35,10 @@ Future ideas:
 
 -----------------<<Processed>>---------------
 
-Create
+Refactor:
+-Useage of Player                     // Flygarn!
+
+Create:
 -Next player button, sync event
 -Move(Fleet f, Path p)                // Roras!
 -Path class                           // Roras!
@@ -51,9 +48,10 @@ Create
 -Sprites?                             // Flygarn!
 - PlayerInfo                          // Z3B0!
 
-Graphics
+Graphics:
 -Draw paths                           // Flygarn!
 -number of ships indicator            // Roras!
+-Top Panel Menu                       // Rapp!
 
 Small fixes:
 -Correct Player sel (planets/ships)   // Rapp!
@@ -62,8 +60,11 @@ Small fixes:
 -Update income after colonies taken   // Flygarn!
 and battles (colonies destroyed)
 
-Features
+Features:
 -Colonize planets                     // Flygarn!
 -Control resources when buying ships  // Rapp!
 -Sound, find a good framework         // FlygarN^^^^!
 -Back button buyships                 // Z3B0!
+-Ship Menu                            // Z3B0! FlygarN!
+-build queue system                   // Rapp!
+-Control supply when buying ships     // Rapp!
