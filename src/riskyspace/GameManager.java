@@ -15,10 +15,13 @@ import riskyspace.services.EventHandler;
 
 public enum GameManager implements EventHandler {
 
+
 	INSTANCE;
 	
 	private Player[] players = {Player.BLUE, Player.RED, Player.GREEN, Player.PINK};
-	private static Player currentPlayer = null;
+	
+	private Player currentPlayer = null;
+	
 	private World world = null;
 	private int turn;
 	

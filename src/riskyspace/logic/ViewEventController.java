@@ -291,6 +291,26 @@ public class ViewEventController implements EventHandler {
 		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables();
 		}
+		
+		/*
+		 * TODO: Removes ships, but does so in an uncontrolled manner and needs to be redone somehow.
+		 * 		 It's in other words unfinished...
+		 */
+		if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
+			if (world.getTerritory(lastFleetSelectPos).hasFleet() && fleetSelectionIndex >=0) {
+				selectedFleets.remove(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
+				world.getTerritory(lastFleetSelectPos).removeFleet(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
+				System.out.println(lastFleetSelectPos);
+				System.out.println(world.getTerritory(lastFleetSelectPos).getFleets().size());
+				if (!world.getTerritory(lastFleetSelectPos).hasFleet()) {
+					resetVariables();
+				} else {
+					fleetSelectionIndex = Math.max(fleetSelectionIndex - 1, 0);
+					Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
+					EventBus.INSTANCE.publish(event);
+				}
+			}
+		}
 	}
 	
 	public Position[][] getPaths(Player player) {

@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
+import riskyspace.GameManager;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
@@ -26,7 +27,6 @@ public class PlanetMenu extends AbstractSideMenu{
 	private Image gasPlanetPicture = null;
 	
 	private Territory planetTer = null;
-	
 	
 	private Button colonizeButton;
 	
@@ -54,7 +54,7 @@ public class PlanetMenu extends AbstractSideMenu{
 		setPlayer(Player.BLUE);
 		planetTer = ter;
 		planetPicture = ter.getPlanet().getType() == Resource.METAL? metalPlanetPicture : gasPlanetPicture;
-		colonizeButton.setImage("res/menu/blue/colonizeButton" + View.res);
+		colonizeButton.setImage("res/menu/blur/colonizeButton" + View.res);
 		colonizeButton.setEnabled(false);
 	}
 
