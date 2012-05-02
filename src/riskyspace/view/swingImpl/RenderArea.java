@@ -94,6 +94,14 @@ public class RenderArea extends JPanel implements EventHandler {
 	
 	private int rows, cols;
 	
+	
+	/*
+	 * FPS printout
+	 */
+	private int times = 0;
+	private Timer fpsTimer = null;
+	private String fps = "";
+	
 	public RenderArea(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
@@ -102,6 +110,12 @@ public class RenderArea extends JPanel implements EventHandler {
 		createBackground();
 		initCameras();
 		createMenues();
+		fpsTimer = new Timer(500, new ActionListener() {
+			@Override public void actionPerformed(ActionEvent arg0) {
+				fps = "FPS: " + (2*times);
+				times = 0;
+			}		
+		});
 		eventTextPrinter = new EventTextPrinter();
 		EventBus.INSTANCE.addHandler(this);
 		clickHandler = new ClickHandler();
@@ -192,18 +206,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	public int translatePixelsY() {
 		return (int) (((rows+2*EXTRA_SPACE_VERTICAL)*squareSize - height)*currentCamera.getY());
 	}
-	
-	private int times = 0;
-	Timer fpsTimer = new Timer(500, new ActionListener() {
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			fps = "FPS: " + (2*times);
-			times = 0;
-		}
-		
-	});
-	private String fps = "";
 
 	public void paintComponent(Graphics g) {
 		if (!fpsTimer.isRunning()) {
