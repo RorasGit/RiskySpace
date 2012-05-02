@@ -7,6 +7,7 @@ import java.util.Map;
 
 import riskyspace.logic.FleetMove;
 import riskyspace.model.Player;
+import riskyspace.model.PlayerStats;
 import riskyspace.model.Resource;
 import riskyspace.model.World;
 import riskyspace.services.Event;
@@ -55,6 +56,10 @@ public enum GameManager implements EventHandler {
 		return playerInfo.get(player);
 	}
 	
+	public PlayerStats getStats(Player player) {
+		return world.getPlayerStats(player);
+	}
+	
 	private void changePlayer() {
 		currentPlayer = activePlayers.get(((activePlayers.indexOf(currentPlayer) + 1) % activePlayers.size()));
 		/*
@@ -84,4 +89,5 @@ public enum GameManager implements EventHandler {
 			}
 		}
 	}
+
 }

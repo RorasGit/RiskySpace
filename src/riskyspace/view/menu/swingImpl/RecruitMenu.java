@@ -12,6 +12,8 @@ import java.util.Map;
 import riskyspace.GameManager;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
+import riskyspace.model.PlayerStats;
+import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
@@ -33,6 +35,8 @@ public class RecruitMenu extends AbstractSideMenu {
 	private Button buildDestroyerButton = null;
 	private Button buildColonizerButton = null;
 	private Button backButton = null;
+	
+	private Colony colony = null;
 	
 	/*
 	 * Images
@@ -90,15 +94,13 @@ public class RecruitMenu extends AbstractSideMenu {
 	}
 	
 	public void setColony(Colony colony) {
+		this.colony = colony;
 		setMenuName(colony.getName());
 		setPlayer(colony.getOwner());
 		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
 		colonyPicture = cities.get(colony.getOwner());
 		String player = colony.getOwner().toString().toLowerCase();
-		buildScoutButton.setImage("res/menu/" + player + "/button/scoutButton" + View.res);
-		buildHunterButton.setImage("res/menu/" + player + "/button/hunterButton" + View.res);
-		buildDestroyerButton.setImage("res/menu/" + player + "/button/destroyerButton" + View.res);
-		buildColonizerButton.setImage("res/menu/" + player + "/button/colonizerButton" + View.res);
+		checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), player);
 		backButton.setImage("res/menu/" + player + "/backButton" + View.res);
 	}
 
@@ -123,10 +125,22 @@ public class RecruitMenu extends AbstractSideMenu {
 		 * Only handle mouse event if enabled
 		 */
 		if (isVisible()) {
-			if (buildScoutButton.mousePressed(p)) {return true;}
-			else if (buildHunterButton.mousePressed(p)) {return true;}
-			else if (buildDestroyerButton.mousePressed(p)) {return true;} 
-			else if (buildColonizerButton.mousePressed(p)) {return true;}
+			if (buildScoutButton.mousePressed(p)) {
+				checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), colony.getOwner().toString().toLowerCase());
+				return true;
+				}
+			else if (buildHunterButton.mousePressed(p)) {
+				checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), colony.getOwner().toString().toLowerCase());
+				return true;
+				}
+			else if (buildDestroyerButton.mousePressed(p)) {
+				checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), colony.getOwner().toString().toLowerCase());
+				return true;
+				} 
+			else if (buildColonizerButton.mousePressed(p)) {
+				checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), colony.getOwner().toString().toLowerCase());
+				return true;
+				}
 			else if (backButton.mousePressed(p)) {return true;}
 			if (this.contains(p)) {return true;}
 			else {
@@ -175,5 +189,31 @@ public class RecruitMenu extends AbstractSideMenu {
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);
 		g.setFont(saveFont);
+	}
+	
+	private void checkRecruitoptions(PlayerStats playerStats, String player) {
+		if (playerStats.getResource(Resource.METAL) < ShipType.SCOUT.getMetalCost()) {
+			buildScoutButton.setImage("res/menu/" + player + "/button/scoutButton_disabled" + View.res);
+		} else {
+			buildScoutButton.setImage("res/menu/" + player + "/button/scoutButton" + View.res);
+		}
+		
+		if (playerStats.getResource(Resource.METAL) < ShipType.HUNTER.getMetalCost() || playerStats.getResource(Resource.GAS) < ShipType.HUNTER.getGasCost()) {
+			buildHunterButton.setImage("res/menu/" + player + "/button/hunterButton_disabled" + View.res);
+		} else {
+			buildHunterButton.setImage("res/menu/" + player + "/button/hunterButton" + View.res);
+		}
+		
+		if (playerStats.getResource(Resource.METAL) < ShipType.COLONIZER.getMetalCost()) {
+			buildColonizerButton.setImage("res/menu/" + player + "/button/colonizerButton_disabled" + View.res);
+		} else {
+			buildColonizerButton.setImage("res/menu/" + player + "/button/colonizerButton" + View.res);
+		}
+		
+		if (playerStats.getResource(Resource.METAL) < ShipType.DESTROYER.getMetalCost() || playerStats.getResource(Resource.GAS) < ShipType.DESTROYER.getGasCost()) {
+			buildDestroyerButton.setImage("res/menu/" + player + "/button/destroyerButton_disabled" + View.res);
+		} else {
+			buildDestroyerButton.setImage("res/menu/" + player + "/button/destroyerButton" + View.res);
+		}
 	}
 }

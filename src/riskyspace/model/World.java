@@ -102,6 +102,10 @@ public class World {
 		return playerstats.get(player).getResource(resource);
 	}
 	
+	public PlayerStats getPlayerStats(Player player) {
+		return playerstats.get(player);
+	}
+	
 	public boolean useResource(Player player, Resource type, int amount) {
 		return playerstats.get(player).changeResource(type, amount);
 	}
@@ -153,4 +157,5 @@ public class World {
 	public int hashCode() {
 		return rows * 17 + cols * 23;
 	}
+
 }
