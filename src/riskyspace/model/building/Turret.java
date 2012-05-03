@@ -1,5 +1,6 @@
 package riskyspace.model.building;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import riskyspace.model.BattleAble;
@@ -7,14 +8,35 @@ import riskyspace.model.BuildAble;
 
 public class Turret implements BuildAble, BattleAble, Ranked {
 
+	private static final int MAX_RANK = 2;
+	private int rank = 0;
+	
+	private final int baseShield = 10;
+	private int shield = baseShield;
+	
 	@Override
 	public boolean takeDamage(int damage) {
-		return false;
+		shield -= damage;
+		return shield <= 0;
 	}
 
 	@Override
 	public List<Integer> getAttacks() {
-		return null;
+		int damage = 5;
+		int variation = 2;
+		if (rank > 0) {
+			damage += 7;
+			variation += 2;
+		}
+		if (rank > 1) {
+			damage += 10;
+			variation += 3;
+		}
+		List<Integer> attacks = new ArrayList<Integer>();
+		if (shield > 0) {
+			attacks.add(damage + (int) (Math.random()*(variation+1)));
+		}
+		return attacks;
 	}
 
 	@Override
@@ -27,22 +49,49 @@ public class Turret implements BuildAble, BattleAble, Ranked {
 
 	@Override
 	public int getMetalCost() {
-		return 0;
+		if (getRank() == 0) {
+			return 60;
+		} else if (getRank() == 1) {
+			return 120;
+		} else {
+			return 0;
+		}
 	}
 
 	@Override
 	public int getGasCost() {
-		return 0;
+		if (getRank() == 1) {
+			return 25;
+		} else {
+			return 0;
+		}
 	}
 
 	@Override
 	public int getBuildTime() {
-		return 0;
+		return 2;
 	}
 
 	@Override
 	public int getRank() {
-		return 0;
+		return rank;
 	}
 
+	@Override
+	public void upgrade() {
+		if (rank < MAX_RANK) {
+			rank++;
+		}
+		shield = baseShield + rank * 15;
+	}
+
+	@Override
+	public boolean isMaxRank() {
+		return rank == MAX_RANK;
+	}
+
+	@Override
+	public int getMaxRank() {
+		return MAX_RANK;
+	}
 }

@@ -11,4 +11,10 @@ public interface Ranked {
 	 * Rank of this item.
 	 */
 	public int getRank();
+	
+	public void upgrade();
+	
+	public boolean isMaxRank();
+	
+	public int getMaxRank();
 }

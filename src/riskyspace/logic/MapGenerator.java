@@ -50,6 +50,7 @@ public class MapGenerator {
 		Position pos = new Position(3 + ((int) (Math.random() * 2)),3 + ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.RED);
+		territories.get(pos).getPlanet().getColony().upgradeMine();
 		addStartingFleets(territories.get(pos));
 		//Player 1:s closest planets
 		territories.get(new Position(pos.getRow()+2,pos.getCol()-1)).setPlanet(Resource.METAL);
@@ -59,6 +60,7 @@ public class MapGenerator {
 		pos = new Position((rows - 3) + ((int) (Math.random() * 2)), (cols - 3) + ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.BLUE);
+		territories.get(pos).getPlanet().getColony().upgradeMine();
 		addStartingFleets(territories.get(pos));
 		//Player 2:s closest planets
 		territories.get(new Position(pos.getRow()-2,pos.getCol()+1)).setPlanet(Resource.METAL);
