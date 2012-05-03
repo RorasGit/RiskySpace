@@ -15,7 +15,6 @@ Known bugs:
 
 Graphic:
 -Mark selected fleet                  // Rapp
--Disabled buttons (_disabled).png     // Z3B0
 
 Small Fixes: 
 
@@ -52,6 +51,7 @@ Graphics:
 -Draw paths                           // Flygarn!
 -number of ships indicator            // Roras!
 -Top Panel Menu                       // Rapp!
+-Disabled buttons (_disabled).png     // Z3B0!
 
 Small fixes:
 -Correct Player sel (planets/ships)   // Rapp!
