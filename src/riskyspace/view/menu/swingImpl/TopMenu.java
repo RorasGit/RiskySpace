@@ -6,8 +6,9 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
-import riskyspace.GameManager;
 import riskyspace.logic.FleetMove;
+import riskyspace.model.PlayerStats;
+import riskyspace.model.Resource;
 import riskyspace.model.Supply;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
@@ -150,11 +151,10 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	
 	@Override
 	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.METAL_CHANGED) {
-			metal = (Integer) evt.getObjectValue();
-		}
-		if (evt.getTag() == Event.EventTag.GAS_CHANGED) {
-			gas = (Integer) evt.getObjectValue();
+		if (evt.getTag() == Event.EventTag.RESOURCES_CHANGED) {
+			PlayerStats stats = (PlayerStats) evt.getObjectValue();
+			gas = stats.getResource(Resource.GAS);
+			metal = stats.getResource(Resource.METAL);
 		}
 		if (evt.getTag() == Event.EventTag.SUPPLY_CHANGED) {
 			Supply supply = (Supply) evt.getObjectValue();

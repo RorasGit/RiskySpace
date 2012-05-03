@@ -102,12 +102,8 @@ public class World {
 		return playerstats.get(player).getResource(resource);
 	}
 	
-	public PlayerStats getPlayerStats(Player player) {
-		return playerstats.get(player);
-	}
-	
 	public boolean useResource(Player player, Resource type, int amount) {
-		return playerstats.get(player).changeResource(type, amount);
+		return playerstats.get(player).useResource(type, amount);
 	}
 	
 	public void setIncome(Player player, Resource type, int amount) {

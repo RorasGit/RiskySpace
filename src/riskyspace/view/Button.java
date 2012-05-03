@@ -13,6 +13,8 @@ public class Button implements Clickable {
 	private int x, y, width, height;
 	private Image image = null;
 	private Image scaledImage = null;
+	private Image disabledImage = null;
+	private Image scaledDisabledImage = null;
 	private Action action = null;
 	private String text = null;
 	private Boolean enabled = true;
@@ -30,6 +32,12 @@ public class Button implements Clickable {
 	
 	public void setImage(String location) {
 		image = Toolkit.getDefaultToolkit().getImage(location);
+		if (location.endsWith(View.res)) {
+			location = location.substring(0, location.indexOf(View.res));
+		}
+		System.out.println(location);
+		disabledImage = Toolkit.getDefaultToolkit().getImage(location + "_disabled" + View.res);
+		scaledDisabledImage = disabledImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 	}
 
@@ -40,13 +48,14 @@ public class Button implements Clickable {
 	public void draw(Graphics g) {
 		if (isEnabled()) {	
 			g.drawImage(scaledImage, x, y, null);
-			
-			/*
-			 * Draw centered text
-			 */
-			if (text != null) {
-				drawButtonText(g);
-			}
+		} else {
+			g.drawImage(scaledDisabledImage, x, y, null);
+		}
+		/*
+		 * Draw centered text
+		 */
+		if (text != null) {
+			drawButtonText(g);
 		}
 	}
 	

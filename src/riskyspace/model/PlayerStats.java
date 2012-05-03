@@ -51,22 +51,21 @@ public class PlayerStats {
 	 * @param amount How much of the resource needed
 	 * @return true if the purchase was possible
 	 */
-	public boolean changeResource(Resource resource, int amount) {
+	public boolean useResource(Resource resource, int amount) {
 		if (resources.get(resource) >= amount) {
 			resources.put(resource, resources.get(resource) - amount);
-			Event evt;
-			if (resource == METAL) {
-				evt = new Event(Event.EventTag.METAL_CHANGED, resources.get(resource));
-			} else {
-				evt = new Event(Event.EventTag.GAS_CHANGED, resources.get(resource));
-			}
+			Event evt = new Event(Event.EventTag.RESOURCES_CHANGED, new ImmutablePlayerStats(this));
 			EventBus.INSTANCE.publish(evt);
 			return true;
 		} else {
 			return false;
 		}
 	}
-
+	
+	public void increaseResource(Resource res, int amount) {
+		resources.put(res, amount + resources.get(res));
+	}
+	
 	public void update(int numberOfColonies, int usedSupply) {
 		supply.update(numberOfColonies, usedSupply);
 	}
@@ -82,6 +81,10 @@ public class PlayerStats {
 	 */
 	public void setIncome(Resource res, int newIncome) {
 		income.put(res, newIncome);
+	}
+	
+	public int getIncome(Resource res) {
+		return income.get(res);
 	}
 	
 	/**
@@ -114,10 +117,7 @@ public class PlayerStats {
 	public void gainNewResources() {
 		resources.put(METAL, resources.get(METAL) + income.get(METAL));
 		resources.put(GAS, resources.get(GAS) + income.get(GAS));
-		Event evt;
-		evt = new Event(Event.EventTag.METAL_CHANGED, resources.get(METAL));
-		EventBus.INSTANCE.publish(evt);
-		evt = new Event(Event.EventTag.GAS_CHANGED, resources.get(GAS));
+		Event evt = new Event(Event.EventTag.RESOURCES_CHANGED, new ImmutablePlayerStats(this));
 		EventBus.INSTANCE.publish(evt);
 	}
 	
@@ -154,8 +154,8 @@ public class PlayerStats {
 			EventBus.INSTANCE.publish(event);
 			return;
 		}
-		changeResource(Resource.METAL, buildAble.getMetalCost());
-		changeResource(Resource.GAS, buildAble.getGasCost());
+		useResource(Resource.METAL, buildAble.getMetalCost());
+		useResource(Resource.GAS, buildAble.getGasCost());
 		if (!buildQueue.containsKey(position)) {
 			buildQueue.put(position, new LinkedList<QueueItem>());
 		}
@@ -173,8 +173,8 @@ public class PlayerStats {
 			while (!buildQueue.get(pos).isEmpty()) {
 					BuildAble building = buildQueue.get(pos).getFirst().getItem();
 					supply.setQueuedSupply(supply.getQueuedSupply() - building.getSupplyCost());
-					changeResource(Resource.METAL, - building.getMetalCost());
-					changeResource(Resource.GAS, - building.getGasCost());
+					useResource(Resource.METAL, - building.getMetalCost());
+					useResource(Resource.GAS, - building.getGasCost());
 					buildQueue.get(pos).removeFirst();
 			}
  		}
@@ -207,14 +207,9 @@ public class PlayerStats {
 		return supply.isCapped();
 	}
 	
-	public boolean isSupplyOverCapped() {
-		return supply.isOverCapped();
-	}
-	
 	public Supply getSupply() {
 		return supply.clone();
 	}
-	
 	
 	@Override
 	public boolean equals(Object other) {
@@ -242,5 +237,4 @@ public class PlayerStats {
 	public int hashCode() {
 		return resources.get(GAS)*3 + resources.get(METAL)*5 + supply.hashCode()*7;
 	}
-
 }

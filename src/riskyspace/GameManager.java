@@ -56,10 +56,6 @@ public enum GameManager implements EventHandler {
 		return playerInfo.get(player);
 	}
 	
-	public PlayerStats getStats(Player player) {
-		return world.getPlayerStats(player);
-	}
-	
 	private void changePlayer() {
 		currentPlayer = activePlayers.get(((activePlayers.indexOf(currentPlayer) + 1) % activePlayers.size()));
 		/*

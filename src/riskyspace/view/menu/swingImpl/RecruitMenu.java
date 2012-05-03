@@ -17,6 +17,7 @@ import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
+import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.View;
@@ -35,8 +36,6 @@ public class RecruitMenu extends AbstractSideMenu {
 	private Button buildDestroyerButton = null;
 	private Button buildColonizerButton = null;
 	private Button backButton = null;
-	
-	private Colony colony = null;
 	
 	/*
 	 * Images
@@ -94,14 +93,34 @@ public class RecruitMenu extends AbstractSideMenu {
 	}
 	
 	public void setColony(Colony colony) {
-		this.colony = colony;
 		setMenuName(colony.getName());
 		setPlayer(colony.getOwner());
 		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
 		colonyPicture = cities.get(colony.getOwner());
-		String player = colony.getOwner().toString().toLowerCase();
-		checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), player);
-		backButton.setImage("res/menu/" + player + "/backButton" + View.res);
+		
+		String playerString = colony.getOwner().toString().toLowerCase();
+		backButton.setImage("res/menu/" + playerString + "/backButton" + View.res);
+		buildColonizerButton.setImage("res/menu/" + playerString + "/button/colonizerButton" + View.res);
+		buildScoutButton.setImage("res/menu/" + playerString + "/button/scoutButton" + View.res);
+		buildHunterButton.setImage("res/menu/" + playerString + "/button/hunterButton" + View.res);
+		buildDestroyerButton.setImage("res/menu/" + playerString + "/button/destroyerButton" + View.res);
+	}
+	
+	private void drawColonyName(Graphics g) {
+		g.setColor(ownerColor);
+		Font saveFont = g.getFont();
+		g.setFont(new Font("Monotype", Font.BOLD, 38));
+		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
+		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
+		g.drawString(getMenuName(), textX, textY);
+		g.setFont(saveFont);
+	}
+
+	private void checkRecruitOptions(PlayerStats stats) {
+		buildScoutButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.SCOUT.getMetalCost());
+		buildHunterButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.HUNTER.getMetalCost() && stats.getResource(Resource.GAS) >= ShipType.HUNTER.getGasCost());
+		buildColonizerButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.COLONIZER.getMetalCost());
+		buildDestroyerButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.DESTROYER.getMetalCost() && stats.getResource(Resource.GAS) >= ShipType.DESTROYER.getGasCost());
 	}
 
 	@Override
@@ -113,11 +132,11 @@ public class RecruitMenu extends AbstractSideMenu {
 			}
 		} else if (evt.getTag() == Event.EventTag.HIDE_MENU || evt.getTag() == Event.EventTag.BACK) {
 				setVisible(false);
+		} else if (evt.getTag() == Event.EventTag.RESOURCES_CHANGED) {
+			PlayerStats stats = (PlayerStats) evt.getObjectValue();
+			checkRecruitOptions(stats);
 		}
 	}
-		
-	
-
 
 	@Override
 	public boolean mousePressed(Point p) {
@@ -126,19 +145,15 @@ public class RecruitMenu extends AbstractSideMenu {
 		 */
 		if (isVisible()) {
 			if (buildScoutButton.mousePressed(p)) {
-				checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), colony.getOwner().toString().toLowerCase());
 				return true;
 				}
 			else if (buildHunterButton.mousePressed(p)) {
-				checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), colony.getOwner().toString().toLowerCase());
 				return true;
 				}
 			else if (buildDestroyerButton.mousePressed(p)) {
-				checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), colony.getOwner().toString().toLowerCase());
 				return true;
 				} 
 			else if (buildColonizerButton.mousePressed(p)) {
-				checkRecruitoptions(GameManager.INSTANCE.getStats(colony.getOwner()), colony.getOwner().toString().toLowerCase());
 				return true;
 				}
 			else if (backButton.mousePressed(p)) {return true;}
@@ -178,42 +193,6 @@ public class RecruitMenu extends AbstractSideMenu {
 			buildDestroyerButton.draw(g);
 			buildColonizerButton.draw(g);
 			backButton.draw(g);
-		}
-	}
-	
-	private void drawColonyName(Graphics g) {
-		g.setColor(ownerColor);
-		Font saveFont = g.getFont();
-		g.setFont(new Font("Monotype", Font.BOLD, 38));
-		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
-		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
-		g.drawString(getMenuName(), textX, textY);
-		g.setFont(saveFont);
-	}
-	
-	private void checkRecruitoptions(PlayerStats playerStats, String player) {
-		if (playerStats.getResource(Resource.METAL) < ShipType.SCOUT.getMetalCost()) {
-			buildScoutButton.setImage("res/menu/" + player + "/button/scoutButton_disabled" + View.res);
-		} else {
-			buildScoutButton.setImage("res/menu/" + player + "/button/scoutButton" + View.res);
-		}
-		
-		if (playerStats.getResource(Resource.METAL) < ShipType.HUNTER.getMetalCost() || playerStats.getResource(Resource.GAS) < ShipType.HUNTER.getGasCost()) {
-			buildHunterButton.setImage("res/menu/" + player + "/button/hunterButton_disabled" + View.res);
-		} else {
-			buildHunterButton.setImage("res/menu/" + player + "/button/hunterButton" + View.res);
-		}
-		
-		if (playerStats.getResource(Resource.METAL) < ShipType.COLONIZER.getMetalCost()) {
-			buildColonizerButton.setImage("res/menu/" + player + "/button/colonizerButton_disabled" + View.res);
-		} else {
-			buildColonizerButton.setImage("res/menu/" + player + "/button/colonizerButton" + View.res);
-		}
-		
-		if (playerStats.getResource(Resource.METAL) < ShipType.DESTROYER.getMetalCost() || playerStats.getResource(Resource.GAS) < ShipType.DESTROYER.getGasCost()) {
-			buildDestroyerButton.setImage("res/menu/" + player + "/button/destroyerButton_disabled" + View.res);
-		} else {
-			buildDestroyerButton.setImage("res/menu/" + player + "/button/destroyerButton" + View.res);
 		}
 	}
 }
