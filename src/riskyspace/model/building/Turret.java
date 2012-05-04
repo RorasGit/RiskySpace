@@ -8,11 +8,14 @@ import riskyspace.model.BuildAble;
 
 public class Turret implements BuildAble, BattleAble, Ranked {
 
-	private static final int MAX_RANK = 2;
-	private int rank = 0;
+	private static final int MAX_RANK = 3;
+	private int rank = 1;
 	
 	private final int baseShield = 10;
 	private int shield = baseShield;
+	
+	private String[] description = {"No Turret", "5-7 damage\n10 shield", "12-16 damage\n25 shield"
+			, "22-29 damage\n40 shield"};
 	
 	@Override
 	public boolean takeDamage(int damage) {
@@ -22,13 +25,17 @@ public class Turret implements BuildAble, BattleAble, Ranked {
 
 	@Override
 	public List<Integer> getAttacks() {
-		int damage = 5;
-		int variation = 2;
+		int damage = 0;
+		int variation = 0;
 		if (rank > 0) {
-			damage += 7;
+			damage += 5;
 			variation += 2;
 		}
 		if (rank > 1) {
+			damage += 7;
+			variation += 2;
+		}
+		if (rank > 2) {
 			damage += 10;
 			variation += 3;
 		}
@@ -49,9 +56,9 @@ public class Turret implements BuildAble, BattleAble, Ranked {
 
 	@Override
 	public int getMetalCost() {
-		if (getRank() == 0) {
+		if (getRank() == 1) {
 			return 60;
-		} else if (getRank() == 1) {
+		} else if (getRank() == 2) {
 			return 120;
 		} else {
 			return 0;
@@ -60,7 +67,7 @@ public class Turret implements BuildAble, BattleAble, Ranked {
 
 	@Override
 	public int getGasCost() {
-		if (getRank() == 1) {
+		if (getRank() == 2) {
 			return 25;
 		} else {
 			return 0;
@@ -82,7 +89,7 @@ public class Turret implements BuildAble, BattleAble, Ranked {
 		if (rank < MAX_RANK) {
 			rank++;
 		}
-		shield = baseShield + rank * 15;
+		shield = baseShield + (rank - 1) * 15;
 	}
 
 	@Override
@@ -93,5 +100,10 @@ public class Turret implements BuildAble, BattleAble, Ranked {
 	@Override
 	public int getMaxRank() {
 		return MAX_RANK;
+	}
+
+	@Override
+	public String getDescriptiveString(int rank) {
+		return description[rank];
 	}
 }

@@ -8,6 +8,8 @@ public class Radar implements BuildAble, Ranked, Sight {
 	private static final int MAX_RANK = 3;
 	private int rank = 0;
 	
+	private String[] description = {"Sight 2\nNo Radar", "Sight 3", "Sight 4", "Sight 5"};
+	
 	@Override
 	public int getSupplyCost() {
 		/*
@@ -75,5 +77,10 @@ public class Radar implements BuildAble, Ranked, Sight {
 	@Override
 	public int getMaxRank() {
 		return MAX_RANK;
+	}
+
+	@Override
+	public String getDescriptiveString(int rank) {
+		return description[rank];
 	}
 }

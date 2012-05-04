@@ -7,6 +7,8 @@ public class Hangar implements BuildAble, Ranked {
 	private static final int MAX_RANK = 2;
 	private int rank = 0;
 	
+	private String[] description = {"No Hangar", "Can Build Scouts\nCan Build Hunter", "Can Build Destroyer"};
+	
 	@Override
 	public int getSupplyCost() {
 		/*
@@ -54,4 +56,8 @@ public class Hangar implements BuildAble, Ranked {
 		return MAX_RANK;
 	}
 
+	@Override
+	public String getDescriptiveString(int rank) {
+		return description[rank];
+	}
 }

@@ -26,14 +26,14 @@ public class Colony implements BattleAble, Sight {
 		} else {
 			colonyName = "Gargaloo";
 		}
-		mine = new Mine();
+		mine = new Mine(resource);
 		radar = new Radar();
 		turret = new Turret();
 		hangar = new Hangar();
 	}
 	
 	public int getIncome() {
-		return mine.mine(resource);
+		return mine.mine();
 	}
 	
 	public Player getOwner() {

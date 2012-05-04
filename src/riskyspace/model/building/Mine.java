@@ -10,11 +10,18 @@ public class Mine implements BuildAble, Ranked {
 
 	private static final int MAX_RANK = 3;
 	private int rank = 1;
-
-	private Map<Resource, Map<Integer, Integer>> miningValues = null;
 	
-	public Mine() {
+	private Map<Resource, Map<Integer, Integer>> miningValues = null;
+	private Resource resource = null;
+
+	private String[] gasDescription = {"No Mine", "10 Gas", "20 Gas", "30 Gas"};
+	private String[] metalDescription = {"No Mine", "20 Metal", "40 Metal", "60 Metal"};
+	private String[] description = null;
+	
+	public Mine(Resource resource) {
 		initMiningValues();
+		this.resource = resource;
+		description = resource == Resource.METAL ? metalDescription : gasDescription;
 	}
 	
 	private void initMiningValues() {
@@ -31,8 +38,8 @@ public class Mine implements BuildAble, Ranked {
 		miningValues.put(Resource.GAS, gas);
 	}
 	
-	public int mine(Resource res) {
-		return miningValues.get(res).get(rank);
+	public int mine() {
+		return miningValues.get(resource).get(rank);
 	}
 	
 	@Override
@@ -84,5 +91,10 @@ public class Mine implements BuildAble, Ranked {
 	@Override
 	public int getMaxRank() {
 		return MAX_RANK;
+	}
+
+	@Override
+	public String getDescriptiveString(int rank) {
+		return description[rank];
 	}
 }
