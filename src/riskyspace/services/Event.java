@@ -14,7 +14,6 @@ public class Event {
 		COLONY_REMOVED,
 		RESOURCES_CHANGED,
 		SUPPLY_CHANGED,
-		
 		/*
 		 * View triggered events
 		 */
@@ -26,12 +25,10 @@ public class Event {
 		PERFORM_MOVES, 
 		INTERRUPT_MOVES,
 		PLANET_SELECTED,
-		COLONY_SELECTED,
 		COLONIZER_SELECTED,
 		COLONIZE_PLANET,
 		COLONIZER_PRESENT,
 		DESELECT,
-		SHIP_MENU,
 		QUEUE_SHIP,
 		SHIP_SELFDESTCRUCT,
 		NEXT_TURN,
@@ -39,10 +36,8 @@ public class Event {
 		 * Controller triggered events
 		 */
 		SHOW_MENU,
-		SHOW_RECRUITMENU,
 		SHOW_FLEETMENU,
 		SHOW_PLANETMENU,
-		BACK,
 		MOVES_COMPLETE,
 		HIDE_MENU,
 		EVENT_TEXT,

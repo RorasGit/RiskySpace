@@ -67,7 +67,6 @@ public class RenderArea extends JPanel implements EventHandler {
 	 * Side menu settings
 	 */
 	private IMenu colonyMenu = null;
-	private IMenu recruitMenu = null;
 	private IMenu fleetMenu = null;
 	private IMenu topMenu = null;
 	private IMenu planetMenu = null;
@@ -125,7 +124,6 @@ public class RenderArea extends JPanel implements EventHandler {
 	private void createMenues() {
 		int menuWidth = height / 3;
 		colonyMenu = new ColonyMenu(width - menuWidth, 80, menuWidth, height-80);
-		recruitMenu = new RecruitMenu(width - menuWidth, 80, menuWidth, height-80);
 		fleetMenu = new FleetMenu(width - menuWidth, 80, menuWidth, height-80);
 		planetMenu = new PlanetMenu(width - menuWidth, 80, menuWidth, height-80);
 		topMenu = new TopMenu(0, 0, width, height);
@@ -233,22 +231,11 @@ public class RenderArea extends JPanel implements EventHandler {
 		// Draw menu
 		g.translate(-xTrans, -yTrans);
 		
-		/*
-		 * TODO: Do not check isVisible, the menus should handle that part
-		 */
-		if (colonyMenu.isVisible()) {
-			colonyMenu.draw(g);
-		}
-		if (recruitMenu.isVisible()) {
-			recruitMenu.draw(g);
-		}
-		if (fleetMenu.isVisible()) {
-			fleetMenu.draw(g);
-		}
-		if (planetMenu.isVisible()) {
-			planetMenu.draw(g);
-		}
+		colonyMenu.draw(g);
+		fleetMenu.draw(g);
+		planetMenu.draw(g);
 		topMenu.draw(g);
+		
 		g.setColor(Color.GREEN);
 		g.drawString(fps, 20, 100);
 	}
@@ -302,33 +289,20 @@ public class RenderArea extends JPanel implements EventHandler {
 		 * Click handling for different parts
 		 */
 		public boolean menuClick(Point point) {
+			boolean clicked = false;
 			if (topMenu instanceof Clickable) {
-				if (((Clickable) topMenu).mousePressed(point)) {
-					return true;
-				}
+				clicked = clicked || ((Clickable) topMenu).mousePressed(point);
 			}
-			if (colonyMenu.isVisible()) {
-				if (colonyMenu instanceof Clickable) {
-					return ((Clickable) colonyMenu).mousePressed(point);
-				}
+			if (colonyMenu instanceof Clickable) {
+				clicked = clicked || ((Clickable) colonyMenu).mousePressed(point);
 			}
-			if (recruitMenu.isVisible()) {
-				if (recruitMenu instanceof Clickable) {
-					return ((Clickable) recruitMenu).mousePressed(point);
-				}
+			if (fleetMenu instanceof Clickable) {
+				clicked = clicked || ((Clickable) fleetMenu).mousePressed(point);
 			}
-			if (fleetMenu.isVisible()) {
-				if (fleetMenu instanceof Clickable) {
-					return ((Clickable) fleetMenu).mousePressed(point);
-				}
+			if (planetMenu instanceof Clickable) {
+				clicked = clicked || ((Clickable) planetMenu).mousePressed(point);
 			}
-			if (planetMenu.isVisible()) {
-				if (planetMenu instanceof Clickable) {
-					return ((Clickable) planetMenu).mousePressed(point);
-				}
-			}
-			
-			return false;
+			return clicked;
 		}
 
 		public boolean colonizerClick(Point point) {

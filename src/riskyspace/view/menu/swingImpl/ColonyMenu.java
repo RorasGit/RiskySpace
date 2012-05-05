@@ -18,6 +18,7 @@ import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.View;
 import riskyspace.view.menu.AbstractSideMenu;
+import riskyspace.view.menu.IMenu;
 /**
  * 
  * @author flygarn
@@ -30,11 +31,23 @@ public class ColonyMenu extends AbstractSideMenu{
 	 */
 	
 	private Color ownerColor = null;
+	private Colony colony;
 	
-	private int margin = 30;
+	private int margin;
 	
 	private Image colonyPicture = null;
+	
+	/*
+	 * Buttons
+	 */
 	private Button buildShipButton = null;
+	private Button buildingsButton = null;
+	
+	/*
+	 * Sub Menus
+	 */
+	private RecruitMenu recruitMenu = null;
+	private BuildingMenu buildingMenu = null;
 	
 	/*
 	 * Images
@@ -43,6 +56,9 @@ public class ColonyMenu extends AbstractSideMenu{
 	
 	public ColonyMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
+		margin = menuHeight/20;
+		recruitMenu = new RecruitMenu(x, y, menuWidth, menuHeight);
+		buildingMenu = new BuildingMenu(x, y, menuWidth, menuHeight);
 		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
@@ -51,19 +67,31 @@ public class ColonyMenu extends AbstractSideMenu{
 		buildShipButton.setAction(new Action(){
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.SHIP_MENU, null);
-				EventBus.INSTANCE.publish(evt);
+				recruitMenu.setColony(colony);
+				setVisible(false);
+				recruitMenu.setVisible(true);
+			}
+		});
+		buildingsButton = new Button(x + margin, y + menuHeight - 3*(menuWidth - margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		buildingsButton.setAction(new Action(){
+			@Override
+			public void performAction() {
+				buildingMenu.setColony(colony);
+				setVisible(false);
+				buildingMenu.setVisible(true);
 			}
 		});
 		EventBus.INSTANCE.addHandler(this);
 	}
 	
 	public void setColony(Colony colony) {
+		this.colony = colony;
 		setMenuName(colony.getName());
 		setPlayer(colony.getOwner());
 		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
 		colonyPicture = cities.get(colony.getOwner());
 		buildShipButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/recruitButton" + View.res);
+		buildingsButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/buildingsButton" + View.res);
 	}
 
 	@Override
@@ -73,10 +101,15 @@ public class ColonyMenu extends AbstractSideMenu{
 		 */
 		if (isVisible()) {
 			if (buildShipButton.mousePressed(p)) {return true;}
+			if (buildingsButton.mousePressed(p)) {return true;}
 			if (this.contains(p)) {return true;}
 			else {
 				return false;
 			}
+		} else if (recruitMenu.isVisible()) {
+			return recruitMenu.mousePressed(p);
+		} else if (buildingMenu.isVisible()) {
+			return buildingMenu.mousePressed(p);
 		}
 		return false;
 	}
@@ -89,23 +122,33 @@ public class ColonyMenu extends AbstractSideMenu{
 		 */
 		if (isVisible()) {
 			if (buildShipButton.mouseReleased(p)) {return true;}
+			if (buildingsButton.mouseReleased(p)) {return true;}
 			else {
 				return false;
 			}
+		} else if (recruitMenu.isVisible()) {
+			recruitMenu.mouseReleased(p);
+		} else if (buildingMenu.isVisible()) {
+			buildingMenu.mouseReleased(p);
 		}
 		return false;
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		super.draw(g);
 		/*
 		 * Only draw if enabled
 		 */
 		if (isVisible()) {
+			super.draw(g);
 			g.drawImage(colonyPicture, getX() + margin, getY() + margin + 15,null);
 			drawColonyName(g);
 			buildShipButton.draw(g);
+			buildingsButton.draw(g);
+		} else if (recruitMenu.isVisible()) {
+			recruitMenu.draw(g);
+		} else if (buildingMenu.isVisible()) {
+			buildingMenu.draw(g);
 		}
 	}
 	
@@ -121,13 +164,12 @@ public class ColonyMenu extends AbstractSideMenu{
 
 	@Override
 	public void performEvent(Event evt) {
-		// TEST EVENT (if object sent is colony)
 		if (evt.getTag() == Event.EventTag.SHOW_MENU) {
 			if (evt.getObjectValue() instanceof Colony) {
 				setColony((Colony) evt.getObjectValue());
 				setVisible(true);
 			}
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU || evt.getTag() == Event.EventTag.SHOW_RECRUITMENU) {
+		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
 			setVisible(false);
 		}
 	}
