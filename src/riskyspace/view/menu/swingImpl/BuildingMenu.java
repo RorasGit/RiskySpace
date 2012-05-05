@@ -97,10 +97,20 @@ public class BuildingMenu extends AbstractSideMenu {
 		super(x, y, menuWidth, menuHeight);
 		//TODO Create buttons and Load Images
 		margin = menuHeight/20;
+		
+		/*
+		 * Load City Images for every Player
+		 */
+		int imageWidth = menuWidth - 2*margin;
+		int imageHeight = ((menuWidth - 2*margin)*3)/4;
 		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
-				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
+				getScaledInstance(imageWidth, imageHeight, Image.SCALE_DEFAULT));
 		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
-				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
+				getScaledInstance(imageWidth, imageHeight, Image.SCALE_DEFAULT));
+		
+		/*
+		 * Create Buttons
+		 */
 		backButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		backButton.setAction(new Action(){
 			@Override
@@ -110,6 +120,29 @@ public class BuildingMenu extends AbstractSideMenu {
 				setVisible(false);
 			}
 		});
+		
+		/*
+		 * Create Rank Indicators
+		 */
+		// Set Rank
+		mineRank = new RankIndicator(3);
+		mineRank.setRank(2);
+		turretRank = new RankIndicator(2);
+		radarRank = new RankIndicator(3);
+		radarRank.setRank(1);
+		hangarRank = new RankIndicator(2);
+		// Set Size
+		mineRank.setSize(24, 72);
+		turretRank.setSize(24, 72);
+		radarRank.setSize(24, 72);
+		hangarRank.setSize(24, 72);
+		
+		// Set Location
+		mineRank.setLocation(x + margin, y + margin*3 + imageHeight);
+		turretRank.setLocation(x + margin, y + 72 + margin*4 + imageHeight);
+		radarRank.setLocation(x + margin, y + 72*2 + margin*5 + imageHeight);
+		hangarRank.setLocation(x + margin, y + 72*3 + margin*6 + imageHeight);
+				
 		EventBus.INSTANCE.addHandler(this);
 	}
 	
@@ -138,6 +171,14 @@ public class BuildingMenu extends AbstractSideMenu {
 			g.drawImage(cityImage, getX() + margin, getY() + margin + 15,null);
 			drawColonyName(g);
 			backButton.draw(g);
+			
+			/*
+			 * Draw Rank Indicators
+			 */
+			mineRank.draw(g);
+			turretRank.draw(g);
+			radarRank.draw(g);
+			hangarRank.draw(g);
 		}
 	}
 	
@@ -155,10 +196,10 @@ public class BuildingMenu extends AbstractSideMenu {
 	public boolean mousePressed(Point p) {
 		if (isVisible()) {
 			if (backButton.mousePressed(p)) {return true;}
-			else if (upgradeMine.mousePressed(p)) {return true;}
-			else if (upgradeTurret.mousePressed(p)) {return true;}
-			else if (upgradeRadar.mousePressed(p)) {return true;}
-			else if (upgradeHangar.mousePressed(p)) {return true;}
+//			else if (upgradeMine.mousePressed(p)) {return true;}
+//			else if (upgradeTurret.mousePressed(p)) {return true;}
+//			else if (upgradeRadar.mousePressed(p)) {return true;}
+//			else if (upgradeHangar.mousePressed(p)) {return true;}
 			else if (this.contains(p)) {
 				return true;
 			} else {
