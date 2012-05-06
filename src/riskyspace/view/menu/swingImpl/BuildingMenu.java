@@ -17,6 +17,7 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
+import riskyspace.view.Fonts;
 import riskyspace.view.RankIndicator;
 import riskyspace.view.View;
 import riskyspace.view.menu.AbstractSideMenu;
@@ -131,18 +132,28 @@ public class BuildingMenu extends AbstractSideMenu {
 		radarRank = new RankIndicator(3);
 		radarRank.setRank(1);
 		hangarRank = new RankIndicator(2);
+		
 		// Set Size
-		mineRank.setSize(24, 72);
-		turretRank.setSize(24, 72);
-		radarRank.setSize(24, 72);
-		hangarRank.setSize(24, 72);
+		int width = menuHeight/35;
+		int height = 3*width;
+		
+		mineRank.setSize(width, height);
+		turretRank.setSize(width, height);
+		radarRank.setSize(width, height);
+		hangarRank.setSize(width, height);
 		
 		// Set Location
-		mineRank.setLocation(x + margin, y + margin*3 + imageHeight);
-		turretRank.setLocation(x + margin, y + 72 + margin*4 + imageHeight);
-		radarRank.setLocation(x + margin, y + 72*2 + margin*5 + imageHeight);
-		hangarRank.setLocation(x + margin, y + 72*3 + margin*6 + imageHeight);
-				
+		mineRank.setLocation(x + margin/2, y + 6*margin/2 + imageHeight);
+		turretRank.setLocation(x + margin/2, y + height + 7*margin/2 + imageHeight);
+		radarRank.setLocation(x + margin/2, y + height*2 + 8*margin/2 + imageHeight);
+		hangarRank.setLocation(x + margin/2, y + height*3 + 9*margin/2 + imageHeight);
+		
+		/*
+		 * Load Images
+		 */
+		turretImage = Toolkit.getDefaultToolkit().getImage("res/menu/turret_laser" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
+		mineImage = Toolkit.getDefaultToolkit().getImage("res/menu/mine" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
+		
 		EventBus.INSTANCE.addHandler(this);
 	}
 	
@@ -179,17 +190,21 @@ public class BuildingMenu extends AbstractSideMenu {
 			turretRank.draw(g);
 			radarRank.draw(g);
 			hangarRank.draw(g);
+			
+			/*
+			 * Draw Images
+			 */
+			g.drawImage(turretImage, turretRank.getX() + turretRank.getWidth(), turretRank.getY(), null);
+			g.drawImage(mineImage, mineRank.getX() + mineRank.getWidth(), mineRank.getY(), null);
 		}
 	}
 	
 	private void drawColonyName(Graphics g) {
 		g.setColor(ownerColor);
-		Font saveFont = g.getFont();
-		g.setFont(new Font("Monotype", Font.BOLD, 38));
+		g.setFont(Fonts.getFont().deriveFont((float) getMenuHeight()/20));
 		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + cityImage.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);
-		g.setFont(saveFont);
 	}
 	
 	@Override

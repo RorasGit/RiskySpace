@@ -20,8 +20,9 @@ public class RankIndicator {
 	/*
 	 * 
 	 */
+	private Image redLight;
+	private Image greenLight;
 	private Image offLight;
-	private Image onLight;
 	
 	public RankIndicator(int maxRank) {
 		this.maxRank = maxRank;
@@ -33,8 +34,9 @@ public class RankIndicator {
 		/*
 		 * Resize Images
 		 */
+		redLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_red" + View.res).getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
+		greenLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_green" + View.res).getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
 		offLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_off" + View.res).getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
-		onLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_on" + View.res).getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
 	}
 	
 	public void setLocation(int x, int y) {
@@ -52,13 +54,33 @@ public class RankIndicator {
 			/*
 			 * Draw lights
 			 */
-			for (int i = 1; i <= maxRank && i <= 3; i++) {
-				if (i <= rank) {
-					g.drawImage(onLight, x, y + height - i*dHeight, null);
+			for (int i = 1; i <= 3; i++) {
+				if (i <= maxRank) {
+					if (i <= rank) {
+						g.drawImage(greenLight, x, y + height - i*dHeight, null);
+					} else {
+						g.drawImage(redLight, x, y + height - i*dHeight, null);
+					}
 				} else {
 					g.drawImage(offLight, x, y + height - i*dHeight, null);
 				}
 			}
 		}
+	}
+
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
 	}
 }

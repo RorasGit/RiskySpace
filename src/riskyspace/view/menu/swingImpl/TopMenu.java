@@ -1,6 +1,7 @@
 package riskyspace.view.menu.swingImpl;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -16,6 +17,7 @@ import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
+import riskyspace.view.Fonts;
 import riskyspace.view.View;
 import riskyspace.view.menu.IMenu;
 
@@ -39,6 +41,8 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	private int menuHeight = 0;
 	private int menuWidth = 0;
 	private int margin = 5;
+	
+	private Font resourceFont = null;
 	
 	public TopMenu (int x, int y, int width, int height) {
 		this.x = x;
@@ -81,6 +85,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 				EventBus.INSTANCE.publish(evt);
 			}
 		});
+		resourceFont = Fonts.getFont().deriveFont(17f);
 		EventBus.INSTANCE.addHandler(this);
 		setVisible(true);
 	}
@@ -114,24 +119,26 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	public void draw(Graphics g) {
 		int a = menuWidth/10;
 		g.setColor(Color.GREEN);
+		g.setFont(resourceFont);
 		
+		int fontHeight = g.getFontMetrics(resourceFont).getHeight();
 		/*
 		 * Draw the player's metal
 		 */
 		g.drawImage(metalImage, a*6, margin, null);
-		g.drawString("" + metal, a*6 + metalImage.getWidth(null) + 5, margin + metalImage.getHeight(null)/2);
+		g.drawString("" + metal, a*6 + metalImage.getWidth(null) + 5, margin + metalImage.getHeight(null)/2 + fontHeight/2);
 		/*
 		 * Draw the player's gas
 		 */
 		g.drawImage(gasImage, a*7, margin, null);
-		g.drawString("" + gas, a*7 + gasImage.getWidth(null) + 5, margin + gasImage.getHeight(null)/2);
+		g.drawString("" + gas, a*7 + gasImage.getWidth(null) + 5, margin + gasImage.getHeight(null)/2 + fontHeight/2);
 		/*
 		 * Draw the player's supply
 		 */
 		if (supply.isCapped())
 			g.setColor(Color.RED);
 		g.drawImage(supplyImage, a*5, margin, null);
-		g.drawString(supply.getUsed() + "/" + supply.getMax(), a*5 + supplyImage.getWidth(null) + 5, margin + supplyImage.getHeight(null)/2);
+		g.drawString(supply.getUsed() + "/" + supply.getMax(), a*5 + supplyImage.getWidth(null) + 5, margin + supplyImage.getHeight(null)/2 + fontHeight/2);
 		
 		menuButton.draw(g);
 		buildQueueButton.draw(g);

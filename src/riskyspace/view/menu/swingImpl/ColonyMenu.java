@@ -16,6 +16,7 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
+import riskyspace.view.Fonts;
 import riskyspace.view.View;
 import riskyspace.view.menu.AbstractSideMenu;
 import riskyspace.view.menu.IMenu;
@@ -154,12 +155,10 @@ public class ColonyMenu extends AbstractSideMenu{
 	
 	private void drawColonyName(Graphics g) {
 		g.setColor(ownerColor);
-		Font saveFont = g.getFont();
-		g.setFont(new Font("Monotype", Font.BOLD, 38));
+		g.setFont(Fonts.getFont().deriveFont((float) getMenuHeight()/20));
 		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);
-		g.setFont(saveFont);
 	}
 
 	@Override

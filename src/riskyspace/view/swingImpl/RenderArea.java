@@ -30,6 +30,7 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
 import riskyspace.view.Clickable;
+import riskyspace.view.Fonts;
 import riskyspace.view.SpriteMap;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -100,6 +101,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	private int times = 0;
 	private Timer fpsTimer = null;
 	private String fps = "";
+	private Font fpsFont = null;
 	
 	public RenderArea(int rows, int cols) {
 		this.rows = rows;
@@ -118,6 +120,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		eventTextPrinter = new EventTextPrinter();
 		EventBus.INSTANCE.addHandler(this);
 		clickHandler = new ClickHandler();
+		fpsFont = Fonts.getFont().deriveFont(17f);
 		addMouseListener(clickHandler);
 	}
 
@@ -237,6 +240,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		topMenu.draw(g);
 		
 		g.setColor(Color.GREEN);
+		g.setFont(fpsFont);
 		g.drawString(fps, 20, 100);
 	}
 	
