@@ -17,7 +17,7 @@ import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
-import riskyspace.view.Fonts;
+import riskyspace.view.ViewResources;
 import riskyspace.view.View;
 import riskyspace.view.menu.IMenu;
 
@@ -50,12 +50,14 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 		menuHeight = height;
 		menuWidth = width;
 		
-		supplyImage = Toolkit.getDefaultToolkit().getImage("res/menu/supply.png");
-		metalImage = Toolkit.getDefaultToolkit().getImage("res/menu/resource_metal.png");
-		gasImage = Toolkit.getDefaultToolkit().getImage("res/menu/resource_gas.png");
+		supplyImage = Toolkit.getDefaultToolkit().getImage("res/menu/supply_square.png");
+		metalImage = Toolkit.getDefaultToolkit().getImage("res/menu/metal_square.png");
+		gasImage = Toolkit.getDefaultToolkit().getImage("res/menu/gas_square.png");
 		
-		menuButton = new Button(margin, margin, 79, 30);
-		menuButton.setImage("res/menu/menuButton3" + View.res);
+		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		
+		menuButton = new Button(0, 0, screenHeight/6, height);
+		menuButton.setImage("res/menu/menu" + View.res);
 		menuButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -63,11 +65,11 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		
-		buildQueueButton = new Button(margin + 79 + 4, margin, 79, 30);
-		buildQueueButton.setImage("res/menu/menuButton2" + View.res);
+		buildQueueButton = new Button(screenHeight/6, 0, screenHeight/6, height);
+		buildQueueButton.setImage("res/menu/build_queue" + View.res);
 		
-		endTurnButton = new Button(width - margin - 79, margin, 79, 66);
-		endTurnButton.setImage("res/menu/endTurn" + View.res);
+		endTurnButton = new Button(width - screenHeight/6, 0, screenHeight/6, height);
+		endTurnButton.setImage("res/menu/end_turn" + View.res);
 		endTurnButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -76,8 +78,8 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		
-		performMovesButton = new Button(width - margin - 2*79 - 5, margin, 79, 66);
-		performMovesButton.setImage("res/menu/moves" + View.res);
+		performMovesButton = new Button(width - screenHeight/3, 0, screenHeight/6, height);
+		performMovesButton.setImage("res/menu/perform_moves" + View.res);
 		performMovesButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -85,7 +87,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 				EventBus.INSTANCE.publish(evt);
 			}
 		});
-		resourceFont = Fonts.getFont().deriveFont(17f);
+		resourceFont = ViewResources.getFont().deriveFont(17f);
 		EventBus.INSTANCE.addHandler(this);
 		setVisible(true);
 	}
@@ -118,7 +120,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	@Override
 	public void draw(Graphics g) {
 		int a = menuWidth/10;
-		g.setColor(Color.GREEN);
+		g.setColor(ViewResources.WHITE);
 		g.setFont(resourceFont);
 		
 		int fontHeight = g.getFontMetrics(resourceFont).getHeight();

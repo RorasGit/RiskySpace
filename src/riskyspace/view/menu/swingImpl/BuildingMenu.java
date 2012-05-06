@@ -17,7 +17,7 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
-import riskyspace.view.Fonts;
+import riskyspace.view.ViewResources;
 import riskyspace.view.RankIndicator;
 import riskyspace.view.View;
 import riskyspace.view.menu.AbstractSideMenu;
@@ -153,6 +153,8 @@ public class BuildingMenu extends AbstractSideMenu {
 		 */
 		turretImage = Toolkit.getDefaultToolkit().getImage("res/menu/turret_laser" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
 		mineImage = Toolkit.getDefaultToolkit().getImage("res/menu/mine" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
+		radarImage = Toolkit.getDefaultToolkit().getImage("res/menu/radar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
+		hangarImage = Toolkit.getDefaultToolkit().getImage("res/menu/hangar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
 		
 		EventBus.INSTANCE.addHandler(this);
 	}
@@ -165,7 +167,6 @@ public class BuildingMenu extends AbstractSideMenu {
 		 * Immutable?
 		 */
 		this.colony = colony;
-		setPlayer(colony.getOwner());
 		setMenuName(colony.getName());
 		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
 		cityImage = cities.get(colony.getOwner());
@@ -196,12 +197,14 @@ public class BuildingMenu extends AbstractSideMenu {
 			 */
 			g.drawImage(turretImage, turretRank.getX() + turretRank.getWidth(), turretRank.getY(), null);
 			g.drawImage(mineImage, mineRank.getX() + mineRank.getWidth(), mineRank.getY(), null);
+			g.drawImage(radarImage, radarRank.getX() + radarRank.getWidth(), radarRank.getY(), null);
+			g.drawImage(hangarImage, hangarRank.getX() + hangarRank.getWidth(), hangarRank.getY(), null);
 		}
 	}
 	
 	private void drawColonyName(Graphics g) {
 		g.setColor(ownerColor);
-		g.setFont(Fonts.getFont().deriveFont((float) getMenuHeight()/20));
+		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
 		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + cityImage.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);

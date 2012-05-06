@@ -30,7 +30,7 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
 import riskyspace.view.Clickable;
-import riskyspace.view.Fonts;
+import riskyspace.view.ViewResources;
 import riskyspace.view.SpriteMap;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -120,7 +120,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		eventTextPrinter = new EventTextPrinter();
 		EventBus.INSTANCE.addHandler(this);
 		clickHandler = new ClickHandler();
-		fpsFont = Fonts.getFont().deriveFont(17f);
+		fpsFont = ViewResources.getFont().deriveFont(17f);
 		addMouseListener(clickHandler);
 	}
 
@@ -129,7 +129,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		colonyMenu = new ColonyMenu(width - menuWidth, 80, menuWidth, height-80);
 		fleetMenu = new FleetMenu(width - menuWidth, 80, menuWidth, height-80);
 		planetMenu = new PlanetMenu(width - menuWidth, 80, menuWidth, height-80);
-		topMenu = new TopMenu(0, 0, width, height);
+		topMenu = new TopMenu(0, 0, width, 80);
 	}
 	
 	private void createBackground() {
@@ -239,9 +239,9 @@ public class RenderArea extends JPanel implements EventHandler {
 		planetMenu.draw(g);
 		topMenu.draw(g);
 		
-		g.setColor(Color.GREEN);
+		g.setColor(ViewResources.WHITE);
 		g.setFont(fpsFont);
-		g.drawString(fps, 20, 100);
+		g.drawString(fps, 10, 110);
 	}
 	
 	private void drawSelectionArea(Graphics g, int xTrans, int yTrans) {

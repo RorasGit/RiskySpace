@@ -20,7 +20,7 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
-import riskyspace.view.Fonts;
+import riskyspace.view.ViewResources;
 import riskyspace.view.View;
 import riskyspace.view.menu.AbstractSideMenu;
 
@@ -106,7 +106,6 @@ public class RecruitMenu extends AbstractSideMenu {
 	public void setColony(Colony colony) {
 		this.colony = colony;
 		setMenuName(colony.getName());
-		setPlayer(colony.getOwner());
 		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
 		colonyPicture = cities.get(colony.getOwner());
 		
@@ -120,7 +119,7 @@ public class RecruitMenu extends AbstractSideMenu {
 	
 	private void drawColonyName(Graphics g) {
 		g.setColor(ownerColor);
-		g.setFont(Fonts.getFont().deriveFont((float) getMenuHeight()/20));
+		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
 		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);

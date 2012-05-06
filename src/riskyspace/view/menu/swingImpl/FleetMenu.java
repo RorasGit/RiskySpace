@@ -51,7 +51,6 @@ public class FleetMenu extends AbstractSideMenu {
 	}
 	
 	public void setFleet(Fleet fleet) {
-		setPlayer(fleet.getOwner());
 		createFleetIcons(fleet);
 	}
 
