@@ -24,7 +24,6 @@ public abstract class AbstractSideMenu implements IMenu, Clickable,
 	private String menuName;
 	
 	private Image background = null;
-	private Map<Player, Image> allBackgrounds = new HashMap<Player, Image>();
 	
 	public AbstractSideMenu(int x, int y, int menuWidth, int menuHeight){
 		this(x, y, menuWidth, menuHeight, "");
@@ -37,17 +36,10 @@ public abstract class AbstractSideMenu implements IMenu, Clickable,
 		this.menuHeight = menuHeight;
 		this.menuWidth = menuWidth;
 		this.menuName = menuName;
-		allBackgrounds.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/menubackground" + View.res)
-				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT));
-		allBackgrounds.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/menubackground" + View.res)
-				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT));
-		allBackgrounds.put(Player.WORLD, Toolkit.getDefaultToolkit().getImage("res/menu/world/menubackground" + View.res)
-				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT));
+		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground" + View.res)
+				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 	}
 
-	public void setPlayer(Player p) {
-		background = allBackgrounds.get(p);
-	}
 	@Override
 	public boolean contains(Point p) {
 		/*

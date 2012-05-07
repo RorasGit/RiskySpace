@@ -38,9 +38,12 @@ public enum GameManager implements EventHandler {
 	public void init(World world, int nbrOfPlayers) {
 		this.world = world;
 		initPlayers(nbrOfPlayers);
-		changePlayer();
 		EventBus.INSTANCE.addHandler(this);
 		turn = 1;
+	}
+	
+	public void start() {
+		changePlayer();
 	}
 	
 	public void initPlayers(int nbrOfPlayers) {

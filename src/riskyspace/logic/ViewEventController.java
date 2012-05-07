@@ -72,6 +72,13 @@ public class ViewEventController implements EventHandler {
 		}
 
 		if(evt.getTag() == Event.EventTag.PLANET_SELECTED) {
+			/*
+			 * TODO:
+			 * Refactor
+			 * Try not using COLONIZER_PRESENT Event
+			 * Try avoiding sending territories (Mutable)
+			 * Test hasPlanet => {hasColony => {stuff} else => {other stuff}} more logical approach
+			 */
 			resetVariables();
 			Territory selectedTerritory = world.getTerritory((Position) evt.getObjectValue());
 			if (selectedTerritory.hasColony()) {
@@ -83,23 +90,13 @@ public class ViewEventController implements EventHandler {
 					selectedColony = null;
 				}
 			} else if (selectedTerritory.hasPlanet()) {
-				Event mEvent = new Event(Event.EventTag.SHOW_PLANETMENU, (Territory) selectedTerritory);
+				Event mEvent = new Event(Event.EventTag.SHOW_PLANETMENU, selectedTerritory);
 				EventBus.INSTANCE.publish(mEvent);
 				if (selectedTerritory.hasColonizer()) {
 					mEvent = new Event(Event.EventTag.COLONIZER_PRESENT, selectedTerritory);
 					EventBus.INSTANCE.publish(mEvent);
 				}
 			}
-		}
-
-		if (evt.getTag() == Event.EventTag.SHIP_MENU) {
-			Event mEvent = new Event(Event.EventTag.SHOW_RECRUITMENU, selectedColony);
-			EventBus.INSTANCE.publish(mEvent);
-		}
-		
-		if (evt.getTag() == Event.EventTag.BACK) {
-			Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
-			EventBus.INSTANCE.publish(mEvent);
 		}
 		
 		if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {

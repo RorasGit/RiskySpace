@@ -35,7 +35,6 @@ public class Button implements Clickable {
 		if (location.endsWith(View.res)) {
 			location = location.substring(0, location.indexOf(View.res));
 		}
-		System.out.println(location);
 		disabledImage = Toolkit.getDefaultToolkit().getImage(location + "_disabled" + View.res);
 		scaledDisabledImage = disabledImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);

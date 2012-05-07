@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import riskyspace.GameManager;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.logic.data.ColonizerData;
 import riskyspace.logic.data.ColonyData;
@@ -314,8 +315,8 @@ public class SpriteMap {
 		/*
 		 * Colony Sprite
 		 */
-		colonySprites.put("RED", createColonySprite(Color.RED, squareSize));
-		colonySprites.put("BLUE", createColonySprite(Color.BLUE, squareSize));
+		colonySprites.put("RED", createColonySprite(GameManager.INSTANCE.getInfo(Player.RED).getColor(), squareSize));
+		colonySprites.put("BLUE", createColonySprite(GameManager.INSTANCE.getInfo(Player.BLUE).getColor(), squareSize));
 	}
 	
 	/**
@@ -352,14 +353,14 @@ public class SpriteMap {
 				sprite.draw(g, calcX(pos, offsetX, squareSize), calcY(pos, offsetY, squareSize), squareSize);
 			}
 		}
+		g.setColor(ViewResources.WHITE);
+		g.setFont(ViewResources.getFont().deriveFont(12f));
 		for (Position pos : fleets.keySet()) {
 			fleets.get(pos).draw(g, calcX(pos, offsetX, squareSize), calcY(pos, offsetY, squareSize), squareSize);
-			g.setColor(Color.CYAN);
 			g.drawString("" + shipCount.get(pos), calcX(pos, offsetX, squareSize) + squareSize/2 - squareSize/8, calcY(pos, offsetY, squareSize) + squareSize - 5);
 		}
 		for (Position pos : colonizers.keySet()) {
 			colonizers.get(pos).draw(g, calcX(pos, offsetX, squareSize), calcY(pos, offsetY, squareSize), squareSize);
-			g.setColor(Color.CYAN);
 			g.drawString("" + colonizerCount.get(pos), calcX(pos, offsetX, squareSize) + squareSize - squareSize/8, calcY(pos, offsetY, squareSize) + squareSize - 5);
 		}
 	}

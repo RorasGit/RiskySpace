@@ -11,7 +11,7 @@ public class PlayerInfo {
 	
 	public PlayerInfo(Player player) {
 		if (player == Player.BLUE) {
-			playerColor = Color.BLUE;
+			playerColor = new Color(0x31579d);
 		} else if (player == Player.RED) {
 			playerColor = Color.RED;
 		} else {

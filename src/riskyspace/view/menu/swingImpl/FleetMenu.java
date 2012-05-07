@@ -51,7 +51,6 @@ public class FleetMenu extends AbstractSideMenu {
 	}
 	
 	public void setFleet(Fleet fleet) {
-		setPlayer(fleet.getOwner());
 		createFleetIcons(fleet);
 	}
 
@@ -81,11 +80,11 @@ public class FleetMenu extends AbstractSideMenu {
 
 	@Override
 	public void draw(Graphics g) {
-		super.draw(g);
-		/*
+				/*
 		 * Only draw if enabled
 		 */
 		if (isVisible()) {
+			super.draw(g);
 			g.drawImage(fleetPicture, getX() + margin + margin/2 + 2, getY() + margin + 15, null);
 			int height = fleetPicture != null ? fleetPicture.getHeight(null) : 0;
 			for (int i = 0; i < fleetIcons.size(); i++) {

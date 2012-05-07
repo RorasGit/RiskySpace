@@ -20,6 +20,7 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
+import riskyspace.view.ViewResources;
 import riskyspace.view.View;
 import riskyspace.view.menu.AbstractSideMenu;
 
@@ -27,23 +28,32 @@ public class RecruitMenu extends AbstractSideMenu {
 	
 	private Color ownerColor = null;
 
-	private int margin = 30;
+	private int margin;
+
+	private Colony colony = null;
 	
-	private Image colonyPicture = null;
-	
+	/*
+	 * Build Buttons
+	 */
 	private Button buildScoutButton = null;
 	private Button buildHunterButton = null;
 	private Button buildDestroyerButton = null;
 	private Button buildColonizerButton = null;
+	
+	/*
+	 * Back Button
+	 */
 	private Button backButton = null;
 	
 	/*
 	 * Images
 	 */
+	private Image colonyPicture = null;
 	private Map<Player, Image> cities = new HashMap<Player, Image>();
 	
 	public RecruitMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
+		margin = menuHeight/20;
 		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
@@ -85,16 +95,17 @@ public class RecruitMenu extends AbstractSideMenu {
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.BACK, null);
+				Event evt = new Event(Event.EventTag.SHOW_MENU, colony);
 				EventBus.INSTANCE.publish(evt);
+				setVisible(false);
 			}
 		});
 		EventBus.INSTANCE.addHandler(this);
 	}
 	
 	public void setColony(Colony colony) {
+		this.colony = colony;
 		setMenuName(colony.getName());
-		setPlayer(colony.getOwner());
 		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
 		colonyPicture = cities.get(colony.getOwner());
 		
@@ -108,12 +119,10 @@ public class RecruitMenu extends AbstractSideMenu {
 	
 	private void drawColonyName(Graphics g) {
 		g.setColor(ownerColor);
-		Font saveFont = g.getFont();
-		g.setFont(new Font("Monotype", Font.BOLD, 38));
+		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
 		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);
-		g.setFont(saveFont);
 	}
 
 	private void checkRecruitOptions(PlayerStats stats) {
@@ -125,12 +134,7 @@ public class RecruitMenu extends AbstractSideMenu {
 
 	@Override
 	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.SHOW_RECRUITMENU) {
-			if (evt.getObjectValue() instanceof Colony) {
-				setColony((Colony) evt.getObjectValue());
-				setVisible(true);
-			}
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU || evt.getTag() == Event.EventTag.BACK) {
+		if (evt.getTag() == Event.EventTag.HIDE_MENU) {
 				setVisible(false);
 		} else if (evt.getTag() == Event.EventTag.RESOURCES_CHANGED) {
 			PlayerStats stats = (PlayerStats) evt.getObjectValue();
@@ -144,18 +148,10 @@ public class RecruitMenu extends AbstractSideMenu {
 		 * Only handle mouse event if enabled
 		 */
 		if (isVisible()) {
-			if (buildScoutButton.mousePressed(p)) {
-				return true;
-				}
-			else if (buildHunterButton.mousePressed(p)) {
-				return true;
-				}
-			else if (buildDestroyerButton.mousePressed(p)) {
-				return true;
-				} 
-			else if (buildColonizerButton.mousePressed(p)) {
-				return true;
-				}
+			if (buildScoutButton.mousePressed(p)) {return true;}
+			else if (buildHunterButton.mousePressed(p)) {return true;}
+			else if (buildDestroyerButton.mousePressed(p)) {return true;} 
+			else if (buildColonizerButton.mousePressed(p)) {return true;}
 			else if (backButton.mousePressed(p)) {return true;}
 			if (this.contains(p)) {return true;}
 			else {
