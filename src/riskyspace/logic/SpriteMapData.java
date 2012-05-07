@@ -3,12 +3,12 @@ package riskyspace.logic;
 import java.util.ArrayList;
 import java.util.List;
 
+import riskyspace.GameManager;
 import riskyspace.logic.data.*;
 import riskyspace.model.*;
 
 public class SpriteMapData {
 	private static World world;
-	private static ViewEventController vec;
 	
 	private List<PlanetData> planetData = new ArrayList<PlanetData>();
 	private List<ColonizerData> colonizerData = new ArrayList<ColonizerData>();
@@ -18,9 +18,8 @@ public class SpriteMapData {
 	
 	private SpriteMapData() {}
 	
-	public static void init(World world, ViewEventController vec) {
+	public static void init(World world) {
 		SpriteMapData.world = world;
-		SpriteMapData.vec = vec;
 	}
 	
 	/**
@@ -57,7 +56,7 @@ public class SpriteMapData {
 	}
 
 	public Position[][] getPaths() {
-		return vec.getPaths(player);
+		return GameManager.INSTANCE.getPaths(player);
 	}
 
 	public List<PlanetData> getPlanetData() {
