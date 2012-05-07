@@ -67,6 +67,10 @@ public class BuildQueue {
 			return false;
 		}
 		colonyQueue.get(pos).add(new QueueItem(buildAble));
+		String announcement = buildAble + " has been added to the build queue!";
+		EventText et = new EventText(announcement.substring(0, 1).toUpperCase() + announcement.substring(1).toLowerCase(), pos);
+		Event event = new Event(Event.EventTag.EVENT_TEXT, et);
+		EventBus.INSTANCE.publish(event);
 		return true;
 	}
 	

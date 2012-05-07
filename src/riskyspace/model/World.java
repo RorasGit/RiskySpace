@@ -12,7 +12,7 @@ public class World {
 	private int cols = 0;
 	private Map<Position, Territory> territories = null;
 	private Map<Player, PlayerStats> playerstats = null;
-	private Map<Player, BuildQueue> buildQueue = null;
+	private Map<Player, BuildQueue> buildqueue = null;
 
 	public World(int rows, int cols) {
 		this.rows = rows;
@@ -34,8 +34,10 @@ public class World {
 		playerstats.put(Player.BLUE, new PlayerStats());
 		playerstats.put(Player.RED, new PlayerStats());
 		
-		buildQueue.put(Player.BLUE, new BuildQueue(5));
-		buildQueue.put(Player.RED, new BuildQueue(5));
+		buildqueue = new HashMap<Player, BuildQueue>();
+		
+		buildqueue.put(Player.BLUE, new BuildQueue(5));
+		buildqueue.put(Player.RED, new BuildQueue(5));
 	}
 
 	public Territory getTerritory(Position p) {
@@ -67,14 +69,14 @@ public class World {
 	}
 	
 	public void addToBuildQueue(BuildAble buildAble, Player player, Position position) {
-		buildQueue.get(player).add(buildAble, position);
+		buildqueue.get(player).add(buildAble, position);
 	}
 	public void removeBuildQueue(Player player, Position position){
-		buildQueue.get(player).clear(position);	
+		buildqueue.get(player).clear(position);	
 	}
 	
 	public void processBuildQueue(Player player) {
-		Map<Position, BuildAble> itemsToBuild = buildQueue.get(player).processQueue();
+		Map<Position, BuildAble> itemsToBuild = buildqueue.get(player).processQueue();
 		for (Position pos : itemsToBuild.keySet()) {
 			if (itemsToBuild.get(pos) instanceof ShipType) {
 				getTerritory(pos).addFleet(new Fleet(new Ship((ShipType) itemsToBuild.get(pos)), getTerritory(pos).getColony().getOwner()));
@@ -83,7 +85,7 @@ public class World {
 	}
 	
 	public void resetAllQueues(Player player) {
-		buildQueue.get(player).clearAll();
+		buildqueue.get(player).clearAll();
 	}
 	
 	public List<Position> getContentPositions(){
