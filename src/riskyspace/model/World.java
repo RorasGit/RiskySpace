@@ -12,6 +12,7 @@ public class World {
 	private int cols = 0;
 	private Map<Position, Territory> territories = null;
 	private Map<Player, PlayerStats> playerstats = null;
+	private Map<Player, BuildQueue> buildQueue = null;
 
 	public World(int rows, int cols) {
 		this.rows = rows;
@@ -32,6 +33,9 @@ public class World {
 		 */
 		playerstats.put(Player.BLUE, new PlayerStats());
 		playerstats.put(Player.RED, new PlayerStats());
+		
+		buildQueue.put(Player.BLUE, new BuildQueue(5));
+		buildQueue.put(Player.RED, new BuildQueue(5));
 	}
 
 	public Territory getTerritory(Position p) {
@@ -63,27 +67,23 @@ public class World {
 	}
 	
 	public void addToBuildQueue(BuildAble buildAble, Player player, Position position) {
-		playerstats.get(player).queueItem(buildAble, position);
+		buildQueue.get(player).add(buildAble, position);
 	}
 	public void removeBuildQueue(Player player, Position position){
-		playerstats.get(player).resetQueue(position);	
+		buildQueue.get(player).clear(position);	
 	}
 	
 	public void processBuildQueue(Player player) {
-		List<QueueItem> itemsToBuild = playerstats.get(player).reduceBuildQueue();
-		for (QueueItem q : itemsToBuild) {
-			if (q.getItem() instanceof ShipType) {
-				getTerritory(q.getPosition()).addFleet(new Fleet(new Ship((ShipType) q.getItem()), getTerritory(q.getPosition()).getColony().getOwner()));
+		Map<Position, BuildAble> itemsToBuild = buildQueue.get(player).processQueue();
+		for (Position pos : itemsToBuild.keySet()) {
+			if (itemsToBuild.get(pos) instanceof ShipType) {
+				getTerritory(pos).addFleet(new Fleet(new Ship((ShipType) itemsToBuild.get(pos)), getTerritory(pos).getColony().getOwner()));
 			}
 		}
 	}
 	
-	public void resetBuildQueue(Player player, Position pos) {
-		playerstats.get(player).resetQueue(pos);
-	}
-	
 	public void resetAllQueues(Player player) {
-		playerstats.get(player).resetAll();
+		buildQueue.get(player).clearAll();
 	}
 	
 	public List<Position> getContentPositions(){
@@ -102,8 +102,8 @@ public class World {
 		return playerstats.get(player).getResource(resource);
 	}
 	
-	public boolean useResource(Player player, Resource type, int amount) {
-		return playerstats.get(player).changeResource(type, amount);
+	public boolean purchase(Player player, BuildAble buildAble) {
+		return playerstats.get(player).purchase(buildAble);
 	}
 	
 	public void setIncome(Player player, Resource type, int amount) {

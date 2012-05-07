@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class asdTest {
+public class playerStatsTest {
 
 	@Test
 	public void testGainNewResources() {
@@ -15,7 +15,7 @@ public class asdTest {
 		 * Default income is 50. If we set it to 100, resources should reach 250
 		 * after one round's worth of income.
 		 */
-		asd ps = new asd();
+		PlayerStats ps = new PlayerStats();
 		
 		ps.setIncome(Resource.METAL, 100);
 		
@@ -29,7 +29,7 @@ public class asdTest {
 		/*
 		 * gainNewResources is called when world is initiated: this simulates a first round purchase.
 		 */
-		asd ps = new asd();
+		PlayerStats ps = new PlayerStats();
 		
 		ps.gainNewResources();
 		ps.purchase(ShipType.COLONIZER);
@@ -39,7 +39,7 @@ public class asdTest {
 	
 	@Test
 	public void testPurchaseList() {
-		asd ps = new asd();
+		PlayerStats ps = new PlayerStats();
 		
 		ps.gainNewResources();
 		
@@ -51,7 +51,7 @@ public class asdTest {
 		
 		assertTrue(ps.purchase(ships));
 		
-		asd ps2 = new asd();
+		PlayerStats ps2 = new PlayerStats();
 		
 		ps2.gainNewResources();
 		
@@ -63,7 +63,7 @@ public class asdTest {
 	
 	@Test
 	public void testRefund() {
-		asd ps = new asd();
+		PlayerStats ps = new PlayerStats();
 		
 		ps.gainNewResources();
 		
