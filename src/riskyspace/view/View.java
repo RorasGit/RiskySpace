@@ -7,4 +7,6 @@ public interface View {
 	
 	public void draw();
 	public void setViewer(Player player);
+	public void setVisible(boolean visible);
+	public boolean isVisible();
 }

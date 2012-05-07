@@ -7,7 +7,7 @@ public class Hangar implements BuildAble, Ranked {
 	private static final int MAX_RANK = 2;
 	private int rank = 0;
 	
-	private String[] description = {"No Hangar", "Can Build Scouts\nCan Build Hunter", "Can Build Destroyer"};
+	private String[] description = {"No Effect", "Can Build Scout\nCan Build Hunter", "Can Build Destroyer"};
 	
 	@Override
 	public int getSupplyCost() {
@@ -19,19 +19,29 @@ public class Hangar implements BuildAble, Ranked {
 
 	@Override
 	public int getMetalCost() {
-		// TODO Auto-generated method stub
-		return 0;
+		if (getRank() == 0) {
+			return 50;
+		} else if (getRank() == 1) {
+			return 120;
+		} else {
+			return 0;
+		}
 	}
 
 	@Override
 	public int getGasCost() {
-		// TODO Auto-generated method stub
-		return 0;
+		if (getRank() == 0) {
+			return 0;
+		} else if (getRank() == 1) {
+			return 20;
+		} else {
+			return 0;
+		}
 	}
 
 	@Override
 	public int getBuildTime() {
-		return 0;
+		return 1;
 	}
 
 	@Override
@@ -58,6 +68,9 @@ public class Hangar implements BuildAble, Ranked {
 
 	@Override
 	public String getDescriptiveString(int rank) {
-		return description[rank];
+		if (rank < description.length && rank >= 0) {
+			return description[rank];
+		}
+		return "";
 	}
 }

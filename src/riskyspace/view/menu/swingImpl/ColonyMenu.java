@@ -65,6 +65,7 @@ public class ColonyMenu extends AbstractSideMenu{
 		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		buildShipButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		buildShipButton.setImage("res/menu/recruit" + View.res);
 		buildShipButton.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -74,6 +75,7 @@ public class ColonyMenu extends AbstractSideMenu{
 			}
 		});
 		buildingsButton = new Button(x + margin, y + menuHeight - 3*(menuWidth - margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		buildingsButton.setImage("res/menu/build" + View.res);
 		buildingsButton.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -90,8 +92,8 @@ public class ColonyMenu extends AbstractSideMenu{
 		setMenuName(colony.getName());
 		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
 		colonyPicture = cities.get(colony.getOwner());
-		buildShipButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/recruitButton" + View.res);
-		buildingsButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/buildingsButton" + View.res);
+//		buildShipButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/recruitButton" + View.res);
+//		buildingsButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/buildingsButton" + View.res);
 	}
 
 	@Override
@@ -141,7 +143,7 @@ public class ColonyMenu extends AbstractSideMenu{
 		 */
 		if (isVisible()) {
 			super.draw(g);
-			g.drawImage(colonyPicture, getX() + margin, getY() + margin + 15,null);
+			g.drawImage(colonyPicture, getX() + margin, getY() + 3*margin/2,null);
 			drawColonyName(g);
 			buildShipButton.draw(g);
 			buildingsButton.draw(g);

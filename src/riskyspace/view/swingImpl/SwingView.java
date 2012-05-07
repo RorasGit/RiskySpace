@@ -18,7 +18,6 @@ public class SwingView implements View {
 		setFrame();
 		renderArea = new RenderArea(rows, cols);
 		frame.add(renderArea);
-		frame.setVisible(true);
 		frame.addKeyListener(keyListener);
 	}
 	
@@ -47,5 +46,15 @@ public class SwingView implements View {
 	@Override
 	public void setViewer(Player player) {
 		renderArea.setPlayer(player);
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		frame.setVisible(visible);
+	}
+
+	@Override
+	public boolean isVisible() {
+		return frame.isVisible();
 	}
 }

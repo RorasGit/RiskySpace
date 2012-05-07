@@ -32,6 +32,22 @@ public class Colony implements BattleAble, Sight {
 		hangar = new Hangar();
 	}
 	
+	public Mine getMine() {
+		return mine;
+	}
+	
+	public Turret getTurret() {
+		return turret;
+	}
+	
+	public Radar getRadar() {
+		return radar;
+	}
+	
+	public Hangar getHangar() {
+		return hangar;
+	}
+		
 	public int getIncome() {
 		return mine.mine();
 	}

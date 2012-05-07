@@ -104,6 +104,9 @@ public class Turret implements BuildAble, BattleAble, Ranked {
 
 	@Override
 	public String getDescriptiveString(int rank) {
-		return description[rank];
+		if (rank < description.length && rank >= 0) {
+			return description[rank];
+		}
+		return "";
 	}
 }

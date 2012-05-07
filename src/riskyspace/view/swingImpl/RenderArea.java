@@ -370,12 +370,6 @@ public class RenderArea extends JPanel implements EventHandler {
 				pressedPoint.y += translatePixelsY();
 			} else if (me.getButton() == MouseEvent.BUTTON3) {
 				if (pathClick(me.getPoint())) {return;}
-				else {
-					/*
-					 * Click was not in any trigger zone. Call deselect.
-					 */
-					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
-				}
 			}
 		}
 		@Override public void mouseClicked(MouseEvent me) {
