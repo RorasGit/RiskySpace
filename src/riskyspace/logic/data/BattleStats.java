@@ -1,4 +1,4 @@
-package riskyspace.logic;
+package riskyspace.logic.data;
 
 import java.util.List;
 

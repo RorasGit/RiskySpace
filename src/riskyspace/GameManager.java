@@ -9,13 +9,12 @@ import java.util.Map;
 import java.util.Set;
 
 import riskyspace.logic.Battle;
-import riskyspace.logic.BattleStats;
+import riskyspace.logic.data.BattleStats;
 import riskyspace.logic.FleetMove;
 import riskyspace.logic.Path;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
-import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
@@ -54,6 +53,7 @@ public enum GameManager implements EventHandler {
 	
 	public void start() {
 		changePlayer();
+		world.updatePlayerStats(getCurrentPlayer());
 	}
 	
 	public void initPlayers(int nbrOfPlayers) {
@@ -79,26 +79,16 @@ public enum GameManager implements EventHandler {
 	
 	private void changePlayer() {
 		currentPlayer = activePlayers.get(((activePlayers.indexOf(currentPlayer) + 1) % activePlayers.size()));
-		/*
-		 * Give income in ViewEventController instead?
-		 */
+		
 		Event event = new Event(Event.EventTag.ACTIVE_PLAYER_CHANGED, currentPlayer);
 		EventBus.INSTANCE.publish(event);
 		world.giveIncome(currentPlayer);
+		world.processBuildQueue(getCurrentPlayer());
 		world.updatePlayerStats(currentPlayer);
 		world.resetShips();
-		/*
-		 * Is this only to make the view show the correct supply?
-		 * TODO: Fix this when implementing networking or at other previous time.
-		 */
-		event = new Event(Event.EventTag.SUPPLY_CHANGED, world.getSupply(currentPlayer));
-		EventBus.INSTANCE.publish(event);
-		
 		resetVariables();
 		lastFleetSelectPos = null;
 		fleetSelectionIndex = 0;
-		world.processBuildQueue(GameManager.INSTANCE.getCurrentPlayer());
-		
 		if (currentPlayer == players[0]) {
 			turn++;
 		}
@@ -143,71 +133,16 @@ public enum GameManager implements EventHandler {
 			}
 		}
 		if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
-			Player affectedPlayer = (Player) evt.getObjectValue();
-			int metalIncome = 10;
-			int gasIncome = 0;
-			for (Position pos : world.getContentPositions()) {
-				Territory terr = world.getTerritory(pos);
-				if (terr.hasColony()) {
-					if (terr.getColony().getOwner() == affectedPlayer) {
-						if (terr.getPlanet().getType() == Resource.METAL) {
-							metalIncome += terr.getColony().getIncome();
-						} else if (terr.getPlanet().getType() == Resource.GAS) {
-							gasIncome += terr.getColony().getIncome();
-						}
-					}
-				}
-			}
-			world.setIncome(affectedPlayer, Resource.METAL, metalIncome);
-			world.setIncome(affectedPlayer, Resource.GAS, gasIncome);
+			incomeChanged((Player) evt.getObjectValue());
 		}
 		
 		if(evt.getTag() == Event.EventTag.PLANET_SELECTED) {
-			/*
-			 * TODO:
-			 * Refactor
-			 * Try not using COLONIZER_PRESENT Event
-			 * Try avoiding sending territories (Mutable)
-			 * Test hasPlanet => {hasColony => {stuff} else => {other stuff}} more logical approach
-			 */
-			resetVariables();
-			Territory selectedTerritory = world.getTerritory((Position) evt.getObjectValue());
-			if (selectedTerritory.hasColony()) {
-				selectedColony = selectedTerritory.getColony();
-				if (selectedColony.getOwner() == GameManager.INSTANCE.getCurrentPlayer()) {
-					Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
-					EventBus.INSTANCE.publish(mEvent);
-				} else {
-					selectedColony = null;
-				}
-			} else if (selectedTerritory.hasPlanet()) {
-				Event mEvent = new Event(Event.EventTag.SHOW_PLANETMENU, selectedTerritory);
-				EventBus.INSTANCE.publish(mEvent);
-				if (selectedTerritory.hasColonizer()) {
-					mEvent = new Event(Event.EventTag.COLONIZER_PRESENT, selectedTerritory);
-					EventBus.INSTANCE.publish(mEvent);
-				}
-			}
+			planetSelected((Position) evt.getObjectValue());
 		}
 		
 		if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {
-			for (Position pos : world.getContentPositions()) {
-				Territory terr = world.getTerritory(pos);
-				if (terr.hasConflict()) {
-					BattleStats battleStats = Battle.doBattle(terr);
-					for (Fleet f : battleStats.getDestroyedFleets()) {
-						fleetPaths.remove(f);
-					}
-					EventText et = new EventText(battleStats.getWinnerString(), pos);
-					Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-					EventBus.INSTANCE.publish(event);
-					if (battleStats.isColonyDestroyed()) {
-						event = new Event(Event.EventTag.COLONY_REMOVED, pos);
-					}
-				}
-			}
+			movesComplete();
 		}
-		
 		
 		if (evt.getTag() == Event.EventTag.INTERRUPT_MOVES) {
 			FleetMove.interrupt();
@@ -217,23 +152,92 @@ public enum GameManager implements EventHandler {
 			resetVariables();
 		}
 		
+		if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
+			shipDestruct();
+		}
+	}
+	
+	private void incomeChanged(Player affectedPlayer) {
+		int metalIncome = 10;
+		int gasIncome = 0;
+		for (Position pos : world.getContentPositions()) {
+			Territory terr = world.getTerritory(pos);
+			if (terr.hasColony()) {
+				if (terr.getColony().getOwner() == affectedPlayer) {
+					if (terr.getPlanet().getType() == Resource.METAL) {
+						metalIncome += terr.getColony().getIncome();
+					} else if (terr.getPlanet().getType() == Resource.GAS) {
+						gasIncome += terr.getColony().getIncome();
+					}
+				}
+			}
+		}
+		world.setIncome(affectedPlayer, Resource.METAL, metalIncome);
+		world.setIncome(affectedPlayer, Resource.GAS, gasIncome);
+	}
+	
+	private void planetSelected(Position pos) {
+		/*
+		 * TODO:
+		 * Refactor
+		 * Try not using COLONIZER_PRESENT Event
+		 * Try avoiding sending territories (Mutable)
+		 * Test hasPlanet => {hasColony => {stuff} else => {other stuff}} more logical approach
+		 */
+		resetVariables();
+		Territory selectedTerritory = world.getTerritory(pos);
+		if (selectedTerritory.hasColony()) {
+			selectedColony = selectedTerritory.getColony();
+			if (selectedColony.getOwner() == GameManager.INSTANCE.getCurrentPlayer()) {
+				Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
+				EventBus.INSTANCE.publish(mEvent);
+			} else {
+				selectedColony = null;
+			}
+		} else if (selectedTerritory.hasPlanet()) {
+			Event mEvent = new Event(Event.EventTag.SHOW_PLANETMENU, selectedTerritory);
+			EventBus.INSTANCE.publish(mEvent);
+			if (selectedTerritory.hasColonizer()) {
+				mEvent = new Event(Event.EventTag.COLONIZER_PRESENT, selectedTerritory);
+				EventBus.INSTANCE.publish(mEvent);
+			}
+		}
+	}
+	
+	private void movesComplete() {
+		for (Position pos : world.getContentPositions()) {
+			Territory terr = world.getTerritory(pos);
+			if (terr.hasConflict()) {
+				BattleStats battleStats = Battle.doBattle(terr);
+				for (Fleet f : battleStats.getDestroyedFleets()) {
+					fleetPaths.remove(f);
+				}
+				EventText et = new EventText(battleStats.getWinnerString(), pos);
+				Event event = new Event(Event.EventTag.EVENT_TEXT, et);
+				EventBus.INSTANCE.publish(event);
+				if (battleStats.isColonyDestroyed()) {
+					event = new Event(Event.EventTag.COLONY_REMOVED, pos);
+				}
+			}
+		}
+	}
+	
+	private void shipDestruct() {
 		/*
 		 * TODO: Removes ships, but does so in an uncontrolled manner and needs to be redone somehow.
 		 * 		 It's in other words unfinished...
 		 */
-		if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
-			if (world.getTerritory(lastFleetSelectPos).hasFleet() && fleetSelectionIndex >=0) {
-				selectedFleets.remove(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
-				world.getTerritory(lastFleetSelectPos).removeFleet(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
-				System.out.println(lastFleetSelectPos);
-				System.out.println(world.getTerritory(lastFleetSelectPos).getFleets().size());
-				if (!world.getTerritory(lastFleetSelectPos).hasFleet()) {
-					resetVariables();
-				} else {
-					fleetSelectionIndex = Math.max(fleetSelectionIndex - 1, 0);
-					Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
-					EventBus.INSTANCE.publish(event);
-				}
+		if (world.getTerritory(lastFleetSelectPos).hasFleet() && fleetSelectionIndex >=0) {
+			selectedFleets.remove(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
+			world.getTerritory(lastFleetSelectPos).removeFleet(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
+			System.out.println(lastFleetSelectPos);
+			System.out.println(world.getTerritory(lastFleetSelectPos).getFleets().size());
+			if (!world.getTerritory(lastFleetSelectPos).hasFleet()) {
+				resetVariables();
+			} else {
+				fleetSelectionIndex = Math.max(fleetSelectionIndex - 1, 0);
+				Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
+				EventBus.INSTANCE.publish(event);
 			}
 		}
 	}
@@ -282,9 +286,7 @@ public enum GameManager implements EventHandler {
 						fleet.useColonizer();
 						ter.getPlanet().buildColony(fleet.getOwner());
 						ter.removeFleet(fleet);
-						world.updatePlayerStats(GameManager.INSTANCE.getCurrentPlayer());
-						Event event = new Event(Event.EventTag.SUPPLY_CHANGED, world.getSupply(GameManager.INSTANCE.getCurrentPlayer()));
-						EventBus.INSTANCE.publish(event);
+						world.updatePlayerStats(getCurrentPlayer());
 						break; // Stop looping through fleets.
 					}
 				}
@@ -397,7 +399,10 @@ public enum GameManager implements EventHandler {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == selectedColony) {
-					world.addToBuildQueue(shipType, GameManager.INSTANCE.getCurrentPlayer(), pos);
+					if (world.canAfford(getCurrentPlayer(), shipType)) {
+						world.purchase(getCurrentPlayer(), shipType);
+						world.addToBuildQueue(shipType, getCurrentPlayer(), pos);
+					}
 				}
 			}
 		}

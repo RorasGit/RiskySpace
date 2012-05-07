@@ -160,14 +160,11 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	
 	@Override
 	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.RESOURCES_CHANGED) {
+		if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
 			PlayerStats stats = (PlayerStats) evt.getObjectValue();
 			gas = stats.getResource(Resource.GAS);
 			metal = stats.getResource(Resource.METAL);
-		}
-		if (evt.getTag() == Event.EventTag.SUPPLY_CHANGED) {
-			Supply supply = (Supply) evt.getObjectValue();
-			this.supply = supply;
+			supply = stats.getSupply();
 		}
 	}
 }

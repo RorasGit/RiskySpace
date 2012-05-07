@@ -487,7 +487,7 @@ public class BuildingMenu extends AbstractSideMenu {
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.HIDE_MENU) {
 			setVisible(false);
-		} else if (evt.getTag() == Event.EventTag.RESOURCES_CHANGED) {
+		} else if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
 			PlayerStats stats = (PlayerStats) evt.getObjectValue();
 	//		checkRecruitOptions(stats);
 		}

@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import riskyspace.logic.MapGenerator;
+import riskyspace.model.building.Ranked;
 
 public class World {
 	private int rows = 0;
 	private int cols = 0;
 	private Map<Position, Territory> territories = null;
 	private Map<Player, PlayerStats> playerstats = null;
+	private Map<Player, BuildQueue> buildqueue = null;
 
 	public World(int rows, int cols) {
 		this.rows = rows;
@@ -32,6 +34,11 @@ public class World {
 		 */
 		playerstats.put(Player.BLUE, new PlayerStats());
 		playerstats.put(Player.RED, new PlayerStats());
+		
+		buildqueue = new HashMap<Player, BuildQueue>();
+		
+		buildqueue.put(Player.BLUE, new BuildQueue(5));
+		buildqueue.put(Player.RED, new BuildQueue(5));
 	}
 
 	public Territory getTerritory(Position p) {
@@ -63,27 +70,28 @@ public class World {
 	}
 	
 	public void addToBuildQueue(BuildAble buildAble, Player player, Position position) {
-		playerstats.get(player).queueItem(buildAble, position);
+		buildqueue.get(player).add(buildAble, position);
+		updatePlayerStats(player);
 	}
+	
 	public void removeBuildQueue(Player player, Position position){
-		playerstats.get(player).resetQueue(position);	
+		buildqueue.get(player).clear(position);	
+		updatePlayerStats(player);
 	}
 	
 	public void processBuildQueue(Player player) {
-		List<QueueItem> itemsToBuild = playerstats.get(player).reduceBuildQueue();
-		for (QueueItem q : itemsToBuild) {
-			if (q.getItem() instanceof ShipType) {
-				getTerritory(q.getPosition()).addFleet(new Fleet(new Ship((ShipType) q.getItem()), getTerritory(q.getPosition()).getColony().getOwner()));
+		Map<Position, BuildAble> itemsToBuild = buildqueue.get(player).processQueue();
+		for (Position pos : itemsToBuild.keySet()) {
+			if (itemsToBuild.get(pos) instanceof ShipType) {
+				getTerritory(pos).addFleet(new Fleet(new Ship((ShipType) itemsToBuild.get(pos)), getTerritory(pos).getColony().getOwner()));
+			} else if (itemsToBuild.get(pos) instanceof Ranked) {
+				((Ranked) itemsToBuild.get(pos)).upgrade();
 			}
 		}
 	}
 	
-	public void resetBuildQueue(Player player, Position pos) {
-		playerstats.get(player).resetQueue(pos);
-	}
-	
 	public void resetAllQueues(Player player) {
-		playerstats.get(player).resetAll();
+		buildqueue.get(player).clearAll();
 	}
 	
 	public List<Position> getContentPositions(){
@@ -102,8 +110,12 @@ public class World {
 		return playerstats.get(player).getResource(resource);
 	}
 	
-	public boolean useResource(Player player, Resource type, int amount) {
-		return playerstats.get(player).useResource(type, amount);
+	public boolean purchase(Player player, BuildAble buildAble) {
+		return playerstats.get(player).purchase(buildAble);
+	}
+	
+	public boolean canAfford(Player currentPlayer, BuildAble buildAble) {
+		return playerstats.get(currentPlayer).canAfford(buildAble);
 	}
 	
 	public void setIncome(Player player, Resource type, int amount) {
@@ -125,7 +137,7 @@ public class World {
 				}
 			}
 		}
-		playerstats.get(player).update(numberOfColonies, supply);
+		playerstats.get(player).update(numberOfColonies, supply, buildqueue.get(player).queuedSupply(false));
 	}
 	
 	public Supply getSupply(Player player) {

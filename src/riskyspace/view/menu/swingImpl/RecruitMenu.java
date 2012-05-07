@@ -126,17 +126,17 @@ public class RecruitMenu extends AbstractSideMenu {
 	}
 
 	private void checkRecruitOptions(PlayerStats stats) {
-		buildScoutButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.SCOUT.getMetalCost());
-		buildHunterButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.HUNTER.getMetalCost() && stats.getResource(Resource.GAS) >= ShipType.HUNTER.getGasCost());
-		buildColonizerButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.COLONIZER.getMetalCost());
-		buildDestroyerButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.DESTROYER.getMetalCost() && stats.getResource(Resource.GAS) >= ShipType.DESTROYER.getGasCost());
+		buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT));
+		buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER));
+		buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER));
+		buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER));
 	}
 
 	@Override
 	public void performEvent(Event evt) {
 		if (evt.getTag() == Event.EventTag.HIDE_MENU) {
 				setVisible(false);
-		} else if (evt.getTag() == Event.EventTag.RESOURCES_CHANGED) {
+		} else if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
 			PlayerStats stats = (PlayerStats) evt.getObjectValue();
 			checkRecruitOptions(stats);
 		}
