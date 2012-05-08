@@ -11,7 +11,6 @@ public class Event {
 		 */
 		TERRITORY_CHANGED,
 		INCOME_CHANGED,
-		COLONY_REMOVED,
 		STATS_CHANGED,
 		/*
 		 * View triggered events

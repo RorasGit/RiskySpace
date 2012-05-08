@@ -102,8 +102,6 @@ public enum GameManager implements EventHandler {
 				Position pos = (Position) evt.getObjectValue();
 				if (evt.getTag() == Event.EventTag.SET_PATH) {
 					setPath(pos);
-				} else if (evt.getTag() == Event.EventTag.COLONY_REMOVED) {
-					removeColony(pos);
 				} else if (evt.getTag() == Event.EventTag.COLONIZER_SELECTED) {
 					setColonizerSelected(pos);
 				} else if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
@@ -198,8 +196,13 @@ public enum GameManager implements EventHandler {
 				for (Fleet f : battleStats.getDestroyedFleets()) {
 					fleetPaths.remove(f);
 				}
+				Event event;
+				if (battleStats.isColonyDestroyed()) {
+					world.removeBuildQueue(world.getTerritory(pos).getPlanet().getColony().getOwner(), pos);
+					world.getTerritory(pos).getPlanet().destroyColony();
+				}
 				EventText et = new EventText(battleStats.getWinnerString(), pos);
-				Event event = new Event(Event.EventTag.EVENT_TEXT, et);
+				event = new Event(Event.EventTag.EVENT_TEXT, et);
 				EventBus.INSTANCE.publish(event);
 			}
 		}
@@ -254,11 +257,6 @@ public enum GameManager implements EventHandler {
 		}
 		Event event = new Event(Event.EventTag.PATHS_UPDATED, null);
 		EventBus.INSTANCE.publish(event);
-	}
-
-	private void removeColony(Position pos) {
-		world.getTerritory(pos).getPlanet().destroyColony();
-		// TODO : use position to remove buildQueue
 	}
 	
 	private void colonizePlanet(Event evt) {
@@ -383,8 +381,9 @@ public enum GameManager implements EventHandler {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == selectedColony) {
 					if (world.canAfford(getCurrentPlayer(), shipType)) {
-						world.purchase(getCurrentPlayer(), shipType);
-						world.addToBuildQueue(shipType, getCurrentPlayer(), pos);
+						if (world.addToBuildQueue(shipType, getCurrentPlayer(), pos)) {
+							world.purchase(getCurrentPlayer(), shipType);	
+						}
 					}
 				}
 			}

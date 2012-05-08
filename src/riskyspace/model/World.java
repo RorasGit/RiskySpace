@@ -69,13 +69,14 @@ public class World {
 		}
 	}
 	
-	public void addToBuildQueue(BuildAble buildAble, Player player, Position position) {
-		buildqueue.get(player).add(buildAble, position);
+	public boolean addToBuildQueue(BuildAble buildAble, Player player, Position position) {
+		boolean added = buildqueue.get(player).add(buildAble, position);
 		updatePlayerStats(player);
+		return added;
 	}
 	
 	public void removeBuildQueue(Player player, Position position){
-		buildqueue.get(player).clear(position);	
+		playerstats.get(player).refund(buildqueue.get(player).clear(position));	
 		updatePlayerStats(player);
 	}
 	
@@ -88,7 +89,7 @@ public class World {
 		Map<Position, BuildAble> itemsToBuild = buildqueue.get(player).processQueue();
 		for (Position pos : itemsToBuild.keySet()) {
 			if (itemsToBuild.get(pos) instanceof ShipType) {
-				getTerritory(pos).addFleet(new Fleet(new Ship((ShipType) itemsToBuild.get(pos)), getTerritory(pos).getColony().getOwner()));
+				getTerritory(pos).addFleet(new Fleet(new Ship((ShipType) itemsToBuild.get(pos)), player));
 			} else if (itemsToBuild.get(pos) instanceof Ranked) {
 				((Ranked) itemsToBuild.get(pos)).upgrade();
 			}

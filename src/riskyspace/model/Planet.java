@@ -58,7 +58,6 @@ public class Planet {
 		evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
 		EventBus.INSTANCE.publish(evt);
 	}
-	
 	public boolean hasColony() {
 		return colony != null;
 	}

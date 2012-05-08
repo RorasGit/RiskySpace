@@ -115,7 +115,6 @@ public class Battle {
 		battleStats.setWinner(winner);
 		if (territory.hasColony()) {
 			if (territory.getColony().getOwner() != winner) {
-				territory.getPlanet().destroyColony();
 				battleStats.setColonyDestroyed(true);
 			}
 		}

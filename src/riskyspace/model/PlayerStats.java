@@ -103,7 +103,7 @@ public class PlayerStats {
 	 * @return true if the Player can afford the BuildAbles.
 	 */
 	public boolean canAfford(BuildAble buildAble) {
-		return resources.get(METAL) >= buildAble.getMetalCost() && resources.get(GAS) >= buildAble.getGasCost() && supply.hasEnough(buildAble.getSupplyCost());
+		return hasEnoughResources(buildAble.getMetalCost(), buildAble.getGasCost()) && supply.hasEnough(buildAble.getSupplyCost());
 	}
 	
 	/**
