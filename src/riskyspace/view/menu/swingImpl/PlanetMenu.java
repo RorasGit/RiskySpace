@@ -5,12 +5,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
-import riskyspace.GameManager;
-import riskyspace.model.Player;
-import riskyspace.model.Position;
 import riskyspace.model.Resource;
 import riskyspace.model.Territory;
-import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;

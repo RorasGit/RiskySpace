@@ -80,6 +80,11 @@ public class World {
 	}
 	
 	public void processBuildQueue(Player player) {
+		System.out.println("sup: " + (getSupply(player).fieldSupply() + buildqueue.get(player).queuedSupply(true)));
+		System.out.println("max: " + getSupply(player).getMax());
+		if (getSupply(player).fieldSupply() + buildqueue.get(player).queuedSupply(true) > getSupply(player).getMax()) {
+			buildqueue.get(player).clearSupply(true);
+		}
 		Map<Position, BuildAble> itemsToBuild = buildqueue.get(player).processQueue();
 		for (Position pos : itemsToBuild.keySet()) {
 			if (itemsToBuild.get(pos) instanceof ShipType) {

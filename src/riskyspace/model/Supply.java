@@ -14,8 +14,20 @@ public class Supply {
 		this.baseSupply = baseSupply;
 	}
 	
+	/**
+	 * Returns the amount of supply used by fleets and queue.
+	 * @return Total supply in use.
+	 */
 	public int getUsed() {
 		return usedSupply + queuedSupply;
+	}
+	
+	/**
+	 * Returns the amount of supply used by fleets.
+	 * @return supply on the field
+	 */
+	public int fieldSupply() {
+		return usedSupply;
 	}
 	
 	public int getMax() {

@@ -150,18 +150,20 @@ public class BuildQueue {
 	 * @return returns a list containing the BuildAbles removed.
 	 */
 	public List<BuildAble> clearSupply(boolean saveFirst) {
-		List <BuildAble> removedItems = new ArrayList<BuildAble>();
+		List <BuildAble> returnItems = new ArrayList<BuildAble>();
+		List <QueueItem> removeItems = new ArrayList<QueueItem>();
 		for (Position pos : colonyQueue.keySet()) {
-			for (QueueItem QI : colonyQueue.get(pos)) {
-				if (QI.getItem().getSupplyCost() > 0) {
-					if (colonyQueue.get(pos).indexOf(QI) > 0 || !(saveFirst)) {
-						removedItems.add(QI.getItem());
+			for (QueueItem queueItem : colonyQueue.get(pos)) {
+				if (queueItem.getItem().getSupplyCost() > 0) {
+					if (colonyQueue.get(pos).indexOf(queueItem) > 0 || !(saveFirst)) {
+						returnItems.add(queueItem.getItem());
+						removeItems.add(queueItem);
 					}
 				}
 			}
-			colonyQueue.get(pos).removeAll(removedItems);
+			colonyQueue.get(pos).removeAll(removeItems);
 		}
-		return removedItems;
+		return returnItems;
 	}
 	
 	/**

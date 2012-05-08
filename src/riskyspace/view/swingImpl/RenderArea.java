@@ -23,7 +23,6 @@ import javax.swing.Timer;
 import riskyspace.GameManager;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
-import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.Event.EventTag;
 import riskyspace.services.EventBus;
@@ -38,7 +37,6 @@ import riskyspace.view.menu.IMenu;
 import riskyspace.view.menu.swingImpl.ColonyMenu;
 import riskyspace.view.menu.swingImpl.FleetMenu;
 import riskyspace.view.menu.swingImpl.PlanetMenu;
-import riskyspace.view.menu.swingImpl.RecruitMenu;
 import riskyspace.view.menu.swingImpl.TopMenu;
 
 public class RenderArea extends JPanel implements EventHandler {

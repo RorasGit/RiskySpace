@@ -83,6 +83,7 @@ public enum GameManager implements EventHandler {
 		Event event = new Event(Event.EventTag.ACTIVE_PLAYER_CHANGED, currentPlayer);
 		EventBus.INSTANCE.publish(event);
 		world.giveIncome(currentPlayer);
+		world.updatePlayerStats(currentPlayer);
 		world.processBuildQueue(getCurrentPlayer());
 		world.updatePlayerStats(currentPlayer);
 		world.resetShips();
@@ -101,57 +102,42 @@ public enum GameManager implements EventHandler {
 				Position pos = (Position) evt.getObjectValue();
 				if (evt.getTag() == Event.EventTag.SET_PATH) {
 					setPath(pos);
-				}
-				if (evt.getTag() == Event.EventTag.COLONY_REMOVED) {
+				} else if (evt.getTag() == Event.EventTag.COLONY_REMOVED) {
 					removeColony(pos);
-				}
-				if (evt.getTag() == Event.EventTag.COLONIZER_SELECTED) {
+				} else if (evt.getTag() == Event.EventTag.COLONIZER_SELECTED) {
 					setColonizerSelected(pos);
-				}
-				if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
+				} else if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
 					addFleetSelection(pos);
-				}
-				if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
+				} else if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
 					newFleetSelection(pos);
 				}
-			}
-			if (evt.getTag() == Event.EventTag.NEXT_TURN) {
+			} else if (evt.getTag() == Event.EventTag.NEXT_TURN) {
 				changePlayer();
-			}
-			
-			if (evt.getTag() == Event.EventTag.COLONIZE_PLANET) {
+			} else if (evt.getTag() == Event.EventTag.COLONIZE_PLANET) {
 				colonizePlanet(evt);
-			}
-			if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
+			} else if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
 				newFleetsSelection(evt);
-			}
-			if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
+			} else if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
 				performMoves();
-			}
-			if (evt.getTag() == Event.EventTag.QUEUE_SHIP) {
+			} else if (evt.getTag() == Event.EventTag.QUEUE_SHIP) {
 				queueShip((ShipType) evt.getObjectValue());
 			}
 		}
 		if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
 			incomeChanged((Player) evt.getObjectValue());
 		}
-		
 		if(evt.getTag() == Event.EventTag.PLANET_SELECTED) {
 			planetSelected((Position) evt.getObjectValue());
-		}
-		
+		} 
 		if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {
 			movesComplete();
 		}
-		
 		if (evt.getTag() == Event.EventTag.INTERRUPT_MOVES) {
 			FleetMove.interrupt();
-		}
-		
+		} 
 		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables();
-		}
-		
+		} 
 		if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
 			shipDestruct();
 		}
@@ -215,9 +201,6 @@ public enum GameManager implements EventHandler {
 				EventText et = new EventText(battleStats.getWinnerString(), pos);
 				Event event = new Event(Event.EventTag.EVENT_TEXT, et);
 				EventBus.INSTANCE.publish(event);
-				if (battleStats.isColonyDestroyed()) {
-					event = new Event(Event.EventTag.COLONY_REMOVED, pos);
-				}
 			}
 		}
 	}
@@ -277,6 +260,7 @@ public enum GameManager implements EventHandler {
 		world.getTerritory(pos).getPlanet().destroyColony();
 		// TODO : use position to remove buildQueue
 	}
+	
 	private void colonizePlanet(Event evt) {
 		if (evt.getObjectValue() instanceof Territory) {
 			Territory ter = (Territory) evt.getObjectValue();
@@ -342,8 +326,7 @@ public enum GameManager implements EventHandler {
 				addSelectedFleet(fleet, pos);
 				EventBus.INSTANCE.publish(new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets)));
 			}
-		
-	}
+		}
 	}
 
 	private void newFleetSelection(Position pos) {

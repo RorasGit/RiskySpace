@@ -13,8 +13,7 @@ public class BattleStats {
 	
 	private Player winner = null;
 	private boolean colonyDestroyed = false;
-	List<Fleet> destroyedFleets = null;
-	
+	private List<Fleet> destroyedFleets = null;
 	
 	public void setDestroyedFleets(List<Fleet> destroyedFleets) {
 		this.destroyedFleets = destroyedFleets;
