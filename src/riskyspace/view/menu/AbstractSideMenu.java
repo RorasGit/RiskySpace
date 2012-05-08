@@ -71,7 +71,6 @@ public abstract class AbstractSideMenu implements IMenu, Clickable,
 	@Override
 	public void setVisible(boolean enabled) {
 		this.enabled = enabled;
-
 	}
 
 	@Override
