@@ -4,6 +4,10 @@ import riskyspace.model.BuildAble;
 
 public class Hangar implements BuildAble, Ranked {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3015203446253905759L;
 	private static final int MAX_RANK = 2;
 	private int rank = 0;
 	

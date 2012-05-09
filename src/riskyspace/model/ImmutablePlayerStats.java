@@ -4,6 +4,11 @@ import java.util.List;
 
 public class ImmutablePlayerStats extends PlayerStats {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2589859035993316812L;
+
 	@Override
 	public void update(int numberOfColonies, int usedSupply, int queuedSupply) {
 		throw new UnsupportedOperationException();

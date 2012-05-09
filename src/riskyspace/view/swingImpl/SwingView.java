@@ -6,7 +6,6 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
 import riskyspace.model.Player;
-import riskyspace.model.World;
 import riskyspace.view.View;
 
 public class SwingView implements View {

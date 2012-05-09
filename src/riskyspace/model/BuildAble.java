@@ -1,6 +1,8 @@
 package riskyspace.model;
 
-public interface BuildAble {
+import java.io.Serializable;
+
+public interface BuildAble extends Serializable{
 	
 	public int getSupplyCost();
 	

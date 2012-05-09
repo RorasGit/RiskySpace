@@ -1,9 +1,16 @@
 package riskyspace.model;
 
+import java.io.Serializable;
+
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 
-public class Planet {
+public class Planet implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1929426414384910072L;
 
 	/**
 	 * This Planets Resource type

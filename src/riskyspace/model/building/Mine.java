@@ -8,6 +8,10 @@ import riskyspace.model.Resource;
 
 public class Mine implements BuildAble, Ranked {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5355474270301844204L;
 	private static final int MAX_RANK = 3;
 	private int rank = 1;
 	

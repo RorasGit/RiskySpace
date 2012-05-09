@@ -7,6 +7,10 @@ import java.util.List;
 
 public class Fleet implements MoveAble {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5624695760395662299L;
 	private ShipType flagship = null;
 	private Player owner = null;
 	private List<Ship> ships = new ArrayList<Ship>();

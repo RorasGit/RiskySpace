@@ -1,5 +1,6 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,8 +12,12 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventText;
 
-public class BuildQueue {
+public class BuildQueue implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4795409046393892799L;
 	private Map<Position,ArrayList<QueueItem>> colonyQueue = null;
 	private int queueMaxSize = 0;
 
