@@ -167,6 +167,10 @@ public class World implements Serializable {
 		return playerstats.get(currentPlayer).canAfford(buildAble);
 	}
 	
+	public boolean isQueueFull(Player currentPlayer, int space, Position pos) {
+		return !buildqueue.get(currentPlayer).hasQueueSpace(space, pos);
+	}
+	
 	public void setIncome(Player player, Resource type, int amount) {
 		playerstats.get(player).setIncome(type, amount);
 	}

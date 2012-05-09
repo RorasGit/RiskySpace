@@ -134,7 +134,7 @@ public enum GameManager {
 		EventBus.SERVER.publish(event);
 		world.giveIncome(currentPlayer);
 		world.updatePlayerStats(currentPlayer);
-		world.processBuildQueue(getCurrentPlayer());
+		world.processBuildQueue(currentPlayer);
 		world.updatePlayerStats(currentPlayer);
 		world.resetShips();
 		updateSelections();
@@ -480,7 +480,7 @@ public enum GameManager {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == world.getTerritory(selections.get(getCurrentPlayer()).selectedPosition).getColony()) {
-					if (world.canAfford(getCurrentPlayer(), build)) {
+					if (world.canAfford(getCurrentPlayer(), build) && !world.isQueueFull(getCurrentPlayer(), 1, pos)) {
 						if(world.purchase(getCurrentPlayer(), build)){
 							world.addToBuildQueue(build, getCurrentPlayer(), pos);
 						}
