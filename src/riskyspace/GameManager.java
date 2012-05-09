@@ -1,5 +1,6 @@
 package riskyspace;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,6 +64,12 @@ public enum GameManager implements EventHandler {
 		for (Player player : activePlayers) {
 			playerInfo.put(player, new PlayerInfo(player));
 		}
+	}
+	public void addPlayer(InetAddress ip){
+		Player player = players[activePlayers.size()];
+		activePlayers.add(player);
+		playerInfo.put(player, new PlayerInfo(player));
+		playerInfo.get(player).setIP(ip);
 	}
 
 	public Player getCurrentPlayer() {

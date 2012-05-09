@@ -1,12 +1,13 @@
 package riskyspace;
 
 import java.awt.Color;
+import java.net.InetAddress;
 
 import riskyspace.model.Player;
 
 public class PlayerInfo {
 	
-	private String ip = "127.0.0.1";
+	private InetAddress ip = null;
 	private Color playerColor;
 	
 	public PlayerInfo(Player player) {
@@ -23,11 +24,11 @@ public class PlayerInfo {
 		return playerColor;
 	}
 
-	public void setIP(String ip) {
+	public void setIP(InetAddress ip) {
 		this.ip = ip;
 	}
 	
-	public String getIP() {
+	public InetAddress getIP() {
 		return ip;
 	}
 }
