@@ -1,6 +1,12 @@
 package riskyspace.model;
 
-public class Supply {
+import java.io.Serializable;
+
+public class Supply implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1183574126628825765L;
 	private int baseSupply;
 	private int usedSupply;
 	private int maxSupply;

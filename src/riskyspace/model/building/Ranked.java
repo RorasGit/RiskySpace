@@ -1,10 +1,13 @@
 package riskyspace.model.building;
+
+import java.io.Serializable;
+
 /**
  * Interface for items having different Ranks
  * @author flygarN
  *
  */
-public interface Ranked {
+public interface Ranked extends Serializable {
 	
 	/**
 	 * Rank of this item.

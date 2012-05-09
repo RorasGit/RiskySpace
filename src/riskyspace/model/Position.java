@@ -1,6 +1,12 @@
 package riskyspace.model;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8994210304523190880L;
 	private int row = 0;
 	private int col = 0;
 	

@@ -4,6 +4,10 @@ import java.util.List;
 
 public class Ship implements BattleAble, MoveAble {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1306124905067115798L;
 	private ShipType type = null;
 	private int shield = 0;
 	private int energy = 0;

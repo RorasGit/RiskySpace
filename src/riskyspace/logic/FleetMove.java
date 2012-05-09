@@ -3,6 +3,7 @@ package riskyspace.logic;
 import java.util.Map;
 import java.util.Set;
 
+import riskyspace.GameManager;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;

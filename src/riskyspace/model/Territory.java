@@ -1,13 +1,18 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 
-public class Territory {
+public class Territory implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5304788297620351928L;
 	private List<Fleet> fleets = null;
 	private Planet planet = null;
 	

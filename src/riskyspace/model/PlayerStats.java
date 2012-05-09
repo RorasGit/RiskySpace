@@ -3,6 +3,7 @@ package riskyspace.model;
 import static riskyspace.model.Resource.GAS;
 import static riskyspace.model.Resource.METAL;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,12 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.Event.EventTag;
 
-public class PlayerStats {
+public class PlayerStats implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3246624526028664347L;
 	private Map<Resource, Integer> resources = null;
 	private Map<Resource, Integer> income = null;
 	

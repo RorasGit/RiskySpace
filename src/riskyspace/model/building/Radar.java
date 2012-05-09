@@ -5,6 +5,10 @@ import riskyspace.model.Sight;
 
 public class Radar implements BuildAble, Ranked, Sight {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4761694217177518216L;
 	private static final int MAX_RANK = 3;
 	private int rank = 0;
 	

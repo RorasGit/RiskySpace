@@ -1,5 +1,6 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import riskyspace.model.building.Hangar;
@@ -7,8 +8,12 @@ import riskyspace.model.building.Mine;
 import riskyspace.model.building.Radar;
 import riskyspace.model.building.Turret;
 
-public class Colony implements BattleAble, Sight {
+public class Colony implements BattleAble, Sight{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6914731084464404944L;
 	private Player owner = null;
 	private String colonyName = null;
 	private Resource resource = null;

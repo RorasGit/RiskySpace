@@ -8,6 +8,10 @@ import riskyspace.model.BuildAble;
 
 public class Turret implements BuildAble, BattleAble, Ranked {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4669428352358296033L;
 	private static final int MAX_RANK = 3;
 	private int rank = 1;
 	

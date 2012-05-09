@@ -1,7 +1,13 @@
 package riskyspace.model;
 
-public class QueueItem {
+import java.io.Serializable;
+
+public class QueueItem implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3514012858339042796L;
 	private int buildTime;
 	private Position pos;
 	private BuildAble item;
