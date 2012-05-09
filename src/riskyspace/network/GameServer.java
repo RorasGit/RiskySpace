@@ -11,6 +11,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import riskyspace.GameManager;
+import riskyspace.model.Player;
 import riskyspace.model.Territory;
 import riskyspace.services.Event;
 
@@ -35,6 +37,18 @@ public class GameServer {
 		}
 
 	}
+	public void sendObject(Object o) throws IOException{
+		for (ConnectionHandler ch : connections) {
+			ch.output.writeObject(o);
+		}
+	}
+	public void sendObject(Object o, Player p) throws IOException{
+		for (ConnectionHandler ch : connections) {
+			if(GameManager.INSTANCE.getInfo(p).getIP().equals(ch.socket.getInetAddress())){
+				ch.output.writeObject(o);
+			}
+		}
+	}
 
 	public static void main(String[] args) throws IOException {
 		new GameServer();
@@ -50,9 +64,11 @@ public class GameServer {
 			this.socket = socket;
 			this.output = new ObjectOutputStream(socket.getOutputStream());
 			this.input = new ObjectInputStream(socket.getInputStream());
+			GameManager.INSTANCE.addPlayer(socket.getInetAddress());
 			Thread t = new Thread(this);
 			t.start();
 		}
+		
 
 		@Override
 		public void run() {
@@ -60,8 +76,7 @@ public class GameServer {
 				try {
 					Object o = input.readObject();
 					if (o != null) {
-						Territory e = (Territory) o;
-						System.out.println(e.getColony().getMine().getRank());
+						//TODO
 					}
 				} catch (EOFException e) {
 					e.printStackTrace();
@@ -74,7 +89,6 @@ public class GameServer {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
