@@ -65,10 +65,8 @@ public class BuildQueue implements Serializable{
 		if (!colonyQueue.containsKey(pos)) {
 			colonyQueue.put(pos, new ArrayList<QueueItem>());
 		}
-		if (colonyQueue.get(pos).size() >= this.queueMaxSize) {
-			EventText et = new EventText("Build queue is full!", pos);
-			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-//			EventBus.INSTANCE.publish(event); TODO: Ignore evtText atm
+
+		if (!hasQueueSpace(1, pos)) {
 			return false;
 		}
 		colonyQueue.get(pos).add(new QueueItem(buildAble));
@@ -89,10 +87,7 @@ public class BuildQueue implements Serializable{
 		if (!colonyQueue.containsKey(pos)) {
 			colonyQueue.put(pos, new ArrayList<QueueItem>());
 		}
-		if (colonyQueue.get(pos).size() + buildAbles.size() > this.queueMaxSize) {
-			EventText et = new EventText("Build queue does not have space for this!", pos);
-			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-//			EventBus.INSTANCE.publish(event); TODO: Ignore evtText atm
+		if (!hasQueueSpace(buildAbles.size(), pos)) {
 			return false;
 		}
 		for (BuildAble ba : buildAbles) {
@@ -291,5 +286,27 @@ public class BuildQueue implements Serializable{
 	
 	public int numberOfActivePositions() {
 		return activePositions().size();
+	}
+
+	/**
+	 * Determines if the number of elements you wish to add will fit into the queue at the given position.
+	 * @param space - the number of elements to add
+	 * @param pos - the position of the colony at which the build queue is found.
+	 * @return returns true if the queue has sufficient space available
+	 */
+	public boolean hasQueueSpace(int space, Position pos) {
+		if (queueSize(pos) + space  > this.queueMaxSize) {
+			EventText et;
+			if (space == 1) {
+				et = new EventText("Build queue is full!", pos);	
+			} else {
+				 et = new EventText("Build queue does not have space for this!", pos);
+			}
+			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
+//			EventBus.INSTANCE.publish(event);
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
