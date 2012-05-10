@@ -128,7 +128,6 @@ public class GameClient implements EventHandler {
 		}
 	}
 	
-
 	@Override
 	public void performEvent(Event evt) {
 		try {

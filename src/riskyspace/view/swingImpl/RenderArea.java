@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import riskyspace.PlayerColors;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
@@ -133,7 +134,7 @@ public class RenderArea extends JPanel {
 		fpsFont = ViewResources.getFont().deriveFont(17f);
 		otherPlayerActive = new Button(width/2 - width/10, height/2 - height/10, width/5, height/10);
 		otherPlayerActive.setImage("res/menu/wide_button.png");
-		otherPlayerActive.setText("Game not started!");
+		otherPlayerActive.setEnabled(false);
 		addMouseListener(clickHandler);
 	}
 
@@ -214,8 +215,9 @@ public class RenderArea extends JPanel {
 	
 	public void setActivePlayer(Player activePlayer) {
 		this.activePlayer = activePlayer;
-		String player = activePlayer.toString().substring(0, 1)+ activePlayer.toString().substring(1, activePlayer.toString().length()-1);
+		String player = activePlayer.toString().substring(0, 1)+ activePlayer.toString().substring(1, activePlayer.toString().length());
 		otherPlayerActive.setText(player + "'s turn");
+		otherPlayerActive.setTextColor(PlayerColors.getColor(activePlayer));
 		otherPlayerActive.setEnabled(viewer != activePlayer);
 	}
 	
