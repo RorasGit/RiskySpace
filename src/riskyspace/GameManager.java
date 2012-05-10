@@ -36,6 +36,7 @@ public enum GameManager {
 	private boolean initiated = false;
 	private World world = null;
 	private int turn;
+	private boolean started = false;
 	
 	private List<Player> activePlayers = new ArrayList<Player>();
 	private Map<Player, PlayerInfo> playerInfo = new HashMap<Player, PlayerInfo>();
@@ -71,8 +72,11 @@ public enum GameManager {
 	}
 	
 	public void start() {
-		changePlayer();
-		world.updatePlayerStats(getCurrentPlayer());
+		if(!started){
+			changePlayer();
+			world.updatePlayerStats(getCurrentPlayer());
+			started = true;
+		}
 	}
 	
 	public void initPlayers(int numberOfPlayers) {

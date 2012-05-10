@@ -27,6 +27,7 @@ public class GameServer implements EventHandler {
 	
 	private ServerSocket ss = null;
 	private List<ConnectionHandler> connections = new ArrayList<ConnectionHandler>();
+	private AcceptThread at;
 
 	/**
 	 * MAIN METHOD
@@ -46,7 +47,7 @@ public class GameServer implements EventHandler {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		new AcceptThread();
+		at = new AcceptThread();
 		try {
 			String ip = InetAddress.getLocalHost().getHostAddress();
 			String port = "" + ss.getLocalPort();
@@ -151,6 +152,9 @@ public class GameServer implements EventHandler {
 						e1.printStackTrace();
 					}
 					connections.remove(this);
+					if(!at.getThread().isAlive()){
+						at = new AcceptThread();
+					}
 					System.out.println("Connection to :"+socket.getInetAddress()+" closed.");
 					break;
 				} catch (IOException e) {
@@ -170,10 +174,14 @@ public class GameServer implements EventHandler {
 	}
 
 	private class AcceptThread implements Runnable {
+		Thread t = null;
 
 		public AcceptThread() {
-			Thread t = new Thread(this);
+			t = new Thread(this);
 			t.start();
+		}
+		private Thread getThread(){
+			return t;
 		}
 
 		@Override
