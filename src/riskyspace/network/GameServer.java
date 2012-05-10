@@ -147,7 +147,15 @@ public class GameServer implements EventHandler {
 						GameManager.INSTANCE.handleEvent(evt, p);
 					}
 				} catch (EOFException e) {
-					e.printStackTrace();
+					try {
+						socket.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					connections.remove(this);
+					System.out.println("Connection to :"+socket.getInetAddress()+" closed.");
+					break;
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
