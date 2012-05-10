@@ -8,7 +8,7 @@ import riskyspace.services.EventHandler;
 import riskyspace.view.Clickable;
 import riskyspace.view.menu.IMenu;
 
-public abstract class AbstractPreGameMenu implements IMenu, Clickable, EventHandler {
+public abstract class AbstractPreGameMenu implements IMenu, Clickable {
 	
 	private Boolean enabled;
 	

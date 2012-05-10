@@ -14,19 +14,32 @@ import javax.swing.JPanel;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
+import riskyspace.services.ViewEventHandler;
+import riskyspace.view.Action;
+import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 import riskyspace.view.View;
 import riskyspace.view.menu.IMenu;
 
-public class StartScreen extends JPanel implements EventHandler {
+public class StartScreen extends JPanel{
 	
 	private int width;
 	private int height;
 	
-	private IMenu startMenu = null;
+	private boolean startScreenVisible = true;
+	
 	private IMenu localLobby = null;
-	private IMenu loadGame = null;
+	private IMenu loadGameMenu = null;
 	private IMenu multiplayerLobby = null;
+	private IMenu settingsMenu = null;
+	
+	private Button localGame = null;
+	private Button settings = null;
+	private Button multiplayer = null;
+	private Button loadGame = null;
+	private Button backButton = null;
+	
+	
 	
 	private ClickHandler clickHandler = null;
 	
@@ -40,64 +53,110 @@ public class StartScreen extends JPanel implements EventHandler {
 		measureScreen();
 		backGround = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/background" + View.res).
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		createButtons();
 		createMenus();
-		startMenu.setVisible(true);
+
 		
-		EventBus.INSTANCE.addHandler(this);
 		clickHandler = new ClickHandler();
 		addMouseListener(clickHandler);
 	}
 
 	public void measureScreen() {
 		width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+		System.out.println(width);
 		height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+		System.out.println(height);
 	}
 	
 	public void createMenus() {
-		startMenu = new StartMenu(width/2 - 90, height/2 - 200, 180, 400);
+		multiplayerLobby = new MultiplayerLobby(width/2 - width/3, height/2 - height/3, 2*width/3, 2*height/3);
+	}
+	
+	public void createButtons() {
+		localGame = new Button(width/2 - 130, height/2 - 200, 240, 400/5);
+		localGame.setImage("res/menu/lobby/localGameButton.png");
+		localGame.setAction(new Action(){
+			@Override
+			public void performAction() {
+				localLobby.setVisible(true);
+				startScreenVisible = false;
+			}
+		});
+		multiplayer = new Button(width/2 - 130, height/2 - 200 + 400/5 + 400/10, 240, 400/5);
+		multiplayer.setImage("res/menu/lobby/multiplayerButton.png");
+		multiplayer.setAction(new Action(){
+			@Override
+			public void performAction() {
+				multiplayerLobby.setVisible(true);
+				startScreenVisible = false;
+			}
+		});
+		loadGame = new Button(width/2 - 130, height/2 - 200 + 3*400/5, 240, 400/5);
+		loadGame.setImage("res/menu/lobby/loadGameButton.png");
+		settings = new Button(width/2 - 130, height/2 - 200 + 4*400/5 + 400/10, 240, 400/5);
+		settings.setImage("res/menu/lobby/settingsButton.png");
+		backButton = new Button(width/2 - width/3 + 10, height/2 + height/3 - 60, 180, 50);
+		backButton.setImage("res/menu/lobby/backButton.png");
+		backButton.setAction(new Action(){
+			@Override
+			public void performAction() {
+				startScreenVisible = true;
+			}
+		});
 	}
 	
 	public void paintComponent(Graphics g) {
 		
 		g.drawImage(backGround, 0, 0, null);
 		
-		/*
-		 * TODO: Do not check isVisible, the menus should handle that part
-		 */
-//		if (localLobby.isVisible()) {
-//			localLobby.draw(g);
-//		}
-//		if (loadGame.isVisible()) {
-//			loadGame.draw(g);
-//		}
-//		if (multiplayerLobby.isVisible()) {
-//			multiplayerLobby.draw(g);
-//		}
-		if (startMenu.isVisible()) {
-			startMenu.draw(g);
+		if (!startScreenVisible) {
+			backButton.draw(g);
+	//		if (localLobby.isVisible()) {
+	//			localLobby.draw(g);
+	//		}
+	//		if (loadGame.isVisible()) {
+	//			loadGame.draw(g);
+	//		}
+			if (multiplayerLobby.isVisible()) {
+				multiplayerLobby.draw(g);
+			}
+	//		if (settings.isVisible()) {
+	//			settings.draw(g);
+	//		}
+		}
+		if (startScreenVisible) {
+			localGame.draw(g);
+			multiplayer.draw(g);
+			loadGame.draw(g);
+			settings.draw(g);
 		}
 	}
 	
-	@Override
-	public void performEvent(Event evt) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	private class ClickHandler implements MouseListener {
-
-		public Point pressedPoint;
 		/*
-		 * Click handling for different parts
+		 * Click handling for different lobby menus
 		 */
 		public boolean menuClick(Point point) {
-			if (startMenu instanceof Clickable) {
-				if (((Clickable) startMenu).mousePressed(point)) {
+			if (startScreenVisible) {
+				if (multiplayer.mousePressed(point)) {return true;}
+			}
+			
+			if (backButton.mousePressed(point)) {
+				return true;
+			}
+			if (localLobby instanceof Clickable) {
+				if (((Clickable) localLobby).mousePressed(point)) {
+					return true;
+				}
+			}
+			if (multiplayerLobby instanceof Clickable) {
+				if (((Clickable) multiplayerLobby).mousePressed(point)) {
 					return true;
 				}
 			}
 			return false;
 		}
+		
 		@Override
 		public void mouseClicked(MouseEvent me) {
 			if (me.getButton() == MouseEvent.BUTTON1) {
@@ -105,13 +164,26 @@ public class StartScreen extends JPanel implements EventHandler {
 			}
 			
 		}
-		@Override
-		public void mouseEntered(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
+
+		@Override public void mouseReleased(MouseEvent arg0) {}
+		@Override public void mouseEntered(MouseEvent arg0) {}
 		@Override public void mouseExited(MouseEvent arg0) {}
 		@Override public void mousePressed(MouseEvent arg0) {}
-		@Override public void mouseReleased(MouseEvent arg0) {}		}
+	}
+	
+
+
+
+
+
+	public void draw(Graphics g) {
+		if (isVisible()) {
+			localGame.draw(g);
+			multiplayer.draw(g);
+			loadGame.draw(g);
+			settings.draw(g);
+		}
+	}
+
 	
 }

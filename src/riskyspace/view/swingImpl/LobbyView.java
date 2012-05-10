@@ -21,7 +21,6 @@ public class LobbyView {
 	
 	private void setFrame() {
 		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setIgnoreRepaint(true);
 		frame.setUndecorated(true);
 		System.out.println("Mem: " + GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getAvailableAcceleratedMemory());
