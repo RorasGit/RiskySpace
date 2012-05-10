@@ -114,7 +114,6 @@ public class RenderArea extends JPanel {
 	/*
 	 * The Player currently playing
 	 */
-	private Player activePlayer = null;
 	private Button otherPlayerActive = null;
 	
 	public RenderArea(int rows, int cols) {
@@ -215,7 +214,6 @@ public class RenderArea extends JPanel {
 	}
 	
 	public void setActivePlayer(Player activePlayer) {
-		this.activePlayer = activePlayer;
 		String player = activePlayer.toString().substring(0, 1)+ activePlayer.toString().substring(1, activePlayer.toString().length());
 		otherPlayerActive.setText(player + "'s turn");
 		otherPlayerActive.setTextColor(PlayerColors.getColor(activePlayer));

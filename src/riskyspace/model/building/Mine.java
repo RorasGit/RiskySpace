@@ -3,8 +3,10 @@ package riskyspace.model.building;
 import java.util.HashMap;
 import java.util.Map;
 
+import riskyspace.GameManager;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Resource;
+import riskyspace.services.Event;
 
 public class Mine implements BuildAble, Ranked {
 
@@ -84,6 +86,8 @@ public class Mine implements BuildAble, Ranked {
 	public void upgrade() {
 		if (rank < MAX_RANK) {
 			rank++;
+			Event evt = new Event(Event.EventTag.INCOME_CHANGED, null);
+			GameManager.INSTANCE.handleEvent(evt, null);
 		}
 	}
 

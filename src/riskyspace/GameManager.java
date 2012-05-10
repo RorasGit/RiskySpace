@@ -185,7 +185,13 @@ public enum GameManager {
 			movesComplete();
 		}
 		if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
-			incomeChanged((Player) evt.getObjectValue());
+			if (evt.getObjectValue() != null) {
+				incomeChanged((Player) evt.getObjectValue());
+			} else {
+				for (Player activePlayer : activePlayers) {
+					incomeChanged(activePlayer);
+				}
+			}
 		}
 	}
 	
@@ -230,8 +236,8 @@ public enum GameManager {
 		selections.get(player).selectedPosition = pos;
 		Territory selectedTerritory = world.getTerritory(pos);
 		if (selectedTerritory.hasPlanet()) {
-			
 			if (selectedTerritory.hasColony() && player == selectedTerritory.getColony().getOwner()) {
+				System.out.println(selectedTerritory.getColony().getMine() + " | " + player);
 				Event evt = new Event(Event.EventTag.SELECTION, selectedTerritory.getColony());
 				evt.setPlayer(player);
 				EventBus.SERVER.publish(evt);

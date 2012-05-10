@@ -8,7 +8,7 @@ import riskyspace.model.building.Mine;
 import riskyspace.model.building.Radar;
 import riskyspace.model.building.Turret;
 
-public class Colony implements BattleAble, Sight{
+public class Colony implements BattleAble, Sight, Serializable{
 	
 	/**
 	 * 
@@ -32,6 +32,7 @@ public class Colony implements BattleAble, Sight{
 			colonyName = "Gargaloo";
 		}
 		mine = new Mine(resource);
+		System.out.println(mine + " | " + owner);
 		radar = new Radar();
 		turret = new Turret();
 		hangar = new Hangar();
@@ -95,15 +96,11 @@ public class Colony implements BattleAble, Sight{
 	
 	@Override
 	public String toString() {
-		return "Colony [" + owner + "]";
+		return "Colony [" + owner + ", Mine [" + mine.getRank() + "]" + "]";
 	}
 	
 	@Override
 	public int hashCode() {
 		return owner.hashCode()*13 + colonyName.hashCode()*7 + resource.hashCode()*17;
-	}
-
-	public void upgradeMine() {
-		mine.upgrade();
 	}
 }

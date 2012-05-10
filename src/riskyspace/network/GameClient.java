@@ -9,7 +9,6 @@ import java.net.UnknownHostException;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
-import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.model.Territory;
@@ -35,7 +34,7 @@ public class GameClient implements EventHandler {
 	private Socket socket = null;
 	
 	public static void main(String[] args) {
-		new GameClient("129.16.198.136", 6013);
+		new GameClient("95.80.51.200", 6013);
 	}
 
 	public GameClient(String hostIP, int hostPort) {
@@ -173,6 +172,9 @@ public class GameClient implements EventHandler {
 						} else if (event.getTag() == Event.EventTag.SELECTION) {
 							Object selection = event.getObjectValue();
 							if (selection instanceof Colony) {
+								Colony col = (Colony) selection;
+								System.out.println(col);
+								System.out.println(col.getMine());
 								mainView.showColony((Colony) selection);
 							} else if (selection instanceof Territory) {
 								mainView.showPlanet((Territory) selection);

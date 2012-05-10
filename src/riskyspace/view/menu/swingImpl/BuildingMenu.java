@@ -143,7 +143,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		 */
 		// Set Rank
 		mineRank = new RankIndicator(3);
-		turretRank = new RankIndicator(2);
+		turretRank = new RankIndicator(3);
 		radarRank = new RankIndicator(3);
 		hangarRank = new RankIndicator(2);
 		
@@ -413,28 +413,40 @@ public class BuildingMenu extends AbstractSideMenu {
 			// Mining Information
 			g.drawString(currentMineIncome, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 5, mineRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(nextMineIncome, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 8 + infoWidth, mineRank.getY() + margin/3 + 5 + height/2);
-			g.drawString(nextMineMetal + nextMineGas, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextMineGas)/2, mineRank.getY() + margin/3 + 5 + 5*height/2);
 			
 			// Defense System Information
 			g.drawString(currentTurretDamage, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 5, turretRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(currentTurretShield, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 5, turretRank.getY() + margin/3 + 5 + 3*height/2);
 			g.drawString(nextTurretDamage, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 8 + infoWidth, turretRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(nextTurretShield, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 8 + infoWidth, turretRank.getY() + margin/3 + 5 + 3*height/2);
-			g.drawString(nextTurretMetal + nextTurretGas, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextTurretGas)/2, turretRank.getY() + margin/3 + 5 + 5*height/2);
 			
 			// Radar Information
 			g.drawString(currentRadarRange, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 5, radarRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(nextRadarRange, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 8 + infoWidth, radarRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(currentRadarRange2, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 5, radarRank.getY() + margin/3 + 5 + 3*height/2);
 			g.drawString(nextRadarRange2, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 8 + infoWidth, radarRank.getY() + margin/3 + 5 + 3*height/2);
-			g.drawString(nextRadarMetal + nextRadarGas, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextRadarMetal + nextRadarGas)/2, radarRank.getY() + margin/3 + 5 + 5*height/2);
 			
 			// Hangar Information
 			g.drawString(currentHangarPerk, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 5, hangarRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(currentHangarPerk2, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 5, hangarRank.getY() + margin/3 + 5 + 3*height/2);
 			g.drawString(nextHangarPerk, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 8 + infoWidth, hangarRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(nextHangarPerk2, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 8 + infoWidth, hangarRank.getY() + margin/3 + 5 + 3*height/2);
-			g.drawString(nextHangarMetal + nextHangarGas, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextHangarMetal + nextHangarGas)/2, hangarRank.getY() + margin/3 + 5 + 5*height/2);
+			
+			/*
+			 * Draw next Level costs if not maxed
+			 */
+			if (upgradeMine.isEnabled()) {
+				g.drawString(nextMineMetal + nextMineGas, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextMineGas)/2, mineRank.getY() + margin/3 + 5 + 5*height/2);
+			}
+			if (upgradeTurret.isEnabled()) {
+				g.drawString(nextTurretMetal + nextTurretGas, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextTurretGas)/2, turretRank.getY() + margin/3 + 5 + 5*height/2);
+			}
+			if (upgradeRadar.isEnabled()) {
+				g.drawString(nextRadarMetal + nextRadarGas, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextRadarMetal + nextRadarGas)/2, radarRank.getY() + margin/3 + 5 + 5*height/2);
+			}
+			if (upgradeHangar.isEnabled()) {
+				g.drawString(nextHangarMetal + nextHangarGas, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextHangarMetal + nextHangarGas)/2, hangarRank.getY() + margin/3 + 5 + 5*height/2);
+			}
 			
 			/*
 			 * Draw Buttons
@@ -490,5 +502,11 @@ public class BuildingMenu extends AbstractSideMenu {
 		/*
 		 * TODO: Check Ranks and Resources, set enabled/disabled
 		 */
+		if (colony != null) {
+			upgradeMine.setEnabled(!colony.getMine().isMaxRank() && stats.canAfford(colony.getMine()));
+			upgradeTurret.setEnabled(!colony.getTurret().isMaxRank() && stats.canAfford(colony.getTurret()));
+			upgradeRadar.setEnabled(!colony.getRadar().isMaxRank() && stats.canAfford(colony.getRadar()));
+			upgradeHangar.setEnabled(!colony.getHangar().isMaxRank() && stats.canAfford(colony.getHangar()));
+		}
 	}
 }

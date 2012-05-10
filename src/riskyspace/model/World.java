@@ -97,7 +97,10 @@ public class World implements Serializable {
 			if (itemsToBuild.get(pos) instanceof ShipType) {
 				getTerritory(pos).addFleet(new Fleet(new Ship((ShipType) itemsToBuild.get(pos)), getTerritory(pos).getColony().getOwner()));
 			} else if (itemsToBuild.get(pos) instanceof Ranked) {
+				System.out.println("ranked: " + itemsToBuild.get(pos));
+				System.out.println("before: " + ((Ranked) itemsToBuild.get(pos)).getRank() + "/" + ((Ranked) itemsToBuild.get(pos)).getMaxRank());
 				((Ranked) itemsToBuild.get(pos)).upgrade();
+				System.out.println("after: " +((Ranked) itemsToBuild.get(pos)).getRank() + "/" + ((Ranked) itemsToBuild.get(pos)).getMaxRank());
 			}
 		}
 	}

@@ -83,7 +83,6 @@ public class ColonyMenu extends AbstractSideMenu{
 		buildShipButton.setAction(new Action(){
 			@Override
 			public void performAction() {
-				recruitMenu.setColony(colony);
 				setVisible(false);
 				recruitMenu.setVisible(true);
 			}
@@ -93,7 +92,6 @@ public class ColonyMenu extends AbstractSideMenu{
 		buildingsButton.setAction(new Action(){
 			@Override
 			public void performAction() {
-				buildingMenu.setColony(colony);
 				setVisible(false);
 				buildingMenu.setVisible(true);
 			}
@@ -102,6 +100,8 @@ public class ColonyMenu extends AbstractSideMenu{
 	
 	public void setColony(Colony colony) {
 		this.colony = colony;
+		buildingMenu.setColony(colony);
+		recruitMenu.setColony(colony);
 		setMenuName(colony.getName());
 		ownerColor = PlayerColors.getColor(colony.getOwner());
 		colonyPicture = cities.get(colony.getOwner());
