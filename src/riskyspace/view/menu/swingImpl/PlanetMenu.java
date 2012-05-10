@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
+import riskyspace.model.Planet;
 import riskyspace.model.Resource;
 import riskyspace.model.Territory;
 import riskyspace.services.Event;
@@ -22,8 +23,6 @@ public class PlanetMenu extends AbstractSideMenu{
 	private Image metalPlanetPicture = null;
 	private Image gasPlanetPicture = null;
 	
-	private Territory planetTer = null;
-	
 	private Button colonizeButton;
 	
 	public PlanetMenu(int x, int y, int menuWidth, int menuHeight) {
@@ -39,18 +38,20 @@ public class PlanetMenu extends AbstractSideMenu{
 		colonizeButton.setAction(new Action(){
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.COLONIZE_PLANET, planetTer);
-				EventBus.INSTANCE.publish(evt);
+				Event evt = new Event(Event.EventTag.COLONIZE_PLANET, null);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
-		EventBus.INSTANCE.addHandler(this);
 	}
 	
-	public void setPlanet(Territory ter) {
-		planetTer = ter;
-		planetPicture = ter.getPlanet().getType() == Resource.METAL? metalPlanetPicture : gasPlanetPicture;
+	public void setPlanet(Planet planet) {
+		planetPicture = planet.getType() == Resource.METAL? metalPlanetPicture : gasPlanetPicture;
 		colonizeButton.setImage("res/menu/world/colonizeButton" + View.res);
 		colonizeButton.setEnabled(false);
+	}
+	
+	public void colonizerPresent(boolean present) {
+		colonizeButton.setEnabled(present);
 	}
 
 	@Override
@@ -93,18 +94,4 @@ public class PlanetMenu extends AbstractSideMenu{
 			colonizeButton.draw(g);
 		}
 	}
-	
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.SHOW_PLANETMENU) {
-			setPlanet((Territory)evt.getObjectValue());
-			setVisible(true);
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
-			setVisible(false);
-		}
-		if (evt.getTag() == Event.EventTag.COLONIZER_PRESENT) {
-			colonizeButton.setEnabled(true);
-		}
-	}
-
 }

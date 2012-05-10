@@ -68,14 +68,14 @@ public class BuildQueue implements Serializable{
 		if (colonyQueue.get(pos).size() >= this.queueMaxSize) {
 			EventText et = new EventText("Build queue is full!", pos);
 			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-			EventBus.INSTANCE.publish(event);
+//			EventBus.INSTANCE.publish(event); TODO: Ignore evtText atm
 			return false;
 		}
 		colonyQueue.get(pos).add(new QueueItem(buildAble));
 		String announcement = buildAble + " has been added to the build queue!";
 		EventText et = new EventText(announcement.substring(0, 1).toUpperCase() + announcement.substring(1).toLowerCase(), pos);
 		Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-		EventBus.INSTANCE.publish(event);
+//		EventBus.INSTANCE.publish(event); TODO: Ignore evtText atm
 		return true;
 	}
 	
@@ -92,7 +92,7 @@ public class BuildQueue implements Serializable{
 		if (colonyQueue.get(pos).size() + buildAbles.size() > this.queueMaxSize) {
 			EventText et = new EventText("Build queue does not have space for this!", pos);
 			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-			EventBus.INSTANCE.publish(event);
+//			EventBus.INSTANCE.publish(event); TODO: Ignore evtText atm
 			return false;
 		}
 		for (BuildAble ba : buildAbles) {

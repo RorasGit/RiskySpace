@@ -35,7 +35,6 @@ public class FleetMenu extends AbstractSideMenu {
 		fleetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/palpatine.png").getScaledInstance(menuWidth - 3*margin, 2*(menuWidth - 3*margin)/3, Image.SCALE_DEFAULT);
 		itemSize = (menuWidth - margin*2) / 5;
 		initSprites(itemSize - margin/10);
-		EventBus.INSTANCE.addHandler(this);
 	}
 	
 	public void initSprites(int size) {
@@ -51,6 +50,7 @@ public class FleetMenu extends AbstractSideMenu {
 	}
 	
 	public void setFleet(Fleet fleet) {
+//		setFleet(new Fleet((Set<Fleet>) evt.getObjectValue()));
 		createFleetIcons(fleet);
 	}
 
@@ -107,16 +107,6 @@ public class FleetMenu extends AbstractSideMenu {
 		int number = fleet.shipCount(type);
 		for (int i = 0; i < number; i++) {
 			fleetIcons.add(shipIcons.get(type.toString() + "_" + fleet.getOwner().toString()));
-		}
-	}
-
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.SHOW_FLEETMENU) {
-			setFleet(new Fleet((Set<Fleet>) evt.getObjectValue()));
-			setVisible(true);
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
-			setVisible(false);
 		}
 	}
 }

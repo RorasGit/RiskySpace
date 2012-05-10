@@ -59,8 +59,20 @@ public class ColonyMenu extends AbstractSideMenu{
 	public ColonyMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		margin = menuHeight/20;
-		recruitMenu = new RecruitMenu(x, y, menuWidth, menuHeight);
-		buildingMenu = new BuildingMenu(x, y, menuWidth, menuHeight);
+		recruitMenu = new RecruitMenu(x, y, menuWidth, menuHeight, new Action() {
+			@Override
+			public void performAction() {
+				recruitMenu.setVisible(false);
+				setVisible(true);
+			}
+		});
+		buildingMenu = new BuildingMenu(x, y, menuWidth, menuHeight, new Action() {
+			@Override
+			public void performAction() {
+				buildingMenu.setVisible(false);
+				setVisible(true);
+			}
+		});
 		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
@@ -85,7 +97,6 @@ public class ColonyMenu extends AbstractSideMenu{
 				buildingMenu.setVisible(true);
 			}
 		});
-		EventBus.INSTANCE.addHandler(this);
 	}
 	
 	public void setColony(Colony colony) {
@@ -159,17 +170,5 @@ public class ColonyMenu extends AbstractSideMenu{
 		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);
-	}
-
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.SHOW_MENU) {
-			if (evt.getObjectValue() instanceof Colony) {
-				setColony((Colony) evt.getObjectValue());
-				setVisible(true);
-			}
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
-			setVisible(false);
-		}
 	}
 }

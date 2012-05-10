@@ -75,8 +75,14 @@ public class World implements Serializable {
 		updatePlayerStats(player);
 	}
 	
+	/**
+	 * Removes all BuildAbles from one position and refunds the Resources used
+	 * @param player The owner of the queue to remove from
+	 * @param position The position to remove
+	 */
 	public void removeBuildQueue(Player player, Position position){
-		buildqueue.get(player).clear(position);	
+		List<BuildAble> items = buildqueue.get(player).clear(position);	
+		playerstats.get(player).refund(items);
 		updatePlayerStats(player);
 	}
 	

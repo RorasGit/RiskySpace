@@ -12,8 +12,7 @@ import riskyspace.view.Clickable;
 import riskyspace.view.View;
 import riskyspace.model.Player;
 
-public abstract class AbstractSideMenu implements IMenu, Clickable,
-		EventHandler {
+public abstract class AbstractSideMenu implements IMenu, Clickable {
 
 	private boolean enabled;
 
@@ -94,6 +93,4 @@ public abstract class AbstractSideMenu implements IMenu, Clickable,
 	public String getMenuName() {
 		return menuName;
 	}
-
-
 }

@@ -17,6 +17,7 @@ public class BattleStats implements Serializable {
 	 */
 	private static final long serialVersionUID = -5632954553067736337L;
 	
+	private Player[] participants = new Player[2];
 	private Player winner = null;
 	private boolean colonyDestroyed = false;
 	private List<Fleet> destroyedFleets = null;
@@ -32,7 +33,11 @@ public class BattleStats implements Serializable {
 	public Player getWinner() {
 		return winner;
 	}
-
+	
+	public Player getLoser() {
+		return winner == participants[0] ? participants[0] : participants[1];
+	}
+	
 	public void setWinner(Player winner) {
 		this.winner = winner;
 	}
@@ -47,5 +52,14 @@ public class BattleStats implements Serializable {
 
 	public String getWinnerString() {
 		return getWinner().toString().substring(0, 1) + getWinner().toString().substring(1).toLowerCase() + " has won the battle!";
+	}
+
+	public void setParticipants(Player p1, Player p2) {
+		participants[0] = p1;
+		participants[1] = p2;
+	}
+
+	public Player[] getParticipants() {
+		return participants;
 	}
 }

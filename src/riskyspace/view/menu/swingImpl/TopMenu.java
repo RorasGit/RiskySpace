@@ -21,7 +21,7 @@ import riskyspace.view.ViewResources;
 import riskyspace.view.View;
 import riskyspace.view.menu.IMenu;
 
-public class TopMenu implements IMenu, Clickable, EventHandler {
+public class TopMenu implements IMenu, Clickable {
 	
 	private boolean enabled;
 	
@@ -56,7 +56,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 		
 		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 		
-		menuButton = new Button(0, 0, screenHeight/6, height);
+		menuButton = new Button(x, y, screenHeight/6, height);
 		menuButton.setImage("res/menu/menu" + View.res);
 		menuButton.setAction(new Action() {
 			@Override
@@ -65,7 +65,7 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		
-		buildQueueButton = new Button(screenHeight/6, 0, screenHeight/6, height);
+		buildQueueButton = new Button(x + screenHeight/6, y, screenHeight/6, height);
 		buildQueueButton.setImage("res/menu/build_queue" + View.res);
 		
 		endTurnButton = new Button(width - screenHeight/6, 0, screenHeight/6, height);
@@ -74,21 +74,20 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.NEXT_TURN, null);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		
-		performMovesButton = new Button(width - screenHeight/3, 0, screenHeight/6, height);
+		performMovesButton = new Button(width - screenHeight/3, y, screenHeight/6, height);
 		performMovesButton.setImage("res/menu/perform_moves" + View.res);
 		performMovesButton.setAction(new Action() {
 			@Override
 			public void performAction() {
-				Event evt = new Event(FleetMove.isMoving() ? Event.EventTag.INTERRUPT_MOVES : Event.EventTag.PERFORM_MOVES, null);
-				EventBus.INSTANCE.publish(evt);
+				Event evt = new Event(Event.EventTag.MOVE, null);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		resourceFont = ViewResources.getFont().deriveFont(17f);
-		EventBus.INSTANCE.addHandler(this);
 		setVisible(true);
 	}
 
@@ -162,15 +161,5 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	@Override
 	public void setVisible(boolean set) {
 		enabled = set;
-	}
-	
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
-			PlayerStats stats = (PlayerStats) evt.getObjectValue();
-			gas = stats.getResource(Resource.GAS);
-			metal = stats.getResource(Resource.METAL);
-			supply = stats.getSupply();
-		}
 	}
 }

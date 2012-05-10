@@ -20,19 +20,17 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import riskyspace.GameManager;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
 import riskyspace.services.Event;
-import riskyspace.services.Event.EventTag;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
 import riskyspace.view.Clickable;
-import riskyspace.view.ViewResources;
 import riskyspace.view.SpriteMap;
+import riskyspace.view.ViewResources;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.menu.IMenu;
@@ -41,7 +39,7 @@ import riskyspace.view.menu.swingImpl.FleetMenu;
 import riskyspace.view.menu.swingImpl.PlanetMenu;
 import riskyspace.view.menu.swingImpl.TopMenu;
 
-public class RenderArea extends JPanel implements EventHandler {
+public class RenderArea extends JPanel {
 
 	private static final long serialVersionUID = 8209691542499926289L;
 	
@@ -116,7 +114,6 @@ public class RenderArea extends JPanel implements EventHandler {
 			}		
 		});
 		eventTextPrinter = new EventTextPrinter();
-		EventBus.INSTANCE.addHandler(this);
 		clickHandler = new ClickHandler();
 		fpsFont = ViewResources.getFont().deriveFont(17f);
 		addMouseListener(clickHandler);
@@ -172,16 +169,11 @@ public class RenderArea extends JPanel implements EventHandler {
 	
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
-		/*
-		 * TODO: Cameras only support 2 players
-		 */
 		cameras.put(Player.BLUE, new Camera(0.93f,0.92f));
 		cameras.put(Player.RED, new Camera(0.07f,0.08f));
-		currentCamera = cameras.get(Player.BLUE);
+		cameras.put(Player.GREEN, new Camera(0.07f,0.92f));
+		cameras.put(Player.PINK, new Camera(0.93f,0.08f));
 		cc = new CameraController();
-		cc.setCamera(currentCamera);
-		cc.start();
-		System.out.println("started");
 	}
 	
 	/*
@@ -196,6 +188,9 @@ public class RenderArea extends JPanel implements EventHandler {
 	public void setPlayer(Player player) {
 		currentCamera = cameras.get(player);
 		cc.setCamera(currentCamera);
+		if (!cc.isAlive()) {
+			cc.start();
+		}
 	}
 	
 	public int translatePixelsX() {
@@ -273,15 +268,13 @@ public class RenderArea extends JPanel implements EventHandler {
 		boolean colLegal = pos.getCol() >= 1 && pos.getCol() <= cols;
 		return rowLegal && colLegal;
 	}
+	
+	public void updateData(SpriteMapData data) {
+		spriteMap = SpriteMap.getSprites(data, squareSize);
+	}
 
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
-			setPlayer((Player) evt.getObjectValue());
-		}
-//		if (evt.getTag() == EventTag.TERRITORY_CHANGED || evt.getTag() == EventTag.PATHS_UPDATED) {
-//			spriteMap = SpriteMap.getSprites(GameManager.INSTANCE.getCurrentPlayer());
-//		}
+	public void setStats(PlayerStats stats) {
+		topMenu.setStats(stats);
 	}
 	
 	private class ClickHandler implements MouseListener {
@@ -314,7 +307,7 @@ public class RenderArea extends JPanel implements EventHandler {
 				int dY = (point.y + translatePixelsY()) % squareSize;
 				if (dX > squareSize/2 && dY > squareSize/2) {
 					Event evt = new Event(Event.EventTag.COLONIZER_SELECTED, pos);
-					EventBus.INSTANCE.publish(evt);
+					EventBus.CLIENT.publish(evt);
 					return true;
 				}
 			}
@@ -330,10 +323,10 @@ public class RenderArea extends JPanel implements EventHandler {
 				if (dX <= squareSize/2 && dY >= squareSize/2) {
 					if (me.isShiftDown()) {
 						Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
-						EventBus.INSTANCE.publish(evt);
+						EventBus.CLIENT.publish(evt);
 					} else {
 						Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, pos);
-						EventBus.INSTANCE.publish(evt);
+						EventBus.CLIENT.publish(evt);
 					}
 					return true;
 				}
@@ -345,7 +338,7 @@ public class RenderArea extends JPanel implements EventHandler {
 			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				Event evt = new Event(Event.EventTag.PLANET_SELECTED, pos);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 				return true;
 			}
 			return false;
@@ -355,7 +348,7 @@ public class RenderArea extends JPanel implements EventHandler {
 			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				Event evt = new Event(Event.EventTag.SET_PATH, pos);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 				return true;
 			}
 			return false;
@@ -383,7 +376,7 @@ public class RenderArea extends JPanel implements EventHandler {
 					/*
 					 * Click was not in any trigger zone. Call deselect.
 					 */
-					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
+					EventBus.CLIENT.publish(new Event(Event.EventTag.DESELECT, null));
 				}
 			}
 		}
@@ -427,10 +420,10 @@ public class RenderArea extends JPanel implements EventHandler {
 				}
 				if (!selectPos.isEmpty()) {
 					Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, selectPos);
-					EventBus.INSTANCE.publish(evt);
+					EventBus.CLIENT.publish(evt);
 				} else {
 					Event evt = new Event(Event.EventTag.DESELECT, null);
-					EventBus.INSTANCE.publish(evt);
+					EventBus.CLIENT.publish(evt);
 				}
 				pressedPoint = null;
 			}
@@ -442,7 +435,10 @@ public class RenderArea extends JPanel implements EventHandler {
 		final List<EventText> texts = new ArrayList<EventText>();
 		
 		public EventTextPrinter() {
-			EventBus.INSTANCE.addHandler(this);
+			/*
+			 * TODO:
+			 * What Bus should be used if any?
+			 */
 		}
 		
 		@Override
@@ -469,13 +465,5 @@ public class RenderArea extends JPanel implements EventHandler {
 			}
 			texts.removeAll(done);
 		}
-	}
-
-	public void updateData(SpriteMapData data) {
-		spriteMap = SpriteMap.getSprites(data, squareSize);
-	}
-
-	public void setStats(PlayerStats stats) {
-		topMenu.setStats(stats);
 	}
 }

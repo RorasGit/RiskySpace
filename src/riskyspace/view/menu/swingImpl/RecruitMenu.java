@@ -65,7 +65,7 @@ public class RecruitMenu extends AbstractSideMenu {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.SCOUT);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		buildHunterButton = new Button(x + menuWidth/2 + margin/3, 2*y + menuHeight - (2*menuWidth), 90, 90);
@@ -73,7 +73,7 @@ public class RecruitMenu extends AbstractSideMenu {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.HUNTER);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		buildDestroyerButton = new Button(x + menuWidth/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
@@ -81,7 +81,7 @@ public class RecruitMenu extends AbstractSideMenu {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.DESTROYER);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		buildColonizerButton = new Button(x + menuWidth/2 + margin/3, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
@@ -89,19 +89,21 @@ public class RecruitMenu extends AbstractSideMenu {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.COLONIZER);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		backButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		backButton.setAction(new Action(){
 			@Override
-			public void performAction() {
-				Event evt = new Event(Event.EventTag.SHOW_MENU, colony);
-				EventBus.INSTANCE.publish(evt);
+			public void performAction() { 
 				setVisible(false);
 			}
 		});
-		EventBus.INSTANCE.addHandler(this);
+	}
+	
+	public RecruitMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
+		this(x, y, menuWidth, menuHeight);
+		backButton.setAction(backAction);
 	}
 	
 	public void setColony(Colony colony) {
@@ -131,16 +133,6 @@ public class RecruitMenu extends AbstractSideMenu {
 		buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER));
 		buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER));
 		buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER));
-	}
-
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.HIDE_MENU) {
-				setVisible(false);
-		} else if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
-			PlayerStats stats = (PlayerStats) evt.getObjectValue();
-			checkRecruitOptions(stats);
-		}
 	}
 
 	@Override

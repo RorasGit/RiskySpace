@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 public enum EventBus {
-	INSTANCE, // FOR ERRRORS
 	SERVER,
 	CLIENT;
 	

@@ -30,11 +30,11 @@ public class SwingView implements View {
 				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					System.exit(0);
 				} else if (event.getKeyCode() == KeyEvent.VK_SPACE) {
-					Event evt = new Event(FleetMove.isMoving() ? Event.EventTag.INTERRUPT_MOVES : Event.EventTag.PERFORM_MOVES, null);
-					EventBus.INSTANCE.publish(evt);
+					Event evt = new Event(Event.EventTag.MOVE, null);
+					EventBus.CLIENT.publish(evt);
 				} else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
 					Event evt = new Event(Event.EventTag.NEXT_TURN, null);
-					EventBus.INSTANCE.publish(evt);
+					EventBus.CLIENT.publish(evt);
 				}
 			}
 			@Override public void keyReleased(KeyEvent arg0) {}
@@ -58,7 +58,6 @@ public class SwingView implements View {
 		}
 	}
 
-	
 	@Override
 	public void draw() {
 		renderArea.repaint();

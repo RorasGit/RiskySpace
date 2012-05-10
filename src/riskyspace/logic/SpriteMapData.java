@@ -33,6 +33,7 @@ public class SpriteMapData implements Serializable {
 	private List<ColonyData> colonyData = new ArrayList<ColonyData>();
 	private Map<Position, Integer> fleetSize = new HashMap<Position, Integer>();
 	private Map<Position, Integer> colonizerAmount = new HashMap<Position, Integer>();
+	private Position[][] paths = null;
 	private Player player;
 	
 	private SpriteMapData() {}
@@ -78,11 +79,12 @@ public class SpriteMapData implements Serializable {
 				data.fleetSize.put(pos, size);
 			}
 		}
+		data.paths = GameManager.INSTANCE.getPaths(player);
 		return data;
 	}
 
 	public Position[][] getPaths() {
-		return GameManager.INSTANCE.getPaths(player);
+		return paths;
 	}
 
 	public List<PlanetData> getPlanetData() {

@@ -223,13 +223,14 @@ public class BuildingMenu extends AbstractSideMenu {
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.SHOW_MENU, colony);
-				EventBus.INSTANCE.publish(evt);
 				setVisible(false);
 			}
 		});
-		
-		EventBus.INSTANCE.addHandler(this);
+	}
+
+	public BuildingMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
+		this(x, y, menuWidth, menuHeight);
+		backButton.setAction(backAction);
 	}
 	
 	public void setColony(Colony colony) {
@@ -243,9 +244,6 @@ public class BuildingMenu extends AbstractSideMenu {
 		setMenuName(colony.getName());
 		ownerColor = PlayerColors.getColor(colony.getOwner());
 		cityImage = cities.get(colony.getOwner());
-		
-//		String playerString = colony.getOwner().toString().toLowerCase();
-//		backButton.setImage("res/menu/" + playerString + "/backButton" + View.res);
 		
 		/*
 		 * Set Rank Indicators
@@ -484,13 +482,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		}
 	}
 
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.HIDE_MENU) {
-			setVisible(false);
-		} else if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
-			PlayerStats stats = (PlayerStats) evt.getObjectValue();
-	//		checkRecruitOptions(stats);
-		}
+	public void checkBuildOptions(PlayerStats stats) {
+		
 	}
 }

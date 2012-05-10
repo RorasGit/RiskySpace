@@ -16,9 +16,7 @@ public class Event implements Serializable {
 		/*
 		 * Model triggered events
 		 */
-		TERRITORY_CHANGED,
 		INCOME_CHANGED,
-		COLONY_REMOVED,
 		STATS_CHANGED,
 		/*
 		 * View triggered events
@@ -26,12 +24,10 @@ public class Event implements Serializable {
 		NEW_FLEET_SELECTION,
 		ADD_FLEET_SELECTION,
 		SET_PATH,
-		PERFORM_MOVES,   // Let Controller decide what to do
-		INTERRUPT_MOVES, // merge perform/interrupt to 1 event.
+		MOVE,
 		PLANET_SELECTED,
 		COLONIZER_SELECTED,
 		COLONIZE_PLANET,
-		COLONIZER_PRESENT,
 		DESELECT,
 		QUEUE_SHIP,
 		SHIP_SELFDESTCRUCT,
@@ -39,15 +35,12 @@ public class Event implements Serializable {
 		/*
 		 * Controller triggered events
 		 */
-		SHOW_MENU, //TODO: REMOVE
-		SHOW_FLEETMENU, //TODO: REMOVE
-		SHOW_PLANETMENU,//TODO: REMOVE
 		MOVES_COMPLETE,
-		HIDE_MENU, //TODO: REMOVE
 		EVENT_TEXT,
 		ACTIVE_PLAYER_CHANGED,
-		PATHS_UPDATED, 
 		UPDATE_SPRITEDATA,
+		SELECTION,
+		COLONIZER_PRESENT,
 		/*
 		 * Initiate new Player's View events
 		 */

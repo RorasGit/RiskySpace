@@ -2,19 +2,20 @@ package riskyspace;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import riskyspace.logic.Battle;
-import riskyspace.logic.data.BattleStats;
 import riskyspace.logic.FleetMove;
 import riskyspace.logic.Path;
+import riskyspace.logic.data.BattleStats;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
+import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
@@ -23,27 +24,30 @@ import riskyspace.model.Territory;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
 
-public enum GameManager implements EventHandler {
+public enum GameManager {
 	INSTANCE;
 	
 	private Player[] players = {Player.BLUE, Player.RED, Player.GREEN, Player.PINK};
 	
 	private Player currentPlayer = null;
-	
+	private boolean initiated = false;
 	private World world = null;
 	private int turn;
 	
 	private List<Player> activePlayers = new ArrayList<Player>();
 	private Map<Player, PlayerInfo> playerInfo = new HashMap<Player, PlayerInfo>();
+	private Map<Player, Selection> selections = new HashMap<Player, Selection>();
 	
-	private Position lastFleetSelectPos;
-	private int fleetSelectionIndex;
-	private Set<Fleet> selectedFleets = new HashSet<Fleet>();
-	private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
-	private Colony selectedColony;
+	private class Selection {
+		private Position lastFleetSelectPos = null;
+		private int fleetSelectionIndex = 0;
+		private Set<Fleet> selectedFleets = new HashSet<Fleet>();
+		private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
+		private Colony selectedColony = null;
+		private Planet selectedPlanet = null;
+	}
 	
 	/**
 	 * Used for Network Game
@@ -51,8 +55,8 @@ public enum GameManager implements EventHandler {
 	 */
 	public void init(World world) {
 		this.world = world;
-		EventBus.INSTANCE.addHandler(this);
 		turn = 1;
+		initiated = true;
 	}
 	
 	/**
@@ -76,6 +80,7 @@ public enum GameManager implements EventHandler {
 		}
 		for (Player player : activePlayers) {
 			playerInfo.put(player, new PlayerInfo());
+			selections.put(player, new Selection());
 		}
 	}
 	
@@ -84,11 +89,16 @@ public enum GameManager implements EventHandler {
 		activePlayers.add(player);
 		playerInfo.put(player, new PlayerInfo());
 		playerInfo.get(player).setIP(ip);
+		selections.put(player, new Selection());
 		return player;
 	}
 
 	public Player getCurrentPlayer() {
 		return currentPlayer;
+	}
+	
+	public List<Player> getActivePlayers() {
+		return new LinkedList<Player>(activePlayers);
 	}
 	
 	public int getTurn() {
@@ -101,67 +111,68 @@ public enum GameManager implements EventHandler {
 	
 	private void changePlayer() {
 		currentPlayer = activePlayers.get(((activePlayers.indexOf(currentPlayer) + 1) % activePlayers.size()));
-		
 		Event event = new Event(Event.EventTag.ACTIVE_PLAYER_CHANGED, currentPlayer);
-		EventBus.INSTANCE.publish(event);
+		EventBus.SERVER.publish(event);
 		world.giveIncome(currentPlayer);
 		world.updatePlayerStats(currentPlayer);
 		world.processBuildQueue(getCurrentPlayer());
 		world.updatePlayerStats(currentPlayer);
 		world.resetShips();
-		resetVariables();
-		lastFleetSelectPos = null;
-		fleetSelectionIndex = 0;
 		if (currentPlayer == players[0]) {
 			turn++;
 		}
 	}
 
-	@Override
-	public void performEvent(Event evt) {
+	public void handleEvent(Event evt, Player player) {
+		if (!initiated) {
+			return;
+		}
+		/*
+		 * View triggered Events
+		 */
 		if (!FleetMove.isMoving()) {
 			if(evt.getObjectValue() instanceof Position){
 				Position pos = (Position) evt.getObjectValue();
-				if (evt.getTag() == Event.EventTag.SET_PATH) {
+				if (evt.getTag() == Event.EventTag.SET_PATH && player == getCurrentPlayer()) {
 					setPath(pos);
-				} else if (evt.getTag() == Event.EventTag.COLONY_REMOVED) {
-					removeColony(pos);
 				} else if (evt.getTag() == Event.EventTag.COLONIZER_SELECTED) {
-					setColonizerSelected(pos);
+					setColonizerSelected(pos, player);
 				} else if (evt.getTag() == Event.EventTag.ADD_FLEET_SELECTION) {
-					addFleetSelection(pos);
+					addFleetSelection(pos, player);
 				} else if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
-					newFleetSelection(pos);
+					newFleetSelection(pos, player);
 				}
-			} else if (evt.getTag() == Event.EventTag.NEXT_TURN) {
+			} else if (evt.getTag() == Event.EventTag.NEXT_TURN && player == getCurrentPlayer()) {
 				changePlayer();
-			} else if (evt.getTag() == Event.EventTag.COLONIZE_PLANET) {
+			} else if (evt.getTag() == Event.EventTag.COLONIZE_PLANET && player == getCurrentPlayer()) {
 				colonizePlanet(evt);
 			} else if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
-				newFleetsSelection(evt);
-			} else if (evt.getTag() == Event.EventTag.PERFORM_MOVES) {
+				newFleetsSelection(evt, player);
+			} else if (evt.getTag() == Event.EventTag.MOVE && player == getCurrentPlayer()) {
 				performMoves();
-			} else if (evt.getTag() == Event.EventTag.QUEUE_SHIP) {
+			} else if (evt.getTag() == Event.EventTag.QUEUE_SHIP && player == getCurrentPlayer()) {
 				queueShip((ShipType) evt.getObjectValue());
 			}
-		}
-		if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
-			incomeChanged((Player) evt.getObjectValue());
+		} else if (FleetMove.isMoving() && evt.getTag() == Event.EventTag.MOVE && player == getCurrentPlayer()) {
+			FleetMove.interrupt();
 		}
 		if(evt.getTag() == Event.EventTag.PLANET_SELECTED) {
-			planetSelected((Position) evt.getObjectValue());
-		} 
-		if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {
-			movesComplete();
-		}
-		if (evt.getTag() == Event.EventTag.INTERRUPT_MOVES) {
-			FleetMove.interrupt();
+			planetSelected((Position) evt.getObjectValue(), player);
 		} 
 		if (evt.getTag() == Event.EventTag.DESELECT) {
-			resetVariables();
+			resetVariables(player);
 		} 
 		if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
 			shipDestruct();
+		}
+		/*
+		 * Model or Controller triggered Events
+		 */
+		if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {
+			movesComplete();
+		}
+		if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
+			incomeChanged((Player) evt.getObjectValue());
 		}
 	}
 	
@@ -184,30 +195,22 @@ public enum GameManager implements EventHandler {
 		world.setIncome(affectedPlayer, Resource.GAS, gasIncome);
 	}
 	
-	private void planetSelected(Position pos) {
-		/*
-		 * TODO:
-		 * Refactor
-		 * Try not using COLONIZER_PRESENT Event
-		 * Try avoiding sending territories (Mutable)
-		 * Test hasPlanet => {hasColony => {stuff} else => {other stuff}} more logical approach
-		 */
-		resetVariables();
+	private void planetSelected(Position pos, Player player) {
+		resetVariables(player);
 		Territory selectedTerritory = world.getTerritory(pos);
-		if (selectedTerritory.hasColony()) {
-			selectedColony = selectedTerritory.getColony();
-			if (selectedColony.getOwner() == GameManager.INSTANCE.getCurrentPlayer()) {
-				Event mEvent = new Event(Event.EventTag.SHOW_MENU, selectedColony);
-				EventBus.INSTANCE.publish(mEvent);
+		if (selectedTerritory.hasPlanet()) {
+			if (selectedTerritory.hasColony() && player == selectedTerritory.getColony().getOwner()) {
+				selections.get(player).selectedColony = selectedTerritory.getColony();
+				Event evt = new Event(Event.EventTag.SELECTION, selectedTerritory.getColony());
+				EventBus.SERVER.publish(evt);
 			} else {
-				selectedColony = null;
-			}
-		} else if (selectedTerritory.hasPlanet()) {
-			Event mEvent = new Event(Event.EventTag.SHOW_PLANETMENU, selectedTerritory);
-			EventBus.INSTANCE.publish(mEvent);
-			if (selectedTerritory.hasColonizer()) {
-				mEvent = new Event(Event.EventTag.COLONIZER_PRESENT, selectedTerritory);
-				EventBus.INSTANCE.publish(mEvent);
+				selections.get(player).selectedPlanet = selectedTerritory.getPlanet();
+				Event evt = new Event(Event.EventTag.SELECTION, selectedTerritory.getPlanet());
+				EventBus.SERVER.publish(evt);
+				if (selectedTerritory.hasColonizer() && player == selectedTerritory.controlledBy() && !selectedTerritory.hasConflict()) {
+					evt = new Event(Event.EventTag.COLONIZER_PRESENT, null);
+					EventBus.SERVER.publish(evt);
+				}
 			}
 		}
 	}
@@ -218,11 +221,19 @@ public enum GameManager implements EventHandler {
 			if (terr.hasConflict()) {
 				BattleStats battleStats = Battle.doBattle(terr);
 				for (Fleet f : battleStats.getDestroyedFleets()) {
-					fleetPaths.remove(f);
+					for(Player player : battleStats.getParticipants()) {
+						selections.get(player).fleetPaths.remove(f);
+					}
+				}
+				if (battleStats.isColonyDestroyed()) {
+					/*
+					 * Remove BuildQueue
+					 */
+					world.removeBuildQueue(battleStats.getLoser(), pos);
 				}
 				EventText et = new EventText(battleStats.getWinnerString(), pos);
 				Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-				EventBus.INSTANCE.publish(event);
+//				EventBus.INSTANCE.publish(event);  TODO: Ignore evtText atm
 			}
 		}
 	}
@@ -232,27 +243,26 @@ public enum GameManager implements EventHandler {
 		 * TODO: Removes ships, but does so in an uncontrolled manner and needs to be redone somehow.
 		 * 		 It's in other words unfinished...
 		 */
-		if (world.getTerritory(lastFleetSelectPos).hasFleet() && fleetSelectionIndex >=0) {
-			selectedFleets.remove(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
-			world.getTerritory(lastFleetSelectPos).removeFleet(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
-			System.out.println(lastFleetSelectPos);
-			System.out.println(world.getTerritory(lastFleetSelectPos).getFleets().size());
-			if (!world.getTerritory(lastFleetSelectPos).hasFleet()) {
-				resetVariables();
-			} else {
-				fleetSelectionIndex = Math.max(fleetSelectionIndex - 1, 0);
-				Event event = new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets));
-				EventBus.INSTANCE.publish(event);
-			}
-		}
+//		if (world.getTerritory(lastFleetSelectPos).hasFleet() && fleetSelectionIndex >=0) {
+//			selectedFleets.remove(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
+//			world.getTerritory(lastFleetSelectPos).removeFleet(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
+//			System.out.println(lastFleetSelectPos);
+//			System.out.println(world.getTerritory(lastFleetSelectPos).getFleets().size());
+//			if (!world.getTerritory(lastFleetSelectPos).hasFleet()) {
+//				resetVariables();
+//			} else {
+//				fleetSelectionIndex = Math.max(fleetSelectionIndex - 1, 0);
+//				Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!
+//			}
+//		} TODO: Fix later, low prio
 	}
 	
 	public Position[][] getPaths(Player player) {
-		Position[][] tmp = new Position[fleetPaths.size()][];
+		Position[][] tmp = new Position[selections.get(player).fleetPaths.size()][];
 		int i = 0;
-		for (Fleet fleet : fleetPaths.keySet()) {
+		for (Fleet fleet : selections.get(player).fleetPaths.keySet()) {
 			if (fleet.getOwner() == player) {
-				tmp[i] = fleetPaths.get(fleet).getPositions();
+				tmp[i] = selections.get(player).fleetPaths.get(fleet).getPositions();
 				i++;
 			}
 		}
@@ -264,31 +274,32 @@ public enum GameManager implements EventHandler {
 	}
 
 	private void performMoves() {
-		fleetSelectionIndex = 0;
-		FleetMove.move(world, fleetPaths, GameManager.INSTANCE.getCurrentPlayer());
+		selections.get(getCurrentPlayer()).fleetSelectionIndex = 0;
+		FleetMove.move(world, selections.get(getCurrentPlayer()).fleetPaths, GameManager.INSTANCE.getCurrentPlayer());
 	}
 
 	private void setPath(Position target) {
-		for (Fleet fleet : selectedFleets) {
+		for (Fleet fleet : selections.get(getCurrentPlayer()).selectedFleets) {
 			if (GameManager.INSTANCE.getCurrentPlayer() == fleet.getOwner()) {
-				fleetPaths.get(fleet).setTarget(target);
+				selections.get(getCurrentPlayer()).fleetPaths.get(fleet).setTarget(target);
 			}
 		}
-		Event event = new Event(Event.EventTag.PATHS_UPDATED, null);
-		EventBus.INSTANCE.publish(event);
-	}
-
-	private void removeColony(Position pos) {
-		world.getTerritory(pos).getPlanet().destroyColony();
-		// TODO : use position to remove buildQueue
+		Event evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	private void colonizePlanet(Event evt) {
+		/*
+		 * TODO REMAKE WITH POS
+		 */
 		if (evt.getObjectValue() instanceof Territory) {
 			Territory ter = (Territory) evt.getObjectValue();
 			if (ter.hasFleet() && ter.hasPlanet() && !ter.hasColony()) {
 				for (Fleet fleet : ter.getFleets()) {
 					if (fleet.hasColonizer()) {
+						/*
+						 * Remove fleet is empty?
+						 */
 						fleet.useColonizer();
 						ter.getPlanet().buildColony(fleet.getOwner());
 						ter.removeFleet(fleet);
@@ -296,43 +307,35 @@ public enum GameManager implements EventHandler {
 						break; // Stop looping through fleets.
 					}
 				}
-				selectedColony = ter.getColony();
-				Event event = new Event(Event.EventTag.HIDE_MENU, null);
-				EventBus.INSTANCE.publish(event);
-				event = new Event(Event.EventTag.SHOW_MENU, selectedColony);
-				EventBus.INSTANCE.publish(event);
+//				selections.get(player).selectedColony = ter.getColony();
+				// Make it show colony
 			}
 		}
 	}
-	private void setColonizerSelected(Position pos) {
-		resetVariables();
-		fleetSelectionIndex = 0;
-		lastFleetSelectPos = null;
+	
+	private void setColonizerSelected(Position pos, Player player) {
+		resetVariables(player);
+		selections.get(player).fleetSelectionIndex = 0;
+		selections.get(player).lastFleetSelectPos = null;
 		if (world.getTerritory(pos).hasColonizer()) {
 			for (Fleet fleet : world.getTerritory(pos).getFleets()) {
 				if (fleet.hasColonizer()) {
-					selectedFleets.add(fleet);
-					fleetPaths.put(fleet, new Path(pos));
+					selections.get(player).selectedFleets.add(fleet);
+					selections.get(player).fleetPaths.put(fleet, new Path(pos));
 					break;
 				}
 			}
-			EventBus.INSTANCE.publish(new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets)));
+//			Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!			
 		}
 		
 	}
 	
-	private void addFleetSelection(Position pos) {
-		selectedColony = null;
-		if (selectedFleets.isEmpty()) {
-			EventBus.INSTANCE.publish(new Event(Event.EventTag.HIDE_MENU, null));
-		} else if (selectedFleets.iterator().next().hasColonizer()) {
-			selectedFleets.clear();
-			EventBus.INSTANCE.publish(new Event(Event.EventTag.HIDE_MENU, null));
-		}
+	private void addFleetSelection(Position pos, Player player) {
+		selections.get(player).selectedColony = null;
 		
-		if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
-			lastFleetSelectPos = pos;
-			fleetSelectionIndex = 0;
+		if (selections.get(player).lastFleetSelectPos == null || !selections.get(player).lastFleetSelectPos.equals(pos)) {
+			selections.get(player).lastFleetSelectPos = pos;
+			selections.get(player).fleetSelectionIndex = 0;
 		}
 		if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == GameManager.INSTANCE.getCurrentPlayer())) {
 			/*
@@ -341,39 +344,39 @@ public enum GameManager implements EventHandler {
 			if (world.getTerritory(pos).getFleets().size() != world.getTerritory(pos).shipCount(ShipType.COLONIZER)) {
 				Fleet fleet;
 				do {
-					fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex);
-					fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+					fleet = world.getTerritory(pos).getFleet(selections.get(player).fleetSelectionIndex);
+					selections.get(player).fleetSelectionIndex = (selections.get(player).fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
 				} while(fleet.hasColonizer());
 				
 				addSelectedFleet(fleet, pos);
-				EventBus.INSTANCE.publish(new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets)));
+//				Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!
 			}
 		}
 	}
 
-	private void newFleetSelection(Position pos) {
-		resetVariables(); // Reset all selections as we make a new selection
-		if (lastFleetSelectPos == null || !lastFleetSelectPos.equals(pos)) {
-			lastFleetSelectPos = pos;
-			fleetSelectionIndex = 0;
+	private void newFleetSelection(Position pos, Player player) {
+		resetVariables(player); // Reset all selections as we make a new selection
+		if (selections.get(player).lastFleetSelectPos == null || !selections.get(player).lastFleetSelectPos.equals(pos)) {
+			selections.get(player).lastFleetSelectPos = pos;
+			selections.get(player).fleetSelectionIndex = 0;
 		}
 		if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == GameManager.INSTANCE.getCurrentPlayer())) {
 			if (world.getTerritory(pos).getFleets().size() != world.getTerritory(pos).shipCount(ShipType.COLONIZER)) {
 				Fleet fleet;
 				do {
-					fleet = world.getTerritory(pos).getFleet(fleetSelectionIndex);
-					fleetSelectionIndex = (fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
+					fleet = world.getTerritory(pos).getFleet(selections.get(player).fleetSelectionIndex);
+					selections.get(player).fleetSelectionIndex = (selections.get(player).fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
 				} while(fleet.hasColonizer());
 				addSelectedFleet(fleet, pos);
 			}
 		}
-		if (!selectedFleets.isEmpty()) {
-			EventBus.INSTANCE.publish(new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets)));
+		if (!selections.get(player).selectedFleets.isEmpty()) {
+//			Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!
 		}
 	}
 
-	private void newFleetsSelection(Event evt) {
-		resetVariables(); // Reset all selections as we make a new selection
+	private void newFleetsSelection(Event evt, Player player) {
+		resetVariables(player); // Reset all selections as we make a new selection
 		if (evt.getObjectValue() instanceof List) {
 			List<?> positions = (List<?>) evt.getObjectValue();
 			for (int i = 0; i < positions.size(); i++) {
@@ -389,21 +392,21 @@ public enum GameManager implements EventHandler {
 				}
 			}
 		}
-		if (!selectedFleets.isEmpty()) {
-			EventBus.INSTANCE.publish(new Event(Event.EventTag.SHOW_FLEETMENU, Collections.unmodifiableSet(selectedFleets)));
+		if (!selections.get(player).selectedFleets.isEmpty()) {
+//			Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!
 		}
 	}
 	private void addSelectedFleet(Fleet fleet, Position pos){
-		selectedFleets.add(fleet);
-		if (!fleetPaths.containsKey(fleet)) {
-			fleetPaths.put(fleet, new Path(pos));
+		selections.get(fleet.getOwner()).selectedFleets.add(fleet);
+		if (!selections.get(fleet.getOwner()).fleetPaths.containsKey(fleet)) {
+			selections.get(fleet.getOwner()).fleetPaths.put(fleet, new Path(pos));
 		}
 	}
 
 	private void queueShip(ShipType shipType) {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {
-				if (world.getTerritory(pos).getColony() == selectedColony) {
+				if (world.getTerritory(pos).getColony() == selections.get(getCurrentPlayer()).selectedColony) {
 					if (world.canAfford(getCurrentPlayer(), shipType)) {
 						world.purchase(getCurrentPlayer(), shipType);
 						world.addToBuildQueue(shipType, getCurrentPlayer(), pos);
@@ -412,14 +415,9 @@ public enum GameManager implements EventHandler {
 			}
 		}
 	}
-	/*
-	 * Resets all the instance variables.
-	 */
-	private void resetVariables() {
-		selectedFleets.clear();
-		selectedColony = null;
-		Event event = new Event(Event.EventTag.HIDE_MENU, null);
-		EventBus.INSTANCE.publish(event);
-	}
 
+	private void resetVariables(Player player) {
+		selections.get(player).selectedFleets.clear();
+		selections.get(player).selectedColony = null;
+	}
 }
