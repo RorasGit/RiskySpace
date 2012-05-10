@@ -7,6 +7,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import riskyspace.logic.SpriteMapData;
+import riskyspace.model.Colony;
+import riskyspace.model.Fleet;
+import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.services.Event;
@@ -160,7 +163,21 @@ public class GameClient implements EventHandler {
 						event = (Event) o;
 					}
 					if (event != null) {
-						System.out.println("lol");
+						System.out.println(event);
+						if (event.getTag() == Event.EventTag.UPDATE_SPRITEDATA) {
+							mainView.updateData((SpriteMapData) event.getObjectValue());
+						} else if (event.getTag() == Event.EventTag.STATS_CHANGED) {
+							mainView.setPlayerStats((PlayerStats) event.getObjectValue());
+						} else if (event.getTag() == Event.EventTag.SELECTION) {
+							Object selection = event.getObjectValue();
+							if (selection instanceof Colony) {
+								mainView.showColony((Colony) selection);
+							} else if (selection instanceof Planet) {
+								mainView.showPlanet((Planet) selection);
+							} else if (selection instanceof Fleet) {
+								mainView.showFleet((Fleet) selection);
+							}
+						}
 					}
 					Thread.sleep(17);
 				} catch (IOException e) {

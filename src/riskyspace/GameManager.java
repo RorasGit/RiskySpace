@@ -325,7 +325,8 @@ public enum GameManager {
 					break;
 				}
 			}
-//			Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!			
+			Event evt = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
+			EventBus.SERVER.publish(evt);
 		}
 		
 	}
@@ -347,9 +348,9 @@ public enum GameManager {
 					fleet = world.getTerritory(pos).getFleet(selections.get(player).fleetSelectionIndex);
 					selections.get(player).fleetSelectionIndex = (selections.get(player).fleetSelectionIndex + 1) % world.getTerritory(pos).getFleets().size();
 				} while(fleet.hasColonizer());
-				
 				addSelectedFleet(fleet, pos);
-//				Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!
+				Event evt = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
+				EventBus.SERVER.publish(evt);
 			}
 		}
 	}
@@ -371,7 +372,8 @@ public enum GameManager {
 			}
 		}
 		if (!selections.get(player).selectedFleets.isEmpty()) {
-//			Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!
+			Event evt = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
+			EventBus.SERVER.publish(evt);
 		}
 	}
 
@@ -393,7 +395,8 @@ public enum GameManager {
 			}
 		}
 		if (!selections.get(player).selectedFleets.isEmpty()) {
-//			Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!
+			Event event = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
+			EventBus.SERVER.publish(evt);
 		}
 	}
 	private void addSelectedFleet(Fleet fleet, Position pos){

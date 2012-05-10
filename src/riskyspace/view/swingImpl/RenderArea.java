@@ -21,6 +21,9 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import riskyspace.logic.SpriteMapData;
+import riskyspace.model.Colony;
+import riskyspace.model.Fleet;
+import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
@@ -63,11 +66,11 @@ public class RenderArea extends JPanel {
 	private CameraController cc = null;
 	
 	/*
-	 * Side menu settings
+	 * Menu settings
 	 */
-	private IMenu colonyMenu = null;
-	private IMenu fleetMenu = null;
-	private IMenu planetMenu = null;
+	private ColonyMenu colonyMenu = null;
+	private FleetMenu fleetMenu = null;
+	private PlanetMenu planetMenu = null;
 	private TopMenu topMenu = null;
 	
 	/*
@@ -277,6 +280,30 @@ public class RenderArea extends JPanel {
 		topMenu.setStats(stats);
 	}
 	
+	public void showPlanet(Planet selection) {
+		hideSideMenus();
+		planetMenu.setPlanet(selection);
+		planetMenu.setVisible(true);
+	}
+
+	public void showColony(Colony selection) {
+		hideSideMenus();
+		colonyMenu.setColony(selection);
+		colonyMenu.setVisible(true);
+	}
+
+	public void showFleet(Fleet selection) {
+		hideSideMenus();
+		fleetMenu.setFleet(selection);
+		fleetMenu.setVisible(true);
+	}
+	
+	public void hideSideMenus() {
+		colonyMenu.setVisible(false);
+		fleetMenu.setVisible(false);
+		planetMenu.setVisible(false);
+	}
+	
 	private class ClickHandler implements MouseListener {
 
 		public Point pressedPoint;
@@ -377,6 +404,7 @@ public class RenderArea extends JPanel {
 					 * Click was not in any trigger zone. Call deselect.
 					 */
 					EventBus.CLIENT.publish(new Event(Event.EventTag.DESELECT, null));
+					hideSideMenus();
 				}
 			}
 		}
@@ -424,6 +452,7 @@ public class RenderArea extends JPanel {
 				} else {
 					Event evt = new Event(Event.EventTag.DESELECT, null);
 					EventBus.CLIENT.publish(evt);
+					hideSideMenus();
 				}
 				pressedPoint = null;
 			}

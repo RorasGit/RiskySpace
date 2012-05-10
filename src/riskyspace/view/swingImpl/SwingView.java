@@ -8,6 +8,9 @@ import javax.swing.JFrame;
 
 import riskyspace.logic.FleetMove;
 import riskyspace.logic.SpriteMapData;
+import riskyspace.model.Colony;
+import riskyspace.model.Fleet;
+import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.model.World;
@@ -86,5 +89,20 @@ public class SwingView implements View {
 	@Override
 	public void setPlayerStats(PlayerStats stats) {
 		renderArea.setStats(stats);
+	}
+
+	@Override
+	public void showPlanet(Planet selection) {
+		renderArea.showPlanet(selection);
+	}
+
+	@Override
+	public void showColony(Colony selection) {
+		renderArea.showColony(selection);
+	}
+
+	@Override
+	public void showFleet(Fleet selection) {
+		renderArea.showFleet(selection);
 	}
 }

@@ -50,7 +50,6 @@ public class FleetMenu extends AbstractSideMenu {
 	}
 	
 	public void setFleet(Fleet fleet) {
-//		setFleet(new Fleet((Set<Fleet>) evt.getObjectValue()));
 		createFleetIcons(fleet);
 	}
 
