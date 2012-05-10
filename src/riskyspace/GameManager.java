@@ -13,6 +13,7 @@ import riskyspace.logic.Battle;
 import riskyspace.logic.FleetMove;
 import riskyspace.logic.Path;
 import riskyspace.logic.data.BattleStats;
+import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
@@ -159,10 +160,12 @@ public enum GameManager {
 			} else if (evt.getTag() == Event.EventTag.MOVE && player == getCurrentPlayer()) {
 				performMoves();
 			} else if (evt.getTag() == Event.EventTag.QUEUE_SHIP && player == getCurrentPlayer()) {
-				queueShip((ShipType) evt.getObjectValue());
-			} else if (evt.getTag() == Event.EventTag.COLONIZE_PLANET && player == getCurrentPlayer()) {
+				queueBuildAble((BuildAble) evt.getObjectValue());
+			} else if (evt.getTag() == Event.EventTag.QUEUE_BUILDING && player == getCurrentPlayer()) {
+				queueBuilding((String)evt.getObjectValue());
+			}else if (evt.getTag() == Event.EventTag.COLONIZE_PLANET && player == getCurrentPlayer()) {
 				colonizePlanet(player);
-			}
+			} 
 		} else if (FleetMove.isMoving() && evt.getTag() == Event.EventTag.MOVE && player == getCurrentPlayer()) {
 			FleetMove.interrupt();
 		}
@@ -186,6 +189,23 @@ public enum GameManager {
 		}
 	}
 	
+	private void queueBuilding(String objectValue) {
+		Colony c = world.getTerritory(selections.get(getCurrentPlayer()).selectedPosition).getColony();
+		BuildAble building = null;
+		if(objectValue.equals("MINE")){
+			building = c.getMine().isMaxRank() ? null: c.getMine();
+		}else if(objectValue.equals("RADAR")){
+			building = c.getRadar().isMaxRank() ? null: c.getRadar();
+		}else if(objectValue.equals("HANGAR")){
+			building = c.getHangar().isMaxRank() ? null: c.getHangar();
+		}else if(objectValue.equals("TURRET")){
+			building = c.getTurret().isMaxRank() ? null: c.getTurret();
+		}
+		if(building != null){
+			queueBuildAble(building);
+		}
+	}
+
 	private void incomeChanged(Player affectedPlayer) {
 		int metalIncome = 10;
 		int gasIncome = 0;
@@ -401,8 +421,10 @@ public enum GameManager {
 			}
 		}
 		if (!selections.get(player).selectedFleets.isEmpty()) {
+			System.out.println(selections.get(player).selectedFleets.size());
+			System.out.println(player);
 			Event event = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
-			evt.setPlayer(player);
+			event.setPlayer(player);
 			EventBus.SERVER.publish(event);
 		}
 	}
@@ -413,19 +435,20 @@ public enum GameManager {
 		}
 	}
 
-	private void queueShip(ShipType shipType) {
+	private void queueBuildAble(BuildAble build) {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == world.getTerritory(selections.get(getCurrentPlayer()).selectedPosition).getColony()) {
-					if (world.canAfford(getCurrentPlayer(), shipType)) {
-						if(world.purchase(getCurrentPlayer(), shipType)){
-							world.addToBuildQueue(shipType, getCurrentPlayer(), pos);
+					if (world.canAfford(getCurrentPlayer(), build)) {
+						if(world.purchase(getCurrentPlayer(), build)){
+							world.addToBuildQueue(build, getCurrentPlayer(), pos);
 						}
 					}
 				}
 			}
 		}
 	}
+	
 
 	private void resetVariables(Player player) {
 		selections.get(player).selectedFleets.clear();

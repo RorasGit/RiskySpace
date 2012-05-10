@@ -183,7 +183,8 @@ public class BuildingMenu extends AbstractSideMenu {
 		upgradeMine.setAction(new Action(){
 			@Override
 			public void performAction() {
-				//TODO: Implement
+				Event evt = new Event(Event.EventTag.QUEUE_BUILDING, "MINE");
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		
@@ -193,7 +194,8 @@ public class BuildingMenu extends AbstractSideMenu {
 		upgradeTurret.setAction(new Action(){
 			@Override
 			public void performAction() {
-				//TODO: Implement
+				Event evt = new Event(Event.EventTag.QUEUE_BUILDING, "TURRET");
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		
@@ -204,7 +206,8 @@ public class BuildingMenu extends AbstractSideMenu {
 		upgradeRadar.setAction(new Action(){
 			@Override
 			public void performAction() {
-				//TODO: Implement
+				Event evt = new Event(Event.EventTag.QUEUE_BUILDING, "RADAR");
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		
@@ -214,7 +217,8 @@ public class BuildingMenu extends AbstractSideMenu {
 		upgradeHangar.setAction(new Action(){
 			@Override
 			public void performAction() {
-				//TODO: Implement
+				Event evt = new Event(Event.EventTag.QUEUE_BUILDING, "HANGAR");
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		

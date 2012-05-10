@@ -32,6 +32,7 @@ public class Event implements Serializable {
 		COLONIZE_PLANET,
 		DESELECT,
 		QUEUE_SHIP,
+		QUEUE_BUILDING,
 		SHIP_SELFDESTCRUCT,
 		NEXT_TURN,
 		/*
@@ -85,6 +86,6 @@ public class Event implements Serializable {
 	
 	@Override
     public String toString() {
-        return "Event [tag=" + tag + ", value=" + objectValue + "]";
+        return "Event [tag=" + tag + ", value=" + objectValue +", player="+ player +"]";
     } 
 }
