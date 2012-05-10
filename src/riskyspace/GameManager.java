@@ -85,6 +85,11 @@ public enum GameManager {
 	}
 	
 	public Player addPlayer(InetAddress ip){
+		for (Player player : activePlayers) {
+			if(playerInfo.get(player).getIP().equals(ip)){
+				return player;
+			}
+		}
 		Player player = players[activePlayers.size()];
 		activePlayers.add(player);
 		playerInfo.put(player, new PlayerInfo());
