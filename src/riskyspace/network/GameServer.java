@@ -75,24 +75,21 @@ public class GameServer implements EventHandler {
 	public void performEvent(Event evt) {
 		try {
 			if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
-				/*
-				 * Assume only the current player's stats can be changed
-				 * otherwise update all...
-				 */
-				sendObject(evt, GameManager.INSTANCE.getCurrentPlayer());
+				sendObject(evt, evt.getPlayer());
 			} else if (evt.getTag() == Event.EventTag.UPDATE_SPRITEDATA) {
-				for (Player player : GameManager.INSTANCE.getActivePlayers()) {
-					try {
+				if(evt.getPlayer() != null){
+					Event event = new Event(Event.EventTag.UPDATE_SPRITEDATA, SpriteMapData.getData(evt.getPlayer()));
+					sendObject(event, evt.getPlayer());
+				} else {
+					for (Player player : GameManager.INSTANCE.getActivePlayers()) {
 						Event event = new Event(Event.EventTag.UPDATE_SPRITEDATA, SpriteMapData.getData(player));
 						sendObject(event, player);
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
 			} else if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
 				sendObject(evt);
 			} else if (evt.getTag() == Event.EventTag.SELECTION) {
-				sendObject(evt, GameManager.INSTANCE.getCurrentPlayer());
+				sendObject(evt, evt.getPlayer());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

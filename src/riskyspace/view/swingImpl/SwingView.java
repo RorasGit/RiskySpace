@@ -105,4 +105,9 @@ public class SwingView implements View {
 	public void showFleet(Fleet selection) {
 		renderArea.showFleet(selection);
 	}
+
+	@Override
+	public void hideMenus() {
+		renderArea.hideSideMenus();
+	}
 }

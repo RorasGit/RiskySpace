@@ -176,8 +176,10 @@ public class GameClient implements EventHandler {
 								mainView.showPlanet((Planet) selection);
 							} else if (selection instanceof Fleet) {
 								mainView.showFleet((Fleet) selection);
+							} else if(selection == null){
+								mainView.hideMenus();
 							}
-						}
+						} 
 					}
 					Thread.sleep(17);
 				} catch (IOException e) {

@@ -21,4 +21,5 @@ public interface View {
 	public void showPlanet(Planet selection);
 	public void showColony(Colony selection);
 	public void showFleet(Fleet selection);
+	public void hideMenus();
 }

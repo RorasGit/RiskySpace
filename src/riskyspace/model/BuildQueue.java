@@ -138,15 +138,13 @@ public class BuildQueue implements Serializable{
 	 * @return returns a list containing the BuildAbles removed.
 	 */
 	public List<BuildAble> clearAll() {
-		List <BuildAble> allRemovedItems = new ArrayList<BuildAble>();
-		List<BuildAble> removedItems = new ArrayList<BuildAble>();
+		List <BuildAble> removedItems = new ArrayList<BuildAble>();
 		for (Position pos : colonyQueue.keySet()) {
-			removedItems = clear(pos);
-			for (BuildAble ba : removedItems) {
-				allRemovedItems.add(ba);
+			for (BuildAble ba : clear(pos)) {
+				removedItems.add(ba);
 			}
 		}
-		return allRemovedItems;
+		return removedItems;
 	}
 	
 	/**

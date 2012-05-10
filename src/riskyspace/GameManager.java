@@ -23,6 +23,7 @@ import riskyspace.model.ShipType;
 import riskyspace.model.Territory;
 import riskyspace.model.World;
 import riskyspace.services.Event;
+import riskyspace.services.Event.EventTag;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventText;
 
@@ -129,7 +130,7 @@ public enum GameManager {
 	}
 
 	public void handleEvent(Event evt, Player player) {
-		System.out.println("manager: " + evt + " player: " + player + " | cur = " + currentPlayer);
+		System.out.println("Current event handled: " + evt + " player: " + player + " | cur = " + currentPlayer);
 		if (!initiated) {
 			return;
 		}
@@ -208,13 +209,16 @@ public enum GameManager {
 			if (selectedTerritory.hasColony() && player == selectedTerritory.getColony().getOwner()) {
 				selections.get(player).selectedColony = selectedTerritory.getColony();
 				Event evt = new Event(Event.EventTag.SELECTION, selectedTerritory.getColony());
+				evt.setPlayer(player);
 				EventBus.SERVER.publish(evt);
 			} else {
 				selections.get(player).selectedPlanet = selectedTerritory.getPlanet();
 				Event evt = new Event(Event.EventTag.SELECTION, selectedTerritory.getPlanet());
+				evt.setPlayer(player);
 				EventBus.SERVER.publish(evt);
 				if (selectedTerritory.hasColonizer() && player == selectedTerritory.controlledBy() && !selectedTerritory.hasConflict()) {
 					evt = new Event(Event.EventTag.COLONIZER_PRESENT, null);
+					evt.setPlayer(player);
 					EventBus.SERVER.publish(evt);
 				}
 			}
@@ -291,6 +295,7 @@ public enum GameManager {
 			}
 		}
 		Event evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		evt.setPlayer(getCurrentPlayer());
 		EventBus.SERVER.publish(evt);
 	}
 	
@@ -332,6 +337,7 @@ public enum GameManager {
 				}
 			}
 			Event evt = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
+			evt.setPlayer(player);
 			EventBus.SERVER.publish(evt);
 		}
 		
@@ -356,6 +362,7 @@ public enum GameManager {
 				} while(fleet.hasColonizer());
 				addSelectedFleet(fleet, pos);
 				Event evt = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
+				evt.setPlayer(player);
 				EventBus.SERVER.publish(evt);
 			}
 		}
@@ -379,6 +386,7 @@ public enum GameManager {
 		}
 		if (!selections.get(player).selectedFleets.isEmpty()) {
 			Event evt = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
+			evt.setPlayer(player);
 			EventBus.SERVER.publish(evt);
 		}
 	}
@@ -402,6 +410,7 @@ public enum GameManager {
 		}
 		if (!selections.get(player).selectedFleets.isEmpty()) {
 			Event event = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
+			evt.setPlayer(player);
 			EventBus.SERVER.publish(event);
 		}
 	}
@@ -417,8 +426,9 @@ public enum GameManager {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == selections.get(getCurrentPlayer()).selectedColony) {
 					if (world.canAfford(getCurrentPlayer(), shipType)) {
-						world.purchase(getCurrentPlayer(), shipType);
-						world.addToBuildQueue(shipType, getCurrentPlayer(), pos);
+						if(world.purchase(getCurrentPlayer(), shipType)){
+							world.addToBuildQueue(shipType, getCurrentPlayer(), pos);
+						}
 					}
 				}
 			}
@@ -428,5 +438,9 @@ public enum GameManager {
 	private void resetVariables(Player player) {
 		selections.get(player).selectedFleets.clear();
 		selections.get(player).selectedColony = null;
+		selections.get(player).selectedPlanet = null;
+		Event evt = new Event(Event.EventTag.SELECTION, null);
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 }

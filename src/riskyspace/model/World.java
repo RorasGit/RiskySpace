@@ -8,6 +8,8 @@ import java.util.Map;
 
 import riskyspace.logic.MapGenerator;
 import riskyspace.model.building.Ranked;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
 
 public class World implements Serializable {
 	private int rows = 0;
@@ -101,7 +103,9 @@ public class World implements Serializable {
 	}
 	
 	public void resetAllQueues(Player player) {
-		buildqueue.get(player).clearAll();
+		List<BuildAble> deletedItems = buildqueue.get(player).clearAll();
+		playerstats.get(player).refund(deletedItems);
+		updatePlayerStats(player);
 	}
 	
 	public List<Position> getContentPositions(){
@@ -118,10 +122,19 @@ public class World implements Serializable {
 	
 	public void giveIncome(Player player) {
 		playerstats.get(player).gainNewResources();
+		Event evt = new Event(Event.EventTag.STATS_CHANGED, getStats(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	public boolean purchase(Player player, BuildAble buildAble) {
-		return playerstats.get(player).purchase(buildAble);
+		if( playerstats.get(player).purchase(buildAble)){
+			Event evt = new Event(Event.EventTag.STATS_CHANGED, getStats(player));
+			evt.setPlayer(player);
+			EventBus.SERVER.publish(evt);
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean canAfford(Player currentPlayer, BuildAble buildAble) {
@@ -148,6 +161,9 @@ public class World implements Serializable {
 			}
 		}
 		playerstats.get(player).update(numberOfColonies, supply, buildqueue.get(player).queuedSupply(false));
+		Event evt = new Event(Event.EventTag.STATS_CHANGED, getStats(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	@Override

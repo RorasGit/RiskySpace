@@ -2,6 +2,8 @@ package riskyspace.services;
 
 import java.io.Serializable;
 
+import riskyspace.model.Player;
+
 public class Event implements Serializable {
 
 	/**
@@ -57,6 +59,9 @@ public class Event implements Serializable {
 	//The value of the object sent to the model.
 	private final Object objectValue;
 	
+	//The player connected to this event
+	private Player player;
+
 	public Event(EventTag tag, Object objectValue) {
 		this.tag = tag;
 		this.objectValue = objectValue;
@@ -68,6 +73,14 @@ public class Event implements Serializable {
 	
 	public Object getObjectValue() {
 		return objectValue;
+	}
+	
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 	
 	@Override

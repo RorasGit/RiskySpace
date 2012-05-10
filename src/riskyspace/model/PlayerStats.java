@@ -57,8 +57,6 @@ public class PlayerStats implements Serializable{
 		if (canAfford(buildAble)) {
 			resources.put(METAL, resources.get(METAL) - buildAble.getMetalCost());
 			resources.put(GAS, resources.get(GAS) - buildAble.getGasCost());
-			Event evt = new Event(EventTag.STATS_CHANGED, getImmutableStats());
-			EventBus.SERVER.publish(evt);
 			return true;
 		} else {
 			return false;
@@ -88,8 +86,6 @@ public class PlayerStats implements Serializable{
 	public void refund(BuildAble buildAble) {
 		resources.put(METAL, resources.get(METAL) + buildAble.getMetalCost());
 		resources.put(GAS, resources.get(GAS) + buildAble.getGasCost());
-		Event evt = new Event(EventTag.STATS_CHANGED, getImmutableStats());
-		EventBus.SERVER.publish(evt);
 	}
 	
 	/**
@@ -136,8 +132,6 @@ public class PlayerStats implements Serializable{
 	public void update(int numberOfColonies, int usedSupply, int queuedSupply) {
 		supply.update(numberOfColonies, usedSupply);
 		supply.setQueuedSupply(queuedSupply);
-		Event evt = new Event(EventTag.STATS_CHANGED, getImmutableStats());
-		EventBus.SERVER.publish(evt);
 	}
 	
 	/**
@@ -188,8 +182,6 @@ public class PlayerStats implements Serializable{
 	public void gainNewResources() {
 		resources.put(METAL, resources.get(METAL) + income.get(METAL));
 		resources.put(GAS, resources.get(GAS) + income.get(GAS));
-		Event evt = new Event(EventTag.STATS_CHANGED, getImmutableStats());
-		EventBus.SERVER.publish(evt);
 	}
 	
 	private boolean hasEnoughResources(int metalCost, int gasCost) {
