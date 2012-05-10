@@ -54,6 +54,8 @@ public class Button implements Clickable {
 		 * Draw centered text
 		 */
 		if (text != null) {
+			g.setFont(ViewResources.getFont().deriveFont(20f));
+			g.setColor(ViewResources.WHITE);
 			drawButtonText(g);
 		}
 	}

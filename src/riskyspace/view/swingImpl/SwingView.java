@@ -68,7 +68,7 @@ public class SwingView implements View {
 
 	@Override
 	public void setViewer(Player player) {
-		renderArea.setPlayer(player);
+		renderArea.setViewer(player);
 	}
 
 	@Override
@@ -109,5 +109,10 @@ public class SwingView implements View {
 	@Override
 	public void hideMenus() {
 		renderArea.hideSideMenus();
+	}
+
+	@Override
+	public void setActivePlayer(Player player) {
+		renderArea.setActivePlayer(player);
 	}
 }

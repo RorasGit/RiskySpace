@@ -34,7 +34,7 @@ public class GameClient implements EventHandler {
 	private Socket socket = null;
 	
 	public static void main(String[] args) {
-		new GameClient("localhost", 6013);
+		new GameClient("129.16.198.136", 6013);
 	}
 
 	public GameClient(String hostIP, int hostPort) {
@@ -168,6 +168,8 @@ public class GameClient implements EventHandler {
 							mainView.updateData((SpriteMapData) event.getObjectValue());
 						} else if (event.getTag() == Event.EventTag.STATS_CHANGED) {
 							mainView.setPlayerStats((PlayerStats) event.getObjectValue());
+						} else if (event.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
+							mainView.setActivePlayer((Player) event.getObjectValue());
 						} else if (event.getTag() == Event.EventTag.SELECTION) {
 							Object selection = event.getObjectValue();
 							if (selection instanceof Colony) {

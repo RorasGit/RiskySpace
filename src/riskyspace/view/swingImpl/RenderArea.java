@@ -31,6 +31,7 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
+import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 import riskyspace.view.SpriteMap;
 import riskyspace.view.ViewResources;
@@ -102,6 +103,17 @@ public class RenderArea extends JPanel {
 	private Timer fpsTimer = null;
 	private String fps = "";
 	private Font fpsFont = null;
+
+	/*
+	 * The player viewing this renderArea right now
+	 */
+	private Player viewer = null;
+
+	/*
+	 * The Player currently playing
+	 */
+	private Player activePlayer = null;
+	private Button otherPlayerActive = null;
 	
 	public RenderArea(int rows, int cols) {
 		this.rows = rows;
@@ -119,6 +131,9 @@ public class RenderArea extends JPanel {
 		eventTextPrinter = new EventTextPrinter();
 		clickHandler = new ClickHandler();
 		fpsFont = ViewResources.getFont().deriveFont(17f);
+		otherPlayerActive = new Button(width/2 - width/10, height/2 - height/10, width/5, height/10);
+		otherPlayerActive.setImage("res/menu/wide_button.png");
+		otherPlayerActive.setText("Game not started!");
 		addMouseListener(clickHandler);
 	}
 
@@ -188,12 +203,20 @@ public class RenderArea extends JPanel {
 		squareSize = Math.min(width/6,height/6);
 	}
 	
-	public void setPlayer(Player player) {
+	public void setViewer(Player player) {
+		this.viewer = player;
 		currentCamera = cameras.get(player);
 		cc.setCamera(currentCamera);
 		if (!cc.isAlive()) {
 			cc.start();
 		}
+	}
+	
+	public void setActivePlayer(Player activePlayer) {
+		this.activePlayer = activePlayer;
+		String player = activePlayer.toString().substring(0, 1)+ activePlayer.toString().substring(1, activePlayer.toString().length()-1);
+		otherPlayerActive.setText(player + "'s turn");
+		otherPlayerActive.setEnabled(viewer != activePlayer);
 	}
 	
 	public int translatePixelsX() {
@@ -234,6 +257,8 @@ public class RenderArea extends JPanel {
 		fleetMenu.draw(g);
 		planetMenu.draw(g);
 		topMenu.draw(g);
+		
+		otherPlayerActive.draw(g);
 		
 		g.setColor(ViewResources.WHITE);
 		g.setFont(fpsFont);
