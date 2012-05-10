@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import riskyspace.GameManager;
+import riskyspace.PlayerColors;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.logic.data.ColonizerData;
 import riskyspace.logic.data.ColonyData;
@@ -83,8 +84,7 @@ public class SpriteMap {
 	 * 
 	 * @param squareSize The size of a square.
 	 */
-	public static void init(int squareSize) {
-		SpriteMap.data = SpriteMapData.getData(null);
+	private static void init(int squareSize) {
 		planetsMap.put(Resource.METAL, metalplanets);
 		planetsMap.put(Resource.GAS, gasplanets);
 		loadSprites(squareSize);
@@ -101,16 +101,15 @@ public class SpriteMap {
 	/**
 	 * Creates a SpriteMap containing Sprites that can be drawn using the
 	 * <code>draw(Graphics g)</code> method.
-	 * @param player The Player's view this SpriteMap should contain.
+	 * @param smd The Player's view this SpriteMap should contain.
 	 * @return A SpriteMap with graphic info for this Player.
 	 */
-	public static SpriteMap getSprites(Player player) {
+	public static SpriteMap getSprites(SpriteMapData data, int squareSize) {
+		SpriteMap.data = data;
 		if (!initiated) {
-			throw new IllegalStateException("SpriteMap not initiated");
+			init(squareSize);
 		}
-		
 		SpriteMap map = new SpriteMap();
-		data = SpriteMapData.getData(player);
 		
 		for (ColonyData colonyData : data.getColonyData()) {
 			map.colonies.put(colonyData.getPosition(), colonySprites.get(colonyData.getPlayer().toString()));
@@ -135,17 +134,21 @@ public class SpriteMap {
 						map.paths.put(paths[i][j], new ArrayList<Sprite>());
 					}
 					Sprite sprite = null;
+					/*
+					 * TODO:
+					 * Fix arrow colors thing
+					 */
 					if (j == 0) {
-						sprite = new Sprite(SpriteMap.pathTextures.get("START_" + player), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("START_" + Player.BLUE), 0, 0);
 						sprite.setRotation(getRotation(null, paths[i][j], paths[i][j+1]));
 					} else if (j == paths[i].length - 1) {
-						sprite = new Sprite(SpriteMap.pathTextures.get("HEAD_" + player), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("HEAD_" + Player.BLUE), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], null));
 					} else if (paths[i][j-1].getCol() != paths[i][j+1].getCol() && paths[i][j-1].getRow() != paths[i][j+1].getRow()) {
-						sprite = new Sprite(SpriteMap.pathTextures.get("TURN_" + player), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("TURN_" + Player.BLUE), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]));
 					} else {
-						sprite = new Sprite(SpriteMap.pathTextures.get("STRAIGHT_" + player), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("STRAIGHT_" + Player.BLUE), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]));
 					}
 					map.paths.get(paths[i][j]).add(sprite);
@@ -315,8 +318,8 @@ public class SpriteMap {
 		/*
 		 * Colony Sprite
 		 */
-		colonySprites.put("RED", createColonySprite(GameManager.INSTANCE.getInfo(Player.RED).getColor(), squareSize));
-		colonySprites.put("BLUE", createColonySprite(GameManager.INSTANCE.getInfo(Player.BLUE).getColor(), squareSize));
+		colonySprites.put("RED", createColonySprite(PlayerColors.getColor(Player.RED), squareSize));
+		colonySprites.put("BLUE", createColonySprite(PlayerColors.getColor(Player.BLUE), squareSize));
 	}
 	
 	/**

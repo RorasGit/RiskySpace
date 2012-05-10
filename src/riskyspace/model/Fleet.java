@@ -1,11 +1,12 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class Fleet implements MoveAble {
+public class Fleet implements MoveAble, Serializable  {
 	
 	/**
 	 * 

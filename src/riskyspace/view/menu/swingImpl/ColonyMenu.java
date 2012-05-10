@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import riskyspace.GameManager;
+import riskyspace.PlayerColors;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.services.Event;
@@ -90,10 +91,8 @@ public class ColonyMenu extends AbstractSideMenu{
 	public void setColony(Colony colony) {
 		this.colony = colony;
 		setMenuName(colony.getName());
-		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
+		ownerColor = PlayerColors.getColor(colony.getOwner());
 		colonyPicture = cities.get(colony.getOwner());
-//		buildShipButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/recruitButton" + View.res);
-//		buildingsButton.setImage("res/menu/" + colony.getOwner().toString().toLowerCase() + "/buildingsButton" + View.res);
 	}
 
 	@Override

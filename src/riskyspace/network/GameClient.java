@@ -1,64 +1,176 @@
 package riskyspace.network;
 
-import java.awt.HeadlessException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import javax.swing.JOptionPane;
-
+import riskyspace.logic.SpriteMapData;
 import riskyspace.model.Player;
-import riskyspace.model.Resource;
-import riskyspace.model.Territory;
+import riskyspace.model.PlayerStats;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
+import riskyspace.services.EventHandler;
 import riskyspace.view.View;
+import riskyspace.view.ViewFactory;
 
-public class GameClient {
+/**
+ * 
+ * @author Alexander Hederstaf, Daniel Augurell 
+ * 
+ * GameClient Handles network tasks for a client.
+ * It listens to EventBus.CLIENT for GUI event that
+ * are to be sent to the server.
+ */
+public class GameClient implements EventHandler {
 
 	private View mainView = null;
 	private ObjectInputStream input = null;
 	private ObjectOutputStream output = null;
 	private Socket socket = null;
-
-	public GameClient(String hostIP, int hostPort) throws IOException {
-		connectToHost(hostIP, hostPort);
-		while (true) {
-			Territory t = new Territory();
-			t.setPlanet(Resource.METAL);
-			t.getPlanet().buildColony(Player.WORLD);
-			t.getColony().getMine().upgrade();
-			
-			output.writeObject(t);
-			try {
-				Thread.sleep(20000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	
+	public static void main(String[] args) {
+		new GameClient("localhost", 6013);
 	}
 
-	private void connectToHost(String hostIP, int hostPort) throws IOException {
+	public GameClient(String hostIP, int hostPort) {
+		EventBus.CLIENT.addHandler(this);
+		int tries = 0;
+		while (socket == null) {
+			if (tries == 5) {
+				System.err.println("Couldn't Connect");
+				System.exit(1);
+			}
+			System.out.println("Connecting. Test #" + (tries+1));
+			/*
+			 * Loop until Connected
+			 */
+			connectToHost(hostIP, hostPort);
+			tries++;
+		}
+		System.out.println("Connected");
+		initiateView();
+		new ServerListener();
+		Thread renderThread = new Thread(new Runnable() {
+			@Override public void run() {
+				while(true) {
+					mainView.draw();
+					try {
+						Thread.sleep(1000/60);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		});
+		renderThread.start();
+	}
 
+	private void initiateView() {
+		System.out.println("start init");
+
+		SpriteMapData data = null;
+		Integer rows = null;
+		Integer cols = null;
+		Player player = null;
+		PlayerStats stats = null;
+		
+		while (data == null || rows == null || cols == null || player == null || stats == null) {
+			Object o = null;
+			try {
+				o = input.readObject();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			if (o instanceof Event) {
+				Event evt = (Event) o;
+				if (evt.getTag() == Event.EventTag.INIT_ROWS) {
+					rows = (Integer) evt.getObjectValue();
+				}
+				if (evt.getTag() == Event.EventTag.INIT_COLS) {
+					cols = (Integer) evt.getObjectValue();
+				}
+				if (evt.getTag() == Event.EventTag.INIT_PLAYER) {
+					player = (Player) evt.getObjectValue();
+				}
+				if (evt.getTag() == Event.EventTag.UPDATE_SPRITEDATA) {
+					data = (SpriteMapData) evt.getObjectValue();
+				}
+				if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
+					stats = (PlayerStats) evt.getObjectValue();
+				}
+			}
+		}
+		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, rows, cols);
+		mainView.updateData(data);
+		mainView.setPlayerStats(stats);
+		mainView.setViewer(player);
+		mainView.setVisible(true);
+	}
+
+	private void connectToHost(String hostIP, int hostPort) {
 		try {
 			socket = new Socket(hostIP, hostPort);
 			input = new ObjectInputStream(socket.getInputStream());
 			output = new ObjectOutputStream(socket.getOutputStream());
-
 		} catch (UnknownHostException e) {
 			System.err.println("Dont know about host: " + hostIP);
 			System.exit(1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
-
 	}
+	
 
-	public static void main(String[] args) throws HeadlessException,
-			IOException {
-
-		new GameClient("localhost", 6013);
+	@Override
+	public void performEvent(Event evt) {
+		try {
+			output.writeObject(evt);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
+	
+	/**
+	 * 
+	 * @author Alexander Hederstaf
+	 *
+	 * Listens to events from the server and updates the 
+	 * View accordingly.
+	 */
+	private class ServerListener implements Runnable {
 
+		public ServerListener() {
+			Thread t = new Thread(this);
+			t.start();
+		}
+		
+		@Override
+		public void run() {
+			while(true) {
+				try {
+					Object o = input.readObject();
+					Event event = null;
+					if (o instanceof Event) {
+						event = (Event) o;
+					}
+					if (event != null) {
+						System.out.println("lol");
+					}
+					Thread.sleep(17);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package riskyspace.logic.data;
 
+import java.io.Serializable;
 import java.util.List;
 
 import riskyspace.model.Fleet;
@@ -9,7 +10,12 @@ import riskyspace.model.Player;
  * A class for reporting the results of a battle - the model is not altered.
  * 
  */
-public class BattleStats {
+public class BattleStats implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5632954553067736337L;
 	
 	private Player winner = null;
 	private boolean colonyDestroyed = false;

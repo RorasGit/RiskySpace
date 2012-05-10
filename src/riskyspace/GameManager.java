@@ -45,11 +45,24 @@ public enum GameManager implements EventHandler {
 	private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
 	private Colony selectedColony;
 	
-	public void init(World world, int nbrOfPlayers) {
+	/**
+	 * Used for Network Game
+	 * @param world
+	 */
+	public void init(World world) {
 		this.world = world;
-		initPlayers(nbrOfPlayers);
 		EventBus.INSTANCE.addHandler(this);
 		turn = 1;
+	}
+	
+	/**
+	 * Used for Hot-Seat Game
+	 * @param world
+	 * @param numberOfPlayers
+	 */
+	public void init(World world, int numberOfPlayers) {
+		init(world);
+		initPlayers(numberOfPlayers);
 	}
 	
 	public void start() {
@@ -57,19 +70,21 @@ public enum GameManager implements EventHandler {
 		world.updatePlayerStats(getCurrentPlayer());
 	}
 	
-	public void initPlayers(int nbrOfPlayers) {
-		for (int i = 0; i < nbrOfPlayers; i++) {
+	public void initPlayers(int numberOfPlayers) {
+		for (int i = 0; i < numberOfPlayers; i++) {
 			activePlayers.add(players[i]);
 		}
 		for (Player player : activePlayers) {
-			playerInfo.put(player, new PlayerInfo(player));
+			playerInfo.put(player, new PlayerInfo());
 		}
 	}
-	public void addPlayer(InetAddress ip){
+	
+	public Player addPlayer(InetAddress ip){
 		Player player = players[activePlayers.size()];
 		activePlayers.add(player);
-		playerInfo.put(player, new PlayerInfo(player));
+		playerInfo.put(player, new PlayerInfo());
 		playerInfo.get(player).setIP(ip);
+		return player;
 	}
 
 	public Player getCurrentPlayer() {

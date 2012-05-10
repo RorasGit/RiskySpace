@@ -1,10 +1,16 @@
 package riskyspace.logic.data;
 
+import java.io.Serializable;
+
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 
-public abstract class SpriteData {
+public abstract class SpriteData implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1233990190804340445L;
 	private Position pos;
 	private Player player;
 	

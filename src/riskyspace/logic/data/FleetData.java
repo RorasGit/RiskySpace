@@ -6,6 +6,10 @@ import riskyspace.model.ShipType;
 
 public class FleetData extends SpriteData {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7281617499767850994L;
 	private ShipType flagship;
 	
 	public FleetData(Position pos, Player player, ShipType flagship) {

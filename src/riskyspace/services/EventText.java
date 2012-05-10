@@ -1,8 +1,15 @@
 package riskyspace.services;
 
+import java.io.Serializable;
+
 import riskyspace.model.Position;
 
-public class EventText {
+public class EventText implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3181348773628999176L;
+	
 	private String text;
 	private Position pos;
 	private int times = 0;

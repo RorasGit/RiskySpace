@@ -1,6 +1,13 @@
 package riskyspace.services;
 
-public class Event {
+import java.io.Serializable;
+
+public class Event implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4505609665084471020L;
 
 	/*
 	 * The different events that can occur.
@@ -19,8 +26,8 @@ public class Event {
 		NEW_FLEET_SELECTION,
 		ADD_FLEET_SELECTION,
 		SET_PATH,
-		PERFORM_MOVES, 
-		INTERRUPT_MOVES,
+		PERFORM_MOVES,   // Let Controller decide what to do
+		INTERRUPT_MOVES, // merge perform/interrupt to 1 event.
 		PLANET_SELECTED,
 		COLONIZER_SELECTED,
 		COLONIZE_PLANET,
@@ -39,7 +46,14 @@ public class Event {
 		HIDE_MENU, //TODO: REMOVE
 		EVENT_TEXT,
 		ACTIVE_PLAYER_CHANGED,
-		PATHS_UPDATED;
+		PATHS_UPDATED, 
+		UPDATE_SPRITEDATA,
+		/*
+		 * Initiate new Player's View events
+		 */
+		INIT_ROWS, 
+		INIT_COLS, 
+		INIT_PLAYER;
 		
 		//TODO: add all events that can occur.
 	}

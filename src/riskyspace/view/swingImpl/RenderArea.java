@@ -21,7 +21,9 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import riskyspace.GameManager;
+import riskyspace.logic.SpriteMapData;
 import riskyspace.model.Player;
+import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
 import riskyspace.services.Event;
 import riskyspace.services.Event.EventTag;
@@ -67,8 +69,8 @@ public class RenderArea extends JPanel implements EventHandler {
 	 */
 	private IMenu colonyMenu = null;
 	private IMenu fleetMenu = null;
-	private IMenu topMenu = null;
 	private IMenu planetMenu = null;
+	private TopMenu topMenu = null;
 	
 	/*
 	 * Screen measures
@@ -92,7 +94,6 @@ public class RenderArea extends JPanel implements EventHandler {
 	
 	private int rows, cols;
 	
-	
 	/*
 	 * FPS printout
 	 */
@@ -105,7 +106,6 @@ public class RenderArea extends JPanel implements EventHandler {
 		this.rows = rows;
 		this.cols = cols;
 		measureScreen();
-		SpriteMap.init(squareSize);
 		createBackground();
 		initCameras();
 		createMenues();
@@ -181,6 +181,7 @@ public class RenderArea extends JPanel implements EventHandler {
 		cc = new CameraController();
 		cc.setCamera(currentCamera);
 		cc.start();
+		System.out.println("started");
 	}
 	
 	/*
@@ -193,7 +194,6 @@ public class RenderArea extends JPanel implements EventHandler {
 	}
 	
 	public void setPlayer(Player player) {
-		spriteMap = SpriteMap.getSprites(player);
 		currentCamera = cameras.get(player);
 		cc.setCamera(currentCamera);
 	}
@@ -279,9 +279,9 @@ public class RenderArea extends JPanel implements EventHandler {
 		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
 			setPlayer((Player) evt.getObjectValue());
 		}
-		if (evt.getTag() == EventTag.TERRITORY_CHANGED || evt.getTag() == EventTag.PATHS_UPDATED) {
-			spriteMap = SpriteMap.getSprites(GameManager.INSTANCE.getCurrentPlayer());
-		}
+//		if (evt.getTag() == EventTag.TERRITORY_CHANGED || evt.getTag() == EventTag.PATHS_UPDATED) {
+//			spriteMap = SpriteMap.getSprites(GameManager.INSTANCE.getCurrentPlayer());
+//		}
 	}
 	
 	private class ClickHandler implements MouseListener {
@@ -469,5 +469,13 @@ public class RenderArea extends JPanel implements EventHandler {
 			}
 			texts.removeAll(done);
 		}
+	}
+
+	public void updateData(SpriteMapData data) {
+		spriteMap = SpriteMap.getSprites(data, squareSize);
+	}
+
+	public void setStats(PlayerStats stats) {
+		topMenu.setStats(stats);
 	}
 }

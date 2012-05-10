@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import riskyspace.GameManager;
+import riskyspace.PlayerColors;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
@@ -240,7 +241,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		 */
 		this.colony = colony;
 		setMenuName(colony.getName());
-		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
+		ownerColor = PlayerColors.getColor(colony.getOwner());
 		cityImage = cities.get(colony.getOwner());
 		
 //		String playerString = colony.getOwner().toString().toLowerCase();

@@ -1,6 +1,8 @@
 package riskyspace.model;
 
-public enum Player {
+import java.io.Serializable;
+
+public enum Player implements Serializable  {
 	BLUE,
 	RED,
 	GREEN,

@@ -1,9 +1,10 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum ShipType implements BuildAble{
+public enum ShipType implements BuildAble, Serializable {
 	/*
 	 * Declaration order important for compareTo
 	 * DO NOT CHANGE!

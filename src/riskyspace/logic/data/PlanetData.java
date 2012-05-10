@@ -6,6 +6,10 @@ import riskyspace.model.Resource;
 
 public class PlanetData extends SpriteData {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3901890636821860492L;
 	private Resource res;
 	
 	public PlanetData(Position pos, Player player, Resource res) {

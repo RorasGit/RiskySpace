@@ -1,5 +1,6 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map;
 import riskyspace.logic.MapGenerator;
 import riskyspace.model.building.Ranked;
 
-public class World {
+public class World implements Serializable {
 	private int rows = 0;
 	private int cols = 0;
 	private Map<Position, Territory> territories = null;
@@ -80,9 +81,7 @@ public class World {
 	}
 	
 	public void processBuildQueue(Player player) {
-		System.out.println("sup: " + (getSupply(player).fieldSupply() + buildqueue.get(player).queuedSupply(true)));
-		System.out.println("max: " + getSupply(player).getMax());
-		if (getSupply(player).fieldSupply() + buildqueue.get(player).queuedSupply(true) > getSupply(player).getMax()) {
+		if (playerstats.get(player).getSupply().fieldSupply() + buildqueue.get(player).queuedSupply(true) > playerstats.get(player).getSupply().getMax()) {
 			buildqueue.get(player).clearSupply(true);
 		}
 		Map<Position, BuildAble> itemsToBuild = buildqueue.get(player).processQueue();
@@ -107,12 +106,12 @@ public class World {
 		return cols;
 	}
 	
-	public void giveIncome(Player player) {
-		playerstats.get(player).gainNewResources();
+	public PlayerStats getStats(Player player) {
+		return playerstats.get(player).getImmutableStats();
 	}
 	
-	public int getResources(Player player, Resource resource) {
-		return playerstats.get(player).getResource(resource);
+	public void giveIncome(Player player) {
+		playerstats.get(player).gainNewResources();
 	}
 	
 	public boolean purchase(Player player, BuildAble buildAble) {
@@ -145,10 +144,6 @@ public class World {
 		playerstats.get(player).update(numberOfColonies, supply, buildqueue.get(player).queuedSupply(false));
 	}
 	
-	public Supply getSupply(Player player) {
-		return playerstats.get(player).getSupply();
-	}
-	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -170,5 +165,4 @@ public class World {
 	public int hashCode() {
 		return rows * 17 + cols * 23;
 	}
-
 }

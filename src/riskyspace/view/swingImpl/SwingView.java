@@ -1,12 +1,18 @@
 package riskyspace.view.swingImpl;
 
 import java.awt.GraphicsEnvironment;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
+import riskyspace.logic.FleetMove;
+import riskyspace.logic.SpriteMapData;
 import riskyspace.model.Player;
+import riskyspace.model.PlayerStats;
 import riskyspace.model.World;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
 import riskyspace.view.View;
 
 public class SwingView implements View {
@@ -14,11 +20,26 @@ public class SwingView implements View {
 	private JFrame frame = null;
 	private RenderArea renderArea = null;
 	
-	public SwingView(int rows, int cols, KeyListener keyListener) {
+	public SwingView(int rows, int cols) {
 		setFrame();
 		renderArea = new RenderArea(rows, cols);
 		frame.add(renderArea);
-		frame.addKeyListener(keyListener);
+		frame.addKeyListener(new KeyListener() {
+			@Override
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					System.exit(0);
+				} else if (event.getKeyCode() == KeyEvent.VK_SPACE) {
+					Event evt = new Event(FleetMove.isMoving() ? Event.EventTag.INTERRUPT_MOVES : Event.EventTag.PERFORM_MOVES, null);
+					EventBus.INSTANCE.publish(evt);
+				} else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+					Event evt = new Event(Event.EventTag.NEXT_TURN, null);
+					EventBus.INSTANCE.publish(evt);
+				}
+			}
+			@Override public void keyReleased(KeyEvent arg0) {}
+			@Override public void keyTyped(KeyEvent arg0) {}
+		});
 	}
 	
 	private void setFrame() {
@@ -56,5 +77,15 @@ public class SwingView implements View {
 	@Override
 	public boolean isVisible() {
 		return frame.isVisible();
+	}
+
+	@Override
+	public void updateData(SpriteMapData smd) {
+		renderArea.updateData(smd);
+	}
+
+	@Override
+	public void setPlayerStats(PlayerStats stats) {
+		renderArea.setStats(stats);
 	}
 }

@@ -148,6 +148,12 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 		performMovesButton.draw(g);
 	}
 
+	public void setStats(PlayerStats stats) {
+		gas = stats.getResource(Resource.GAS);
+		metal = stats.getResource(Resource.METAL);
+		supply = stats.getSupply();
+	}
+	
 	@Override
 	public boolean isVisible() {
 		return enabled;

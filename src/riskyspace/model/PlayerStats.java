@@ -18,6 +18,7 @@ public class PlayerStats implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 3246624526028664347L;
+	
 	private Map<Resource, Integer> resources = null;
 	private Map<Resource, Integer> income = null;
 	
