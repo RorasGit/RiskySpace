@@ -65,11 +65,6 @@ public class GameServer implements EventHandler {
 	
 	public void sendObject(Object o, Player player) throws IOException{
 		for (ConnectionHandler ch : connections) {
-			System.out.println(GameManager.INSTANCE.getInfo(player));
-			System.out.println(GameManager.INSTANCE.getInfo(player).getIP());
-			System.out.println(ch.socket);
-			System.out.println(ch.socket.getInetAddress());
-			
 			if (GameManager.INSTANCE.getInfo(player).getIP().equals(ch.socket.getInetAddress())){
 				ch.output.writeObject(o);
 			}
@@ -159,7 +154,7 @@ public class GameServer implements EventHandler {
 					e.printStackTrace();
 				}
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(17);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

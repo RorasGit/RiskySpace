@@ -483,6 +483,8 @@ public class BuildingMenu extends AbstractSideMenu {
 	}
 
 	public void checkBuildOptions(PlayerStats stats) {
-		
+		/*
+		 * TODO: Check Ranks and Resources, set enabled/disabled
+		 */
 	}
 }

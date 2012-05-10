@@ -13,6 +13,7 @@ import riskyspace.GameManager;
 import riskyspace.PlayerColors;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
+import riskyspace.model.PlayerStats;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
@@ -62,15 +63,15 @@ public class ColonyMenu extends AbstractSideMenu{
 		recruitMenu = new RecruitMenu(x, y, menuWidth, menuHeight, new Action() {
 			@Override
 			public void performAction() {
-				recruitMenu.setVisible(false);
 				setVisible(true);
+				recruitMenu.setVisible(false);
 			}
 		});
 		buildingMenu = new BuildingMenu(x, y, menuWidth, menuHeight, new Action() {
 			@Override
 			public void performAction() {
-				buildingMenu.setVisible(false);
 				setVisible(true);
+				buildingMenu.setVisible(false);
 			}
 		});
 		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
@@ -170,5 +171,17 @@ public class ColonyMenu extends AbstractSideMenu{
 		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);
+	}
+	
+	@Override
+	public void setVisible(boolean enabled) {
+		super.setVisible(enabled);
+		recruitMenu.setVisible(enabled);
+		buildingMenu.setVisible(enabled);
+	}
+
+	public void setStats(PlayerStats stats) {
+		recruitMenu.checkRecruitOptions(stats);
+		buildingMenu.checkBuildOptions(stats);
 	}
 }

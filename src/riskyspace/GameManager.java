@@ -124,6 +124,7 @@ public enum GameManager {
 	}
 
 	public void handleEvent(Event evt, Player player) {
+		System.out.println("manager: " + evt + " player: " + player + " | cur = " + currentPlayer);
 		if (!initiated) {
 			return;
 		}
@@ -396,7 +397,7 @@ public enum GameManager {
 		}
 		if (!selections.get(player).selectedFleets.isEmpty()) {
 			Event event = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
-			EventBus.SERVER.publish(evt);
+			EventBus.SERVER.publish(event);
 		}
 	}
 	private void addSelectedFleet(Fleet fleet, Position pos){

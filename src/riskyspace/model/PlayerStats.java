@@ -220,8 +220,8 @@ public class PlayerStats implements Serializable{
 		PlayerStats ips = new ImmutablePlayerStats();
 		ips.resources.put(METAL, resources.get(METAL));
 		ips.resources.put(GAS, resources.get(GAS));
-		ips.income.put(METAL, resources.get(METAL));
-		ips.income.put(GAS, resources.get(GAS));
+		ips.income.put(METAL, income.get(METAL));
+		ips.income.put(GAS, income.get(GAS));
 		ips.supply = getSupply();
 		return ips;
 	}

@@ -278,6 +278,7 @@ public class RenderArea extends JPanel {
 
 	public void setStats(PlayerStats stats) {
 		topMenu.setStats(stats);
+		colonyMenu.setStats(stats);
 	}
 	
 	public void showPlanet(Planet selection) {

@@ -128,7 +128,7 @@ public class RecruitMenu extends AbstractSideMenu {
 		g.drawString(getMenuName(), textX, textY);
 	}
 
-	private void checkRecruitOptions(PlayerStats stats) {
+	public void checkRecruitOptions(PlayerStats stats) {
 		buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT));
 		buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER));
 		buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER));
