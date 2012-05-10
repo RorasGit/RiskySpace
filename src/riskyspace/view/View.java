@@ -6,6 +6,7 @@ import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
+import riskyspace.model.Territory;
 
 public interface View {
 	public static final String res = ".png"; // _lowres.jpg
@@ -19,7 +20,7 @@ public interface View {
 	public void updateData(SpriteMapData data);
 	public void setPlayerStats(PlayerStats stats);
 	
-	public void showPlanet(Planet selection);
+	public void showPlanet(Territory selection);
 	public void showColony(Colony selection);
 	public void showFleet(Fleet selection);
 	public void hideMenus();

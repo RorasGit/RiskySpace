@@ -13,6 +13,7 @@ import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
+import riskyspace.model.Territory;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
@@ -92,8 +93,8 @@ public class SwingView implements View {
 	}
 
 	@Override
-	public void showPlanet(Planet selection) {
-		renderArea.showPlanet(selection);
+	public void showPlanet(Territory selection) {
+		renderArea.showTerritory(selection);
 	}
 
 	@Override

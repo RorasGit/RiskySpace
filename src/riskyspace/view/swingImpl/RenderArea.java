@@ -28,6 +28,7 @@ import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
+import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
@@ -308,9 +309,9 @@ public class RenderArea extends JPanel {
 		colonyMenu.setStats(stats);
 	}
 	
-	public void showPlanet(Planet selection) {
+	public void showTerritory(Territory selection) {
 		hideSideMenus();
-		planetMenu.setPlanet(selection);
+		planetMenu.setTerritory(selection);
 		planetMenu.setVisible(true);
 	}
 

@@ -12,6 +12,7 @@ import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
+import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
@@ -173,8 +174,8 @@ public class GameClient implements EventHandler {
 							Object selection = event.getObjectValue();
 							if (selection instanceof Colony) {
 								mainView.showColony((Colony) selection);
-							} else if (selection instanceof Planet) {
-								mainView.showPlanet((Planet) selection);
+							} else if (selection instanceof Territory) {
+								mainView.showPlanet((Territory) selection);
 							} else if (selection instanceof Fleet) {
 								mainView.showFleet((Fleet) selection);
 							} else if(selection == null){
@@ -182,12 +183,9 @@ public class GameClient implements EventHandler {
 							}
 						} 
 					}
-					Thread.sleep(17);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}

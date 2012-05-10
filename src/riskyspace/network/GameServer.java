@@ -148,7 +148,6 @@ public class GameServer implements EventHandler {
 					try {
 						socket.close();
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					connections.remove(this);
@@ -160,11 +159,6 @@ public class GameServer implements EventHandler {
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				try {
-					Thread.sleep(17);
-				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 

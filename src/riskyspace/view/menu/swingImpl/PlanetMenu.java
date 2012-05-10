@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
+import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
 import riskyspace.model.Resource;
 import riskyspace.model.Territory;
@@ -44,16 +45,18 @@ public class PlanetMenu extends AbstractSideMenu{
 		});
 	}
 	
-	public void setPlanet(Planet planet) {
-		planetPicture = planet.getType() == Resource.METAL? metalPlanetPicture : gasPlanetPicture;
+	public void setTerritory(Territory selection) {
+		planetPicture = selection.getPlanet().getType() == Resource.METAL? metalPlanetPicture : gasPlanetPicture;
 		colonizeButton.setImage("res/menu/world/colonizeButton" + View.res);
 		colonizeButton.setEnabled(false);
+		for (Fleet fleet : selection.getFleets()) {
+			if (fleet.hasColonizer()) {
+				colonizeButton.setEnabled(true);
+				break;
+			}
+		}
 	}
 	
-	public void colonizerPresent(boolean present) {
-		colonizeButton.setEnabled(present);
-	}
-
 	@Override
 	public boolean mousePressed(Point p) {
 		/*
