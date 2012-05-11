@@ -32,6 +32,7 @@ public class RecruitMenu extends AbstractSideMenu {
 	private int margin;
 
 	private Colony colony = null;
+	private PlayerStats stats = null;
 	
 	/*
 	 * Build Buttons
@@ -111,6 +112,7 @@ public class RecruitMenu extends AbstractSideMenu {
 		setMenuName(colony.getName());
 		ownerColor = PlayerColors.getColor(colony.getOwner());
 		colonyPicture = cities.get(colony.getOwner());
+		checkRecruitOptions(stats);
 		
 		String playerString = colony.getOwner().toString().toLowerCase();
 		backButton.setImage("res/menu/" + playerString + "/backButton" + View.res);
@@ -129,10 +131,25 @@ public class RecruitMenu extends AbstractSideMenu {
 	}
 
 	public void checkRecruitOptions(PlayerStats stats) {
-		buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT));
-		buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER));
-		buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER));
-		buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER));
+		this.stats = stats;
+		if (colony != null && stats != null){
+			if (colony.getHangar().getRank() <= 1){
+				buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT));
+				buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER));
+			} else {
+				buildScoutButton.setEnabled(false);
+				buildHunterButton.setEnabled(false);
+			}
+			if (colony.getHangar().getRank() <= 3){
+				buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER));
+				buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER));
+			}else{
+				buildColonizerButton.setEnabled(false);
+				buildDestroyerButton.setEnabled(false);
+			}
+			
+			
+		}
 	}
 
 	@Override

@@ -236,16 +236,17 @@ public enum GameManager {
 		selections.get(player).selectedPosition = pos;
 		Territory selectedTerritory = world.getTerritory(pos);
 		if (selectedTerritory.hasPlanet()) {
+			Event evt;
 			if (selectedTerritory.hasColony() && player == selectedTerritory.getColony().getOwner()) {
 				System.out.println(selectedTerritory.getColony().getMine() + " | " + player);
-				Event evt = new Event(Event.EventTag.SELECTION, selectedTerritory.getColony());
-				evt.setPlayer(player);
-				EventBus.SERVER.publish(evt);
+				evt = new Event(Event.EventTag.SELECTION, selectedTerritory.getColony());
+			} else if (selectedTerritory.hasColony()){
+				evt = new Event(Event.EventTag.SELECTION, null);
 			} else {
-				Event evt = new Event(Event.EventTag.SELECTION, selectedTerritory);
-				evt.setPlayer(player);
-				EventBus.SERVER.publish(evt);
+				evt = new Event(Event.EventTag.SELECTION, selectedTerritory);
 			}
+			evt.setPlayer(player);
+			EventBus.SERVER.publish(evt);
 		}
 	}
 	
@@ -368,7 +369,7 @@ public enum GameManager {
 			selections.get(player).lastFleetSelectPos = pos;
 			selections.get(player).fleetSelectionIndex = 0;
 		}
-		if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == GameManager.INSTANCE.getCurrentPlayer())) {
+		if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == player)) {
 			/*
 			 * Check that there are other ships than colonizers
 			 */
@@ -392,7 +393,7 @@ public enum GameManager {
 			selections.get(player).lastFleetSelectPos = pos;
 			selections.get(player).fleetSelectionIndex = 0;
 		}
-		if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == GameManager.INSTANCE.getCurrentPlayer())) {
+		if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == player)) {
 			if (world.getTerritory(pos).getFleets().size() != world.getTerritory(pos).shipCount(ShipType.COLONIZER)) {
 				Fleet fleet;
 				do {
@@ -416,7 +417,7 @@ public enum GameManager {
 			for (int i = 0; i < positions.size(); i++) {
 				if (positions.get(i) instanceof Position) {
 					Position pos = (Position) positions.get(i);
-					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == getCurrentPlayer())) {
+					if (world.getTerritory(pos).hasFleet() && (world.getTerritory(pos).controlledBy() == player)) {
 						for (Fleet fleet : world.getTerritory(pos).getFleets()) {
 							if (!fleet.hasColonizer()) {
 								addSelectedFleet(fleet, pos);
