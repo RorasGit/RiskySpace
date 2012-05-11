@@ -10,7 +10,6 @@ import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
 
-import riskyspace.GameManager;
 import riskyspace.PlayerColors;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
@@ -19,9 +18,9 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
-import riskyspace.view.ViewResources;
 import riskyspace.view.RankIndicator;
 import riskyspace.view.View;
+import riskyspace.view.ViewResources;
 import riskyspace.view.menu.AbstractSideMenu;
 
 /**
@@ -32,7 +31,8 @@ import riskyspace.view.menu.AbstractSideMenu;
 public class BuildingMenu extends AbstractSideMenu {
 
 	private Colony colony = null;
-
+	private PlayerStats stats = null;
+	
 	private Color ownerColor = null;
 	private int margin;
 	
@@ -245,6 +245,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		 * Immutable?
 		 */
 		this.colony = colony;
+		checkBuildOptions(stats);
 		setMenuName(colony.getName());
 		ownerColor = PlayerColors.getColor(colony.getOwner());
 		cityImage = cities.get(colony.getOwner());
@@ -298,6 +299,9 @@ public class BuildingMenu extends AbstractSideMenu {
 		if (nextTurretInfo.length > 1) {
 			nextTurretDamage = nextTurretInfo[0];
 			nextTurretShield = nextTurretInfo[1];
+		} else {
+			nextTurretDamage = "";
+			nextTurretShield = "";
 		}
 		
 		String[] currentRadarInfo = colony.getRadar().getDescriptiveString(colony.getRadar().getRank()).split("\n");
@@ -305,21 +309,29 @@ public class BuildingMenu extends AbstractSideMenu {
 		currentRadarRange = currentRadarInfo[0];
 		if (currentRadarInfo.length > 1) {
 			currentRadarRange2 = currentRadarInfo[1];
+		} else {
+			currentRadarRange2 = "";
 		}
 		nextRadarRange = nextRadarInfo[0];
 		if (nextRadarInfo.length > 1) {
 			nextRadarRange2 = nextRadarInfo[1];
-		} 
+		} else {
+			nextRadarRange2 = "";
+		}
 		
 		String[] currentHangarInfo = colony.getHangar().getDescriptiveString(colony.getHangar().getRank()).split("\n");
 		String[] nextHangarInfo = colony.getHangar().getDescriptiveString(colony.getHangar().getRank() + 1).split("\n");
 		currentHangarPerk = currentHangarInfo[0];
 		if (currentHangarInfo.length > 1) {
 			currentHangarPerk2 = currentHangarInfo[1];
+		} else {
+			currentHangarPerk2 = "";
 		}
 		nextHangarPerk = nextHangarInfo[0];
 		if (nextHangarInfo.length > 1) {
 			nextHangarPerk2 = nextHangarInfo[1];
+		} else {
+			nextHangarPerk2 = "";
 		}
 		
 		/*
@@ -435,16 +447,16 @@ public class BuildingMenu extends AbstractSideMenu {
 			/*
 			 * Draw next Level costs if not maxed
 			 */
-			if (upgradeMine.isEnabled()) {
+			if (!colony.getMine().isMaxRank()) {
 				g.drawString(nextMineMetal + nextMineGas, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextMineGas)/2, mineRank.getY() + margin/3 + 5 + 5*height/2);
 			}
-			if (upgradeTurret.isEnabled()) {
+			if (!colony.getTurret().isMaxRank()) {
 				g.drawString(nextTurretMetal + nextTurretGas, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextTurretGas)/2, turretRank.getY() + margin/3 + 5 + 5*height/2);
 			}
-			if (upgradeRadar.isEnabled()) {
+			if (!colony.getRadar().isMaxRank()) {
 				g.drawString(nextRadarMetal + nextRadarGas, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextRadarMetal + nextRadarGas)/2, radarRank.getY() + margin/3 + 5 + 5*height/2);
 			}
-			if (upgradeHangar.isEnabled()) {
+			if (!colony.getHangar().isMaxRank()) {
 				g.drawString(nextHangarMetal + nextHangarGas, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextHangarMetal + nextHangarGas)/2, hangarRank.getY() + margin/3 + 5 + 5*height/2);
 			}
 			
@@ -502,7 +514,8 @@ public class BuildingMenu extends AbstractSideMenu {
 		/*
 		 * TODO: Check Ranks and Resources, set enabled/disabled
 		 */
-		if (colony != null) {
+		this.stats = stats;
+		if (colony != null && stats != null) {
 			upgradeMine.setEnabled(!colony.getMine().isMaxRank() && stats.canAfford(colony.getMine()));
 			upgradeTurret.setEnabled(!colony.getTurret().isMaxRank() && stats.canAfford(colony.getTurret()));
 			upgradeRadar.setEnabled(!colony.getRadar().isMaxRank() && stats.canAfford(colony.getRadar()));
