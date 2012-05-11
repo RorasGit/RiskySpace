@@ -73,8 +73,11 @@ public class MapGenerator {
 		// Level 2 Turret
 		territories.get(pos).getPlanet().getColony().getTurret().upgrade();
 		
-		// Level 1 Hangar
+		// Level 3 Hangar (for colonizer TODO: Colonizer only from homeplanet)
 		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
+		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
+		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
+		
 		addStartingFleets(territories.get(pos));
 		//Player 2:s closest planets
 		territories.get(new Position(pos.getRow()-2,pos.getCol()+1)).setPlanet(Resource.METAL);

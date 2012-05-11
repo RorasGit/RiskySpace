@@ -46,9 +46,10 @@ public class ColonyNames {
 		}
 		String name = names.get(player)[0];
 		while (usedNames.contains(name)) {
-			int rand = random.nextInt() % names.get(player).length;
+			int rand = Math.abs(random.nextInt() % names.get(player).length);
 			name = names.get(player)[rand];
 		}
+		usedNames.add(name);
 		return name;
 	}
 

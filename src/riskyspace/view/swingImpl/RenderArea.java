@@ -116,7 +116,7 @@ public class RenderArea extends JPanel {
 	 * The Player currently playing
 	 */
 	private Button otherPlayerActive = null;
-	
+
 	public RenderArea(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
@@ -309,14 +309,9 @@ public class RenderArea extends JPanel {
 	}
 	
 	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
-		for (Colony colony : colonyQueues.keySet()) {
-			if (colony.equals(colonyMenu.getColony())) {
-				colonyMenu.setQueue(colonyQueues.get(colony));
-			}
-		}
+		colonyMenu.setQueues(colonyQueues);
 		/*
 		 * Set for BuildQueueMenu
-		 * 
 		 */
 	}
 	
@@ -327,9 +322,14 @@ public class RenderArea extends JPanel {
 	}
 
 	public void showColony(Colony selection) {
-		hideSideMenus();
-		colonyMenu.setColony(selection);
-		colonyMenu.setVisible(true);
+		if (selection.equals(colonyMenu.getColony()) && colonyMenu.isVisible()) {
+			// Update colony
+			colonyMenu.setColony(selection);
+		} else {
+			hideSideMenus();
+			colonyMenu.setColony(selection);
+			colonyMenu.setVisible(true);
+		}
 	}
 
 	public void showFleet(Fleet selection) {

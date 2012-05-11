@@ -9,10 +9,10 @@ public class Hangar implements BuildAble, Ranked {
 	 * 
 	 */
 	private static final long serialVersionUID = -3015203446253905759L;
-	private static final int MAX_RANK = 2;
+	private static final int MAX_RANK = 3;
 	private int rank = 0;
 	
-	private String[] description = {"No Effect", "Can Build Scout\nCan Build Hunter", "Can Build Destroyer"};
+	private String[] description = {"No Effect", "Can Build Scout\nCan Build Hunter", "Repair Fleets", "Can Build\nDestroyer"};
 	
 	@Override
 	public int getSupplyCost() {

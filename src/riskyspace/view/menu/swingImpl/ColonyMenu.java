@@ -118,37 +118,39 @@ public class ColonyMenu extends AbstractSideMenu{
 		/*
 		 * Only handle mouse event if enabled
 		 */
-		if (isVisible()) {
-			if (buildShipButton.mousePressed(p)) {return true;}
-			if (buildingsButton.mousePressed(p)) {return true;}
-			if (this.contains(p)) {return true;}
-			else {
-				return false;
-			}
-		} else if (recruitMenu.isVisible()) {
+		if (recruitMenu.isVisible()) {
 			return recruitMenu.mousePressed(p);
 		} else if (buildingMenu.isVisible()) {
 			return buildingMenu.mousePressed(p);
+		} else if (isVisible()) {
+			if (buildShipButton.mousePressed(p)) {return true;}
+			if (buildingsButton.mousePressed(p)) {return true;}
+			if (this.contains(p)) {return true;}
 		}
 		return false;
 	}
 
+	public void setStats(PlayerStats stats) {
+		recruitMenu.checkRecruitOptions(stats);
+		buildingMenu.setStats(stats);
+	}
+
+	public void setQueues(Map<Colony, List<BuildAble>> colonyQueues) {
+		buildingMenu.setQueue(colonyQueues);
+	}
 
 	@Override
 	public boolean mouseReleased(Point p) {
 		/*
 		 * Only handle mouse event if enabled
 		 */
-		if (isVisible()) {
-			if (buildShipButton.mouseReleased(p)) {return true;}
-			if (buildingsButton.mouseReleased(p)) {return true;}
-			else {
-				return false;
-			}
-		} else if (recruitMenu.isVisible()) {
+		if (recruitMenu.isVisible()) {
 			recruitMenu.mouseReleased(p);
 		} else if (buildingMenu.isVisible()) {
 			buildingMenu.mouseReleased(p);
+		} else if (isVisible()) {
+			if (buildShipButton.mouseReleased(p)) {return true;}
+			if (buildingsButton.mouseReleased(p)) {return true;}
 		}
 		return false;
 	}
@@ -158,16 +160,16 @@ public class ColonyMenu extends AbstractSideMenu{
 		/*
 		 * Only draw if enabled
 		 */
-		if (isVisible()) {
+		if (recruitMenu.isVisible()) {
+			recruitMenu.draw(g);
+		} else if (buildingMenu.isVisible()) {
+			buildingMenu.draw(g);
+		} else if (isVisible()) {
 			super.draw(g);
 			g.drawImage(colonyPicture, getX() + margin, getY() + 3*margin/2,null);
 			drawColonyName(g);
 			buildShipButton.draw(g);
 			buildingsButton.draw(g);
-		} else if (recruitMenu.isVisible()) {
-			recruitMenu.draw(g);
-		} else if (buildingMenu.isVisible()) {
-			buildingMenu.draw(g);
 		}
 	}
 	
@@ -182,20 +184,12 @@ public class ColonyMenu extends AbstractSideMenu{
 	@Override
 	public void setVisible(boolean enabled) {
 		super.setVisible(enabled);
-		recruitMenu.setVisible(enabled);
-		buildingMenu.setVisible(enabled);
+		recruitMenu.setVisible(false);
+		buildingMenu.setVisible(false);
 	}
-
-	public void setStats(PlayerStats stats) {
-		recruitMenu.checkRecruitOptions(stats);
-		buildingMenu.setStats(stats);
-	}
-
-	public void setQueue(List<BuildAble> list) {
-		/*
-		 * Print Queue at Colony Menu
-		 */
-		// Send to BuildingsMenu to see what is in progress
-		buildingMenu.setQueue(list);
+	
+	@Override
+	public boolean isVisible() {
+		return super.isVisible() || recruitMenu.isVisible() || buildingMenu.isVisible();
 	}
 }

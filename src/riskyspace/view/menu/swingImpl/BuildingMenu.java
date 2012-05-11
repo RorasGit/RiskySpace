@@ -38,6 +38,7 @@ public class BuildingMenu extends AbstractSideMenu {
 
 	private Colony colony = null;
 	private PlayerStats stats = null;
+	private Map<Colony, List<BuildAble>> colonyQueues = new HashMap<Colony, List<BuildAble>>();
 	
 	private boolean mineUpgrading = false;
 	private boolean turretUpgrading = false;
@@ -164,7 +165,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		mineRank = new RankIndicator(3);
 		turretRank = new RankIndicator(3);
 		radarRank = new RankIndicator(3);
-		hangarRank = new RankIndicator(2);
+		hangarRank = new RankIndicator(3);
 		
 		// Set Size for Rank Indicators
 		int width = menuHeight/35;
@@ -271,6 +272,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		 */
 		this.colony = colony;
 		checkBuildOptions();
+		checkQueue();
 		setMenuName(colony.getName());
 		ownerColor = PlayerColors.getColor(colony.getOwner());
 		cityImage = cities.get(colony.getOwner());
@@ -535,12 +537,9 @@ public class BuildingMenu extends AbstractSideMenu {
 			else if (upgradeHangar.mousePressed(p)) {return true;}
 			else if (this.contains(p)) {
 				return true;
-			} else {
-				return false;
 			}
-			} else {
-				return false;
 		}
+		return false;
 	}
 
 	@Override
@@ -556,10 +555,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		}
 	}
 
-	public void checkBuildOptions() {
-		/*
-		 * TODO: Check Ranks and Resources, set enabled/disabled
-		 */
+	private void checkBuildOptions() {
 		if (colony != null && stats != null) {
 			upgradeMine.setEnabled(!mineUpgrading && !colony.getMine().isMaxRank() && stats.canAfford(colony.getMine()));
 			upgradeTurret.setEnabled(!turretUpgrading && !colony.getTurret().isMaxRank() && stats.canAfford(colony.getTurret()));
@@ -573,23 +569,30 @@ public class BuildingMenu extends AbstractSideMenu {
 		checkBuildOptions();
 	}
 
-	public void setQueue(List<BuildAble> list) {
+	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
+		this.colonyQueues = colonyQueues;
+		checkQueue();
+	}
+	
+	private void checkQueue() {
 		mineUpgrading = false;
 		turretUpgrading = false;
 		radarUpgrading = false;
 		hangarUpgrading = false;
-		System.out.println("hah");
-		if (list != null) {
-			System.out.println("heh");
-			for (int i = 0; i < list.size(); i++) {
-				if (list.get(i) instanceof Mine) {
-					mineUpgrading = true;
-				} else if (list.get(i) instanceof Turret) {
-					turretUpgrading = true;
-				} else if (list.get(i) instanceof Radar) {
-					radarUpgrading = true;
-				} else if (list.get(i) instanceof Hangar) {
-					hangarUpgrading = true;
+		if (colonyQueues != null) {
+			for (Colony colony : colonyQueues.keySet()) {
+				if (colony.equals(this.colony)) {
+					for (int i = 0; i < colonyQueues.get(colony).size(); i++) {
+						if (colonyQueues.get(colony).get(i) instanceof Mine) {
+							mineUpgrading = true;
+						} else if (colonyQueues.get(colony).get(i) instanceof Turret) {
+							turretUpgrading = true;
+						} else if (colonyQueues.get(colony).get(i) instanceof Radar) {
+							radarUpgrading = true;
+						} else if (colonyQueues.get(colony).get(i) instanceof Hangar) {
+							hangarUpgrading = true;
+						}
+					}
 				}
 			}
 		}

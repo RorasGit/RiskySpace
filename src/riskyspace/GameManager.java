@@ -44,10 +44,19 @@ public enum GameManager {
 	private Map<Player, Selection> selections = new HashMap<Player, Selection>();
 	
 	private class Selection {
+		/*
+		 * Fleet selection and helper variables
+		 */
 		private Position lastFleetSelectPos = null;
 		private int fleetSelectionIndex = 0;
 		private Set<Fleet> selectedFleets = new HashSet<Fleet>();
+		/*
+		 * Paths
+		 */
 		private Map<Fleet, Path> fleetPaths = new HashMap<Fleet, Path>();
+		/*
+		 * Position selected (Colony, Planet)
+		 */
 		private Position selectedPosition = null;
 	}
 	
@@ -128,6 +137,7 @@ public enum GameManager {
 		world.processBuildQueue(getCurrentPlayer());
 		world.updatePlayerStats(currentPlayer);
 		world.resetShips();
+		updateSelections();
 		if (currentPlayer == players[0]) {
 			turn++;
 		}
@@ -190,6 +200,26 @@ public enum GameManager {
 			} else {
 				for (Player activePlayer : activePlayers) {
 					incomeChanged(activePlayer);
+				}
+			}
+		}
+	}
+	
+	private void updateSelections() {
+		for (Player player : activePlayers) {
+			if (selections.get(player).selectedPosition != null) {
+				Territory selectedTerritory = world.getTerritory(selections.get(player).selectedPosition);
+				if (selectedTerritory.hasPlanet()) {
+					Event evt;
+					if (selectedTerritory.hasColony() && player == selectedTerritory.getColony().getOwner()) {
+						evt = new Event(Event.EventTag.SELECTION, selectedTerritory.getColony());
+					} else if (selectedTerritory.hasColony()){
+						evt = new Event(Event.EventTag.SELECTION, null);
+					} else {
+						evt = new Event(Event.EventTag.SELECTION, selectedTerritory);
+					}
+					evt.setPlayer(player);
+					EventBus.SERVER.publish(evt);
 				}
 			}
 		}
@@ -454,11 +484,6 @@ public enum GameManager {
 				}
 			}
 		}
-	}
-	
-
-	private Map<Colony, List<BuildAble>> getBuildQueue(Player player) {
-		return world.getBuildQueue(player);
 	}
 
 	private void resetVariables(Player player) {
