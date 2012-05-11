@@ -44,6 +44,7 @@ public class Event implements Serializable {
 		UPDATE_SPRITEDATA,
 		SELECTION,
 		COLONIZER_PRESENT,
+		BUILDQUEUE_CHANGED,
 		/*
 		 * Initiate new Player's View events
 		 */

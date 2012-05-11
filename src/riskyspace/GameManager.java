@@ -160,9 +160,9 @@ public enum GameManager {
 			} else if (evt.getTag() == Event.EventTag.MOVE && player == getCurrentPlayer()) {
 				performMoves();
 			} else if (evt.getTag() == Event.EventTag.QUEUE_SHIP && player == getCurrentPlayer()) {
-				queueBuildAble((BuildAble) evt.getObjectValue());
+				queueBuildAble((BuildAble) evt.getObjectValue(), player);
 			} else if (evt.getTag() == Event.EventTag.QUEUE_BUILDING && player == getCurrentPlayer()) {
-				queueBuilding((String)evt.getObjectValue());
+				queueBuilding((String)evt.getObjectValue(), player);
 			}else if (evt.getTag() == Event.EventTag.COLONIZE_PLANET && player == getCurrentPlayer()) {
 				colonizePlanet(player);
 			} 
@@ -195,7 +195,7 @@ public enum GameManager {
 		}
 	}
 	
-	private void queueBuilding(String objectValue) {
+	private void queueBuilding(String objectValue, Player player) {
 		Colony c = world.getTerritory(selections.get(getCurrentPlayer()).selectedPosition).getColony();
 		BuildAble building = null;
 		if(objectValue.equals("MINE")){
@@ -208,7 +208,7 @@ public enum GameManager {
 			building = c.getTurret().isMaxRank() ? null: c.getTurret();
 		}
 		if(building != null){
-			queueBuildAble(building);
+			queueBuildAble(building, player);
 		}
 	}
 
@@ -442,7 +442,7 @@ public enum GameManager {
 		}
 	}
 
-	private void queueBuildAble(BuildAble build) {
+	private void queueBuildAble(BuildAble build, Player player) {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == world.getTerritory(selections.get(getCurrentPlayer()).selectedPosition).getColony()) {
@@ -456,6 +456,10 @@ public enum GameManager {
 		}
 	}
 	
+
+	private Map<Colony, List<BuildAble>> getBuildQueue(Player player) {
+		return world.getBuildQueue(player);
+	}
 
 	private void resetVariables(Player player) {
 		selections.get(player).selectedFleets.clear();

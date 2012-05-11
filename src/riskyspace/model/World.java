@@ -63,6 +63,16 @@ public class World implements Serializable {
 		}
 		return hasContent;
 	}
+	public Map<Colony, List<BuildAble>> getBuildQueue(Player player){
+		Map <Position, List<BuildAble>> buildQueue = buildqueue.get(player).peek();
+		Map <Colony, List<BuildAble>> returnedBuildQueue = new HashMap<Colony, List<BuildAble>>();
+		for (Position pos : buildQueue.keySet()) {
+			returnedBuildQueue.put(this.territories.get(pos).getColony(), buildQueue.get(pos));
+		}
+		
+		return returnedBuildQueue;
+		
+	}
 	
 	public void resetShips() {
 		for (Position pos : getContentPositions()) {
@@ -75,6 +85,9 @@ public class World implements Serializable {
 	public void addToBuildQueue(BuildAble buildAble, Player player, Position position) {
 		buildqueue.get(player).add(buildAble, position);
 		updatePlayerStats(player);
+		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	/**
@@ -86,6 +99,9 @@ public class World implements Serializable {
 		List<BuildAble> items = buildqueue.get(player).clear(position);	
 		playerstats.get(player).refund(items);
 		updatePlayerStats(player);
+		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	public void processBuildQueue(Player player) {
@@ -103,12 +119,18 @@ public class World implements Serializable {
 				System.out.println("after: " +((Ranked) itemsToBuild.get(pos)).getRank() + "/" + ((Ranked) itemsToBuild.get(pos)).getMaxRank());
 			}
 		}
+		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	public void resetAllQueues(Player player) {
 		List<BuildAble> deletedItems = buildqueue.get(player).clearAll();
 		playerstats.get(player).refund(deletedItems);
 		updatePlayerStats(player);
+		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	public List<Position> getContentPositions(){
