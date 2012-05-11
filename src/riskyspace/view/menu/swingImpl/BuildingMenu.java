@@ -122,6 +122,8 @@ public class BuildingMenu extends AbstractSideMenu {
 	private String nextHangarPerk2 = "";
 	private String nextHangarMetal = "";
 	private String nextHangarGas = "";
+	private Font titleFont;
+	private Font infoFont;
 	
 	public BuildingMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
@@ -235,6 +237,8 @@ public class BuildingMenu extends AbstractSideMenu {
 	public BuildingMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
 		this(x, y, menuWidth, menuHeight);
 		backButton.setAction(backAction);
+		titleFont = ViewResources.getFont().deriveFont(menuHeight/40f);
+		infoFont = new Font("Tahoma", Font.PLAIN, menuHeight/80);
 	}
 	
 	public void setColony(Colony colony) {
@@ -393,7 +397,7 @@ public class BuildingMenu extends AbstractSideMenu {
 			/*
 			 * Draw Title Strings
 			 */
-			g.setFont(ViewResources.getFont().deriveFont(25f));
+			g.setFont(titleFont);
 			g.setColor(ViewResources.WHITE);
 			FontMetrics fm = g.getFontMetrics();
 			g.drawString(mine, getX() + getMenuWidth()/2 - fm.stringWidth(mine)/2, mineRank.getY() - 5);
@@ -404,7 +408,7 @@ public class BuildingMenu extends AbstractSideMenu {
 			/*
 			 * Draw info strings
 			 */
-			g.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			g.setFont(infoFont);
 			fm = g.getFontMetrics();
 			
 			int height = fm.getHeight();
