@@ -8,12 +8,18 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import riskyspace.PlayerColors;
+import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
+import riskyspace.model.building.Hangar;
+import riskyspace.model.building.Mine;
+import riskyspace.model.building.Radar;
+import riskyspace.model.building.Turret;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
@@ -32,6 +38,11 @@ public class BuildingMenu extends AbstractSideMenu {
 
 	private Colony colony = null;
 	private PlayerStats stats = null;
+	
+	private boolean mineUpgrading = false;
+	private boolean turretUpgrading = false;
+	private boolean radarUpgrading = false;
+	private boolean hangarUpgrading = false;
 	
 	private Color ownerColor = null;
 	private int margin;
@@ -67,6 +78,11 @@ public class BuildingMenu extends AbstractSideMenu {
 	 * Split Image
 	 */
 	private Image split = null;
+	
+	/*
+	 * 
+	 */
+	private Image inProgress = null;
 	
 	/*
 	 * Rank indicators
@@ -122,6 +138,7 @@ public class BuildingMenu extends AbstractSideMenu {
 	private String nextHangarPerk2 = "";
 	private String nextHangarMetal = "";
 	private String nextHangarGas = "";
+	
 	private Font titleFont;
 	private Font infoFont;
 	
@@ -165,6 +182,12 @@ public class BuildingMenu extends AbstractSideMenu {
 		hangarRank.setLocation(x + margin/2, y + height*3 + 13*margin/2 + imageHeight);
 		
 		/*
+		 * Button Sizes
+		 */
+		int upgradeButtonWidth = height;
+		int upgradeButtonHeight = height/4;
+		
+		/*
 		 * Load Images
 		 */
 		mineImage = Toolkit.getDefaultToolkit().getImage("res/menu/mine" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
@@ -172,13 +195,11 @@ public class BuildingMenu extends AbstractSideMenu {
 		radarImage = Toolkit.getDefaultToolkit().getImage("res/menu/radar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
 		hangarImage = Toolkit.getDefaultToolkit().getImage("res/menu/hangar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
 		split = Toolkit.getDefaultToolkit().getImage("res/menu/split" + View.res).getScaledInstance(height/5, height, Image.SCALE_DEFAULT);
-		
+		inProgress = Toolkit.getDefaultToolkit().getImage("res/menu/progress" + View.res).getScaledInstance(upgradeButtonWidth, upgradeButtonHeight, Image.SCALE_DEFAULT);
+				
 		/*
 		 * Create Buttons
 		 */
-		int upgradeButtonWidth = height;
-		int upgradeButtonHeight = height/4;
-		
 		upgradeMine = new Button(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, mineRank.getY() + mineRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeMine.setImage("res/menu/upgrade" + View.res);
@@ -249,7 +270,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		 * Immutable?
 		 */
 		this.colony = colony;
-		checkBuildOptions(stats);
+		checkBuildOptions();
 		setMenuName(colony.getName());
 		ownerColor = PlayerColors.getColor(colony.getOwner());
 		cityImage = cities.get(colony.getOwner());
@@ -472,6 +493,27 @@ public class BuildingMenu extends AbstractSideMenu {
 			upgradeRadar.draw(g);
 			upgradeHangar.draw(g);
 			backButton.draw(g);
+			
+			/*
+			 * Draw progress indication
+			 */
+			drawProgressIndicators(g);
+		}
+	}
+	
+	private void drawProgressIndicators(Graphics g) {
+		int progressX = getX() + getMenuWidth() - 3*margin/5 - inProgress.getWidth(null);
+		if (mineUpgrading) {
+			g.drawImage(inProgress, progressX, mineRank.getY() + mineRank.getHeight() - inProgress.getHeight(null), null);
+		}
+		if (turretUpgrading) {
+			g.drawImage(inProgress, progressX, turretRank.getY() + turretRank.getHeight() - inProgress.getHeight(null), null);
+		}
+		if (radarUpgrading) {
+			g.drawImage(inProgress, progressX, radarRank.getY() + radarRank.getHeight() - inProgress.getHeight(null), null);
+		}
+		if (hangarUpgrading) {
+			g.drawImage(inProgress, progressX, hangarRank.getY() + hangarRank.getHeight() - inProgress.getHeight(null), null);
 		}
 	}
 	
@@ -514,16 +556,39 @@ public class BuildingMenu extends AbstractSideMenu {
 		}
 	}
 
-	public void checkBuildOptions(PlayerStats stats) {
+	public void checkBuildOptions() {
 		/*
 		 * TODO: Check Ranks and Resources, set enabled/disabled
 		 */
-		this.stats = stats;
 		if (colony != null && stats != null) {
-			upgradeMine.setEnabled(!colony.getMine().isMaxRank() && stats.canAfford(colony.getMine()));
-			upgradeTurret.setEnabled(!colony.getTurret().isMaxRank() && stats.canAfford(colony.getTurret()));
-			upgradeRadar.setEnabled(!colony.getRadar().isMaxRank() && stats.canAfford(colony.getRadar()));
-			upgradeHangar.setEnabled(!colony.getHangar().isMaxRank() && stats.canAfford(colony.getHangar()));
+			upgradeMine.setEnabled(!mineUpgrading && !colony.getMine().isMaxRank() && stats.canAfford(colony.getMine()));
+			upgradeTurret.setEnabled(!turretUpgrading && !colony.getTurret().isMaxRank() && stats.canAfford(colony.getTurret()));
+			upgradeRadar.setEnabled(!radarUpgrading && !colony.getRadar().isMaxRank() && stats.canAfford(colony.getRadar()));
+			upgradeHangar.setEnabled(!hangarUpgrading && !colony.getHangar().isMaxRank() && stats.canAfford(colony.getHangar()));
+		}
+	}
+
+	public void setStats(PlayerStats stats) {
+		this.stats = stats;
+		checkBuildOptions();
+	}
+
+	public void setQueue(List<BuildAble> list) {
+		mineUpgrading = false;
+		turretUpgrading = false;
+		radarUpgrading = false;
+		hangarUpgrading = false;
+		
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i) instanceof Mine) {
+				mineUpgrading = true;
+			} else if (list.get(i) instanceof Turret) {
+				turretUpgrading = true;
+			} else if (list.get(i) instanceof Radar) {
+				radarUpgrading = true;
+			} else if (list.get(i) instanceof Hangar) {
+				hangarUpgrading = true;
+			}
 		}
 	}
 }

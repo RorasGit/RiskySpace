@@ -1,6 +1,10 @@
 package riskyspace.view;
 
+import java.util.List;
+import java.util.Map;
+
 import riskyspace.logic.SpriteMapData;
+import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
@@ -19,6 +23,7 @@ public interface View {
 	
 	public void updateData(SpriteMapData data);
 	public void setPlayerStats(PlayerStats stats);
+	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues);
 	
 	public void showPlanet(Territory selection);
 	public void showColony(Colony selection);

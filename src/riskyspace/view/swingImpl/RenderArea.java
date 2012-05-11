@@ -22,6 +22,7 @@ import javax.swing.Timer;
 
 import riskyspace.PlayerColors;
 import riskyspace.logic.SpriteMapData;
+import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
@@ -305,6 +306,14 @@ public class RenderArea extends JPanel {
 	public void setStats(PlayerStats stats) {
 		topMenu.setStats(stats);
 		colonyMenu.setStats(stats);
+	}
+	
+	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
+		colonyMenu.setQueue(colonyQueues.get(colonyMenu.getColony()));
+		/*
+		 * Set for BuildQueueMenu
+		 * 
+		 */
 	}
 	
 	public void showTerritory(Territory selection) {

@@ -3,11 +3,14 @@ package riskyspace.view.swingImpl;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 
 import riskyspace.logic.FleetMove;
 import riskyspace.logic.SpriteMapData;
+import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Planet;
@@ -90,6 +93,11 @@ public class SwingView implements View {
 	@Override
 	public void setPlayerStats(PlayerStats stats) {
 		renderArea.setStats(stats);
+	}
+	
+	@Override
+	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
+		renderArea.setQueue(colonyQueues);
 	}
 
 	@Override

@@ -7,10 +7,12 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import riskyspace.GameManager;
 import riskyspace.PlayerColors;
+import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
@@ -107,6 +109,10 @@ public class ColonyMenu extends AbstractSideMenu{
 		colonyPicture = cities.get(colony.getOwner());
 	}
 
+	public Colony getColony() {
+		return colony;
+	}
+	
 	@Override
 	public boolean mousePressed(Point p) {
 		/*
@@ -182,6 +188,14 @@ public class ColonyMenu extends AbstractSideMenu{
 
 	public void setStats(PlayerStats stats) {
 		recruitMenu.checkRecruitOptions(stats);
-		buildingMenu.checkBuildOptions(stats);
+		buildingMenu.setStats(stats);
+	}
+
+	public void setQueue(List<BuildAble> list) {
+		/*
+		 * Print Queue at Colony Menu
+		 */
+		// Send to BuildingsMenu to see what is in progress
+		buildingMenu.setQueue(list);
 	}
 }
