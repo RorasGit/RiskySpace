@@ -578,7 +578,9 @@ public class BuildingMenu extends AbstractSideMenu {
 		turretUpgrading = false;
 		radarUpgrading = false;
 		hangarUpgrading = false;
+		System.out.println("hah");
 		if (list != null) {
+			System.out.println("heh");
 			for (int i = 0; i < list.size(); i++) {
 				if (list.get(i) instanceof Mine) {
 					mineUpgrading = true;

@@ -26,13 +26,8 @@ public class Colony implements BattleAble, Sight, Serializable{
 	public Colony (Resource resource, Player owner) {
 		this.owner = owner;
 		this.resource = resource;
-		if (owner == Player.BLUE) {
-			colonyName = "Atlantis";
-		} else {
-			colonyName = "Gargaloo";
-		}
+		colonyName = ColonyNames.getName(owner);
 		mine = new Mine(resource);
-		System.out.println(mine + " | " + owner);
 		radar = new Radar();
 		turret = new Turret();
 		hangar = new Hangar();
@@ -89,14 +84,18 @@ public class Colony implements BattleAble, Sight, Serializable{
 			return false;
 		} else {
 			Colony otherColony = (Colony) other;
-			return this.owner == otherColony.owner && this.mine.equals(otherColony.mine) && this.radar.equals(otherColony.radar)
-					&& this.turret.equals(otherColony.turret) && this.hangar.equals(otherColony.hangar);
+			return this.owner == otherColony.owner && this.colonyName.equals(otherColony.colonyName)
+					&& this.resource == otherColony.resource;
 		}
 	}
 	
 	@Override
 	public String toString() {
-		return "Colony [" + owner + ", Mine [" + mine.getRank() + "]" + "]";
+		return "Colony [" + owner 
+				+ ", " + mine + "]" 
+				+ ", " + turret + "]" 
+				+ ", " + radar + "]" 
+				+ ", " + hangar + "]" + "]";
 	}
 	
 	@Override

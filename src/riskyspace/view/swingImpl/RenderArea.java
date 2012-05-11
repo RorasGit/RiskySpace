@@ -309,7 +309,11 @@ public class RenderArea extends JPanel {
 	}
 	
 	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
-		colonyMenu.setQueue(colonyQueues.get(colonyMenu.getColony()));
+		for (Colony colony : colonyQueues.keySet()) {
+			if (colony.equals(colonyMenu.getColony())) {
+				colonyMenu.setQueue(colonyQueues.get(colony));
+			}
+		}
 		/*
 		 * Set for BuildQueueMenu
 		 * 
