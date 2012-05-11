@@ -578,16 +578,17 @@ public class BuildingMenu extends AbstractSideMenu {
 		turretUpgrading = false;
 		radarUpgrading = false;
 		hangarUpgrading = false;
-		
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i) instanceof Mine) {
-				mineUpgrading = true;
-			} else if (list.get(i) instanceof Turret) {
-				turretUpgrading = true;
-			} else if (list.get(i) instanceof Radar) {
-				radarUpgrading = true;
-			} else if (list.get(i) instanceof Hangar) {
-				hangarUpgrading = true;
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i) instanceof Mine) {
+					mineUpgrading = true;
+				} else if (list.get(i) instanceof Turret) {
+					turretUpgrading = true;
+				} else if (list.get(i) instanceof Radar) {
+					radarUpgrading = true;
+				} else if (list.get(i) instanceof Hangar) {
+					hangarUpgrading = true;
+				}
 			}
 		}
 	}
