@@ -133,22 +133,10 @@ public class RecruitMenu extends AbstractSideMenu {
 	public void checkRecruitOptions(PlayerStats stats) {
 		this.stats = stats;
 		if (colony != null && stats != null){
-			if (colony.getHangar().getRank() <= 1){
-				buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT));
-				buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER));
-			} else {
-				buildScoutButton.setEnabled(false);
-				buildHunterButton.setEnabled(false);
-			}
-			if (colony.getHangar().getRank() <= 3){
-				buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER));
-				buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER));
-			}else{
-				buildColonizerButton.setEnabled(false);
-				buildDestroyerButton.setEnabled(false);
-			}
-			
-			
+			buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT) && colony.getHangar().canBuild(ShipType.SCOUT));
+			buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER) && colony.getHangar().canBuild(ShipType.HUNTER));
+			buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER) && colony.getHangar().canBuild(ShipType.COLONIZER));
+			buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER) && colony.getHangar().canBuild(ShipType.DESTROYER));
 		}
 	}
 

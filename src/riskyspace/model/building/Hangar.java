@@ -1,6 +1,7 @@
 package riskyspace.model.building;
 
 import riskyspace.model.BuildAble;
+import riskyspace.model.ShipType;
 
 public class Hangar implements BuildAble, Ranked {
 
@@ -41,6 +42,18 @@ public class Hangar implements BuildAble, Ranked {
 		} else {
 			return 0;
 		}
+	}
+	public boolean canBuild(ShipType shiptype){
+		if (shiptype == ShipType.SCOUT) {
+			return getRank() >= 1;
+		}else if (shiptype == ShipType.COLONIZER) {
+			return getRank() >= 3;
+		}else if (shiptype == ShipType.DESTROYER) {
+			return getRank() >= 3;
+		}else if (shiptype == ShipType.HUNTER) {
+			return getRank() >= 1;
+		}
+		return false;
 	}
 
 	@Override
