@@ -28,12 +28,15 @@ public class GameServer implements EventHandler {
 	private ServerSocket ss = null;
 	private List<ConnectionHandler> connections = new ArrayList<ConnectionHandler>();
 	private AcceptThread at;
+	private String ip;
+	private int port = 6013;
 
 	/**
 	 * MAIN METHOD
 	 */
 	public static void main(String[] args) throws IOException {
-		new GameServer(2);
+		GameServer server = new GameServer(2);
+		new GameClient(server.getIP(), server.getPort());
 	}
 	
 	public GameServer(int numberOfPlayers) {
@@ -49,8 +52,7 @@ public class GameServer implements EventHandler {
 		}
 		at = new AcceptThread();
 		try {
-			String ip = InetAddress.getLocalHost().getHostAddress();
-			String port = "" + ss.getLocalPort();
+			ip = InetAddress.getLocalHost().getHostAddress();
 			System.out.println("Server started with IP: " + ip + ":" + port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();	
@@ -200,5 +202,11 @@ public class GameServer implements EventHandler {
 			}
 			GameManager.INSTANCE.start();
 		}
+	}
+	public String getIP(){
+		return ip;
+	}
+	public int getPort(){
+		return port;
 	}
 }
