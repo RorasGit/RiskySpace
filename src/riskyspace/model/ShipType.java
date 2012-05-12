@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum ShipType implements BuildAble, Serializable {
+public enum ShipType implements BuildAble, Sight, Serializable {
 	/*
 	 * Declaration order important for compareTo
 	 * DO NOT CHANGE!
@@ -90,5 +90,10 @@ public enum ShipType implements BuildAble, Serializable {
 	@Override
 	public int getBuildTime() {
 		return buildTime;
+	}
+
+	@Override
+	public int getSightRange() {
+		return energy;
 	}
 }

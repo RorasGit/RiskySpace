@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class Fleet implements MoveAble, Serializable  {
+public class Fleet implements MoveAble, Sight, Serializable  {
 	
 	/**
 	 * 
@@ -239,5 +239,14 @@ public class Fleet implements MoveAble, Serializable  {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int getSightRange() {
+		int sight = 0;
+		for (Ship ship : ships) {
+			sight = Math.max(sight, ship.getType().getSightRange());
+		}
+		return sight;
 	}
 }

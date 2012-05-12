@@ -230,7 +230,7 @@ public class RenderArea extends JPanel {
 	}
 
 
-	public void paintComponent(Graphics g) {
+	public void paintComponent(Graphics graphics) {
 		if (!fpsTimer.isRunning()) {
 			fpsTimer.start();
 		}
@@ -240,31 +240,31 @@ public class RenderArea extends JPanel {
 		 */
 		int xTrans = -translatePixelsX();
 		int yTrans = -translatePixelsY();
-		g.translate(xTrans, yTrans);
+		graphics.translate(xTrans, yTrans);
 		
 		// Draw background
-		g.drawImage(background, 0, 0, null);
+		graphics.drawImage(background, 0, 0, null);
 		
-		spriteMap.draw(g, squareSize, EXTRA_SPACE_HORIZONTAL, EXTRA_SPACE_VERTICAL);
+		spriteMap.draw(graphics, squareSize, EXTRA_SPACE_HORIZONTAL, EXTRA_SPACE_VERTICAL);
 		
 		// Draw texts
-		eventTextPrinter.drawEventText(g);
+		eventTextPrinter.drawEventText(graphics);
 		
-		drawSelectionArea(g, xTrans, yTrans);
+		drawSelectionArea(graphics, xTrans, yTrans);
 		
 		// Draw menu
-		g.translate(-xTrans, -yTrans);
+		graphics.translate(-xTrans, -yTrans);
 		
-		colonyMenu.draw(g);
-		fleetMenu.draw(g);
-		planetMenu.draw(g);
-		topMenu.draw(g);
+		colonyMenu.draw(graphics);
+		fleetMenu.draw(graphics);
+		planetMenu.draw(graphics);
+		topMenu.draw(graphics);
 		
-		otherPlayerActive.draw(g);
+		otherPlayerActive.draw(graphics);
 		
-		g.setColor(ViewResources.WHITE);
-		g.setFont(fpsFont);
-		g.drawString(fps, 10, 110);
+		graphics.setColor(ViewResources.WHITE);
+		graphics.setFont(fpsFont);
+		graphics.drawString(fps, 10, 110);
 	}
 	
 	private void drawSelectionArea(Graphics g, int xTrans, int yTrans) {
