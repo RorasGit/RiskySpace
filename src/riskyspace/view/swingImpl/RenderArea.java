@@ -1,5 +1,6 @@
 package riskyspace.view.swingImpl;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -11,13 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import riskyspace.PlayerColors;
@@ -25,7 +26,6 @@ import riskyspace.logic.SpriteMapData;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
-import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
@@ -40,13 +40,12 @@ import riskyspace.view.SpriteMap;
 import riskyspace.view.ViewResources;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
-import riskyspace.view.menu.IMenu;
 import riskyspace.view.menu.swingImpl.ColonyMenu;
 import riskyspace.view.menu.swingImpl.FleetMenu;
 import riskyspace.view.menu.swingImpl.PlanetMenu;
 import riskyspace.view.menu.swingImpl.TopMenu;
 
-public class RenderArea extends JPanel {
+public class RenderArea extends Canvas {
 
 	private static final long serialVersionUID = 8209691542499926289L;
 	
@@ -230,7 +229,13 @@ public class RenderArea extends JPanel {
 	}
 
 
-	public void paintComponent(Graphics graphics) {
+	public void paint(Graphics g) {
+//		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+//		Graphics graphics = bi.createGraphics();
+		createBufferStrategy(2);
+		BufferStrategy bs = getBufferStrategy();
+		Graphics graphics = bs.getDrawGraphics();
+		
 		if (!fpsTimer.isRunning()) {
 			fpsTimer.start();
 		}
@@ -265,6 +270,11 @@ public class RenderArea extends JPanel {
 		graphics.setColor(ViewResources.WHITE);
 		graphics.setFont(fpsFont);
 		graphics.drawString(fps, 10, 110);
+		
+		graphics.dispose();
+		
+		bs.show();
+//		g.drawImage(bi, 0, 0, null);
 	}
 	
 	private void drawSelectionArea(Graphics g, int xTrans, int yTrans) {
