@@ -31,7 +31,7 @@ public class SwingView implements View {
 		setFrame();
 		renderArea = new RenderArea(rows, cols);
 		frame.add(renderArea);
-		renderArea.addKeyListener(new KeyListener() {
+		frame.addKeyListener(new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {

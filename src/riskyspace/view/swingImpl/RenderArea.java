@@ -1,6 +1,5 @@
 package riskyspace.view.swingImpl;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -12,13 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import riskyspace.PlayerColors;
@@ -45,7 +44,7 @@ import riskyspace.view.menu.swingImpl.FleetMenu;
 import riskyspace.view.menu.swingImpl.PlanetMenu;
 import riskyspace.view.menu.swingImpl.TopMenu;
 
-public class RenderArea extends Canvas {
+public class RenderArea extends JPanel {
 
 	private static final long serialVersionUID = 8209691542499926289L;
 	
@@ -229,13 +228,7 @@ public class RenderArea extends Canvas {
 	}
 
 
-	public void paint(Graphics g) {
-//		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-//		Graphics graphics = bi.createGraphics();
-		createBufferStrategy(2);
-		BufferStrategy bs = getBufferStrategy();
-		Graphics graphics = bs.getDrawGraphics();
-		
+	public void paintComponent(Graphics graphics) {
 		if (!fpsTimer.isRunning()) {
 			fpsTimer.start();
 		}
@@ -270,10 +263,6 @@ public class RenderArea extends Canvas {
 		graphics.setColor(ViewResources.WHITE);
 		graphics.setFont(fpsFont);
 		graphics.drawString(fps, 10, 110);
-		
-		graphics.dispose();
-		
-		bs.show();
 	}
 	
 	private void drawSelectionArea(Graphics g, int xTrans, int yTrans) {
