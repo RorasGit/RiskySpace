@@ -1,8 +1,9 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Ship implements BattleAble, MoveAble {
+public class Ship implements BattleAble, MoveAble, Serializable {
 	
 	/**
 	 * 

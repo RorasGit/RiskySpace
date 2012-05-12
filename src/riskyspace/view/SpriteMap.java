@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import riskyspace.GameManager;
+import riskyspace.PlayerColors;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.logic.data.ColonizerData;
 import riskyspace.logic.data.ColonyData;
@@ -32,9 +33,8 @@ public class SpriteMap {
 	/*
 	 * Planet Sprites
 	 */
-	private static Map<Integer, Sprite> metalplanets = new HashMap<Integer, Sprite>();
-	private static Map<Integer, Sprite> gasplanets = new HashMap<Integer, Sprite>();
-	private static Map<Resource, Map<Integer, Sprite>> planetsMap = new HashMap<Resource, Map<Integer, Sprite>>();
+	private static Map<Integer, Sprite> metalPlanets = new HashMap<Integer, Sprite>();
+	private static Map<Integer, Sprite> gasPlanets = new HashMap<Integer, Sprite>();
 	/*
 	 * Path Sprites
 	 */
@@ -48,12 +48,17 @@ public class SpriteMap {
 	/*
 	 * All planets with randomized textures
 	 */
-	private static Map<Position, Sprite> allPlanets = new HashMap<Position, Sprite>();
+	private static Map<Resource, Map<Position, Sprite>> allPlanets = new HashMap<Resource, Map<Position, Sprite>>();
 
 	/*
-	 * 
+	 * Colony Sprites for each Player
 	 */
 	private static Map<String, Sprite> colonySprites = new HashMap<String, Sprite>();
+	
+	/*
+	 * Fog Sprite
+	 */
+	private static Sprite fogSprite = null;
 	
 	/*
 	 * SpriteMapData
@@ -63,14 +68,13 @@ public class SpriteMap {
 	/*
 	 * Sprites to be drawn.
 	 */
-	private Map<Position, Sprite> fogOfWar = new HashMap<Position, Sprite>();
+	private List<Position> fogOfWar = new ArrayList<Position>();
 	private Map<Position, Sprite> colonies = new HashMap<Position, Sprite>();
 	private Map<Position, List<Sprite>> paths = new HashMap<Position, List<Sprite>>();
 	private Map<Position, Sprite> fleets = new HashMap<Position, Sprite>();
 	private Map<Position, Sprite> colonizers = new HashMap<Position, Sprite>();
 	private Map<Position, Sprite> planets = new HashMap<Position, Sprite>();
 
-	
 	/*
 	 * BAD SOLUTION TEMPORARY TODO
 	 */
@@ -83,51 +87,55 @@ public class SpriteMap {
 	 * 
 	 * @param squareSize The size of a square.
 	 */
-	public static void init(int squareSize) {
-		SpriteMap.data = SpriteMapData.getData(null);
-		planetsMap.put(Resource.METAL, metalplanets);
-		planetsMap.put(Resource.GAS, gasplanets);
+	private static void init(int squareSize) {
 		loadSprites(squareSize);
 		setPlanetSprites();
 		initiated = true;
 	}
 	
 	private static void setPlanetSprites() {
-		for (PlanetData pd : data.getPlanetData()) {
-			allPlanets.put(pd.getPosition(), planetsMap.get(pd.getResource()).get(pd.getIndex()));
+		Map<Position, Sprite> gas = new HashMap<Position, Sprite>();
+		Map<Position, Sprite> metal = new HashMap<Position, Sprite>();
+		for (Position pos : data.getAllPositions()) {
+			gas.put(pos, gasPlanets.get((int) (Math.random()*3)));
+			metal.put(pos, metalPlanets.get((int) (Math.random()*4)));
 		}
+		allPlanets.put(Resource.GAS, gas);
+		allPlanets.put(Resource.METAL, metal);
 	}
 	
 	/**
 	 * Creates a SpriteMap containing Sprites that can be drawn using the
 	 * <code>draw(Graphics g)</code> method.
-	 * @param player The Player's view this SpriteMap should contain.
+	 * @param smd The Player's view this SpriteMap should contain.
 	 * @return A SpriteMap with graphic info for this Player.
 	 */
-	public static SpriteMap getSprites(Player player) {
+	public static SpriteMap getSprites(SpriteMapData data, int squareSize) {
+		SpriteMap.data = data;
 		if (!initiated) {
-			throw new IllegalStateException("SpriteMap not initiated");
+			init(squareSize);
 		}
-		
 		SpriteMap map = new SpriteMap();
-		data = SpriteMapData.getData(player);
 		
-		for (ColonyData colonyData : data.getColonyData()) {
+		for (ColonyData colonyData : SpriteMap.data.getColonyData()) {
 			map.colonies.put(colonyData.getPosition(), colonySprites.get(colonyData.getPlayer().toString()));
 		}
-		for (PlanetData planetData : data.getPlanetData()) {
-			map.planets.put(planetData.getPosition(), allPlanets.get(planetData.getPosition()));
+		for (PlanetData planetData : SpriteMap.data.getPlanetData()) {
+			map.planets.put(planetData.getPosition(), allPlanets.get(planetData.getResource()).get(planetData.getPosition()));
 		}
-		for (ColonizerData colonizerData : data.getColonizerData()) {
+		for (ColonizerData colonizerData : SpriteMap.data.getColonizerData()) {
 			map.colonizers.put(colonizerData.getPosition(), shipSprites.get("COLONIZER_" + colonizerData.getPlayer()));
 			map.colonizerCount.put(colonizerData.getPosition(), data.getColonizerAmount(colonizerData.getPosition()));
 		}
-		for (FleetData fleetData : data.getFleetData()) {
+		for (FleetData fleetData : SpriteMap.data.getFleetData()) {
 			map.fleets.put(fleetData.getPosition(), shipSprites.get(fleetData.getFlagships() + "_" + fleetData.getPlayer()));
 			map.shipCount.put(fleetData.getPosition(), data.getFleetSize(fleetData.getPosition()));
 		}
+		for (Position pos : SpriteMap.data.getFog()) {
+			map.fogOfWar.add(pos);
+		}
 		
-		Position[][] paths = data.getPaths();
+		Position[][] paths = SpriteMap.data.getPaths();
 		for (int i = 0; i < paths.length; i++) {
 			if (paths[i].length > 1) {
 				for (int j = 0; j < paths[i].length; j++) {
@@ -135,17 +143,21 @@ public class SpriteMap {
 						map.paths.put(paths[i][j], new ArrayList<Sprite>());
 					}
 					Sprite sprite = null;
+					/*
+					 * TODO:
+					 * Fix arrow colors thing
+					 */
 					if (j == 0) {
-						sprite = new Sprite(SpriteMap.pathTextures.get("START_" + player), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("START_" + Player.BLUE), 0, 0);
 						sprite.setRotation(getRotation(null, paths[i][j], paths[i][j+1]));
 					} else if (j == paths[i].length - 1) {
-						sprite = new Sprite(SpriteMap.pathTextures.get("HEAD_" + player), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("HEAD_" + Player.BLUE), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], null));
 					} else if (paths[i][j-1].getCol() != paths[i][j+1].getCol() && paths[i][j-1].getRow() != paths[i][j+1].getRow()) {
-						sprite = new Sprite(SpriteMap.pathTextures.get("TURN_" + player), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("TURN_" + Player.BLUE), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]));
 					} else {
-						sprite = new Sprite(SpriteMap.pathTextures.get("STRAIGHT_" + player), 0, 0);
+						sprite = new Sprite(SpriteMap.pathTextures.get("STRAIGHT_" + Player.BLUE), 0, 0);
 						sprite.setRotation(getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]));
 					}
 					map.paths.get(paths[i][j]).add(sprite);
@@ -304,19 +316,24 @@ public class SpriteMap {
 		/*
 		 * Planets
 		 */
-		metalplanets.put(0, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
-		metalplanets.put(1, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
-		metalplanets.put(2, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
-		metalplanets.put(3, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_3.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
-		gasplanets.put(0, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
-		gasplanets.put(1, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
-		gasplanets.put(2, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		metalPlanets.put(0, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		metalPlanets.put(1, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		metalPlanets.put(2, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		metalPlanets.put(3, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/metalplanet_3.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		gasPlanets.put(0, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_0.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		gasPlanets.put(1, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_1.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
+		gasPlanets.put(2, new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/planets/gasplanet_2.png").getScaledInstance(squareSize/2, squareSize/2, Image.SCALE_DEFAULT), 0.5f, 0));
 		
 		/*
 		 * Colony Sprite
 		 */
-		colonySprites.put("RED", createColonySprite(GameManager.INSTANCE.getInfo(Player.RED).getColor(), squareSize));
-		colonySprites.put("BLUE", createColonySprite(GameManager.INSTANCE.getInfo(Player.BLUE).getColor(), squareSize));
+		colonySprites.put("RED", createColonySprite(PlayerColors.getColor(Player.RED), squareSize));
+		colonySprites.put("BLUE", createColonySprite(PlayerColors.getColor(Player.BLUE), squareSize));
+		
+		/*
+		 * Fog
+		 */
+		fogSprite = new Sprite(Toolkit.getDefaultToolkit().getImage("res/icons/cloud.png").getScaledInstance(squareSize, squareSize, Image.SCALE_SMOOTH), 0, 0);
 	}
 	
 	/**
@@ -352,6 +369,9 @@ public class SpriteMap {
 			for (Sprite sprite : paths.get(pos)) {
 				sprite.draw(g, calcX(pos, offsetX, squareSize), calcY(pos, offsetY, squareSize), squareSize);
 			}
+		}
+		for (Position pos : fogOfWar) {
+			fogSprite.draw(g, calcX(pos, offsetX, squareSize), calcY(pos, offsetY, squareSize), squareSize);
 		}
 		g.setColor(ViewResources.WHITE);
 		g.setFont(ViewResources.getFont().deriveFont(12f));

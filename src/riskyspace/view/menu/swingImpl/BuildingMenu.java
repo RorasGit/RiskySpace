@@ -8,19 +8,25 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import riskyspace.GameManager;
+import riskyspace.PlayerColors;
+import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
+import riskyspace.model.building.Hangar;
+import riskyspace.model.building.Mine;
+import riskyspace.model.building.Radar;
+import riskyspace.model.building.Turret;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
-import riskyspace.view.ViewResources;
 import riskyspace.view.RankIndicator;
 import riskyspace.view.View;
+import riskyspace.view.ViewResources;
 import riskyspace.view.menu.AbstractSideMenu;
 
 /**
@@ -31,7 +37,14 @@ import riskyspace.view.menu.AbstractSideMenu;
 public class BuildingMenu extends AbstractSideMenu {
 
 	private Colony colony = null;
-
+	private PlayerStats stats = null;
+	private Map<Colony, List<BuildAble>> colonyQueues = new HashMap<Colony, List<BuildAble>>();
+	
+	private boolean mineUpgrading = false;
+	private boolean turretUpgrading = false;
+	private boolean radarUpgrading = false;
+	private boolean hangarUpgrading = false;
+	
 	private Color ownerColor = null;
 	private int margin;
 	
@@ -66,6 +79,11 @@ public class BuildingMenu extends AbstractSideMenu {
 	 * Split Image
 	 */
 	private Image split = null;
+	
+	/*
+	 * 
+	 */
+	private Image inProgress = null;
 	
 	/*
 	 * Rank indicators
@@ -122,6 +140,9 @@ public class BuildingMenu extends AbstractSideMenu {
 	private String nextHangarMetal = "";
 	private String nextHangarGas = "";
 	
+	private Font titleFont;
+	private Font infoFont;
+	
 	public BuildingMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		//TODO Create buttons and Load Images
@@ -142,9 +163,9 @@ public class BuildingMenu extends AbstractSideMenu {
 		 */
 		// Set Rank
 		mineRank = new RankIndicator(3);
-		turretRank = new RankIndicator(2);
+		turretRank = new RankIndicator(3);
 		radarRank = new RankIndicator(3);
-		hangarRank = new RankIndicator(2);
+		hangarRank = new RankIndicator(3);
 		
 		// Set Size for Rank Indicators
 		int width = menuHeight/35;
@@ -162,6 +183,12 @@ public class BuildingMenu extends AbstractSideMenu {
 		hangarRank.setLocation(x + margin/2, y + height*3 + 13*margin/2 + imageHeight);
 		
 		/*
+		 * Button Sizes
+		 */
+		int upgradeButtonWidth = height;
+		int upgradeButtonHeight = height/4;
+		
+		/*
 		 * Load Images
 		 */
 		mineImage = Toolkit.getDefaultToolkit().getImage("res/menu/mine" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
@@ -169,20 +196,19 @@ public class BuildingMenu extends AbstractSideMenu {
 		radarImage = Toolkit.getDefaultToolkit().getImage("res/menu/radar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
 		hangarImage = Toolkit.getDefaultToolkit().getImage("res/menu/hangar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
 		split = Toolkit.getDefaultToolkit().getImage("res/menu/split" + View.res).getScaledInstance(height/5, height, Image.SCALE_DEFAULT);
-		
+		inProgress = Toolkit.getDefaultToolkit().getImage("res/menu/progress" + View.res).getScaledInstance(upgradeButtonWidth, upgradeButtonHeight, Image.SCALE_DEFAULT);
+				
 		/*
 		 * Create Buttons
 		 */
-		int upgradeButtonWidth = height;
-		int upgradeButtonHeight = height/4;
-		
 		upgradeMine = new Button(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, mineRank.getY() + mineRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeMine.setImage("res/menu/upgrade" + View.res);
 		upgradeMine.setAction(new Action(){
 			@Override
 			public void performAction() {
-				//TODO: Implement
+				Event evt = new Event(Event.EventTag.QUEUE_BUILDING, "MINE");
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		
@@ -192,7 +218,8 @@ public class BuildingMenu extends AbstractSideMenu {
 		upgradeTurret.setAction(new Action(){
 			@Override
 			public void performAction() {
-				//TODO: Implement
+				Event evt = new Event(Event.EventTag.QUEUE_BUILDING, "TURRET");
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		
@@ -203,7 +230,8 @@ public class BuildingMenu extends AbstractSideMenu {
 		upgradeRadar.setAction(new Action(){
 			@Override
 			public void performAction() {
-				//TODO: Implement
+				Event evt = new Event(Event.EventTag.QUEUE_BUILDING, "RADAR");
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		
@@ -213,7 +241,8 @@ public class BuildingMenu extends AbstractSideMenu {
 		upgradeHangar.setAction(new Action(){
 			@Override
 			public void performAction() {
-				//TODO: Implement
+				Event evt = new Event(Event.EventTag.QUEUE_BUILDING, "HANGAR");
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		
@@ -222,13 +251,16 @@ public class BuildingMenu extends AbstractSideMenu {
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.SHOW_MENU, colony);
-				EventBus.INSTANCE.publish(evt);
 				setVisible(false);
 			}
 		});
-		
-		EventBus.INSTANCE.addHandler(this);
+	}
+
+	public BuildingMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
+		this(x, y, menuWidth, menuHeight);
+		backButton.setAction(backAction);
+		titleFont = ViewResources.getFont().deriveFont(menuHeight/40f);
+		infoFont = new Font("Tahoma", Font.PLAIN, menuHeight/80);
 	}
 	
 	public void setColony(Colony colony) {
@@ -239,12 +271,11 @@ public class BuildingMenu extends AbstractSideMenu {
 		 * Immutable?
 		 */
 		this.colony = colony;
+		checkBuildOptions();
+		checkQueue();
 		setMenuName(colony.getName());
-		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
+		ownerColor = PlayerColors.getColor(colony.getOwner());
 		cityImage = cities.get(colony.getOwner());
-		
-//		String playerString = colony.getOwner().toString().toLowerCase();
-//		backButton.setImage("res/menu/" + playerString + "/backButton" + View.res);
 		
 		/*
 		 * Set Rank Indicators
@@ -295,6 +326,9 @@ public class BuildingMenu extends AbstractSideMenu {
 		if (nextTurretInfo.length > 1) {
 			nextTurretDamage = nextTurretInfo[0];
 			nextTurretShield = nextTurretInfo[1];
+		} else {
+			nextTurretDamage = "";
+			nextTurretShield = "";
 		}
 		
 		String[] currentRadarInfo = colony.getRadar().getDescriptiveString(colony.getRadar().getRank()).split("\n");
@@ -302,21 +336,29 @@ public class BuildingMenu extends AbstractSideMenu {
 		currentRadarRange = currentRadarInfo[0];
 		if (currentRadarInfo.length > 1) {
 			currentRadarRange2 = currentRadarInfo[1];
+		} else {
+			currentRadarRange2 = "";
 		}
 		nextRadarRange = nextRadarInfo[0];
 		if (nextRadarInfo.length > 1) {
 			nextRadarRange2 = nextRadarInfo[1];
-		} 
+		} else {
+			nextRadarRange2 = "";
+		}
 		
 		String[] currentHangarInfo = colony.getHangar().getDescriptiveString(colony.getHangar().getRank()).split("\n");
 		String[] nextHangarInfo = colony.getHangar().getDescriptiveString(colony.getHangar().getRank() + 1).split("\n");
 		currentHangarPerk = currentHangarInfo[0];
 		if (currentHangarInfo.length > 1) {
 			currentHangarPerk2 = currentHangarInfo[1];
+		} else {
+			currentHangarPerk2 = "";
 		}
 		nextHangarPerk = nextHangarInfo[0];
 		if (nextHangarInfo.length > 1) {
 			nextHangarPerk2 = nextHangarInfo[1];
+		} else {
+			nextHangarPerk2 = "";
 		}
 		
 		/*
@@ -378,7 +420,7 @@ public class BuildingMenu extends AbstractSideMenu {
 			/*
 			 * Draw Title Strings
 			 */
-			g.setFont(ViewResources.getFont().deriveFont(25f));
+			g.setFont(titleFont);
 			g.setColor(ViewResources.WHITE);
 			FontMetrics fm = g.getFontMetrics();
 			g.drawString(mine, getX() + getMenuWidth()/2 - fm.stringWidth(mine)/2, mineRank.getY() - 5);
@@ -389,7 +431,7 @@ public class BuildingMenu extends AbstractSideMenu {
 			/*
 			 * Draw info strings
 			 */
-			g.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			g.setFont(infoFont);
 			fm = g.getFontMetrics();
 			
 			int height = fm.getHeight();
@@ -410,28 +452,40 @@ public class BuildingMenu extends AbstractSideMenu {
 			// Mining Information
 			g.drawString(currentMineIncome, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 5, mineRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(nextMineIncome, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 8 + infoWidth, mineRank.getY() + margin/3 + 5 + height/2);
-			g.drawString(nextMineMetal + nextMineGas, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextMineGas)/2, mineRank.getY() + margin/3 + 5 + 5*height/2);
 			
 			// Defense System Information
 			g.drawString(currentTurretDamage, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 5, turretRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(currentTurretShield, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 5, turretRank.getY() + margin/3 + 5 + 3*height/2);
 			g.drawString(nextTurretDamage, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 8 + infoWidth, turretRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(nextTurretShield, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 8 + infoWidth, turretRank.getY() + margin/3 + 5 + 3*height/2);
-			g.drawString(nextTurretMetal + nextTurretGas, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextTurretGas)/2, turretRank.getY() + margin/3 + 5 + 5*height/2);
 			
 			// Radar Information
 			g.drawString(currentRadarRange, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 5, radarRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(nextRadarRange, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 8 + infoWidth, radarRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(currentRadarRange2, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 5, radarRank.getY() + margin/3 + 5 + 3*height/2);
 			g.drawString(nextRadarRange2, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 8 + infoWidth, radarRank.getY() + margin/3 + 5 + 3*height/2);
-			g.drawString(nextRadarMetal + nextRadarGas, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextRadarMetal + nextRadarGas)/2, radarRank.getY() + margin/3 + 5 + 5*height/2);
 			
 			// Hangar Information
 			g.drawString(currentHangarPerk, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 5, hangarRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(currentHangarPerk2, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 5, hangarRank.getY() + margin/3 + 5 + 3*height/2);
 			g.drawString(nextHangarPerk, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 8 + infoWidth, hangarRank.getY() + margin/3 + 5 + height/2);
 			g.drawString(nextHangarPerk2, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 8 + infoWidth, hangarRank.getY() + margin/3 + 5 + 3*height/2);
-			g.drawString(nextHangarMetal + nextHangarGas, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextHangarMetal + nextHangarGas)/2, hangarRank.getY() + margin/3 + 5 + 5*height/2);
+			
+			/*
+			 * Draw next Level costs if not maxed
+			 */
+			if (!colony.getMine().isMaxRank()) {
+				g.drawString(nextMineMetal + nextMineGas, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextMineGas)/2, mineRank.getY() + margin/3 + 5 + 5*height/2);
+			}
+			if (!colony.getTurret().isMaxRank()) {
+				g.drawString(nextTurretMetal + nextTurretGas, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextTurretGas)/2, turretRank.getY() + margin/3 + 5 + 5*height/2);
+			}
+			if (!colony.getRadar().isMaxRank()) {
+				g.drawString(nextRadarMetal + nextRadarGas, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextRadarMetal + nextRadarGas)/2, radarRank.getY() + margin/3 + 5 + 5*height/2);
+			}
+			if (!colony.getHangar().isMaxRank()) {
+				g.drawString(nextHangarMetal + nextHangarGas, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextHangarMetal + nextHangarGas)/2, hangarRank.getY() + margin/3 + 5 + 5*height/2);
+			}
 			
 			/*
 			 * Draw Buttons
@@ -441,6 +495,27 @@ public class BuildingMenu extends AbstractSideMenu {
 			upgradeRadar.draw(g);
 			upgradeHangar.draw(g);
 			backButton.draw(g);
+			
+			/*
+			 * Draw progress indication
+			 */
+			drawProgressIndicators(g);
+		}
+	}
+	
+	private void drawProgressIndicators(Graphics g) {
+		int progressX = getX() + getMenuWidth() - 3*margin/5 - inProgress.getWidth(null);
+		if (mineUpgrading) {
+			g.drawImage(inProgress, progressX, mineRank.getY() + mineRank.getHeight() - inProgress.getHeight(null), null);
+		}
+		if (turretUpgrading) {
+			g.drawImage(inProgress, progressX, turretRank.getY() + turretRank.getHeight() - inProgress.getHeight(null), null);
+		}
+		if (radarUpgrading) {
+			g.drawImage(inProgress, progressX, radarRank.getY() + radarRank.getHeight() - inProgress.getHeight(null), null);
+		}
+		if (hangarUpgrading) {
+			g.drawImage(inProgress, progressX, hangarRank.getY() + hangarRank.getHeight() - inProgress.getHeight(null), null);
 		}
 	}
 	
@@ -462,12 +537,9 @@ public class BuildingMenu extends AbstractSideMenu {
 			else if (upgradeHangar.mousePressed(p)) {return true;}
 			else if (this.contains(p)) {
 				return true;
-			} else {
-				return false;
 			}
-			} else {
-				return false;
 		}
+		return false;
 	}
 
 	@Override
@@ -483,13 +555,46 @@ public class BuildingMenu extends AbstractSideMenu {
 		}
 	}
 
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.HIDE_MENU) {
-			setVisible(false);
-		} else if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
-			PlayerStats stats = (PlayerStats) evt.getObjectValue();
-	//		checkRecruitOptions(stats);
+	private void checkBuildOptions() {
+		if (colony != null && stats != null) {
+			upgradeMine.setEnabled(!mineUpgrading && !colony.getMine().isMaxRank() && stats.canAfford(colony.getMine()));
+			upgradeTurret.setEnabled(!turretUpgrading && !colony.getTurret().isMaxRank() && stats.canAfford(colony.getTurret()));
+			upgradeRadar.setEnabled(!radarUpgrading && !colony.getRadar().isMaxRank() && stats.canAfford(colony.getRadar()));
+			upgradeHangar.setEnabled(!hangarUpgrading && !colony.getHangar().isMaxRank() && stats.canAfford(colony.getHangar()));
+		}
+	}
+
+	public void setStats(PlayerStats stats) {
+		this.stats = stats;
+		checkBuildOptions();
+	}
+
+	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
+		this.colonyQueues = colonyQueues;
+		checkQueue();
+	}
+	
+	private void checkQueue() {
+		mineUpgrading = false;
+		turretUpgrading = false;
+		radarUpgrading = false;
+		hangarUpgrading = false;
+		if (colonyQueues != null) {
+			for (Colony colony : colonyQueues.keySet()) {
+				if (colony.equals(this.colony)) {
+					for (int i = 0; i < colonyQueues.get(colony).size(); i++) {
+						if (colonyQueues.get(colony).get(i) instanceof Mine) {
+							mineUpgrading = true;
+						} else if (colonyQueues.get(colony).get(i) instanceof Turret) {
+							turretUpgrading = true;
+						} else if (colonyQueues.get(colony).get(i) instanceof Radar) {
+							radarUpgrading = true;
+						} else if (colonyQueues.get(colony).get(i) instanceof Hangar) {
+							hangarUpgrading = true;
+						}
+					}
+				}
+			}
 		}
 	}
 }

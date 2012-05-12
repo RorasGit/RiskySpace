@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 public enum EventBus {
-	INSTANCE;
+	SERVER,
+	CLIENT;
 	
 	/*
 	 * set true if you want to print events, false if not.

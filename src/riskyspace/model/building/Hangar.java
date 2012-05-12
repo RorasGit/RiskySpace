@@ -1,6 +1,7 @@
 package riskyspace.model.building;
 
 import riskyspace.model.BuildAble;
+import riskyspace.model.ShipType;
 
 public class Hangar implements BuildAble, Ranked {
 
@@ -8,10 +9,10 @@ public class Hangar implements BuildAble, Ranked {
 	 * 
 	 */
 	private static final long serialVersionUID = -3015203446253905759L;
-	private static final int MAX_RANK = 2;
+	private static final int MAX_RANK = 3;
 	private int rank = 0;
 	
-	private String[] description = {"No Effect", "Can Build Scout\nCan Build Hunter", "Can Build Destroyer"};
+	private String[] description = {"No Effect", "Can Build Scout\nCan Build Hunter", "Repair Fleets", "Can Build\nDestroyer"};
 	
 	@Override
 	public int getSupplyCost() {
@@ -41,6 +42,18 @@ public class Hangar implements BuildAble, Ranked {
 		} else {
 			return 0;
 		}
+	}
+	public boolean canBuild(ShipType shiptype){
+		if (shiptype == ShipType.SCOUT) {
+			return getRank() >= 1;
+		}else if (shiptype == ShipType.COLONIZER) {
+			return getRank() >= 3;
+		}else if (shiptype == ShipType.DESTROYER) {
+			return getRank() >= 3;
+		}else if (shiptype == ShipType.HUNTER) {
+			return getRank() >= 1;
+		}
+		return false;
 	}
 
 	@Override

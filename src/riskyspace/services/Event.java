@@ -1,6 +1,15 @@
 package riskyspace.services;
 
-public class Event {
+import java.io.Serializable;
+
+import riskyspace.model.Player;
+
+public class Event implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4505609665084471020L;
 
 	/*
 	 * The different events that can occur.
@@ -9,7 +18,6 @@ public class Event {
 		/*
 		 * Model triggered events
 		 */
-		TERRITORY_CHANGED,
 		INCOME_CHANGED,
 		STATS_CHANGED,
 		/*
@@ -18,27 +26,31 @@ public class Event {
 		NEW_FLEET_SELECTION,
 		ADD_FLEET_SELECTION,
 		SET_PATH,
-		PERFORM_MOVES, 
-		INTERRUPT_MOVES,
+		MOVE,
 		PLANET_SELECTED,
 		COLONIZER_SELECTED,
 		COLONIZE_PLANET,
-		COLONIZER_PRESENT,
 		DESELECT,
 		QUEUE_SHIP,
+		QUEUE_BUILDING,
 		SHIP_SELFDESTCRUCT,
 		NEXT_TURN,
 		/*
 		 * Controller triggered events
 		 */
-		SHOW_MENU, //TODO: REMOVE
-		SHOW_FLEETMENU, //TODO: REMOVE
-		SHOW_PLANETMENU,//TODO: REMOVE
 		MOVES_COMPLETE,
-		HIDE_MENU, //TODO: REMOVE
 		EVENT_TEXT,
 		ACTIVE_PLAYER_CHANGED,
-		PATHS_UPDATED;
+		UPDATE_SPRITEDATA,
+		SELECTION,
+		COLONIZER_PRESENT,
+		BUILDQUEUE_CHANGED,
+		/*
+		 * Initiate new Player's View events
+		 */
+		INIT_ROWS, 
+		INIT_COLS, 
+		INIT_PLAYER;
 		
 		//TODO: add all events that can occur.
 	}
@@ -49,6 +61,9 @@ public class Event {
 	//The value of the object sent to the model.
 	private final Object objectValue;
 	
+	//The player connected to this event
+	private Player player;
+
 	public Event(EventTag tag, Object objectValue) {
 		this.tag = tag;
 		this.objectValue = objectValue;
@@ -62,8 +77,16 @@ public class Event {
 		return objectValue;
 	}
 	
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+	
 	@Override
     public String toString() {
-        return "Event [tag=" + tag + ", value=" + objectValue + "]";
+        return "Event [tag=" + tag + ", value=" + objectValue +", player="+ player +"]";
     } 
 }

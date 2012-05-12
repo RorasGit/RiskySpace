@@ -53,6 +53,8 @@ public class Battle {
 		bg1.setOwner(player1fleets.isEmpty() ? colony.getOwner() : player1fleets.get(0).getOwner());
 		bg2.setOwner(player2fleets.isEmpty() ? colony.getOwner() : player2fleets.get(0).getOwner());
 		
+		battleStats.setParticipants(bg1.owner, bg2.owner);
+		
 		/*
 		 * Battle loop until one or both fleets are defeated
 		 */

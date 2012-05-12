@@ -68,14 +68,14 @@ public class BuildQueue implements Serializable{
 		if (colonyQueue.get(pos).size() >= this.queueMaxSize) {
 			EventText et = new EventText("Build queue is full!", pos);
 			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-			EventBus.INSTANCE.publish(event);
+//			EventBus.INSTANCE.publish(event); TODO: Ignore evtText atm
 			return false;
 		}
 		colonyQueue.get(pos).add(new QueueItem(buildAble));
 		String announcement = buildAble + " has been added to the build queue!";
 		EventText et = new EventText(announcement.substring(0, 1).toUpperCase() + announcement.substring(1).toLowerCase(), pos);
 		Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-		EventBus.INSTANCE.publish(event);
+//		EventBus.INSTANCE.publish(event); TODO: Ignore evtText atm
 		return true;
 	}
 	
@@ -92,7 +92,7 @@ public class BuildQueue implements Serializable{
 		if (colonyQueue.get(pos).size() + buildAbles.size() > this.queueMaxSize) {
 			EventText et = new EventText("Build queue does not have space for this!", pos);
 			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-			EventBus.INSTANCE.publish(event);
+//			EventBus.INSTANCE.publish(event); TODO: Ignore evtText atm
 			return false;
 		}
 		for (BuildAble ba : buildAbles) {
@@ -138,15 +138,13 @@ public class BuildQueue implements Serializable{
 	 * @return returns a list containing the BuildAbles removed.
 	 */
 	public List<BuildAble> clearAll() {
-		List <BuildAble> allRemovedItems = new ArrayList<BuildAble>();
-		List<BuildAble> removedItems = new ArrayList<BuildAble>();
+		List <BuildAble> removedItems = new ArrayList<BuildAble>();
 		for (Position pos : colonyQueue.keySet()) {
-			removedItems = clear(pos);
-			for (BuildAble ba : removedItems) {
-				allRemovedItems.add(ba);
+			for (BuildAble ba : clear(pos)) {
+				removedItems.add(ba);
 			}
 		}
-		return allRemovedItems;
+		return removedItems;
 	}
 	
 	/**

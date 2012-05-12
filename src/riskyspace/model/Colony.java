@@ -8,7 +8,7 @@ import riskyspace.model.building.Mine;
 import riskyspace.model.building.Radar;
 import riskyspace.model.building.Turret;
 
-public class Colony implements BattleAble, Sight{
+public class Colony implements BattleAble, Sight, Serializable{
 	
 	/**
 	 * 
@@ -26,11 +26,7 @@ public class Colony implements BattleAble, Sight{
 	public Colony (Resource resource, Player owner) {
 		this.owner = owner;
 		this.resource = resource;
-		if (owner == Player.BLUE) {
-			colonyName = "Atlantis";
-		} else {
-			colonyName = "Gargaloo";
-		}
+		colonyName = ColonyNames.getName(owner);
 		mine = new Mine(resource);
 		radar = new Radar();
 		turret = new Turret();
@@ -88,22 +84,22 @@ public class Colony implements BattleAble, Sight{
 			return false;
 		} else {
 			Colony otherColony = (Colony) other;
-			return this.owner == otherColony.owner && this.mine.equals(otherColony.mine) && this.radar.equals(otherColony.radar)
-					&& this.turret.equals(otherColony.turret) && this.hangar.equals(otherColony.hangar);
+			return this.owner == otherColony.owner && this.colonyName.equals(otherColony.colonyName)
+					&& this.resource == otherColony.resource;
 		}
 	}
 	
 	@Override
 	public String toString() {
-		return "Colony [" + owner + "]";
+		return "Colony [" + owner 
+				+ ", " + mine + "]" 
+				+ ", " + turret + "]" 
+				+ ", " + radar + "]" 
+				+ ", " + hangar + "]" + "]";
 	}
 	
 	@Override
 	public int hashCode() {
 		return owner.hashCode()*13 + colonyName.hashCode()*7 + resource.hashCode()*17;
-	}
-
-	public void upgradeMine() {
-		mine.upgrade();
 	}
 }
