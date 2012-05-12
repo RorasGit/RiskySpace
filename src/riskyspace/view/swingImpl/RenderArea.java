@@ -274,7 +274,6 @@ public class RenderArea extends Canvas {
 		graphics.dispose();
 		
 		bs.show();
-//		g.drawImage(bi, 0, 0, null);
 	}
 	
 	private void drawSelectionArea(Graphics g, int xTrans, int yTrans) {

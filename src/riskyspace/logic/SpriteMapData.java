@@ -135,7 +135,9 @@ public class SpriteMapData implements Serializable {
 	}
 
 	public Set<Position> getAllPositions() {
-		return allPos;
+		Set<Position> all = new HashSet<Position>(fog);
+		all.addAll(visible);
+		return all;
 	}
 	
 	public Set<Position> getFog() {
