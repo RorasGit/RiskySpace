@@ -71,6 +71,9 @@ public class GameServer implements EventHandler {
 		for (ConnectionHandler ch : connections) {
 			if (GameManager.INSTANCE.getInfo(player).getIP().equals(ch.socket.getInetAddress())){
 				ch.output.writeObject(o);
+				/* TODO:
+				 * Can cause crashes if called while serializing, fix?
+				 */
 				ch.output.reset();
 			}
 		}
@@ -107,6 +110,7 @@ public class GameServer implements EventHandler {
 		private Socket socket;
 		private ObjectInputStream input = null;
 		private ObjectOutputStream output = null;
+		
 
 		public ConnectionHandler(Socket socket) throws IOException {
 			this.socket = socket;
