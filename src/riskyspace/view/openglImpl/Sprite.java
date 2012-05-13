@@ -56,17 +56,19 @@ public class Sprite implements GLRenderAble {
 			float x1 = x + (float) getWidth() / targetArea.getWidth();
 			float y1 = y + (float) getHeight() / targetArea.getHeight();
 			
+			float renderZ = zIndex / 10000000f;
+			
 			gl.glTexCoord2f(0, 0);
-			gl.glVertex2f(x, y);
+			gl.glVertex3f(x, y, renderZ);
 
 			gl.glTexCoord2f(0, 1);
-			gl.glVertex2f(x, y1);
+			gl.glVertex3f(x, y1, renderZ);
 
 			gl.glTexCoord2f(1, 1);
-			gl.glVertex2f(x1, y1);
+			gl.glVertex3f(x1, y1, renderZ);
 
 			gl.glTexCoord2f(1, 0);
-			gl.glVertex2f(x1, y);
+			gl.glVertex3f(x1, y, renderZ);
 
 			gl.glEnd();
 		}
