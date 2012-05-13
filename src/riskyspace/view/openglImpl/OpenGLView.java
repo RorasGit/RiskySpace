@@ -46,14 +46,9 @@ public class OpenGLView implements View, GLEventListener {
 		int width = Toolkit.getDefaultToolkit().getScreenSize().width;
 		int height = Toolkit.getDefaultToolkit().getScreenSize().height;
 		
-		renderArea = new GLRenderArea(400, 400, rows, cols);
+		renderArea = new GLRenderArea(width, height, rows, cols);
 		
 		JFrame frame = new JFrame("RiskySpace");
-//		if (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported()) {
-//			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(frame);
-//		} else {
-//			System.err.println("Fullscreen not supported");
-//		}
 		canvas.setFocusable(true);
 		canvas.requestFocusInWindow();
 		canvas.addKeyListener(new KeyListener() {
@@ -76,10 +71,12 @@ public class OpenGLView implements View, GLEventListener {
 		
 		frame.add(canvas);
 		frame.setPreferredSize(new Dimension(400, 400));
-		frame.pack();
-		frame.setVisible(true);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setUndecorated(true);
+		if (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported()) {
+			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(frame);
+		} else {
+			System.err.println("Fullscreen not supported");
+		}
 		
 		FPSAnimator anim = new FPSAnimator(canvas, 100);
 		anim.start();
@@ -89,6 +86,7 @@ public class OpenGLView implements View, GLEventListener {
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
+		drawable.getGL().glClearColor(0, 0, 0, 1f);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 		gl.glClear(GL2.GL_ALPHA_BITS);
@@ -105,6 +103,7 @@ public class OpenGLView implements View, GLEventListener {
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL.GL_LESS);
 		gl.glEnable(GL2.GL_ALPHA_TEST);
+		
 	}
 
 	@Override
@@ -113,7 +112,7 @@ public class OpenGLView implements View, GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-		renderArea.updateSize(Math.min(width/6,height/6));
+		renderArea.updateSize(width, height);
 	}
 	
 	//*****View Methods*****
