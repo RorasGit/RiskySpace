@@ -1,4 +1,4 @@
-package riskyspace.view.menu;
+package riskyspace.view.swing.menu;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -9,10 +9,12 @@ import java.util.Map;
 
 import riskyspace.services.EventHandler;
 import riskyspace.view.Clickable;
+import riskyspace.view.IMenu;
 import riskyspace.view.View;
+import riskyspace.view.swing.SwingDrawable;
 import riskyspace.model.Player;
 
-public abstract class AbstractSideMenu implements IMenu, Clickable {
+public abstract class AbstractSideMenu implements IMenu, Clickable, SwingDrawable {
 
 	private boolean visible;
 

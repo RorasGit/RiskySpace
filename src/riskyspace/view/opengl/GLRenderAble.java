@@ -1,4 +1,4 @@
-package riskyspace.view.openglImpl;
+package riskyspace.view.opengl;
 
 import javax.media.opengl.GLAutoDrawable;
 

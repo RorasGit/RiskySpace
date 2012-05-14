@@ -1,4 +1,4 @@
-package riskyspace.view.menu.swingImpl;
+package riskyspace.view.swing.menu;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -12,9 +12,8 @@ import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
-import riskyspace.view.Button;
 import riskyspace.view.View;
-import riskyspace.view.menu.AbstractSideMenu;
+import riskyspace.view.swing.impl.SwingButton;
 
 public class PlanetMenu extends AbstractSideMenu{
 	
@@ -24,7 +23,7 @@ public class PlanetMenu extends AbstractSideMenu{
 	private Image metalPlanetPicture = null;
 	private Image gasPlanetPicture = null;
 	
-	private Button colonizeButton;
+	private SwingButton colonizeButton;
 	
 	public PlanetMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
@@ -35,7 +34,7 @@ public class PlanetMenu extends AbstractSideMenu{
 		gasPlanetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/gas_planet"  + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		
-		colonizeButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		colonizeButton = new SwingButton(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		colonizeButton.setAction(new Action(){
 			@Override
 			public void performAction() {

@@ -1,4 +1,4 @@
-package riskyspace.view.menu.swingImpl;
+package riskyspace.view.swing.menu;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -15,9 +15,8 @@ import riskyspace.model.Fleet;
 import riskyspace.model.ShipType;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.view.Button;
 import riskyspace.view.View;
-import riskyspace.view.menu.AbstractSideMenu;
+import riskyspace.view.swing.impl.SwingButton;
 
 public class FleetMenu extends AbstractSideMenu {
 	

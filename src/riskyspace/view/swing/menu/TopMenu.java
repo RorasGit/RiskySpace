@@ -1,4 +1,4 @@
-package riskyspace.view.menu.swingImpl;
+package riskyspace.view.swing.menu;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -15,13 +15,14 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
-import riskyspace.view.Button;
 import riskyspace.view.Clickable;
+import riskyspace.view.IMenu;
 import riskyspace.view.ViewResources;
 import riskyspace.view.View;
-import riskyspace.view.menu.IMenu;
+import riskyspace.view.swing.SwingDrawable;
+import riskyspace.view.swing.impl.SwingButton;
 
-public class TopMenu implements IMenu, Clickable {
+public class TopMenu implements IMenu, Clickable, SwingDrawable {
 	
 	private boolean enabled;
 	
@@ -32,10 +33,10 @@ public class TopMenu implements IMenu, Clickable {
 	private int gas;
 	private Supply supply;
 	
-	private Button endTurnButton = null;
-	private Button performMovesButton = null;
-	private Button menuButton = null;
-	private Button buildQueueButton = null;
+	private SwingButton endTurnButton = null;
+	private SwingButton performMovesButton = null;
+	private SwingButton menuButton = null;
+	private SwingButton buildQueueButton = null;
 	
 	private int x, y;
 	private int menuHeight = 0;
@@ -56,7 +57,7 @@ public class TopMenu implements IMenu, Clickable {
 		
 		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 		
-		menuButton = new Button(x, y, screenHeight/6, height);
+		menuButton = new SwingButton(x, y, screenHeight/6, height);
 		menuButton.setImage("res/menu/menu" + View.res);
 		menuButton.setAction(new Action() {
 			@Override
@@ -65,10 +66,10 @@ public class TopMenu implements IMenu, Clickable {
 			}
 		});
 		
-		buildQueueButton = new Button(x + screenHeight/6, y, screenHeight/6, height);
+		buildQueueButton = new SwingButton(x + screenHeight/6, y, screenHeight/6, height);
 		buildQueueButton.setImage("res/menu/build_queue" + View.res);
 		
-		endTurnButton = new Button(width - screenHeight/6, 0, screenHeight/6, height);
+		endTurnButton = new SwingButton(width - screenHeight/6, 0, screenHeight/6, height);
 		endTurnButton.setImage("res/menu/end_turn" + View.res);
 		endTurnButton.setAction(new Action() {
 			@Override
@@ -78,7 +79,7 @@ public class TopMenu implements IMenu, Clickable {
 			}
 		});
 		
-		performMovesButton = new Button(width - screenHeight/3, y, screenHeight/6, height);
+		performMovesButton = new SwingButton(width - screenHeight/3, y, screenHeight/6, height);
 		performMovesButton.setImage("res/menu/perform_moves" + View.res);
 		performMovesButton.setAction(new Action() {
 			@Override

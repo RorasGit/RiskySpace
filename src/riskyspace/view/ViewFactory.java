@@ -1,6 +1,6 @@
 package riskyspace.view;
 
-import riskyspace.view.swingImpl.SwingView;
+import riskyspace.view.swing.impl.SwingView;
 
 public class ViewFactory {
 	

@@ -1,8 +1,11 @@
 package riskyspace.view.camera;
 
-
-
-public class Camera {
+/**
+ * View camera used in the awt coordinate system.
+ * @author Alexander Hederstaf
+ *
+ */
+public class SwingCamera {
 	
 	enum Direction {
 		UP, DOWN, LEFT, RIGHT;
@@ -16,17 +19,17 @@ public class Camera {
 	 */
 	private float diff;
 	
-	public Camera(float x, float y, float diff) {
+	public SwingCamera(float x, float y, float diff) {
 		this.x = x;
 		this.y = y;
 		this.diff = diff;
 	}
 	
-	public Camera(float x, float y) {
+	public SwingCamera(float x, float y) {
 		this(x, y, 0.005f);
 	}
 	
-	public Camera() {
+	public SwingCamera() {
 		this(0 , 0 , 0.005f);
 	}
 	
