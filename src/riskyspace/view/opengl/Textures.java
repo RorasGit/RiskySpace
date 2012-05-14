@@ -1,4 +1,4 @@
-package riskyspace.view.openglImpl;
+package riskyspace.view.opengl;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,6 @@ public class Textures {
 				e.printStackTrace();
 			}
 		}
-		
 		texture.bind(drawable.getGL());
 		
 		return texture;

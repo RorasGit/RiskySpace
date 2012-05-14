@@ -8,8 +8,9 @@ import java.util.ArrayList;
 
 import riskyspace.view.ScrollableList;
 import riskyspace.view.View;
+import riskyspace.view.swing.SwingDrawable;
 
-public class LoadGameMenu<E> extends AbstractPreGameMenu {
+public class LoadGameMenu<E> extends AbstractPreGameMenu implements SwingDrawable {
 	
 	private ScrollableList<E> savedGames = null;
 	
@@ -24,6 +25,7 @@ public class LoadGameMenu<E> extends AbstractPreGameMenu {
 				getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 	}
 	
+	@Override
 	public void draw(Graphics g) {
 		g.drawImage(background, getX(), getY(), null);
 		savedGames.draw(g);

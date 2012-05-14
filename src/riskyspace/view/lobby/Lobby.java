@@ -6,21 +6,20 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 
-import org.hamcrest.core.IsEqual;
-
-import riskyspace.view.Button;
 import riskyspace.view.DropdownButton;
 import riskyspace.view.View;
+import riskyspace.view.swing.SwingDrawable;
+import riskyspace.view.swing.impl.SwingButton;
 
 
-public class Lobby extends AbstractPreGameMenu {
+public class Lobby extends AbstractPreGameMenu implements SwingDrawable {
 
-	private Button playerOne = null;
-	private Button playerTwo = null;
-	private Button playerThree = null;
-	private Button playerFour = null;
+	private SwingButton playerOne = null;
+	private SwingButton playerTwo = null;
+	private SwingButton playerThree = null;
+	private SwingButton playerFour = null;
 	
-	private Button startGame = null;
+	private SwingButton startGame = null;
 	
 	private DropdownButton<String> numberOfPlayersButton = null;
 	private DropdownButton<String> gameModesButton = null;
@@ -40,18 +39,18 @@ public class Lobby extends AbstractPreGameMenu {
 		/*
 		 * TODO: fix none absolute values
 		 */
-		playerOne = new Button(getX() + margin, getY() + margin, 240, 50);
+		playerOne = new SwingButton(getX() + margin, getY() + margin, 240, 50);
 		playerOne.setImage("res/menu/lobby/wideButton" + View.res);
-		playerTwo = new Button(getX() + margin, getY() + 2*margin + 50, 240, 50);
+		playerTwo = new SwingButton(getX() + margin, getY() + 2*margin + 50, 240, 50);
 		playerTwo.setImage("res/menu/lobby/wideButton" + View.res);
-		playerThree = new Button(getX() + margin, getY() + 3*margin + 100, 240, 50);
+		playerThree = new SwingButton(getX() + margin, getY() + 3*margin + 100, 240, 50);
 		playerThree.setImage("res/menu/lobby/wideButton" + View.res);
 		playerThree.setEnabled(false);
-		playerFour = new Button(getX() + margin, getY() + 4*margin + 150, 240, 50);
+		playerFour = new SwingButton(getX() + margin, getY() + 4*margin + 150, 240, 50);
 		playerFour.setImage("res/menu/lobby/wideButton" + View.res);
 		playerFour.setEnabled(false);
 		
-		startGame = new Button(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
+		startGame = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
 		startGame.setImage("res/menu/lobby/startGameButton" + View.res);
 		
 		ArrayList<String> list = new ArrayList<String>();
@@ -65,8 +64,6 @@ public class Lobby extends AbstractPreGameMenu {
 		list.add("Annihilation");
 		
 		gameModesButton = new DropdownButton<String>(getX() + getMenuWidth() - getMenuWidth()/7 - 80, getY() + 2*getMenuHeight()/6, 160, 30, list);
-		
-		
 	}
 	
 	private void createBackground() {
@@ -78,8 +75,6 @@ public class Lobby extends AbstractPreGameMenu {
 
 	@Override
 	public void draw(Graphics g) {
-		super.draw(g);
-		
 		g.drawImage(rightsideMenu, getX() + getMenuWidth() - 2*getMenuWidth()/7, getY() + margin, null);
 		g.drawImage(gameModeImage, getX() + getMenuWidth() - 2*getMenuWidth()/7 + 3*margin, getY() + 4*margin, null);
 		numberOfPlayersButton.draw(g);

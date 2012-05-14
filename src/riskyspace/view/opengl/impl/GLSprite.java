@@ -1,19 +1,23 @@
-package riskyspace.view.openglImpl;
+package riskyspace.view.opengl.impl;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
-public class Sprite implements GLRenderAble {
+import riskyspace.view.opengl.GLRenderAble;
+import riskyspace.view.opengl.Rectangle;
+import riskyspace.view.opengl.Textures;
+
+public class GLSprite implements GLRenderAble {
 
 	private Rectangle rect;
 	private String textureName;
 	
-	public Sprite(String textureName, int width, int height) {
+	public GLSprite(String textureName, int width, int height) {
 		this(textureName, 0, 0, width, height);
 	}
 	
-	public Sprite(String textureName,int x, int y, int width, int height) {
+	public GLSprite(String textureName,int x, int y, int width, int height) {
 		this.textureName = textureName;
 		this.rect = new Rectangle(x, y, width, height);
 	}

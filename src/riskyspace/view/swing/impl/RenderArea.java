@@ -1,4 +1,4 @@
-package riskyspace.view.swingImpl;
+package riskyspace.view.swing.impl;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -33,16 +33,14 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
-import riskyspace.view.Button;
 import riskyspace.view.Clickable;
-import riskyspace.view.SpriteMap;
 import riskyspace.view.ViewResources;
-import riskyspace.view.camera.Camera;
+import riskyspace.view.camera.SwingCamera;
 import riskyspace.view.camera.CameraController;
-import riskyspace.view.menu.swingImpl.ColonyMenu;
-import riskyspace.view.menu.swingImpl.FleetMenu;
-import riskyspace.view.menu.swingImpl.PlanetMenu;
-import riskyspace.view.menu.swingImpl.TopMenu;
+import riskyspace.view.swing.menu.ColonyMenu;
+import riskyspace.view.swing.menu.FleetMenu;
+import riskyspace.view.swing.menu.PlanetMenu;
+import riskyspace.view.swing.menu.TopMenu;
 
 public class RenderArea extends JPanel {
 
@@ -63,8 +61,8 @@ public class RenderArea extends JPanel {
 	/*
 	 * Cameras
 	 */
-	private Camera currentCamera = null;
-	private Map<Player, Camera> cameras = null;
+	private SwingCamera currentCamera = null;
+	private Map<Player, SwingCamera> cameras = null;
 	private CameraController cc = null;
 	
 	/*
@@ -90,7 +88,7 @@ public class RenderArea extends JPanel {
 	/*
 	 * SpriteMap
 	 */
-	private SpriteMap spriteMap = null;
+	private SwingSpriteMap spriteMap = null;
 	
 	private ClickHandler clickHandler = null;
 	private EventTextPrinter eventTextPrinter = null;
@@ -113,7 +111,7 @@ public class RenderArea extends JPanel {
 	/*
 	 * The Player currently playing
 	 */
-	private Button otherPlayerActive = null;
+	private SwingButton otherPlayerActive = null;
 
 	public RenderArea(int rows, int cols) {
 		this.rows = rows;
@@ -131,7 +129,7 @@ public class RenderArea extends JPanel {
 		eventTextPrinter = new EventTextPrinter();
 		clickHandler = new ClickHandler();
 		fpsFont = ViewResources.getFont().deriveFont(17f);
-		otherPlayerActive = new Button(width/2 - width/10, height/2 - height/10, width/5, height/10);
+		otherPlayerActive = new SwingButton(width/2 - width/10, height/2 - height/10, width/5, height/10);
 		otherPlayerActive.setImage("res/menu/wide_button.png");
 		otherPlayerActive.setEnabled(false);
 		addMouseListener(clickHandler);
@@ -186,11 +184,11 @@ public class RenderArea extends JPanel {
 	}
 	
 	private void initCameras() {
-		cameras = new HashMap<Player, Camera>();
-		cameras.put(Player.BLUE, new Camera(0.93f,0.92f));
-		cameras.put(Player.RED, new Camera(0.07f,0.08f));
-		cameras.put(Player.GREEN, new Camera(0.07f,0.92f));
-		cameras.put(Player.PINK, new Camera(0.93f,0.08f));
+		cameras = new HashMap<Player, SwingCamera>();
+		cameras.put(Player.BLUE, new SwingCamera(0.93f,0.92f));
+		cameras.put(Player.RED, new SwingCamera(0.07f,0.08f));
+		cameras.put(Player.GREEN, new SwingCamera(0.07f,0.92f));
+		cameras.put(Player.PINK, new SwingCamera(0.93f,0.08f));
 		cc = new CameraController();
 	}
 	
@@ -298,7 +296,7 @@ public class RenderArea extends JPanel {
 	}
 	
 	public void updateData(SpriteMapData data) {
-		spriteMap = SpriteMap.getSprites(data, squareSize);
+		spriteMap = SwingSpriteMap.getSprites(data, squareSize);
 	}
 
 	public void setStats(PlayerStats stats) {

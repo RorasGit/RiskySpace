@@ -1,12 +1,9 @@
 package riskyspace.view.lobby;
 
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Point;
 
-import riskyspace.services.EventHandler;
 import riskyspace.view.Clickable;
-import riskyspace.view.menu.IMenu;
+import riskyspace.view.IMenu;
 
 public abstract class AbstractPreGameMenu implements IMenu, Clickable {
 	
@@ -21,8 +18,6 @@ public abstract class AbstractPreGameMenu implements IMenu, Clickable {
 		this.y = y;
 		this.menuHeight = menuHeight;
 		this.menuWidth = menuWidth;
-		
-		
 	}
 	
 	@Override
@@ -37,9 +32,6 @@ public abstract class AbstractPreGameMenu implements IMenu, Clickable {
 		}
 		return false;
 	}
-
-	@Override
-	public void draw(Graphics g) {}
 
 	@Override
 	public void setVisible(boolean enabled) {

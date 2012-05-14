@@ -1,4 +1,4 @@
-package riskyspace.view.swingImpl;
+package riskyspace.view.swing.impl;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;

@@ -1,4 +1,4 @@
-package riskyspace.view.menu.swingImpl;
+package riskyspace.view.swing.menu;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -23,11 +23,12 @@ import riskyspace.model.building.Turret;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
-import riskyspace.view.Button;
-import riskyspace.view.RankIndicator;
 import riskyspace.view.View;
 import riskyspace.view.ViewResources;
-import riskyspace.view.menu.AbstractSideMenu;
+import riskyspace.view.swing.SwingDrawable;
+import riskyspace.view.swing.impl.SwingButton;
+import riskyspace.view.swing.impl.SwingRankIndicator;
+import riskyspace.view.RankIndicator;
 
 /**
  * 
@@ -51,15 +52,15 @@ public class BuildingMenu extends AbstractSideMenu {
 	/*
 	 * Upgrade Buttons.
 	 */
-	private Button upgradeMine;
-	private Button upgradeTurret;
-	private Button upgradeRadar;
-	private Button upgradeHangar;
+	private SwingButton upgradeMine;
+	private SwingButton upgradeTurret;
+	private SwingButton upgradeRadar;
+	private SwingButton upgradeHangar;
 	
 	/*
 	 * Back button
 	 */
-	private Button backButton;
+	private SwingButton backButton;
 	
 	/*
 	 * Images for different Buildings
@@ -162,10 +163,10 @@ public class BuildingMenu extends AbstractSideMenu {
 		 * Create Rank Indicators
 		 */
 		// Set Rank
-		mineRank = new RankIndicator(3);
-		turretRank = new RankIndicator(3);
-		radarRank = new RankIndicator(3);
-		hangarRank = new RankIndicator(3);
+		mineRank = new SwingRankIndicator(3);
+		turretRank = new SwingRankIndicator(3);
+		radarRank = new SwingRankIndicator(3);
+		hangarRank = new SwingRankIndicator(3);
 		
 		// Set Size for Rank Indicators
 		int width = menuHeight/35;
@@ -201,7 +202,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		/*
 		 * Create Buttons
 		 */
-		upgradeMine = new Button(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, mineRank.getY() + mineRank.getHeight() - upgradeButtonHeight
+		upgradeMine = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, mineRank.getY() + mineRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeMine.setImage("res/menu/upgrade" + View.res);
 		upgradeMine.setAction(new Action(){
@@ -212,7 +213,7 @@ public class BuildingMenu extends AbstractSideMenu {
 			}
 		});
 		
-		upgradeTurret = new Button(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, turretRank.getY() + turretRank.getHeight() - upgradeButtonHeight
+		upgradeTurret = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, turretRank.getY() + turretRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeTurret.setImage("res/menu/upgrade" + View.res);
 		upgradeTurret.setAction(new Action(){
@@ -224,7 +225,7 @@ public class BuildingMenu extends AbstractSideMenu {
 		});
 		
 		
-		upgradeRadar = new Button(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, radarRank.getY() + radarRank.getHeight() - upgradeButtonHeight
+		upgradeRadar = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, radarRank.getY() + radarRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeRadar.setImage("res/menu/upgrade" + View.res);
 		upgradeRadar.setAction(new Action(){
@@ -235,7 +236,7 @@ public class BuildingMenu extends AbstractSideMenu {
 			}
 		});
 		
-		upgradeHangar = new Button(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, hangarRank.getY() + hangarRank.getHeight() - upgradeButtonHeight
+		upgradeHangar = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, hangarRank.getY() + hangarRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeHangar.setImage("res/menu/upgrade" + View.res);
 		upgradeHangar.setAction(new Action(){
@@ -246,7 +247,7 @@ public class BuildingMenu extends AbstractSideMenu {
 			}
 		});
 		
-		backButton = new Button(x + margin, y + menuHeight - margin - (menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		backButton = new SwingButton(x + margin, y + menuHeight - margin - (menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		backButton.setImage("res/menu/back" + View.res);
 		backButton.setAction(new Action(){
 			@Override
@@ -388,10 +389,10 @@ public class BuildingMenu extends AbstractSideMenu {
 			/*
 			 * Draw Rank Indicators
 			 */
-			mineRank.draw(g);
-			turretRank.draw(g);
-			radarRank.draw(g);
-			hangarRank.draw(g);
+			((SwingDrawable)mineRank).draw(g);
+			((SwingDrawable)turretRank).draw(g);
+			((SwingDrawable)radarRank).draw(g);
+			((SwingDrawable)hangarRank).draw(g);
 			
 			/*
 			 * Draw Images

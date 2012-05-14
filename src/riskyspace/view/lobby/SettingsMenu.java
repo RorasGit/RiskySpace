@@ -7,8 +7,9 @@ import java.awt.Toolkit;
 
 import riskyspace.view.View;
 import riskyspace.view.VolumeSlider;
+import riskyspace.view.swing.SwingDrawable;
 
-public class SettingsMenu extends AbstractPreGameMenu {
+public class SettingsMenu extends AbstractPreGameMenu implements SwingDrawable {
 	
 	private VolumeSlider musicVolume = null;
 	private VolumeSlider effectsVolume = null;
@@ -19,6 +20,7 @@ public class SettingsMenu extends AbstractPreGameMenu {
 		effectsVolume = new VolumeSlider(x + menuWidth/2 - 135, y + 2*menuHeight/3, 270, 30, "eFFect volume");	
 	}
 	
+	@Override
 	public void draw(Graphics g) {
 		musicVolume.draw(g);
 		effectsVolume.draw(g);

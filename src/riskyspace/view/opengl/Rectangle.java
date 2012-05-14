@@ -1,4 +1,4 @@
-package riskyspace.view.openglImpl;
+package riskyspace.view.opengl;
 
 public class Rectangle {
 	private int x, y, width, height;

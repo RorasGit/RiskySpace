@@ -1,10 +1,10 @@
-package riskyspace.view;
+package riskyspace.view.swing.impl;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
-public class Sprite {
+public class SwingSprite {
 	private double rotation = 0;
 	private float dx;
 	private float dy;
@@ -18,7 +18,7 @@ public class Sprite {
 	 * @param dy The offset from 0 to 1 of the top side 
 	 * inside the position
 	 */
-	public Sprite(Image image, float dx, float dy) {
+	public SwingSprite(Image image, float dx, float dy) {
 		this.image = image;
 		this.dx = dx;
 		this.dy = dy;

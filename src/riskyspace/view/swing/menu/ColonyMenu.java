@@ -1,4 +1,4 @@
-package riskyspace.view.menu.swingImpl;
+package riskyspace.view.swing.menu;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -19,11 +19,10 @@ import riskyspace.model.PlayerStats;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
-import riskyspace.view.Button;
+import riskyspace.view.IMenu;
 import riskyspace.view.ViewResources;
 import riskyspace.view.View;
-import riskyspace.view.menu.AbstractSideMenu;
-import riskyspace.view.menu.IMenu;
+import riskyspace.view.swing.impl.SwingButton;
 /**
  * 
  * @author flygarn
@@ -45,8 +44,8 @@ public class ColonyMenu extends AbstractSideMenu{
 	/*
 	 * Buttons
 	 */
-	private Button buildShipButton = null;
-	private Button buildingsButton = null;
+	private SwingButton buildShipButton = null;
+	private SwingButton buildingsButton = null;
 	
 	/*
 	 * Sub Menus
@@ -80,7 +79,7 @@ public class ColonyMenu extends AbstractSideMenu{
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
-		buildShipButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		buildShipButton = new SwingButton(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		buildShipButton.setImage("res/menu/recruit" + View.res);
 		buildShipButton.setAction(new Action(){
 			@Override
@@ -89,7 +88,7 @@ public class ColonyMenu extends AbstractSideMenu{
 				recruitMenu.setVisible(true);
 			}
 		});
-		buildingsButton = new Button(x + margin, y + menuHeight - 3*(menuWidth - margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		buildingsButton = new SwingButton(x + margin, y + menuHeight - 3*(menuWidth - margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		buildingsButton.setImage("res/menu/build" + View.res);
 		buildingsButton.setAction(new Action(){
 			@Override

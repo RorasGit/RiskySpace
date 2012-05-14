@@ -7,20 +7,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import riskyspace.view.swing.impl.SwingButton;
+
 public class ScrollableList<E> implements Clickable {
 		
 	private List<E> savedGamesList;
 		
-	private List<Button> displayedButtonList = new ArrayList<Button>();
+	private List<SwingButton> displayedButtonList = new ArrayList<SwingButton>();
 		
-	private Map<Integer, Button> values = new HashMap<Integer, Button>();
+	private Map<Integer, SwingButton> values = new HashMap<Integer, SwingButton>();
 	
 	private int selectedIndex;
 	
 	private E selectedSave = null;
 	
-	private Button decreaseIndexButton;
-	private Button increaseIndexButton;
+	private SwingButton decreaseIndexButton;
+	private SwingButton increaseIndexButton;
 
 	private int x;
 	private int y;
@@ -33,7 +35,7 @@ public class ScrollableList<E> implements Clickable {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		decreaseIndexButton = new Button(x, y, width, height);
+		decreaseIndexButton = new SwingButton(x, y, width, height);
 		decreaseIndexButton.setImage("res/menu/lobby/scrollUpButton.png");
 		decreaseIndexButton.setAction(new Action(){
 			@Override
@@ -44,7 +46,7 @@ public class ScrollableList<E> implements Clickable {
 			}
 		});
 		
-		increaseIndexButton = new Button(x, y + 11*height, width, height);
+		increaseIndexButton = new SwingButton(x, y + 11*height, width, height);
 		increaseIndexButton.setImage("res/menu/lobby/scrollDownButton.png");
 		increaseIndexButton.setAction(new Action(){
 			@Override
@@ -65,7 +67,7 @@ public class ScrollableList<E> implements Clickable {
 		int buttonHeight = height;
 		for (int i = selectedIndex; i < selectedIndex+10; i++) {
 			if (i < savedGamesList.size()) {
-			Button b = new Button(x, yPos, width, buttonHeight);
+			SwingButton b = new SwingButton(x, yPos, width, buttonHeight);
 			b.setImage("res/menu/lobby/dropdownMenu/dropdownItem.png");
 			b.setText(savedGamesList.get(i).toString());
 			displayedButtonList.add(b);
@@ -77,7 +79,7 @@ public class ScrollableList<E> implements Clickable {
 	public void draw(Graphics g) {
 		decreaseIndexButton.draw(g);
 		increaseIndexButton.draw(g);
-		for (Button b : displayedButtonList) {
+		for (SwingButton b : displayedButtonList) {
 			b.draw(g);
 		}
 	}

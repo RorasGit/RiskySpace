@@ -11,12 +11,13 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import riskyspace.view.Action;
-import riskyspace.view.Button;
 import riskyspace.view.Clickable;
+import riskyspace.view.IMenu;
 import riskyspace.view.View;
-import riskyspace.view.menu.IMenu;
+import riskyspace.view.swing.SwingDrawable;
+import riskyspace.view.swing.impl.SwingButton;
 
-public class StartScreen extends JPanel{
+public class StartScreen extends JPanel {
 	
 	private int width;
 	private int height;
@@ -28,12 +29,12 @@ public class StartScreen extends JPanel{
 	private IMenu multiplayerLobby = null;
 	private IMenu settingsMenu = null;
 	
-	private Button localGame = null;
-	private Button settings = null;
-	private Button multiplayer = null;
-	private Button loadGame = null;
-	private Button exit = null;
-	private Button backButton = null;
+	private SwingButton localGame = null;
+	private SwingButton settings = null;
+	private SwingButton multiplayer = null;
+	private SwingButton loadGame = null;
+	private SwingButton exit = null;
+	private SwingButton backButton = null;
 	
 	
 	
@@ -85,7 +86,7 @@ public class StartScreen extends JPanel{
 	}
 	
 	public void createButtons() {
-		localGame = new Button(width/2 - 125, height/2 - 200, 250, 50);
+		localGame = new SwingButton(width/2 - 125, height/2 - 200, 250, 50);
 		localGame.setImage("res/menu/lobby/localGameButton" + View.res);
 		localGame.setAction(new Action(){
 			@Override
@@ -94,7 +95,7 @@ public class StartScreen extends JPanel{
 				startScreenVisible = false;
 			}
 		});
-		multiplayer = new Button(width/2 - 125, height/2 - 200 + 100, 250, 50);
+		multiplayer = new SwingButton(width/2 - 125, height/2 - 200 + 100, 250, 50);
 		multiplayer.setImage("res/menu/lobby/multiplayerButton" + View.res);
 		multiplayer.setAction(new Action(){
 			@Override
@@ -103,7 +104,7 @@ public class StartScreen extends JPanel{
 				startScreenVisible = false;
 			}
 		});
-		loadGame = new Button(width/2 - 125, height/2 - 200 + 200, 250, 50);
+		loadGame = new SwingButton(width/2 - 125, height/2 - 200 + 200, 250, 50);
 		loadGame.setImage("res/menu/lobby/loadGameButton" + View.res);
 		loadGame.setAction(new Action(){
 			@Override
@@ -112,7 +113,7 @@ public class StartScreen extends JPanel{
 				startScreenVisible = false;
 			}
 		});
-		settings = new Button(width/2 - 125, height/2 - 200 + 300, 250, 50);
+		settings = new SwingButton(width/2 - 125, height/2 - 200 + 300, 250, 50);
 		settings.setImage("res/menu/lobby/settingsButton" + View.res);
 		settings.setAction(new Action(){
 			@Override
@@ -121,7 +122,7 @@ public class StartScreen extends JPanel{
 				startScreenVisible = false;
 			}
 		});
-		exit = new Button(width/2 - 125, height/2 - 200 + 400, 250, 50);
+		exit = new SwingButton(width/2 - 125, height/2 - 200 + 400, 250, 50);
 		exit.setImage("res/menu/lobby/exitGameButton.png");
 		exit.setAction(new Action(){
 			@Override
@@ -129,7 +130,7 @@ public class StartScreen extends JPanel{
 				System.exit(0);
 			}
 		});
-		backButton = new Button(width/2 - width/3 + 10, height/2 + height/3 - 60, 180, 50);
+		backButton = new SwingButton(width/2 - width/3 + 10, height/2 + height/3 - 60, 180, 50);
 		backButton.setImage("res/menu/lobby/backButton.png");
 		backButton.setAction(new Action(){
 			@Override
@@ -146,16 +147,16 @@ public class StartScreen extends JPanel{
 		if (!startScreenVisible) {
 			backButton.draw(g);
 			if (localLobby.isVisible()) {
-				localLobby.draw(g);
+				((SwingDrawable) localLobby).draw(g);
 			}
 			if (loadGameMenu.isVisible()) {
-				loadGameMenu.draw(g);
+				((SwingDrawable) loadGameMenu).draw(g);
 			}
 			if (multiplayerLobby.isVisible()) {
-				multiplayerLobby.draw(g);
+				((SwingDrawable) multiplayerLobby).draw(g);
 			}
 			if (settingsMenu.isVisible()) {
-				settingsMenu.draw(g);
+				((SwingDrawable) settingsMenu).draw(g);
 			}
 		}
 		if (startScreenVisible) {

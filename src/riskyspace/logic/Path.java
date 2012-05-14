@@ -105,6 +105,120 @@ public class Path implements Serializable {
 		}
 	}
 	
+	/**
+	 * Determine the Rotation in radians for a Path arrow part depending on path segments.
+	 * @param previous The path segment previous to the current one.
+	 * @param current The current path segment.
+	 * @param next The next path segment.
+	 * @return Rotation for the current segment in radians.
+	 */
+	public static double getRotation(Position previous, Position current, Position next) {
+		/*
+		 * Variables for determining where the previous and next positions
+		 * are relative to the current position
+		 */
+		boolean prevAbove = false;
+		boolean prevUnder = false;
+		boolean prevLeft = false;
+		boolean prevRight = false;
+		
+		boolean nextRight = false;
+		boolean nextUnder = false;
+		boolean nextLeft = false;
+		boolean nextAbove = false;
+		
+		/*
+		 * Only calculate values if there is a previous
+		 * respective next position in.
+		 */
+		if (previous != null) {
+			prevAbove = previous.getRow() < current.getRow();
+			prevUnder = previous.getRow() > current.getRow();
+			prevLeft = previous.getCol() < current.getCol();
+			prevRight = previous.getCol() > current.getCol();
+		}
+		if (next != null) {
+			nextRight = next.getCol() > current.getCol();
+			nextUnder = next.getRow() > current.getRow();
+			nextLeft = next.getCol() < current.getCol();
+			nextAbove = next.getRow() < current.getRow();
+		}
+		/*
+		 * If previous is null then only determine rotation based on 
+		 * next position.
+		 * >> Path is always of length 2 at least, therefore no point can
+		 * have neither previous or next location.
+		 */
+		if (previous == null) {
+			if (nextAbove) {
+				return 3*Math.PI/2;
+			} else if (nextUnder) {
+				return Math.PI/2;
+			} else if (nextLeft) {
+				return Math.PI;
+			} else if (nextRight) {
+				return 0;
+			}
+		}
+		/*
+		 * If next is null then only determine rotation based on 
+		 * previous position.
+		 */
+		if (next == null) {
+			if (prevAbove) {
+				return Math.PI/2;
+			} else if (prevUnder) {
+				return 3*Math.PI/2;
+			} else if (prevLeft) {
+				return 0;
+			} else if (prevRight) {
+				return Math.PI;
+			}
+		}
+		/*
+		 * Return rotation based on where the previous and next locations are.
+		 */
+		if (prevAbove) {
+			if (nextUnder) {
+				return Math.PI/2;
+			} else if (nextLeft) {
+				return Math.PI/2;
+			} else if (nextRight) {
+				return Math.PI;
+			}
+		} else if (nextAbove) {
+			if (prevUnder) {
+				return Math.PI/2;
+			} else if (prevLeft) {
+				return Math.PI/2;
+			} else if (prevRight) {
+				return Math.PI;
+			}
+		} else if (prevUnder) {
+			if (nextAbove) {
+				return Math.PI/2;
+			} else if (nextLeft) {
+				return 0;
+			} else if (nextRight) {
+				return 3*Math.PI/2;
+			}
+		} else if (nextUnder) {
+			if (prevAbove) {
+				return Math.PI/2;
+			} else if (prevLeft) {
+				return 0;
+			} else if (prevRight) {
+				return 3*Math.PI/2;
+			}
+		}
+		/*
+		 * Return 0 to make the compiler happy, will never run
+		 * unless previous == current || current == next which
+		 * is wrong usage.
+		 */
+		return 0;
+	}
+	
 	public Position step(){
 		if(path.size() > 0){
 			current = path.removeFirst();

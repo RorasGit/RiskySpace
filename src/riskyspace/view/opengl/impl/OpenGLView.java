@@ -1,4 +1,4 @@
-package riskyspace.view.openglImpl;
+package riskyspace.view.opengl.impl;
 
 import java.awt.Cursor;
 import java.awt.GraphicsEnvironment;
@@ -35,7 +35,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class OpenGLView implements View, GLEventListener {
 
 	public static void main(String[] args) {
-		View v = new OpenGLView(20, 20);
+		new OpenGLView(20, 20);
 	}
 	
 	private GLRenderArea renderArea = null;
@@ -74,7 +74,6 @@ public class OpenGLView implements View, GLEventListener {
 			@Override public void keyReleased(KeyEvent arg0) {}
 			@Override public void keyTyped(KeyEvent arg0) {}
 		});
-		canvas.requestFocusInWindow();
 		canvas.addGLEventListener(this);
 		
 		frame.add(canvas);
@@ -85,6 +84,7 @@ public class OpenGLView implements View, GLEventListener {
 		} else {
 			System.err.println("Fullscreen not supported");
 		}
+		canvas.requestFocusInWindow();
 //		frame.pack();
 //		frame.setVisible(true);
 //		frame.setLocationRelativeTo(null);
@@ -126,6 +126,8 @@ public class OpenGLView implements View, GLEventListener {
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL.GL_LESS);
 		gl.glEnable(GL2.GL_ALPHA_TEST);
+		gl.glEnable (GL2.GL_BLEND);
+		gl.glBlendFunc (GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
 		gl.glAlphaFunc(GL2.GL_GREATER, 0.10f);

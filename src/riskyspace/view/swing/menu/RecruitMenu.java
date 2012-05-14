@@ -1,4 +1,4 @@
-package riskyspace.view.menu.swingImpl;
+package riskyspace.view.swing.menu;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -20,10 +20,9 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
-import riskyspace.view.Button;
 import riskyspace.view.ViewResources;
 import riskyspace.view.View;
-import riskyspace.view.menu.AbstractSideMenu;
+import riskyspace.view.swing.impl.SwingButton;
 
 public class RecruitMenu extends AbstractSideMenu {
 	
@@ -37,15 +36,15 @@ public class RecruitMenu extends AbstractSideMenu {
 	/*
 	 * Build Buttons
 	 */
-	private Button buildScoutButton = null;
-	private Button buildHunterButton = null;
-	private Button buildDestroyerButton = null;
-	private Button buildColonizerButton = null;
+	private SwingButton buildScoutButton = null;
+	private SwingButton buildHunterButton = null;
+	private SwingButton buildDestroyerButton = null;
+	private SwingButton buildColonizerButton = null;
 	
 	/*
 	 * Back Button
 	 */
-	private Button backButton = null;
+	private SwingButton backButton = null;
 	
 	/*
 	 * Images
@@ -61,7 +60,7 @@ public class RecruitMenu extends AbstractSideMenu {
 		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		
-		buildScoutButton = new Button(x + menuWidth/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth), 90, 90);
+		buildScoutButton = new SwingButton(x + menuWidth/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth), 90, 90);
 		buildScoutButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -69,7 +68,7 @@ public class RecruitMenu extends AbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		buildHunterButton = new Button(x + menuWidth/2 + margin/3, 2*y + menuHeight - (2*menuWidth), 90, 90);
+		buildHunterButton = new SwingButton(x + menuWidth/2 + margin/3, 2*y + menuHeight - (2*menuWidth), 90, 90);
 		buildHunterButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -77,7 +76,7 @@ public class RecruitMenu extends AbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		buildDestroyerButton = new Button(x + menuWidth/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
+		buildDestroyerButton = new SwingButton(x + menuWidth/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
 		buildDestroyerButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -85,7 +84,7 @@ public class RecruitMenu extends AbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		buildColonizerButton = new Button(x + menuWidth/2 + margin/3, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
+		buildColonizerButton = new SwingButton(x + menuWidth/2 + margin/3, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
 		buildColonizerButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -93,7 +92,7 @@ public class RecruitMenu extends AbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		backButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		backButton = new SwingButton(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() { 

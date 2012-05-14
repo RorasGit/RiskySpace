@@ -1,10 +1,8 @@
-package riskyspace.view.menu;
+package riskyspace.view;
 
-import java.awt.Graphics;
 
 public interface IMenu {
 
-	public void draw(Graphics g);
 	public void setVisible(boolean set);
 	public boolean isVisible();
 }

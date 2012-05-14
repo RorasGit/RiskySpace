@@ -1,6 +1,11 @@
 package riskyspace.view.camera;
 
-public class GLCamera extends Camera {
+/**
+ * View camera used in the openGL coordinate system.
+ * @author Alexander Hederstaf
+ *
+ */
+public class GLCamera extends SwingCamera {
 
 	public GLCamera(float x, float y) {
 		super(x, y, 0.004f);

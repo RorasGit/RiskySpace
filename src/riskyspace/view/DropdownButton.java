@@ -7,13 +7,15 @@ import java.util.Map;
 import java.awt.Graphics;
 import java.awt.Point;
 
+import riskyspace.view.swing.impl.SwingButton;
+
 public class DropdownButton<E> implements Clickable {
 	
 	private List<E> itemList;
 	
-	private List<Button> buttonList = new ArrayList<Button>();
+	private List<SwingButton> buttonList = new ArrayList<SwingButton>();
 	
-	private Map<Button, Integer> values = new HashMap<Button, Integer>();
+	private Map<SwingButton, Integer> values = new HashMap<SwingButton, Integer>();
 	
 	private int selectedValue;
 	
@@ -24,7 +26,7 @@ public class DropdownButton<E> implements Clickable {
 	private int width;
 	private int height;
 	
-	private Button mainButton;
+	private SwingButton mainButton;
 	
 	public DropdownButton(int x, int y, int width, int height, ArrayList<E> array) {
 		itemList = array;
@@ -33,7 +35,7 @@ public class DropdownButton<E> implements Clickable {
 		this.width = width;
 		this.height = height;
 		createButtons();
-		mainButton = new Button(x,y,width,height);
+		mainButton = new SwingButton(x,y,width,height);
 		mainButton.setImage("res/menu/lobby/dropdownMenu/dropdownButton.png");
 		mainButton.setText(buttonList.get(0).getText());
 		mainButton.setAction(new Action(){
@@ -51,7 +53,7 @@ public class DropdownButton<E> implements Clickable {
 		int buttonHeight = height;
 		int value = 2;
 		for(E item : itemList) {
-			Button b = new Button(x, yPos, width, buttonHeight);
+			SwingButton b = new SwingButton(x, yPos, width, buttonHeight);
 			b.setImage("res/menu/lobby/dropdownMenu/dropdownItem.png");
 			b.setText(item.toString());
 			buttonList.add(b);
@@ -83,7 +85,7 @@ public class DropdownButton<E> implements Clickable {
 	public void draw(Graphics g) {
 		mainButton.draw(g);
 		if(open) {
-			for(Button b : buttonList) {
+			for(SwingButton b : buttonList) {
 				b.draw(g);
 			}
 		}

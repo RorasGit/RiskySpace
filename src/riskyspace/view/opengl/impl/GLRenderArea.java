@@ -1,4 +1,4 @@
-package riskyspace.view.openglImpl;
+package riskyspace.view.opengl.impl;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -19,9 +19,11 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLProfile;
 
 import riskyspace.model.Player;
-import riskyspace.view.camera.Camera;
+import riskyspace.view.camera.SwingCamera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.camera.GLCamera;
+import riskyspace.view.opengl.GLRenderAble;
+import riskyspace.view.opengl.Rectangle;
 
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
@@ -58,8 +60,8 @@ public class GLRenderArea implements GLRenderAble {
 	/*
 	 * Cameras
 	 */
-	private Camera currentCamera = null;
-	private Map<Player, Camera> cameras = null;
+	private SwingCamera currentCamera = null;
+	private Map<Player, SwingCamera> cameras = null;
 	private CameraController cc = null;
 	
 	/**
@@ -83,7 +85,7 @@ public class GLRenderArea implements GLRenderAble {
 		createBackground();
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				add(new Sprite("res/icons/cloud", squareSize*(3 + i), squareSize*(2 + j), squareSize, squareSize), 2);
+				add(new GLSprite("res/icons/cloud", squareSize*(3 + i), squareSize*(2 + j), squareSize, squareSize), 2);
 			}
 		}
 	}
@@ -197,7 +199,7 @@ public class GLRenderArea implements GLRenderAble {
 	}
 	
 	private void initCameras() {
-		cameras = new HashMap<Player, Camera>();
+		cameras = new HashMap<Player, SwingCamera>();
 		cameras.put(Player.BLUE, new GLCamera(0.93f,0.92f));
 		cameras.put(Player.RED, new GLCamera(0.07f,0.08f));
 		cameras.put(Player.GREEN, new GLCamera(0.07f,0.92f));
