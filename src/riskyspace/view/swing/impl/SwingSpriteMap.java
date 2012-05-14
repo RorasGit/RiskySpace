@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import riskyspace.GameManager;
 import riskyspace.PlayerColors;
 import riskyspace.logic.Path;
 import riskyspace.logic.SpriteMapData;
@@ -24,8 +23,8 @@ import riskyspace.model.Resource;
 import riskyspace.view.ViewResources;
 
 /**
- * 
- * @author flygarn
+ * Drawing all game Sprites in a awt context
+ * @author Alexander Hederstaf
  * 
  */
 public class SwingSpriteMap {

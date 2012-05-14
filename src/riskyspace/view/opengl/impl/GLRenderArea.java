@@ -85,7 +85,11 @@ public class GLRenderArea implements GLRenderAble {
 		createBackground();
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				add(new GLSprite("res/icons/cloud", squareSize*(3 + i), squareSize*(2 + j), squareSize, squareSize), 2);
+				GLSprite sprite = new GLSprite("res/icons/cloud", 0, 0, 256, 256);
+				sprite.setBounds(new Rectangle(squareSize*(3 + i), squareSize*(2 + j), squareSize, squareSize));
+				add(sprite, 2);
+				
+//				add(new GLSprite("res/icons/cloud", squareSize*(3 + i), squareSize*(2 + j), squareSize, squareSize), 2);
 			}
 		}
 	}
@@ -266,16 +270,16 @@ public class GLRenderArea implements GLRenderAble {
 		gl.glBegin(GL2.GL_QUADS);
 		
 		gl.glTexCoord2f(x, y);
-		gl.glVertex3f(-1, -1, 30 / 10000000f);
+		gl.glVertex3f(-1, -1, 0.99f);
 
 		gl.glTexCoord2f(x, y1);
-		gl.glVertex3f(-1, 1, 30 / 10000000f);
+		gl.glVertex3f(-1, 1, 0.99f);
 
 		gl.glTexCoord2f(x1, y1);
-		gl.glVertex3f(1, 1, 30 / 10000000f);
+		gl.glVertex3f(1, 1, 0.99f);
 
 		gl.glTexCoord2f(x1, y);
-		gl.glVertex3f(1, -1, 30 / 10000000f);
+		gl.glVertex3f(1, -1, 0.99f);
 		
 		gl.glEnd();
 	}
