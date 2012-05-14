@@ -45,6 +45,10 @@ public class Button implements Clickable {
 		this.text = text;
 	}
 	
+	public String getText() {
+		return text;
+	}
+	
 	public void draw(Graphics g) {
 		if (isEnabled()) {	
 			g.drawImage(scaledImage, x, y, null);
@@ -63,7 +67,7 @@ public class Button implements Clickable {
 		Color prev = g.getColor();
 		g.setColor(Color.LIGHT_GRAY);
 		Font saveFont = g.getFont();
-		g.setFont(new Font("Comic Sanc MS", Font.BOLD, 30));
+		g.setFont(new Font("Comic Sanc MS", Font.BOLD, 15));
 		int textX = x - (g.getFontMetrics().stringWidth(text) / 2) + (width / 2);
 		int textY = y + (g.getFontMetrics().getHeight() / 3) + (height / 2);
 		g.drawString(text, textX, textY);
@@ -123,6 +127,9 @@ public class Button implements Clickable {
 	public boolean mouseReleased(Point p) {
 		if (isEnabled()) {
 			if (contains(p)) {
+				if (action != null) {
+					action.performAction();
+				}
 				return true;
 			}
 		}
