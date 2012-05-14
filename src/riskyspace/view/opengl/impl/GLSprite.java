@@ -1,6 +1,7 @@
 package riskyspace.view.opengl.impl;
 
-import javax.media.opengl.GL;
+import java.awt.Point;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
@@ -8,9 +9,12 @@ import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
 import riskyspace.view.opengl.Textures;
 
+import com.jogamp.opengl.util.texture.Texture;
+
 public class GLSprite implements GLRenderAble {
 
-	private Rectangle rect;
+	private Rectangle textureRect;
+	private Rectangle renderRect;
 	private String textureName;
 	
 	public GLSprite(String textureName, int width, int height) {
@@ -19,55 +23,72 @@ public class GLSprite implements GLRenderAble {
 	
 	public GLSprite(String textureName,int x, int y, int width, int height) {
 		this.textureName = textureName;
-		this.rect = new Rectangle(x, y, width, height);
+		this.textureRect = new Rectangle(x, y, width, height);
+		renderRect = new Rectangle(0, 0, 0, 0);
 	}
 
-	public int getX() {
-		return rect.getX();
+	public void setLocationX(int x) {
+		renderRect.setX(x);
 	}
 	
-	public int getY() {
-		return rect.getY();
+	public void setLocationY(int y) {
+		renderRect.setY(y);
+	}
+	
+	public void setSize(int width, int height) {
+		setWidth(width);
+		setHeight(height);
+	}
+	
+	public void setWidth(int width) {
+		renderRect.setWidth(width);
 	}
 
-	public int getWidth() {
-		return rect.getWidth();
+	public void setHeight(int height) {
+		renderRect.setHeight(height);
 	}
 	
-	public int getHeight() {
-		return rect.getHeight();
+	public void setBounds(Rectangle rectangle) {
+		renderRect = new Rectangle(rectangle);
 	}
 	
 	@Override
 	public Rectangle getBounds() {
-		return rect;
+		return renderRect;
 	}
 
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
 		if (objectRect != null && objectRect.intersects(targetArea)) {
 			GL2 gl = drawable.getGL().getGL2();
-			Textures.bindTexture(textureName, drawable);
+			Texture tex = Textures.bindTexture(textureName, drawable);
 			
 			gl.glBegin(GL2.GL_QUADS);
 			
-			float x = ((float) (2*getX()) - 2*targetArea.getX() - targetArea.getWidth())/targetArea.getWidth();
-			float y = ((float) (2*getY()) - 2*targetArea.getY() - targetArea.getHeight())/targetArea.getHeight();
-			float x1 = ((float) (2*getX() + 2*getWidth() - 2*targetArea.getX() - targetArea.getWidth()))/targetArea.getWidth();
-			float y1 = ((float) (2*getY() + 2*getHeight() - 2*targetArea.getY() - targetArea.getHeight()))/targetArea.getHeight();
+			/* Variables for texture position within larger texture*/
+			float tX = (float) textureRect.getX() / tex.getWidth();
+			float tY = (float) textureRect.getY() / tex.getHeight();
+			float tX1 = tX + (float) textureRect.getWidth() / tex.getWidth();
+			float tY1 = tY + (float) textureRect.getHeight() / tex.getHeight();
 			
-			float renderZ = zIndex / 10000000f;
+			/* Variables for drawing position */
+			float x = ((float) (2*objectRect.getX()) - 2*targetArea.getX() - targetArea.getWidth())/targetArea.getWidth();
+			float y = ((float) (2*objectRect.getY()) - 2*targetArea.getY() - targetArea.getHeight())/targetArea.getHeight();
+			float x1 = ((float) (2*objectRect.getX() + 2*objectRect.getWidth() - 2*targetArea.getX() - targetArea.getWidth()))/targetArea.getWidth();
+			float y1 = ((float) (2*objectRect.getY() + 2*objectRect.getHeight() - 2*targetArea.getY() - targetArea.getHeight()))/targetArea.getHeight();
 			
-			gl.glTexCoord2f(0, 0);
+			float renderZ = 1f / zIndex;
+			
+			gl.glTexCoord2f(tX, tY);
 			gl.glVertex3f(x, y, renderZ);
 
-			gl.glTexCoord2f(0, 1);
+			gl.glTexCoord2f(tX, tY1);
 			gl.glVertex3f(x, y1, renderZ);
 
-			gl.glTexCoord2f(1, 1);
+			gl.glTexCoord2f(tX1, tY1);
 			gl.glVertex3f(x1, y1, renderZ);
 
-			gl.glTexCoord2f(1, 0);
+			gl.glTexCoord2f(tX1, tY);
 			gl.glVertex3f(x1, y, renderZ);
 
 			gl.glEnd();
