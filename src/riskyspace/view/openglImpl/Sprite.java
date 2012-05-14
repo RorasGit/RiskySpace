@@ -45,16 +45,12 @@ public class Sprite implements GLRenderAble {
 			GL2 gl = drawable.getGL().getGL2();
 			Textures.bindTexture(textureName, drawable);
 			
-			gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-			gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-			gl.glAlphaFunc(GL2.GL_GREATER, 0.10f);
-			
 			gl.glBegin(GL2.GL_QUADS);
 			
-			float x = (float) 2*getX() / targetArea.getWidth() - 1f;
-			float y = (float) 2*getY() / targetArea.getHeight() - 1f;
-			float x1 = x + (float) getWidth() / targetArea.getWidth();
-			float y1 = y + (float) getHeight() / targetArea.getHeight();
+			float x = ((float) (2*getX()) - 2*targetArea.getX() - targetArea.getWidth())/targetArea.getWidth();
+			float y = ((float) (2*getY()) - 2*targetArea.getY() - targetArea.getHeight())/targetArea.getHeight();
+			float x1 = ((float) (2*getX() + 2*getWidth() - 2*targetArea.getX() - targetArea.getWidth()))/targetArea.getWidth();
+			float y1 = ((float) (2*getY() + 2*getHeight() - 2*targetArea.getY() - targetArea.getHeight()))/targetArea.getHeight();
 			
 			float renderZ = zIndex / 10000000f;
 			

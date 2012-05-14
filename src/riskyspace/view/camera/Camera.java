@@ -53,4 +53,20 @@ public class Camera {
 	public float getY() {
 		return y;
 	}
+	
+	public void setDiff(float diff) {
+		this.diff = diff;
+	}
+	
+	public void setX(float x) {
+		this.x = x;
+	}
+	
+	public void setY(float y) {
+		this.y = y;
+	}
+	
+	public float getDiff() {
+		return diff;
+	}
 }
