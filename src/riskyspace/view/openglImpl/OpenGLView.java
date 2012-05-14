@@ -1,7 +1,9 @@
 package riskyspace.view.openglImpl;
 
-import java.awt.Dimension;
+import java.awt.Cursor;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -17,8 +19,6 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
 
-import com.jogamp.opengl.util.FPSAnimator;
-
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
@@ -30,6 +30,8 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.View;
 
+import com.jogamp.opengl.util.FPSAnimator;
+
 public class OpenGLView implements View, GLEventListener {
 
 	public static void main(String[] args) {
@@ -39,6 +41,12 @@ public class OpenGLView implements View, GLEventListener {
 	private GLRenderArea renderArea = null;
 	
 	public OpenGLView (int rows, int cols) {
+		System.setProperty("sun.java2d.noddraw", "true");
+		System.setProperty("sun.awt.noerasebackground", "true");
+		
+		Image cursor = Toolkit.getDefaultToolkit().getImage("res/main_cursor.png");
+		Cursor c = Toolkit.getDefaultToolkit().createCustomCursor(cursor, new Point(0,0), "main");
+		
 		GLProfile glProfile = GLProfile.getDefault();
 		GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 		GLCanvas canvas = new GLCanvas(glCapabilities);
@@ -47,10 +55,9 @@ public class OpenGLView implements View, GLEventListener {
 		int height = Toolkit.getDefaultToolkit().getScreenSize().height;
 		
 		renderArea = new GLRenderArea(width, height, rows, cols);
-		
+		renderArea.setViewer(Player.BLUE);
 		JFrame frame = new JFrame("RiskySpace");
-		canvas.setFocusable(true);
-		canvas.requestFocusInWindow();
+		frame.setCursor(c);
 		canvas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent event) {
@@ -67,24 +74,36 @@ public class OpenGLView implements View, GLEventListener {
 			@Override public void keyReleased(KeyEvent arg0) {}
 			@Override public void keyTyped(KeyEvent arg0) {}
 		});
+		canvas.requestFocusInWindow();
 		canvas.addGLEventListener(this);
 		
 		frame.add(canvas);
-		frame.setPreferredSize(new Dimension(400, 400));
+		frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		frame.setUndecorated(true);
 		if (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported()) {
 			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(frame);
 		} else {
 			System.err.println("Fullscreen not supported");
 		}
+//		frame.pack();
+//		frame.setVisible(true);
+//		frame.setLocationRelativeTo(null);
 		
-		FPSAnimator anim = new FPSAnimator(canvas, 100);
+		FPSAnimator anim = new FPSAnimator(canvas, 60);
 		anim.start();
 	}
 	
 	//*****GLEventListener Methods*****
 	@Override
 	public void display(GLAutoDrawable drawable) {
+		long b = System.currentTimeMillis();
+		if (sec == 0 || b -sec > 1000) {
+			System.out.println("FPS: " + times);
+			times = 0;
+			sec = b;
+		}
+		times++;
+		
 		GL2 gl = drawable.getGL().getGL2();
 		drawable.getGL().glClearColor(0, 0, 0, 1f);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -94,16 +113,22 @@ public class OpenGLView implements View, GLEventListener {
 		renderArea.draw(drawable, renderArea.getBounds(), renderArea.getBounds(), 0);
 	}
 
+	long sec;
+	int times;
+	
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
+		gl.setSwapInterval(1); // Enable VSync
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL.GL_LESS);
 		gl.glEnable(GL2.GL_ALPHA_TEST);
-		
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+		gl.glAlphaFunc(GL2.GL_GREATER, 0.10f);
 	}
 
 	@Override

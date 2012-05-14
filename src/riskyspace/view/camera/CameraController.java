@@ -22,6 +22,7 @@ public class CameraController extends Thread {
 			Point loc = MouseInfo.getPointerInfo().getLocation();
 			if (loc.x >= maximumXValue) {
 				currentCamera.moveCamera(Camera.Direction.RIGHT);
+				
 			} else if (loc.x <= 0) {
 				currentCamera.moveCamera(Camera.Direction.LEFT);
 			}

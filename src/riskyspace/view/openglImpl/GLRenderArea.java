@@ -21,6 +21,7 @@ import javax.media.opengl.GLProfile;
 import riskyspace.model.Player;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
+import riskyspace.view.camera.GLCamera;
 
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
@@ -80,33 +81,17 @@ public class GLRenderArea implements GLRenderAble {
 		this.cols = cols;
 		initCameras();
 		createBackground();
-		add(new Sprite("res/icons/cloud", 0, 0, squareSize, squareSize), 2);
-		add(new Sprite("res/menu/blue/city", 0, 0, squareSize*5, squareSize*5), 1);
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				add(new Sprite("res/icons/cloud", squareSize*(3 + i), squareSize*(2 + j), squareSize, squareSize), 2);
+			}
+		}
 	}
 
 	
 	private void createBackground() {
-//		WritableRaster raster = 
-//				Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE,
-//			                                    totalWidth,
-//			                                    totalHeight,
-//			                                    4,
-//			                                    null);
-//		ComponentColorModel colorModel=
-//			new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
-//		                             new int[] {8,8,8,8},
-//		                             true,
-//		                             false,
-//		                             ComponentColorModel.TRANSLUCENT,
-//		                             DataBuffer.TYPE_BYTE);
-//		BufferedImage backgroundImage = new BufferedImage(colorModel, raster, false, null);
 		backgroundImage = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = backgroundImage.createGraphics();
-		// Transform image from awt format to openGL format
-//		AffineTransform gt = new AffineTransform();
-//		gt.translate (0, totalHeight);
-//		gt.scale (1, -1d);
-//		g.transform (gt);
 		
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, totalWidth, totalHeight);
@@ -148,6 +133,7 @@ public class GLRenderArea implements GLRenderAble {
 	 * @param zIndex 
 	 */
 	public void add(GLRenderAble renderAble, int zIndex){
+		System.out.println(zIndex);
 		if (renderAble == null) {
 			return;
 		}
@@ -212,10 +198,10 @@ public class GLRenderArea implements GLRenderAble {
 	
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
-		cameras.put(Player.BLUE, new Camera(0.93f,0.92f));
-		cameras.put(Player.RED, new Camera(0.07f,0.08f));
-		cameras.put(Player.GREEN, new Camera(0.07f,0.92f));
-		cameras.put(Player.PINK, new Camera(0.93f,0.08f));
+		cameras.put(Player.BLUE, new GLCamera(0.93f,0.92f));
+		cameras.put(Player.RED, new GLCamera(0.07f,0.08f));
+		cameras.put(Player.GREEN, new GLCamera(0.07f,0.92f));
+		cameras.put(Player.PINK, new GLCamera(0.93f,0.08f));
 		cc = new CameraController();
 	}
 	
@@ -232,6 +218,7 @@ public class GLRenderArea implements GLRenderAble {
 	public Rectangle getBounds() {
 		return screenArea;
 	}
+	
 
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
@@ -245,11 +232,21 @@ public class GLRenderArea implements GLRenderAble {
 			for (GLRenderAble glra : renderAbles[i]) {
 				if (glra == null)
 					continue;
-				glra.draw(drawable, glra.getBounds(), targetArea, i);
+				glra.draw(drawable, glra.getBounds(), getCameraRect(), i);
 			}
 		}
 	}
 
+	private Rectangle getCameraRect() {
+		int x = (int) ((totalWidth - screenArea.getWidth())*currentCamera.getX());
+		int y = (int) ((totalHeight - screenArea.getHeight())*currentCamera.getY());
+		return new Rectangle(x, y, screenArea.getWidth(), screenArea.getHeight());
+	}
+	
+	public int translatePixelsX() {
+		return (int) (((cols+2*EXTRA_SPACE_HORIZONTAL)*squareSize - getBounds().getWidth())*currentCamera.getX());
+	}
+	
 	private void drawBackground(GLAutoDrawable drawable) {
 		if (backgroundTexture == null) {
 			backgroundTexture = AWTTextureIO.newTexture(drawable.getGLProfile(), backgroundImage, false);
@@ -257,27 +254,29 @@ public class GLRenderArea implements GLRenderAble {
 		backgroundTexture.bind(drawable.getGL());
 		GL2 gl = drawable.getGL().getGL2();
 		
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-		gl.glAlphaFunc(GL2.GL_GREATER, 0.10f);
+		float x = ((float) (backgroundTexture.getWidth() - screenArea.getWidth())/backgroundTexture.getWidth())*currentCamera.getX();
+		float y = ((float) (backgroundTexture.getHeight() - screenArea.getHeight())/backgroundTexture.getHeight())*currentCamera.getY();
+		float width = (float) screenArea.getWidth() / backgroundTexture.getWidth();
+		float height = (float) screenArea.getHeight() / backgroundTexture.getHeight();
+		float x1 = x + width;
+		float y1 = y + height;
 		
 		gl.glBegin(GL2.GL_QUADS);
 		
-		gl.glTexCoord2f(0.5f, 0.5f);
-		gl.glVertex3f(-1, -1, 0);
+		gl.glTexCoord2f(x, y);
+		gl.glVertex3f(-1, -1, 30 / 10000000f);
 
-		gl.glTexCoord2f(0.5f, 0.8f);
-		gl.glVertex3f(-1, 1, 0);
+		gl.glTexCoord2f(x, y1);
+		gl.glVertex3f(-1, 1, 30 / 10000000f);
 
-		gl.glTexCoord2f(0.8f, 0.8f);
-		gl.glVertex3f(1, 1, 0);
+		gl.glTexCoord2f(x1, y1);
+		gl.glVertex3f(1, 1, 30 / 10000000f);
 
-		gl.glTexCoord2f(0.8f, 0.5f);
-		gl.glVertex3f(1, -1, 0);
-
+		gl.glTexCoord2f(x1, y);
+		gl.glVertex3f(1, -1, 30 / 10000000f);
+		
 		gl.glEnd();
 	}
-
 
 	public void updateSize(int width, int height) {
 		this.squareSize = Math.min(width/6,height/6);
