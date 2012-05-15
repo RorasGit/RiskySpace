@@ -14,6 +14,7 @@ public class GLSprite implements GLRenderAble {
 	private Rectangle textureRect;
 	private Rectangle renderRect;
 	private String textureName;
+	private double rotation = 0.0;
 	
 	public GLSprite(String textureName, int width, int height) {
 		this(textureName, 0, 0, width, height);
@@ -50,6 +51,10 @@ public class GLSprite implements GLRenderAble {
 		renderRect = new Rectangle(rectangle);
 	}
 	
+	public void setRotation(double rotation) {
+		this.rotation = rotation;
+	}
+	
 	@Override
 	public Rectangle getBounds() {
 		return renderRect;
@@ -75,6 +80,15 @@ public class GLSprite implements GLRenderAble {
 			float x1 = ((float) (2*objectRect.getX() + 2*objectRect.getWidth() - 2*targetArea.getX() - targetArea.getWidth()))/targetArea.getWidth();
 			float y1 = ((float) (2*objectRect.getY() + 2*objectRect.getHeight() - 2*targetArea.getY() - targetArea.getHeight()))/targetArea.getHeight();
 			
+			/*
+			 * TODO: 
+			 * Fix rotation
+			 */
+			float rX;
+			float rY;
+			float rX1;
+			float rY1;
+			
 			float renderZ = 1f / zIndex;
 			
 			gl.glTexCoord2f(tX, tY);
@@ -89,6 +103,19 @@ public class GLSprite implements GLRenderAble {
 			gl.glTexCoord2f(tX1, tY);
 			gl.glVertex3f(x1, y, renderZ);
 
+			/*  Rotate 90d clockwise*/
+//			gl.glTexCoord2f(tX, tY);
+//			gl.glVertex3f(x, y1, renderZ);
+//
+//			gl.glTexCoord2f(tX, tY1);
+//			gl.glVertex3f(x1, y1, renderZ);
+//
+//			gl.glTexCoord2f(tX1, tY1);
+//			gl.glVertex3f(x1, y, renderZ);
+//
+//			gl.glTexCoord2f(tX1, tY);
+//			gl.glVertex3f(x, y, renderZ);
+			
 			gl.glEnd();
 		}
 	}
