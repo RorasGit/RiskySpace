@@ -37,6 +37,10 @@ public class GameClient implements EventHandler {
 	private ObjectOutputStream output = null;
 	private Socket socket = null;
 
+	public static void main(String[] args) {
+		new GameClient("129.16.176.185", 6013);
+	}
+	
 	public GameClient(String hostIP, int hostPort) {
 		EventBus.CLIENT.addHandler(this);
 		int tries = 0;
@@ -127,7 +131,6 @@ public class GameClient implements EventHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 	
 	@Override
