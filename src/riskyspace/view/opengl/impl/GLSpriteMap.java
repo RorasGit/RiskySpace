@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
 import riskyspace.logic.Path;
@@ -19,8 +20,6 @@ import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
-import riskyspace.view.swing.impl.SwingSprite;
-import riskyspace.view.swing.impl.SwingSpriteMap;
 
 /**
  * Drawing all game Sprites in openGL
@@ -218,29 +217,29 @@ public class GLSpriteMap implements GLRenderAble {
 			if (paths[i].length > 1) {
 				for (int j = 0; j < paths[i].length; j++) {
 					if (j == 0) {
-						if (map.paths.get("START") == null) {
-							map.paths.put("START", new HashMap<Rectangle, Double>());
+						if (map.paths.get(START) == null) {
+							map.paths.put(START, new HashMap<Rectangle, Double>());
 						}
 						rotation = Path.getRotation(null, paths[i][j], paths[i][j+1]);
-						map.paths.get("START").put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+						map.paths.get(START).put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
 					} else if (j == paths[i].length - 1) {
-						if (map.paths.get("HEAD") == null) {
-							map.paths.put("HEAD", new HashMap<Rectangle, Double>());
+						if (map.paths.get(HEAD) == null) {
+							map.paths.put(HEAD, new HashMap<Rectangle, Double>());
 						}
 						rotation = Path.getRotation(paths[i][j-1], paths[i][j], null);
-						map.paths.get("HEAD").put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+						map.paths.get(HEAD).put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
 					} else if (paths[i][j-1].getCol() != paths[i][j+1].getCol() && paths[i][j-1].getRow() != paths[i][j+1].getRow()) {
-						if (map.paths.get("TURN") == null) {
-							map.paths.put("TURN", new HashMap<Rectangle, Double>());
+						if (map.paths.get(TURN) == null) {
+							map.paths.put(TURN, new HashMap<Rectangle, Double>());
 						}
 						rotation = Path.getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]);
-						map.paths.get("TURN").put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+						map.paths.get(TURN).put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
 					} else {
-						if (map.paths.get("STRAIGHT") == null) {
-							map.paths.put("STRAIGHT", new HashMap<Rectangle, Double>());
+						if (map.paths.get(STRAIGHT) == null) {
+							map.paths.put(STRAIGHT, new HashMap<Rectangle, Double>());
 						}
 						rotation = Path.getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]);
-						map.paths.get("STRAIGHT").put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+						map.paths.get(STRAIGHT).put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
 					}
 				}
 			}
@@ -301,7 +300,11 @@ public class GLSpriteMap implements GLRenderAble {
 		/* Draw Paths */
 		for (String s : paths.keySet()) {
 			for (Rectangle r : paths.get(s).keySet()) {
+				GL2 gl = drawable.getGL().getGL2();
+				double rotation = Math.toDegrees(paths.get(s).get(r));
+				gl.glRotated(rotation, 0, 0, 1);
 				pathSprites.get(s).draw(drawable, r, targetArea, zIndex + 4);
+				gl.glRotated(-rotation, 0, 0, 1);
 			}
 		}
 		
@@ -309,6 +312,5 @@ public class GLSpriteMap implements GLRenderAble {
 		for (Rectangle r : fogOfWar) {
 			fogSprite.draw(drawable, r, targetArea, zIndex + 5);
 		}
-		
 	}
 }
