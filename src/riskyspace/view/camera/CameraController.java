@@ -13,10 +13,10 @@ import java.awt.Toolkit;
 public class CameraController extends Thread {
 	
 	private static final long SLEEP_TIME = 1000/60;
-	private SwingCamera currentCamera;
+	private Camera currentCamera;
 	private double maximumXValue, maximumYValue;
 	
-	public void setCamera(SwingCamera cam) {
+	public void setCamera(Camera cam) {
 		currentCamera = cam;
 		maximumXValue = Toolkit.getDefaultToolkit().getScreenSize().getWidth()-1;
 		maximumYValue = Toolkit.getDefaultToolkit().getScreenSize().getHeight()-1;
@@ -27,15 +27,15 @@ public class CameraController extends Thread {
 		while(!isInterrupted()) {
 			Point loc = MouseInfo.getPointerInfo().getLocation();
 			if (loc.x >= maximumXValue) {
-				currentCamera.moveCamera(SwingCamera.Direction.RIGHT);
+				currentCamera.moveCamera(Camera.Direction.RIGHT);
 				
 			} else if (loc.x <= 0) {
-				currentCamera.moveCamera(SwingCamera.Direction.LEFT);
+				currentCamera.moveCamera(Camera.Direction.LEFT);
 			}
 			if (loc.y >= maximumYValue) {
-				currentCamera.moveCamera(SwingCamera.Direction.DOWN);
+				currentCamera.moveCamera(Camera.Direction.DOWN);
 			} else if (loc.y <= 0) {
-				currentCamera.moveCamera(SwingCamera.Direction.UP);
+				currentCamera.moveCamera(Camera.Direction.UP);
 			}
 			try {
 				sleep(SLEEP_TIME);

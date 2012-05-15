@@ -35,14 +35,14 @@ import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
 import riskyspace.view.Clickable;
 import riskyspace.view.ViewResources;
-import riskyspace.view.camera.SwingCamera;
+import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.swing.menu.ColonyMenu;
 import riskyspace.view.swing.menu.FleetMenu;
 import riskyspace.view.swing.menu.PlanetMenu;
 import riskyspace.view.swing.menu.TopMenu;
 
-public class RenderArea extends JPanel {
+public class SwingRenderArea extends JPanel {
 
 	private static final long serialVersionUID = 8209691542499926289L;
 	
@@ -61,8 +61,8 @@ public class RenderArea extends JPanel {
 	/*
 	 * Cameras
 	 */
-	private SwingCamera currentCamera = null;
-	private Map<Player, SwingCamera> cameras = null;
+	private Camera currentCamera = null;
+	private Map<Player, Camera> cameras = null;
 	private CameraController cc = null;
 	
 	/*
@@ -113,7 +113,7 @@ public class RenderArea extends JPanel {
 	 */
 	private SwingButton otherPlayerActive = null;
 
-	public RenderArea(int rows, int cols) {
+	public SwingRenderArea(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
 		measureScreen();
@@ -184,11 +184,11 @@ public class RenderArea extends JPanel {
 	}
 	
 	private void initCameras() {
-		cameras = new HashMap<Player, SwingCamera>();
-		cameras.put(Player.BLUE, new SwingCamera(0.93f,0.92f));
-		cameras.put(Player.RED, new SwingCamera(0.07f,0.08f));
-		cameras.put(Player.GREEN, new SwingCamera(0.07f,0.92f));
-		cameras.put(Player.PINK, new SwingCamera(0.93f,0.08f));
+		cameras = new HashMap<Player, Camera>();
+		cameras.put(Player.BLUE, new Camera(0.93f,0.92f));
+		cameras.put(Player.RED, new Camera(0.07f,0.08f));
+		cameras.put(Player.GREEN, new Camera(0.07f,0.92f));
+		cameras.put(Player.PINK, new Camera(0.93f,0.08f));
 		cc = new CameraController();
 	}
 	

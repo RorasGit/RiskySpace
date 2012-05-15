@@ -23,11 +23,11 @@ import riskyspace.view.View;
 public class SwingView implements View {
 
 	private JFrame frame = null;
-	private RenderArea renderArea = null;
+	private SwingRenderArea renderArea = null;
 	
 	public SwingView(int rows, int cols) {
 		setFrame();
-		renderArea = new RenderArea(rows, cols);
+		renderArea = new SwingRenderArea(rows, cols);
 		frame.add(renderArea);
 		frame.addKeyListener(new KeyListener() {
 			@Override
