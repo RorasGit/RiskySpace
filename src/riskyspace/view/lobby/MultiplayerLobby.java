@@ -5,7 +5,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
-import java.util.List;
 
 import riskyspace.view.Button;
 import riskyspace.view.DropdownButton;
@@ -21,8 +20,8 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 	
 	private Button startGame = null;
 	
-	private DropdownButton numberOfPlayersButton = null;
-	private DropdownButton gameModesButton = null;
+	private DropdownButton<String> numberOfPlayersButton = null;
+	private DropdownButton<String> gameModesButton = null;
 	
 	private int margin = 10;
 	
@@ -46,8 +45,10 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 		playerTwo.setImage("res/menu/lobby/multiplayer/playerButton.png");
 		playerThree = new Button(getX() + margin, getY() + 3*margin + 100, 240, 50);
 		playerThree.setImage("res/menu/lobby/multiplayer/playerButton.png");
+		playerThree.setEnabled(false);
 		playerFour = new Button(getX() + margin, getY() + 4*margin + 150, 240, 50);
 		playerFour.setImage("res/menu/lobby/multiplayer/playerButton.png");
+		playerFour.setEnabled(false);
 		
 		startGame = new Button(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
 		startGame.setImage("res/menu/lobby/startButton.png");
@@ -57,12 +58,12 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 		list.add("3 players");
 		list.add("4 players");
 		
-		numberOfPlayersButton = new DropdownButton(getX() + getMenuWidth() - getMenuWidth()/7 - 80, getY() + 3*getMenuHeight()/6, 160, 30, list);
+		numberOfPlayersButton = new DropdownButton<String>(getX() + getMenuWidth() - getMenuWidth()/7 - 80, getY() + 3*getMenuHeight()/6, 160, 30, list);
 		
 		list.clear();
 		list.add("Anihilation");
 		
-		gameModesButton = new DropdownButton(getX() + getMenuWidth() - getMenuWidth()/7 - 80, getY() + 2*getMenuHeight()/6, 160, 30, list);
+		gameModesButton = new DropdownButton<String>(getX() + getMenuWidth() - getMenuWidth()/7 - 80, getY() + 2*getMenuHeight()/6, 160, 30, list);
 		
 		
 	}
@@ -89,12 +90,8 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 		if (isVisible()) {
 			playerOne.draw(g);
 			playerTwo.draw(g);
-			if (numberOfPlayers > 2) {
-				playerThree.draw(g);
-			}
-			if (numberOfPlayers > 3) {
-				playerFour.draw(g);
-			}
+			playerThree.draw(g);
+			playerFour.draw(g);
 		}
 	}
 	
@@ -102,10 +99,22 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 	public boolean mousePressed(Point p) {
 		if (numberOfPlayersButton.mousePressed(p)) {
 			numberOfPlayers = numberOfPlayersButton.getSelectedValue();
+			if (numberOfPlayers == 3) {
+				playerThree.setEnabled(true);
+				playerFour.setEnabled(false);
+			}
+			else if (numberOfPlayers == 4) {
+				playerThree.setEnabled(true);
+				playerFour.setEnabled(true);
+			} else {
+				playerThree.setEnabled(false);
+				playerFour.setEnabled(false);
+			}
 			return true;
 			}
 		if (gameModesButton.mousePressed(p)) {return true;}
 		else {
+			numberOfPlayersButton.setOpen(false);
 			return false;
 		}
 	}

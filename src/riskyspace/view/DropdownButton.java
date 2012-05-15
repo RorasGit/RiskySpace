@@ -7,12 +7,13 @@ import java.util.Map;
 import java.awt.Graphics;
 import java.awt.Point;
 
-public class DropdownButton implements Clickable {
+public class DropdownButton<E> implements Clickable {
 	
-	private List<String> itemList;
+	private List<E> itemList;
 	
 	private List<Button> buttonList = new ArrayList<Button>();
-	private List<String> valuesList = new ArrayList<String>();
+	
+	private Map<Button, Integer> values = new HashMap<Button, Integer>();
 	
 	private int selectedValue;
 	
@@ -25,7 +26,7 @@ public class DropdownButton implements Clickable {
 	
 	private Button mainButton;
 	
-	public DropdownButton(int x, int y, int width, int height, ArrayList<String> array) {
+	public DropdownButton(int x, int y, int width, int height, ArrayList<E> array) {
 		itemList = array;
 		this.x = x;
 		this.y = y;
@@ -47,18 +48,21 @@ public class DropdownButton implements Clickable {
 		buttonList.clear();
 		int yPos = y + height;
 		int menuHeight = height;
-		for(String item : itemList) {
+		int value = 2;
+		for(E item : itemList) {
 			Button b = new Button(x, yPos, width, menuHeight);
 			b.setImage("res/menu/lobby/dropdownMenu/dropdownItem.png");
 			b.setText(item.toString());
 			buttonList.add(b);
+			values.put(b, value);
 			yPos = yPos + menuHeight;
 			height = height + height;
+			value = value + 1;
 		}
 	}
 	
-	public void addValue(String s) {
-		itemList.add(s);
+	public void addValue(E e) {
+		itemList.add(e);
 		createButtons();
 	}
 	
@@ -66,8 +70,8 @@ public class DropdownButton implements Clickable {
 		return selectedValue;
 	}
 	
-	public void removeValue(String s) {
-		itemList.remove(s);
+	public void removeValue(E e) {
+		itemList.remove(e);
 		createButtons();
 	}
 	
@@ -96,24 +100,16 @@ public class DropdownButton implements Clickable {
 			if (mainButton.mousePressed(p)) {return true;}
 			for (Button b : buttonList) {
 				if (b.mousePressed(p)) {
-					System.out.println(b.getText());
-					selectedValue = Integer.parseInt(b.getText().substring(0, 1));
-					System.out.println(selectedValue);
+					selectedValue = values.get(b);
 					return true;
 				}
 			}
-			return false;
+			return this.contains(p);
 	}
 	
 	@Override
 	public boolean mouseReleased(Point p) {
-			if (mainButton.mouseReleased(p)) {return true;}
-			if (this.contains(p)) {
-				return true;
-			} else {
-				return false;
-			}
+		if (mainButton.mouseReleased(p)) {return true;}
+		return this.contains(p);
 	}
-	
-
 }
