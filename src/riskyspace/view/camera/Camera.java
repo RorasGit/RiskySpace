@@ -5,7 +5,7 @@ package riskyspace.view.camera;
  * @author Alexander Hederstaf
  *
  */
-public class SwingCamera {
+public class Camera {
 	
 	enum Direction {
 		UP, DOWN, LEFT, RIGHT;
@@ -19,17 +19,17 @@ public class SwingCamera {
 	 */
 	private float diff;
 	
-	public SwingCamera(float x, float y, float diff) {
+	public Camera(float x, float y, float diff) {
 		this.x = x;
 		this.y = y;
 		this.diff = diff;
 	}
 	
-	public SwingCamera(float x, float y) {
+	public Camera(float x, float y) {
 		this(x, y, 0.005f);
 	}
 	
-	public SwingCamera() {
+	public Camera() {
 		this(0 , 0 , 0.005f);
 	}
 	

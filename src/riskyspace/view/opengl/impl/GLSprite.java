@@ -1,7 +1,5 @@
 package riskyspace.view.opengl.impl;
 
-import java.awt.Point;
-
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 

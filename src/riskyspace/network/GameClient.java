@@ -20,6 +20,7 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.view.View;
 import riskyspace.view.ViewFactory;
+import riskyspace.view.opengl.impl.OpenGLView;
 
 /**
  * 
@@ -111,7 +112,8 @@ public class GameClient implements EventHandler {
 				}
 			}
 		}
-		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, rows, cols);
+//		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, rows, cols);
+		mainView = new OpenGLView(rows, cols);
 		mainView.updateData(data);
 		mainView.setPlayerStats(stats);
 		mainView.setViewer(player);

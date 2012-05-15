@@ -35,6 +35,7 @@ public class SpriteMapData implements Serializable {
 	private Set<Position> fog = new HashSet<Position>(allPos);
 	private static Map<Player, Set<Position>> seen = new HashMap<Player, Set<Position>>();
 	
+	private int rows, cols;
 	private List<PlanetData> planetData = new ArrayList<PlanetData>();
 	private List<ColonizerData> colonizerData = new ArrayList<ColonizerData>();
 	private List<FleetData> fleetData = new ArrayList<FleetData>();
@@ -65,7 +66,8 @@ public class SpriteMapData implements Serializable {
 	 */
 	public static SpriteMapData getData(Player player) {
 		SpriteMapData data = new SpriteMapData();
-		
+		data.rows = world.getRows();
+		data.cols = world.getCols();
 		/*
 		 * Calculate visible positions for player
 		 */
@@ -166,5 +168,13 @@ public class SpriteMapData implements Serializable {
 	
 	public int getColonizerAmount(Position position) {
 		return colonizerAmount.get(position);
+	}
+
+	public int getRows() {
+		return rows;
+	}
+	
+	public int getCols() {
+		return cols;
 	}
 }

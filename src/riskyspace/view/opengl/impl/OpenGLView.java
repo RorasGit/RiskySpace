@@ -74,6 +74,7 @@ public class OpenGLView implements View, GLEventListener {
 			@Override public void keyReleased(KeyEvent arg0) {}
 			@Override public void keyTyped(KeyEvent arg0) {}
 		});
+		canvas.addMouseListener(renderArea.getClickHandler());
 		canvas.addGLEventListener(this);
 		
 		frame.add(canvas);
@@ -170,7 +171,7 @@ public class OpenGLView implements View, GLEventListener {
 
 	@Override
 	public void updateData(SpriteMapData data) {
-		
+		renderArea.updateData(data);
 	}
 
 	@Override

@@ -2,33 +2,33 @@ package riskyspace.view.opengl.impl;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.color.ColorSpace;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.nio.Buffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLProfile;
 
+import riskyspace.logic.SpriteMapData;
 import riskyspace.model.Player;
-import riskyspace.view.camera.SwingCamera;
+import riskyspace.model.Position;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
+import riskyspace.view.Clickable;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.camera.GLCamera;
+import riskyspace.view.camera.Camera;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
 
-import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureData;
-import com.jogamp.opengl.util.texture.TextureIO;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 public class GLRenderArea implements GLRenderAble {
@@ -37,13 +37,13 @@ public class GLRenderArea implements GLRenderAble {
 	 * Extra space at the Right and Left sides
 	 * of the screen.
 	 */
-	private static final int EXTRA_SPACE_HORIZONTAL = 3;
+	public static final int EXTRA_SPACE_HORIZONTAL = 3;
 	
 	/**
 	 * Extra space at the Top and Bottom sides
 	 * of the screen.
 	 */
-	private static final int EXTRA_SPACE_VERTICAL = 2;
+	public static final int EXTRA_SPACE_VERTICAL = 2;
 	
 	private Rectangle screenArea = null;
 	private int squareSize;
@@ -60,9 +60,14 @@ public class GLRenderArea implements GLRenderAble {
 	/*
 	 * Cameras
 	 */
-	private SwingCamera currentCamera = null;
-	private Map<Player, SwingCamera> cameras = null;
+	private Camera currentCamera = null;
+	private Map<Player, Camera> cameras = null;
 	private CameraController cc = null;
+	
+	/*
+	 * Clickhandler to handle all clicks on the screen
+	 */
+	private ClickHandler clickHandler;
 	
 	/**
 	 * The player viewing this renderArea
@@ -71,8 +76,14 @@ public class GLRenderArea implements GLRenderAble {
 
 	/**
 	 * Layers of GLRenderAble objects
+	 * @deprecated No need for this any more
 	 */
 	private GLRenderAble[][] renderAbles;
+
+	/*
+	 * Sprites
+	 */
+	private GLSpriteMap sprites;
 	
 	public GLRenderArea(int width, int height, int rows, int cols) {
 		screenArea = new Rectangle(0, 0, width, height);
@@ -83,15 +94,6 @@ public class GLRenderArea implements GLRenderAble {
 		this.cols = cols;
 		initCameras();
 		createBackground();
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				GLSprite sprite = new GLSprite("res/icons/cloud", 0, 0, 256, 256);
-				sprite.setBounds(new Rectangle(squareSize*(3 + i), squareSize*(2 + j), squareSize, squareSize));
-				add(sprite, 2);
-				
-//				add(new GLSprite("res/icons/cloud", squareSize*(3 + i), squareSize*(2 + j), squareSize, squareSize), 2);
-			}
-		}
 	}
 
 	
@@ -135,6 +137,7 @@ public class GLRenderArea implements GLRenderAble {
 	
 	/**
 	 * Add GLRenderAble to a zIndex for this RenderArea to draw.
+	 * @deprecated No need for this any more
 	 * @param renderAble The GLRenderAble
 	 * @param zIndex 
 	 */
@@ -177,6 +180,7 @@ public class GLRenderArea implements GLRenderAble {
 	
 	/**
 	 * Remove the GLRenderAble from being drawn
+	 * @deprecated No need for this any more
 	 * @param renderAble The GLRenderAble to remove
 	 */
 	public void remove(GLRenderAble renderAble) {
@@ -203,7 +207,7 @@ public class GLRenderArea implements GLRenderAble {
 	}
 	
 	private void initCameras() {
-		cameras = new HashMap<Player, SwingCamera>();
+		cameras = new HashMap<Player, Camera>();
 		cameras.put(Player.BLUE, new GLCamera(0.93f,0.92f));
 		cameras.put(Player.RED, new GLCamera(0.07f,0.08f));
 		cameras.put(Player.GREEN, new GLCamera(0.07f,0.92f));
@@ -230,17 +234,25 @@ public class GLRenderArea implements GLRenderAble {
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
 		drawBackground(drawable);
 		
-		if (renderAbles == null)
-			return;
-		for (int i = 0; i < renderAbles.length; i++) {
-			if (renderAbles[i] == null)
-				continue;
-			for (GLRenderAble glra : renderAbles[i]) {
-				if (glra == null)
-					continue;
-				glra.draw(drawable, glra.getBounds(), getCameraRect(), i);
-			}
-		}
+		if (sprites != null)
+			sprites.draw(drawable, getCameraRect(), getCameraRect(), 2);
+		
+		drawSelectionBox(drawable, 10);
+		
+		/*TODO: 
+		 * Remove this code when done, old render code
+		 */
+//		if (renderAbles == null)
+//			return;
+//		for (int i = 0; i < renderAbles.length; i++) {
+//			if (renderAbles[i] == null)
+//				continue;
+//			for (GLRenderAble g : renderAbles[i]) {
+//				if (g == null)
+//					continue;
+//				glra.draw(drawable, glra.getBounds(), getCameraRect(), i);
+//			}
+//		}
 	}
 
 	private Rectangle getCameraRect() {
@@ -251,6 +263,58 @@ public class GLRenderArea implements GLRenderAble {
 	
 	public int translatePixelsX() {
 		return (int) (((cols+2*EXTRA_SPACE_HORIZONTAL)*squareSize - getBounds().getWidth())*currentCamera.getX());
+	}
+	
+	public int translatePixelsY() {
+		return (int) (((rows+2*EXTRA_SPACE_VERTICAL)*squareSize - getBounds().getHeight())*currentCamera.getY());
+	}
+	
+	private void drawSelectionBox(GLAutoDrawable drawable, int zIndex) {
+		/*
+		 * Draw a transparent box from pressed point
+		 * to current selection
+		 * 
+		 * If mouse has not yet been clicked return.
+		 */
+		if (clickHandler == null || clickHandler.pressedPoint == null)
+			return;
+
+		Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
+		
+		float x = 2*((float) (clickHandler.pressedPoint.x - translatePixelsX())/screenArea.getWidth()) -1f;
+		float y = 2*((float) (clickHandler.pressedPoint.y - translatePixelsY())/screenArea.getHeight()) -1f;
+		float x1 = 2*((float) mouseLoc.x)/screenArea.getWidth() - 1f;
+		float y1 = 2*(float) (screenArea.getHeight() - mouseLoc.y)/screenArea.getHeight() - 1f;
+		
+		System.out.println("(x, y) = (" + x + ", " + y + ")");
+		System.out.println("(x1, y1) = (" + x1 + ", " + y1 + ")");
+		
+		GL2 gl = drawable.getGL().getGL2();
+		gl.glDisable(GL.GL_TEXTURE_2D);
+		
+		gl.glColor4f(0.1f, 1.0f, 0.2f, 1.0f);
+		gl.glBegin(GL2.GL_LINE_STRIP);
+		
+		gl.glVertex3f(x, y, 1f / zIndex);
+		gl.glVertex3f(x1, y, 1f / zIndex);
+		gl.glVertex3f(x1, y1, 1f / zIndex);
+		gl.glVertex3f(x, y1, 1f / zIndex);
+		gl.glVertex3f(x, y, 1f / zIndex);
+		
+		gl.glEnd();
+		
+		gl.glColor4f(0.1f, 1.0f, 0.2f, 0.3f);
+		gl.glBegin(GL2.GL_QUADS);
+		
+		gl.glVertex3f(x, y, 1f / zIndex);
+		gl.glVertex3f(x1, y, 1f / zIndex);
+		gl.glVertex3f(x1, y1, 1f / zIndex);
+		gl.glVertex3f(x, y1, 1f / zIndex);
+		
+		gl.glEnd();
+		
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	
 	private void drawBackground(GLAutoDrawable drawable) {
@@ -288,5 +352,186 @@ public class GLRenderArea implements GLRenderAble {
 		this.squareSize = Math.min(width/6,height/6);
 		screenArea.setHeight(height);
 		screenArea.setWidth(width);
+	}
+	
+	public MouseListener getClickHandler() {
+		if (clickHandler == null)
+			clickHandler = new ClickHandler();
+		return clickHandler;
+	}
+	
+	/* Data management Methods*/
+	public void updateData(SpriteMapData data) {
+		sprites = GLSpriteMap.getSprites(data, squareSize);
+	}
+
+	private class ClickHandler implements MouseListener {
+
+		public Point pressedPoint;
+		/*
+		 * Click handling for different parts
+		 */
+		private boolean menuClick(Point point) {
+			boolean clicked = false;
+			return clicked;
+		}
+
+		private boolean isLegalPos(Position pos) {
+			boolean rowLegal = pos.getRow() >= 1 && pos.getRow() <= rows;
+			boolean colLegal = pos.getCol() >= 1 && pos.getCol() <= cols;
+			return rowLegal && colLegal;
+		}
+		
+		private Position getPosition(Point point, boolean translated) {
+			int col = 0, row = 0;
+			if (translated) {
+				int rows1 = (rows + EXTRA_SPACE_VERTICAL + 1)*squareSize;
+				row = (rows1 - point.y) / squareSize;
+			} else {
+				int yTrans = translatePixelsY();
+				row = rows - (((screenArea.getHeight() - point.y) + yTrans) / squareSize - EXTRA_SPACE_VERTICAL);
+			}
+			int xTrans = translated ? 0 : translatePixelsX();
+			col = ((point.x  + xTrans) / squareSize) + 1 - EXTRA_SPACE_HORIZONTAL;
+			return new Position(row, col);
+		}
+		
+		private boolean colonizerClick(Point point) {
+			Position pos = getPosition(point, false);
+			if (isLegalPos(pos)) {
+				int dX = (point.x + translatePixelsX()) % squareSize;
+				int dY = (point.y + translatePixelsY()) % squareSize;
+				if (dX > squareSize/2 && dY > squareSize/2) {
+					Event evt = new Event(Event.EventTag.COLONIZER_SELECTED, pos);
+					EventBus.CLIENT.publish(evt);
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		private boolean fleetClick(MouseEvent me) {
+			Point point = me.getPoint();
+			Position pos = getPosition(point, false);
+			if (isLegalPos(pos)) {
+				int dX = (point.x + translatePixelsX()) % squareSize;
+				int dY = (point.y + translatePixelsY()) % squareSize;
+				if (dX <= squareSize/2 && dY >= squareSize/2) {
+					if (me.isShiftDown()) {
+						Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
+						EventBus.CLIENT.publish(evt);
+					} else {
+						Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, pos);
+						EventBus.CLIENT.publish(evt);
+					}
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private boolean planetClick(Point point) {
+			Position pos = getPosition(point, false);
+			if (isLegalPos(pos)) {
+				Event evt = new Event(Event.EventTag.PLANET_SELECTED, pos);
+				EventBus.CLIENT.publish(evt);
+				return true;
+			}
+			return false;
+		}
+		
+		private boolean pathClick(Point point) {
+			Position pos = getPosition(point, false);
+			if (isLegalPos(pos)) {
+				Event evt = new Event(Event.EventTag.SET_PATH, pos);
+				EventBus.CLIENT.publish(evt);
+				return true;
+			}
+			return false;
+		}
+		
+		@Override public void mousePressed(MouseEvent me) {
+			if (me.getButton() == MouseEvent.BUTTON1) {
+				pressedPoint = me.getPoint();
+				pressedPoint.x += translatePixelsX();
+				pressedPoint.y = (screenArea.getHeight() - pressedPoint.y) + translatePixelsY();
+			} else if (me.getButton() == MouseEvent.BUTTON3) {
+				if (pathClick(me.getPoint())) {return;}
+			}
+		}
+		@Override public void mouseClicked(MouseEvent me) {
+			/*
+			 * Check each level of interaction in order.
+			 */
+			if (me.getButton() == MouseEvent.BUTTON1) {
+				if (menuClick(me.getPoint())) {return;}
+				if (fleetClick(me)) {return;}
+				if (colonizerClick(me.getPoint())) {return;}
+				if (planetClick(me.getPoint())) {return;}
+				else {
+					/*
+					 * Click was not in any trigger zone. Call deselect.
+					 */
+					EventBus.CLIENT.publish(new Event(Event.EventTag.DESELECT, null));
+//					hideSideMenus();
+				}
+			}
+		}
+		@Override public void mouseEntered(MouseEvent me) {}
+		@Override public void mouseExited(MouseEvent me) {}
+		@Override public void mouseReleased(MouseEvent me) {
+			if (me.getButton() == MouseEvent.BUTTON1) {
+				Point releasePoint = me.getPoint();
+				releasePoint.x += translatePixelsX();
+				releasePoint.y = (screenArea.getHeight() - releasePoint.y) + translatePixelsY();
+				if (Math.abs(releasePoint.x - pressedPoint.x) < squareSize/4 || Math.abs(releasePoint.y - pressedPoint.y) < squareSize/4) {
+					pressedPoint = null;
+					return;
+				}
+				
+				Point ltCorner = new Point(Math.min(releasePoint.x, pressedPoint.x), Math.max(releasePoint.y, pressedPoint.y));
+				Point rbCorner = new Point(Math.max(releasePoint.x, pressedPoint.x), Math.min(releasePoint.y, pressedPoint.y));
+				Position ltPos = getPosition(ltCorner, true);
+				Position rbPos = getPosition(rbCorner, true);
+				
+				System.out.println("lt" + ltPos);
+				System.out.println("rb" + rbPos);
+				
+				if (ltCorner.getX() % squareSize >= squareSize/2) {
+					ltPos = new Position(ltPos.getRow(), ltPos.getCol() + 1);
+				}
+				if (ltCorner.getY() % squareSize < squareSize/2) {
+					ltPos = new Position(ltPos.getRow() + 1, ltPos.getCol());
+				}
+				if (rbCorner.getX() % squareSize < squareSize/2) {
+					rbPos = new Position(rbPos.getRow(), rbPos.getCol() - 1);
+				}
+				if (rbCorner.getY() % squareSize >= squareSize/2) {
+					rbPos = new Position(rbPos.getRow() - 1, rbPos.getCol());
+				}
+				
+				System.out.println("lt" + ltPos);
+				System.out.println("rb" + rbPos);
+								
+				List<Position> selectPos = new ArrayList<Position>();
+				for (int col = ltPos.getCol(); col <= rbPos.getCol(); col++) {
+					for (int row = ltPos.getRow(); row <= rbPos.getRow(); row++) {
+						Position pos = new Position(row, col);
+						if (isLegalPos(pos)) {
+							selectPos.add(pos);
+						}
+					}
+				}
+				if (!selectPos.isEmpty()) {
+					Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, selectPos);
+					EventBus.CLIENT.publish(evt);
+				} else {
+					Event evt = new Event(Event.EventTag.DESELECT, null);
+					EventBus.CLIENT.publish(evt);
+//					hideSideMenus();
+				}
+				pressedPoint = null;
+			}
+		}
 	}
 }

@@ -1,31 +1,33 @@
 package riskyspace.view.opengl.impl;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLProfile;
 
-import riskyspace.PlayerColors;
 import riskyspace.logic.SpriteMapData;
+import riskyspace.logic.data.ColonizerData;
 import riskyspace.logic.data.ColonyData;
+import riskyspace.logic.data.FleetData;
+import riskyspace.logic.data.PlanetData;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
+import riskyspace.model.ShipType;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
-
-import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 /**
  * Drawing all game Sprites in openGL
  * @author Alexander Hederstaf
  *
+ */
+/*
+ * Saves all data as rectangles mapped to GLSprite keys
+ * in such a way that re-binding of textures will be
+ * used as little as possible during drawing.
  */
 public class GLSpriteMap implements GLRenderAble {
 	private static boolean initiated = false;
@@ -57,7 +59,7 @@ public class GLSpriteMap implements GLRenderAble {
 	/*
 	 * Colony Textures for each Player
 	 */
-	private static Map<String, Texture> colonyTextures = new HashMap<String, Texture>();
+	private static Map<Player, GLSprite> colonyMarkerSprites = new HashMap<Player, GLSprite>();
 	
 	/*
 	 * Fog Sprite
@@ -74,15 +76,18 @@ public class GLSpriteMap implements GLRenderAble {
 	 */
 	private Rectangle bounds;
 	
+	private List<Rectangle> fogOfWar = new ArrayList<Rectangle>();
+	private Map<Resource, Map<Position, Rectangle>> planets = new HashMap<Resource, Map<Position, Rectangle>>();
 	private Map<Player, List<Rectangle>> colonies = new HashMap<Player, List<Rectangle>>();
-	/*
-	 * Add more data to draw!
-	 * TODO:
-	 */
+	private Map<Player, Map<ShipType , List<Rectangle>>> fleets = new HashMap<Player, Map<ShipType , List<Rectangle>>>();
+	// Paths TODO:
+	
+	/* Integers for display, draw text how? */
+//	private Map<Position, Integer> shipCount = new HashMap<Position, Integer>();
+//	private Map<Position, Integer> colonizerCount = new HashMap<Position, Integer>();
 	
 	/**
-	 * Private constructor, create instances
-	 * with getSprites()
+	 * Private constructor, create instances with getSprites()
 	 */
 	private GLSpriteMap() {};
 	
@@ -110,75 +115,143 @@ public class GLSpriteMap implements GLRenderAble {
 		 * quite expensive.
 		 */
 		/* Load RED ships*/
-		shipSprites.put("SCOUT_RED", new GLSprite("ships", 0, 0, 64, 64));
-		shipSprites.put("HUNTER_RED", new GLSprite("ships", 64, 0, 64, 64));
-		shipSprites.put("COLONIZER_RED", new GLSprite("ships", 128, 0, 64, 64));
-		shipSprites.put("DESTROYER_RED", new GLSprite("ships", 192, 0, 64, 64));
+		shipSprites.put("SCOUT_GREEN", 		new GLSprite("ships",   0,   0, 64, 64));
+		shipSprites.put("HUNTER_GREEN", 	new GLSprite("ships",  64,   0, 64, 64));
+		shipSprites.put("COLONIZER_GREEN", 	new GLSprite("ships", 128,   0, 64, 64));
+		shipSprites.put("DESTROYER_GREEN", 	new GLSprite("ships", 192,   0, 64, 64));
 		/* Load BLUE ships*/
-		shipSprites.put("SCOUT_BLUE", new GLSprite("ships", 0, 64, 64, 64));
-		shipSprites.put("HUNTER_BLUE", new GLSprite("ships", 64, 64, 64, 64));
-		shipSprites.put("COLONIZER_BLUE", new GLSprite("ships", 128, 64, 64, 64));
-		shipSprites.put("DESTROYER_BLUE", new GLSprite("ships", 192, 64, 64, 64));
+		shipSprites.put("SCOUT_PINK", 		new GLSprite("ships",  0,   64, 64, 64));
+		shipSprites.put("HUNTER_PINK", 		new GLSprite("ships",  64,  64, 64, 64));
+		shipSprites.put("COLONIZER_PINK", 	new GLSprite("ships", 128,  64, 64, 64));
+		shipSprites.put("DESTROYER_PINK", 	new GLSprite("ships", 192,  64, 64, 64));
 		/* Load PINK ships*/
-		shipSprites.put("SCOUT_PINK", new GLSprite("ships", 0, 64, 128, 64));
-		shipSprites.put("HUNTER_PINK", new GLSprite("ships", 64, 64, 128, 64));
-		shipSprites.put("COLONIZER_PINK", new GLSprite("ships", 128, 128, 64, 64));
-		shipSprites.put("DESTROYER_PINK", new GLSprite("ships", 192, 128, 64, 64));
+		shipSprites.put("SCOUT_BLUE", 		new GLSprite("ships",   0, 128, 64, 64));
+		shipSprites.put("HUNTER_BLUE", 		new GLSprite("ships",  64, 128, 64, 64));
+		shipSprites.put("COLONIZER_BLUE", 	new GLSprite("ships", 128, 128, 64, 64));
+		shipSprites.put("DESTROYER_BLUE", 	new GLSprite("ships", 192, 128, 64, 64));
 		/* Load GREEN ships*/
-		shipSprites.put("SCOUT_GREEN", new GLSprite("ships", 0, 64, 192, 64));
-		shipSprites.put("HUNTER_GREEN", new GLSprite("ships", 64, 64, 192, 64));
-		shipSprites.put("COLONIZER_GREEN", new GLSprite("ships", 128, 192, 64, 64));
-		shipSprites.put("DESTROYER_GREEN", new GLSprite("ships", 192, 192, 64, 64));
+		shipSprites.put("SCOUT_RED", 		new GLSprite("ships",   0, 192, 64, 64));
+		shipSprites.put("HUNTER_RED", 		new GLSprite("ships",  64, 192, 64, 64));
+		shipSprites.put("COLONIZER_RED",	new GLSprite("ships", 128, 192, 64, 64));
+		shipSprites.put("DESTROYER_RED", 	new GLSprite("ships", 192, 192, 64, 64));
 		
-		metalPlanets.put(0, new GLSprite("planets/metal_planet_0", 64, 64));
-		metalPlanets.put(1, new GLSprite("planets/metal_planet_1", 64, 64));
-		metalPlanets.put(2, new GLSprite("planets/metal_planet_2", 64, 64));
-		metalPlanets.put(3, new GLSprite("planets/metal_planet_3", 64, 64));
-		gasPlanets.put(0,  new GLSprite("planets/gas_planet_0", 64, 64));
-		gasPlanets.put(1,  new GLSprite("planets/gas_planet_1", 64, 64));
-		gasPlanets.put(2,  new GLSprite("planets/gas_planet_2", 64, 64));
+		metalPlanets.put(0, new GLSprite("planets/metalplanet_0", 64, 64));
+		metalPlanets.put(1, new GLSprite("planets/metalplanet_1", 64, 64));
+		metalPlanets.put(2, new GLSprite("planets/metalplanet_2", 64, 64));
+		metalPlanets.put(3, new GLSprite("planets/metalplanet_3", 64, 64));
+		gasPlanets.put(0, 	new GLSprite("planets/gasplanet_0",   64, 64));
+		gasPlanets.put(1,  	new GLSprite("planets/gasplanet_1",   64, 64));
+		gasPlanets.put(2,  	new GLSprite("planets/gasplanet_2",   64, 64));
 		
-		colonyTextures.put("RED", createColonySprite(PlayerColors.getColor(Player.RED)));
-		colonyTextures.put("BLUE", createColonySprite(PlayerColors.getColor(Player.BLUE)));
-		colonyTextures.put("PINK", createColonySprite(PlayerColors.getColor(Player.PINK)));
-		colonyTextures.put("GREEN", createColonySprite(PlayerColors.getColor(Player.GREEN)));
+		colonyMarkerSprites.put(Player.RED, 	new GLSprite("colonymarker:RED",   64, 64));
+		colonyMarkerSprites.put(Player.BLUE, 	new GLSprite("colonymarker:BLUE",  64, 64));
+		colonyMarkerSprites.put(Player.PINK, 	new GLSprite("colonymarker:PINK",  64, 64));
+		colonyMarkerSprites.put(Player.GREEN, 	new GLSprite("colonymarker:GREEN", 64, 64));
 		
 		fogSprite = new GLSprite("cloud", 256, 256);
 	}
 	
-	/**
-	 * Creates a Circle Texture of any Color used as Colony marker
-	 * @param color The Color of the Circle
-	 */
-	private static Texture createColonySprite(Color color){
-		BufferedImage img = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-		Graphics g = img.createGraphics();
-		g.setColor(color);
-		g.fillOval(2, 2, 60, 60);
-		return AWTTextureIO.newTexture(GLProfile.getDefault(), img, false);
-	}
-
-	public static GLSpriteMap getSprites(SpriteMapData data) {
+	public static GLSpriteMap getSprites(SpriteMapData data, int squareSize) {
 		GLSpriteMap.data = data;
 		if (!initiated) {
 			init();
 		}
 		GLSpriteMap map = new GLSpriteMap();
-		
+		int rows = 2*GLRenderArea.EXTRA_SPACE_VERTICAL + GLSpriteMap.data.getRows();
+		int cols = 2*GLRenderArea.EXTRA_SPACE_HORIZONTAL + GLSpriteMap.data.getCols();
+		map.bounds = new Rectangle(0, 0, cols*squareSize, rows*squareSize);
+		/* Add Colony data */
 		for (ColonyData colonyData : GLSpriteMap.data.getColonyData()) {
-			
+			if (map.colonies.get(colonyData.getPlayer()) == null)
+				map.colonies.put(colonyData.getPlayer(), new ArrayList<Rectangle>());
+			Rectangle r = calculateRect(colonyData.getPosition(), 0.5f, 0.5f, squareSize, 0.5f);
+			map.colonies.get(colonyData.getPlayer()).add(r);
 		}
-		return null;
+		/* Add Planet data */
+		for (PlanetData planetData : GLSpriteMap.data.getPlanetData()) {
+			if (map.planets.get(planetData.getResource()) == null)
+				map.planets.put(planetData.getResource(), new HashMap<Position, Rectangle>());
+			Map<Position, Rectangle> m = map.planets.get(planetData.getResource());
+			Rectangle r = calculateRect(planetData.getPosition(), 0.5f, 0.5f, squareSize, 0.5f);
+			m.put(planetData.getPosition(), r);
+		}
+		/* Add Fleet Data */
+		for (FleetData fleetData : GLSpriteMap.data.getFleetData()) {
+			if (map.fleets.get(fleetData.getPlayer()) == null)
+				map.fleets.put(fleetData.getPlayer(), new HashMap<ShipType, List<Rectangle>>());
+			if (map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships()) == null)
+				map.fleets.get(fleetData.getPlayer()).put(fleetData.getFlagships(), new ArrayList<Rectangle>());
+			List<Rectangle> list = map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships());
+			list.add(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f));
+		}
+		/* Add Colonizer Data */
+		for (ColonizerData colonizerData : GLSpriteMap.data.getColonizerData()) {
+			if (map.fleets.get(colonizerData.getPlayer()) == null)
+				map.fleets.put(colonizerData.getPlayer(), new HashMap<ShipType, List<Rectangle>>());
+			if (map.fleets.get(colonizerData.getPlayer()).get(ShipType.COLONIZER) == null)
+				map.fleets.get(colonizerData.getPlayer()).put(ShipType.COLONIZER, new ArrayList<Rectangle>());
+			List<Rectangle> list = map.fleets.get(colonizerData.getPlayer()).get(ShipType.COLONIZER);
+			list.add(calculateRect(colonizerData.getPosition(), 0.5f, 0, squareSize, 0.5f));
+		}
+		/* Add Fog Data */
+		for (Position pos : GLSpriteMap.data.getFog()) {
+			map.fogOfWar.add(calculateRect(pos, 0, 0, squareSize, 1));
+		}
+		
+		/*
+		 * TOOD:
+		 * Add Path data
+		 */
+		
+		return map;
 	}
 	
+	private static Rectangle calculateRect(Position pos, float dX, float dY, int squareSize, float dS) {
+		int rows = 2*GLRenderArea.EXTRA_SPACE_VERTICAL + GLSpriteMap.data.getRows();
+		int x = (GLRenderArea.EXTRA_SPACE_HORIZONTAL + pos.getCol() - 1) * squareSize;
+		int y = (rows - GLRenderArea.EXTRA_SPACE_VERTICAL - pos.getRow()) * squareSize;
+		x += (int) (dX * squareSize);
+		y += (int) (dY * squareSize);
+		return new Rectangle(x, y, (int) (squareSize*dS), (int) (squareSize*dS));
+	}
+
 	@Override
 	public Rectangle getBounds() {
 		return bounds;
 	}
 
 	@Override
-	public void draw(GLAutoDrawable drawable, Rectangle objectRect,
-			Rectangle targetArea, int zIndex) {
+	public void draw(GLAutoDrawable drawable, Rectangle objectRect,	Rectangle targetArea, int zIndex) {
+		/* Draw Colonies */
+		for (Player player : colonies.keySet()) {
+			for (Rectangle r : colonies.get(player)) {
+				if (r.intersects(targetArea)) {
+					colonyMarkerSprites.get(player).draw(drawable, r, targetArea, zIndex + 1);
+				}
+			}
+		}
+		/* Draw Planets */
+		for (Resource res : planets.keySet()) {
+			for (Position pos : planets.get(res).keySet()) {
+				Rectangle r = planets.get(res).get(pos);
+				allPlanets.get(res).get(pos).draw(drawable, r, targetArea, zIndex + 2);
+			}
+		}
+		/* Draw Fleets */
+		for (Player player : fleets.keySet()) {
+			for (ShipType type : fleets.get(player).keySet()) {
+				List<Rectangle> list = fleets.get(player).get(type);
+				for (Rectangle r : list) {
+					shipSprites.get(type + "_" + player).draw(drawable, r, targetArea, zIndex + 3);
+				}
+			}
+		}
+		/* TODO: Draw Paths (z = +4) */ 
+		
+		/* Draw Fog */
+		for (Rectangle r : fogOfWar) {
+			fogSprite.draw(drawable, r, targetArea, zIndex + 5);
+		}
 		
 	}
 }

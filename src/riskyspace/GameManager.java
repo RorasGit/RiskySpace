@@ -144,7 +144,7 @@ public enum GameManager {
 	}
 
 	public void handleEvent(Event evt, Player player) {
-		System.out.println("Current event handled: " + evt + " player: " + player + " | cur = " + currentPlayer);
+//		System.out.println("Current event handled: " + evt + " player: " + player + " | cur = " + currentPlayer);
 		if (!initiated) {
 			return;
 		}
@@ -268,7 +268,6 @@ public enum GameManager {
 		if (selectedTerritory.hasPlanet()) {
 			Event evt;
 			if (selectedTerritory.hasColony() && player == selectedTerritory.getColony().getOwner()) {
-				System.out.println(selectedTerritory.getColony().getMine() + " | " + player);
 				evt = new Event(Event.EventTag.SELECTION, selectedTerritory.getColony());
 			} else if (selectedTerritory.hasColony()){
 				evt = new Event(Event.EventTag.SELECTION, null);
@@ -462,8 +461,6 @@ public enum GameManager {
 			}
 		}
 		if (!selections.get(player).selectedFleets.isEmpty()) {
-			System.out.println(selections.get(player).selectedFleets.size());
-			System.out.println(player);
 			Event event = new Event(Event.EventTag.SELECTION, new Fleet(selections.get(player).selectedFleets));
 			event.setPlayer(player);
 			EventBus.SERVER.publish(event);

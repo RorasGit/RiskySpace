@@ -5,7 +5,7 @@ package riskyspace.view.camera;
  * @author Alexander Hederstaf
  *
  */
-public class GLCamera extends SwingCamera {
+public class GLCamera extends Camera {
 
 	public GLCamera(float x, float y) {
 		super(x, y, 0.004f);
