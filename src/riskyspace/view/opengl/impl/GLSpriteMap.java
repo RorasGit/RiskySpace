@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import riskyspace.logic.Path;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.logic.data.ColonizerData;
 import riskyspace.logic.data.ColonyData;
@@ -18,6 +19,8 @@ import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
+import riskyspace.view.swing.impl.SwingSprite;
+import riskyspace.view.swing.impl.SwingSpriteMap;
 
 /**
  * Drawing all game Sprites in openGL
@@ -62,6 +65,11 @@ public class GLSpriteMap implements GLRenderAble {
 	private static Map<Player, GLSprite> colonyMarkerSprites = new HashMap<Player, GLSprite>();
 	
 	/*
+	 * Path Sprites
+	 */
+	private static Map<String, GLSprite> pathSprites = new HashMap<String, GLSprite>();
+	
+	/*
 	 * Fog Sprite
 	 */
 	private static GLSprite fogSprite = null;
@@ -80,7 +88,7 @@ public class GLSpriteMap implements GLRenderAble {
 	private Map<Resource, Map<Position, Rectangle>> planets = new HashMap<Resource, Map<Position, Rectangle>>();
 	private Map<Player, List<Rectangle>> colonies = new HashMap<Player, List<Rectangle>>();
 	private Map<Player, Map<ShipType , List<Rectangle>>> fleets = new HashMap<Player, Map<ShipType , List<Rectangle>>>();
-	// Paths TODO:
+	private Map<String, Map<Rectangle, Double>> paths = new HashMap<String, Map<Rectangle, Double>>();
 	
 	/* Integers for display, draw text how? */
 //	private Map<Position, Integer> shipCount = new HashMap<Position, Integer>();
@@ -148,6 +156,11 @@ public class GLSpriteMap implements GLRenderAble {
 		colonyMarkerSprites.put(Player.PINK, 	new GLSprite("colonymarker:PINK",  64, 64));
 		colonyMarkerSprites.put(Player.GREEN, 	new GLSprite("colonymarker:GREEN", 64, 64));
 		
+		pathSprites.put(HEAD, new GLSprite("path/head", 128, 128));
+		pathSprites.put(START, new GLSprite("path/start", 128, 128));
+		pathSprites.put(STRAIGHT, new GLSprite("path/straight", 128, 128));
+		pathSprites.put(TURN, new GLSprite("path/turn", 128, 128));
+		
 		fogSprite = new GLSprite("cloud", 256, 256);
 	}
 	
@@ -198,16 +211,55 @@ public class GLSpriteMap implements GLRenderAble {
 			map.fogOfWar.add(calculateRect(pos, 0, 0, squareSize, 1));
 		}
 		
-		/*
-		 * TOOD:
-		 * Add Path data
-		 */
-		
+		/* Add Path data */
+		Position[][] paths = GLSpriteMap.data.getPaths();
+		double rotation = 0;
+		for (int i = 0; i < paths.length; i++) {
+			if (paths[i].length > 1) {
+				for (int j = 0; j < paths[i].length; j++) {
+					if (j == 0) {
+						if (map.paths.get("START") == null) {
+							map.paths.put("START", new HashMap<Rectangle, Double>());
+						}
+						rotation = Path.getRotation(null, paths[i][j], paths[i][j+1]);
+						map.paths.get("START").put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+					} else if (j == paths[i].length - 1) {
+						if (map.paths.get("HEAD") == null) {
+							map.paths.put("HEAD", new HashMap<Rectangle, Double>());
+						}
+						rotation = Path.getRotation(paths[i][j-1], paths[i][j], null);
+						map.paths.get("HEAD").put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+					} else if (paths[i][j-1].getCol() != paths[i][j+1].getCol() && paths[i][j-1].getRow() != paths[i][j+1].getRow()) {
+						if (map.paths.get("TURN") == null) {
+							map.paths.put("TURN", new HashMap<Rectangle, Double>());
+						}
+						rotation = Path.getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]);
+						map.paths.get("TURN").put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+					} else {
+						if (map.paths.get("STRAIGHT") == null) {
+							map.paths.put("STRAIGHT", new HashMap<Rectangle, Double>());
+						}
+						rotation = Path.getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]);
+						map.paths.get("STRAIGHT").put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+					}
+				}
+			}
+		}
 		return map;
 	}
 	
+	/**
+	 * Calculates a Rectangle for the area to draw a GLSprite
+	 * @param pos The Position of the GLSprite
+	 * @param dX distance in <code>dX * squareSize</code> from the Positions x coordinate
+	 * @param dY distance in <code>dY * squareSize</code> from the Positions y coordinate
+	 * @param squareSize the size of a square in the game in pixels.
+	 * @param dS the size of the Rectangle relative to a square.
+	 * @return
+	 */
 	private static Rectangle calculateRect(Position pos, float dX, float dY, int squareSize, float dS) {
 		int rows = 2*GLRenderArea.EXTRA_SPACE_VERTICAL + GLSpriteMap.data.getRows();
+		System.out.println("rows = " + rows);
 		int x = (GLRenderArea.EXTRA_SPACE_HORIZONTAL + pos.getCol() - 1) * squareSize;
 		int y = (rows - GLRenderArea.EXTRA_SPACE_VERTICAL - pos.getRow()) * squareSize;
 		x += (int) (dX * squareSize);
@@ -246,7 +298,12 @@ public class GLSpriteMap implements GLRenderAble {
 				}
 			}
 		}
-		/* TODO: Draw Paths (z = +4) */ 
+		/* Draw Paths */
+		for (String s : paths.keySet()) {
+			for (Rectangle r : paths.get(s).keySet()) {
+				pathSprites.get(s).draw(drawable, r, targetArea, zIndex + 4);
+			}
+		}
 		
 		/* Draw Fog */
 		for (Rectangle r : fogOfWar) {

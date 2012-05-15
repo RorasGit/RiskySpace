@@ -19,7 +19,6 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.view.View;
-import riskyspace.view.ViewFactory;
 import riskyspace.view.opengl.impl.OpenGLView;
 
 /**
@@ -131,7 +130,6 @@ public class GameClient implements EventHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 	
 	@Override
