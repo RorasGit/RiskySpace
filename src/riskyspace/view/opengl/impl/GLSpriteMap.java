@@ -300,21 +300,9 @@ public class GLSpriteMap implements GLRenderAble {
 		/* Draw Paths */
 		for (String s : paths.keySet()) {
 			for (Rectangle r : paths.get(s).keySet()) {
-				GL2 gl = drawable.getGL().getGL2();
 				double rotation = Math.toDegrees(paths.get(s).get(r));
-//				gl.glLoadIdentity();
-//				float xTrans = ((float) r.getX() + r.getWidth()/2 - targetArea.getX())/targetArea.getWidth();
-//				float yTrans = ((float) r.getY() +r.getHeight()/2 - targetArea.getY())/targetArea.getHeight();
-//				System.out.println(s);
-//				System.out.println("xT: " + xTrans);
-//				System.out.println("yT: " + yTrans);
-//				System.out.println("rot: " + rotation);
-//				System.out.println("--------------");
-//				gl.glTranslatef(-xTrans, -yTrans, 0);
-//				gl.glRotated(-rotation, 0, 0, 1);
-//				gl.glTranslatef(xTrans, yTrans, 0);
+				pathSprites.get(s).setRotation(rotation);
 				pathSprites.get(s).draw(drawable, r, targetArea, zIndex + 4);
-//				gl.glLoadIdentity();
 			}
 		}
 		

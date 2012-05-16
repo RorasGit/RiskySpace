@@ -51,6 +51,11 @@ public class GLSprite implements GLRenderAble {
 		renderRect = new Rectangle(rectangle);
 	}
 	
+	/**
+	 * Set clockwise rotation of this Sprite
+	 * @param rotation A rotation angle in degrees
+	 * @see Math.toDegrees(double radian)
+	 */
 	public void setRotation(double rotation) {
 		this.rotation = rotation;
 	}
@@ -65,8 +70,6 @@ public class GLSprite implements GLRenderAble {
 		if (objectRect != null && objectRect.intersects(targetArea)) {
 			GL2 gl = drawable.getGL().getGL2();
 			Texture tex = Textures.bindTexture(textureName, drawable);
-			
-			gl.glBegin(GL2.GL_QUADS);
 			
 			/* Variables for texture position within larger texture*/
 			float tX = (float) textureRect.getX() / tex.getWidth();
@@ -84,12 +87,28 @@ public class GLSprite implements GLRenderAble {
 			 * TODO: 
 			 * Fix rotation
 			 */
-			float rX;
-			float rY;
-			float rX1;
-			float rY1;
+			float cX = x + ((float) objectRect.getWidth())/targetArea.getWidth();
+			float cY = y + ((float) objectRect.getHeight())/targetArea.getHeight();
+			if (textureName.startsWith("col")) {
+				System.out.println(textureName);
+				System.out.println("cX: " + cX);
+				System.out.println("cY: " + cY);
+				System.out.println("***********");
+			}
+			
+			float texCenterX = tX + (0.5f * textureRect.getWidth()) / tex.getWidth();
+			float texCenterY = tY + (0.5f * textureRect.getHeight()) / tex.getHeight();
 			
 			float renderZ = 1f / zIndex;
+			
+			gl.glMatrixMode( GL2.GL_TEXTURE );
+			gl.glPushMatrix();
+			gl.glLoadIdentity();
+			gl.glTranslatef(texCenterX, texCenterY, 0);
+			gl.glRotated(rotation, 0, 0, 1);
+			gl.glTranslatef(-texCenterX, -texCenterY, 0);
+			
+			gl.glBegin(GL2.GL_QUADS);
 			
 			gl.glTexCoord2f(tX, tY);
 			gl.glVertex3f(x, y, renderZ);
@@ -103,20 +122,10 @@ public class GLSprite implements GLRenderAble {
 			gl.glTexCoord2f(tX1, tY);
 			gl.glVertex3f(x1, y, renderZ);
 
-			/*  Rotate 90d clockwise*/
-//			gl.glTexCoord2f(tX, tY);
-//			gl.glVertex3f(x, y1, renderZ);
-//
-//			gl.glTexCoord2f(tX, tY1);
-//			gl.glVertex3f(x1, y1, renderZ);
-//
-//			gl.glTexCoord2f(tX1, tY1);
-//			gl.glVertex3f(x1, y, renderZ);
-//
-//			gl.glTexCoord2f(tX1, tY);
-//			gl.glVertex3f(x, y, renderZ);
-			
 			gl.glEnd();
+			
+			gl.glLoadIdentity();
+			gl.glPopMatrix();
 		}
 	}
 }
