@@ -9,10 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 import riskyspace.services.Event;
-import riskyspace.services.EventBus;
 import riskyspace.services.EventText;
 
-public class BuildQueue implements Serializable{
+public class BuildQueue implements Serializable {
 	
 	/**
 	 * 
@@ -32,28 +31,6 @@ public class BuildQueue implements Serializable{
 	 * @author rapp
 	 *
 	 */
-	private class QueueItem {
-			
-			private int buildTime;
-			private BuildAble item;
-			
-			public QueueItem (BuildAble buildAble) {
-				this.item = buildAble;
-				this.buildTime = buildAble.getBuildTime();
-			}
-			
-			public BuildAble getItem() {
-				return item;
-			}
-			
-			public int getBuildTime() {
-				return buildTime;
-			}
-			
-			public void subtractBuildTime(int time) {
-				buildTime -= time;
-			}
-		}
 	
 	/**
 	 * Adds the BuildAble item to the build queue at the provided position.
