@@ -18,7 +18,7 @@ import riskyspace.services.EventBus;
 import riskyspace.view.View;
 import riskyspace.view.swing.impl.SwingButton;
 
-public class FleetMenu extends AbstractSideMenu {
+public class FleetMenu extends SwingAbstractSideMenu {
 	
 	private int itemSize;
 	

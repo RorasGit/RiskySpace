@@ -1,15 +1,14 @@
-package riskyspace.view.swing.menu;
+package riskyspace.view.opengl.menu;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.media.opengl.GLAutoDrawable;
+
 
 import riskyspace.PlayerColors;
 import riskyspace.model.BuildAble;
@@ -23,19 +22,19 @@ import riskyspace.model.building.Turret;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
-import riskyspace.view.View;
 import riskyspace.view.ViewResources;
-import riskyspace.view.swing.SwingRenderAble;
-import riskyspace.view.swing.impl.SwingButton;
-import riskyspace.view.swing.impl.SwingRankIndicator;
-import riskyspace.view.RankIndicator;
+import riskyspace.view.opengl.GLRenderAble;
+import riskyspace.view.opengl.Rectangle;
+import riskyspace.view.opengl.impl.GLButton;
+import riskyspace.view.opengl.impl.GLRankIndicator;
+import riskyspace.view.opengl.impl.GLSprite;
 
 /**
  * 
- * @author flygarn
+ * @author Daniel Augurell
  *
  */
-public class BuildingMenu extends SwingAbstractSideMenu {
+public class GLBuildingMenu extends GLAbstractSideMenu {
 
 	private Colony colony = null;
 	private PlayerStats stats = null;
@@ -52,47 +51,47 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 	/*
 	 * Upgrade Buttons.
 	 */
-	private SwingButton upgradeMine;
-	private SwingButton upgradeTurret;
-	private SwingButton upgradeRadar;
-	private SwingButton upgradeHangar;
+	private GLButton upgradeMine;
+	private GLButton upgradeTurret;
+	private GLButton upgradeRadar;
+	private GLButton upgradeHangar;
 	
 	/*
 	 * Back button
 	 */
-	private SwingButton backButton;
+	private GLButton backButton;
 	
 	/*
 	 * Images for different Buildings
 	 */
-	private Image mineImage;
-	private Image turretImage;
-	private Image radarImage;
-	private Image hangarImage;
+	private GLSprite mineImage;
+	private GLSprite turretImage;
+	private GLSprite radarImage;
+	private GLSprite hangarImage;
 	
 	/*
 	 * City Images
 	 */
-	private Image cityImage = null;
-	private Map<Player, Image> cities = new HashMap<Player, Image>();
+	private GLSprite cityImage = null;
+	private Map<Player, GLSprite> cities = new HashMap<Player, GLSprite>();
 	
 	/*
 	 * Split Image
 	 */
-	private Image split = null;
+	private GLSprite split = null;
 	
 	/*
 	 * 
 	 */
-	private Image inProgress = null;
+	private GLSprite inProgress = null;
 	
 	/*
 	 * Rank indicators
 	 */
-	private RankIndicator mineRank;
-	private RankIndicator turretRank;
-	private RankIndicator radarRank;
-	private RankIndicator hangarRank;
+	private GLRankIndicator mineRank;
+	private GLRankIndicator turretRank;
+	private GLRankIndicator radarRank;
+	private GLRankIndicator hangarRank;
 	
 	/*
 	 * Building name Strings
@@ -144,7 +143,7 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 	private Font titleFont;
 	private Font infoFont;
 	
-	public BuildingMenu(int x, int y, int menuWidth, int menuHeight) {
+	public GLBuildingMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		//TODO Create buttons and Load Images
 		margin = menuHeight/20;
@@ -154,19 +153,16 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		 */
 		int imageWidth = menuWidth - 2*margin;
 		int imageHeight = ((menuWidth - 2*margin)*3)/4;
-		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
-				getScaledInstance(imageWidth, imageHeight, Image.SCALE_DEFAULT));
-		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
-				getScaledInstance(imageWidth, imageHeight, Image.SCALE_DEFAULT));
+		setPicture(imageWidth, imageHeight);
 		
 		/*
 		 * Create Rank Indicators
 		 */
 		// Set Rank
-		mineRank = new SwingRankIndicator(3);
-		turretRank = new SwingRankIndicator(3);
-		radarRank = new SwingRankIndicator(3);
-		hangarRank = new SwingRankIndicator(3);
+		mineRank = new GLRankIndicator(3);
+		turretRank = new GLRankIndicator(3);
+		radarRank = new GLRankIndicator(3);
+		hangarRank = new GLRankIndicator(3);
 		
 		// Set Size for Rank Indicators
 		int width = menuHeight/35;
@@ -178,11 +174,15 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		hangarRank.setSize(width, height);
 		
 		// Set Location
-		mineRank.setLocation(x + margin/2, y + 7*margin/2 + imageHeight);
-		turretRank.setLocation(x + margin/2, y + height + 9*margin/2 + imageHeight);
-		radarRank.setLocation(x + margin/2, y + height*2 + 11*margin/2 + imageHeight);
-		hangarRank.setLocation(x + margin/2, y + height*3 + 13*margin/2 + imageHeight);
+		mineRank.setLocation(x + margin/2, menuHeight - (7*margin/2 + imageHeight));
+		turretRank.setLocation(x + margin/2, menuHeight - (height + 9*margin/2 + imageHeight));
+		radarRank.setLocation(x + margin/2, menuHeight - (height*2 + 11*margin/2 + imageHeight));
+		hangarRank.setLocation(x + margin/2, menuHeight - (height*3 + 13*margin/2 + imageHeight));
 		
+		setButtons(menuWidth, menuHeight, height);
+	}
+
+	private void setButtons(int menuWidth, int menuHeight, int height) {
 		/*
 		 * Button Sizes
 		 */
@@ -192,19 +192,27 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		/*
 		 * Load Images
 		 */
-		mineImage = Toolkit.getDefaultToolkit().getImage("res/menu/mine" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
-		turretImage = Toolkit.getDefaultToolkit().getImage("res/menu/turret_laser" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
-		radarImage = Toolkit.getDefaultToolkit().getImage("res/menu/radar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
-		hangarImage = Toolkit.getDefaultToolkit().getImage("res/menu/hangar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
-		split = Toolkit.getDefaultToolkit().getImage("res/menu/split" + View.res).getScaledInstance(height/5, height, Image.SCALE_DEFAULT);
-		inProgress = Toolkit.getDefaultToolkit().getImage("res/menu/progress" + View.res).getScaledInstance(upgradeButtonWidth, upgradeButtonHeight, Image.SCALE_DEFAULT);
+		mineImage = new GLSprite("menu/mine", 72, 72);
+		mineImage.setBounds(new Rectangle(mineRank.getX() + mineRank.getWidth(), mineRank.getY(), height, height));
+		turretImage = new GLSprite("menu/turret_laser", 72, 72);
+		turretImage.setBounds(new Rectangle(turretRank.getX() + turretRank.getWidth(), turretRank.getY(), height, height));
+		radarImage = new GLSprite("menu/radar", 72, 72);
+		radarImage.setBounds(new Rectangle(radarRank.getX() + radarRank.getWidth(), radarRank.getY(), height, height));
+		hangarImage = new GLSprite("menu/hangar", 72, 72);
+		hangarImage.setBounds(new Rectangle(radarRank.getX() + radarRank.getWidth(), radarRank.getY(), height, height));
+		split = new GLSprite("menu/split", 15, 72);
+		split.setBounds(new Rectangle(0, 0, height/5, height));
+		inProgress = new GLSprite("menu/progress", 128, 32);
+		inProgress.setBounds(new Rectangle(0, 0, upgradeButtonWidth, upgradeButtonHeight));
 				
 		/*
 		 * Create Buttons
 		 */
-		upgradeMine = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, mineRank.getY() + mineRank.getHeight() - upgradeButtonHeight
+		int x = getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth;
+		
+		upgradeMine = new GLButton(x, mineRank.getY() + upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeMine.setImage("res/menu/upgrade" + View.res);
+		upgradeMine.setImage("menu/upgrade", 128, 32);
 		upgradeMine.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -213,9 +221,9 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 			}
 		});
 		
-		upgradeTurret = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, turretRank.getY() + turretRank.getHeight() - upgradeButtonHeight
+		upgradeTurret = new GLButton(x, turretRank.getY() + upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeTurret.setImage("res/menu/upgrade" + View.res);
+		upgradeTurret.setImage("menu/upgrade", 128, 32);
 		upgradeTurret.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -225,9 +233,9 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		});
 		
 		
-		upgradeRadar = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, radarRank.getY() + radarRank.getHeight() - upgradeButtonHeight
+		upgradeRadar = new GLButton(x, radarRank.getY() + upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeRadar.setImage("res/menu/upgrade" + View.res);
+		upgradeRadar.setImage("menu/upgrade", 128, 32);
 		upgradeRadar.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -236,9 +244,9 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 			}
 		});
 		
-		upgradeHangar = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, hangarRank.getY() + hangarRank.getHeight() - upgradeButtonHeight
+		upgradeHangar = new GLButton(x, hangarRank.getY() + upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeHangar.setImage("res/menu/upgrade" + View.res);
+		upgradeHangar.setImage("menu/upgrade", 128, 32);
 		upgradeHangar.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -247,8 +255,10 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 			}
 		});
 		
-		backButton = new SwingButton(x + margin, y + menuHeight - margin - (menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
-		backButton.setImage("res/menu/back" + View.res);
+		backButton = new GLButton(getX() + margin, 
+				(getBounds().getWidth() - 2*margin)/4, 
+				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
+		backButton.setImage("menu/back", 128, 32);
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -257,11 +267,26 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		});
 	}
 
-	public BuildingMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
+	public GLBuildingMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
 		this(x, y, menuWidth, menuHeight);
 		backButton.setAction(backAction);
 		titleFont = ViewResources.getFont().deriveFont(menuHeight/40f);
 		infoFont = new Font("Tahoma", Font.PLAIN, menuHeight/80);
+	}
+	
+	private void setPicture(int imageWidth, int imageHeight){
+		Rectangle renderRect = new Rectangle(getBounds().getX() + margin, 
+				getBounds().getHeight() - imageHeight - 3*margin/2, 
+				imageWidth, imageHeight);
+
+		GLSprite GLtmp = new GLSprite("menu/city_red", 1280, 700);
+		GLtmp.setBounds(renderRect);
+		cities.put(Player.RED, GLtmp);
+		GLtmp = new GLSprite("menu/city_blue", 900, 486);
+		GLtmp.setBounds(renderRect);
+		cities.put(Player.BLUE, GLtmp);
+		cityImage = GLtmp;
+	
 	}
 	
 	public void setColony(Colony colony) {
@@ -377,39 +402,70 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		nextHangarMetal = colony.getHangar().getMetalCost()  + " M | ";
 		nextHangarGas = colony.getHangar().getGasCost()  + " G";
 	}
-	
 	@Override
+	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
+		super.draw(drawable, objectRect, targetArea, zIndex);
+		zIndex++;
+		cityImage.draw(drawable, cityImage.getBounds(), targetArea, zIndex);
+		
+		((GLRenderAble)mineRank).draw(drawable, mineRank.getBounds(), targetArea, zIndex);
+		((GLRenderAble)turretRank).draw(drawable, turretRank.getBounds(), targetArea, zIndex);
+		((GLRenderAble)radarRank).draw(drawable, radarRank.getBounds(), targetArea, zIndex);
+		((GLRenderAble)hangarRank).draw(drawable, hangarRank.getBounds(), targetArea, zIndex);
+		
+		turretImage.draw(drawable, turretImage.getBounds(), targetArea, zIndex);
+		mineImage.draw(drawable, mineImage.getBounds(), targetArea, zIndex);
+		hangarImage.draw(drawable, hangarImage.getBounds(), targetArea, zIndex);
+		radarImage.draw(drawable, radarImage.getBounds(), targetArea, zIndex);
+		
+		/*
+		 * The X coordinate of the right side of building images.
+		 */
+		int imageRightX = mineRank.getX() + mineRank.getWidth() + mineImage.getBounds().getWidth();
+		
+		/*
+		 * Draw Split Image between levels
+		 */
+		int splitX = (getMenuWidth() - margin - mineRank.getWidth() - mineImage.getBounds().getWidth())/2 - split.getBounds().getWidth()/2;
+		splitX += imageRightX;
+		
+		split.draw(drawable, new Rectangle(splitX, hangarRank.getY(), split.getBounds().getWidth(), split.getBounds().getWidth()), targetArea, zIndex);
+		split.draw(drawable, new Rectangle(splitX, radarRank.getY(), split.getBounds().getWidth(), split.getBounds().getWidth()), targetArea, zIndex);
+		split.draw(drawable, new Rectangle(splitX, mineRank.getY(), split.getBounds().getWidth(), split.getBounds().getWidth()), targetArea, zIndex);
+		split.draw(drawable, new Rectangle(splitX, turretRank.getY(), split.getBounds().getWidth(), split.getBounds().getWidth()), targetArea, zIndex);
+		
+		/*
+		 * Draw Buttons
+		 */
+		upgradeMine.draw(drawable, upgradeMine.getBounds(), targetArea, zIndex);
+		upgradeTurret.draw(drawable, upgradeTurret.getBounds(), targetArea, zIndex);
+		upgradeRadar.draw(drawable, upgradeRadar.getBounds(), targetArea, zIndex);
+		upgradeHangar.draw(drawable, upgradeHangar.getBounds(), targetArea, zIndex);
+		backButton.draw(drawable, backButton.getBounds(), targetArea, zIndex);
+		
+		drawProgressIndicators(drawable, objectRect, targetArea, zIndex);
+	}
+	/*
 	public void draw(Graphics g) {
-		super.draw(g);
+		//super.draw(g);
 		//TODO Draw all stuff
 		if (isVisible()) {
+			
 			g.drawImage(cityImage, getX() + margin, getY() + 3*margin/2,null);
 			drawColonyName(g);
 			
-			/*
-			 * Draw Rank Indicators
-			 */
 			((SwingRenderAble)mineRank).draw(g);
 			((SwingRenderAble)turretRank).draw(g);
 			((SwingRenderAble)radarRank).draw(g);
 			((SwingRenderAble)hangarRank).draw(g);
 			
-			/*
-			 * Draw Images
-			 */
 			g.drawImage(turretImage, turretRank.getX() + turretRank.getWidth(), turretRank.getY(), null);
 			g.drawImage(mineImage, mineRank.getX() + mineRank.getWidth(), mineRank.getY(), null);
 			g.drawImage(radarImage, radarRank.getX() + radarRank.getWidth(), radarRank.getY(), null);
 			g.drawImage(hangarImage, hangarRank.getX() + hangarRank.getWidth(), hangarRank.getY(), null);
 			
-			/*
-			 * The X coordinate of the right side of building images.
-			 */
-			int imageRightX = mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null);
+			int imageRightX = mineRank.getX() + mineRank.getWidth() + mineImage.getBounds().getWidth();
 			
-			/*
-			 * Draw Split Image between levels
-			 */
 			int splitX = (getMenuWidth() - margin - mineRank.getWidth() - mineImage.getWidth(null))/2 - split.getWidth(null)/2;
 			splitX += imageRightX;
 			
@@ -418,9 +474,9 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 			g.drawImage(split, splitX, mineRank.getY(), null);
 			g.drawImage(split, splitX, radarRank.getY(), null);
 			
-			/*
+			
 			 * Draw Title Strings
-			 */
+			 
 			g.setFont(titleFont);
 			g.setColor(ViewResources.WHITE);
 			FontMetrics fm = g.getFontMetrics();
@@ -431,7 +487,7 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 			
 			/*
 			 * Draw info strings
-			 */
+			 
 			g.setFont(infoFont);
 			fm = g.getFontMetrics();
 			
@@ -474,7 +530,7 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 			
 			/*
 			 * Draw next Level costs if not maxed
-			 */
+			 
 			if (!colony.getMine().isMaxRank()) {
 				g.drawString(nextMineMetal + nextMineGas, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextMineGas)/2, mineRank.getY() + margin/3 + 5 + 5*height/2);
 			}
@@ -488,9 +544,6 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 				g.drawString(nextHangarMetal + nextHangarGas, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextHangarMetal + nextHangarGas)/2, hangarRank.getY() + margin/3 + 5 + 5*height/2);
 			}
 			
-			/*
-			 * Draw Buttons
-			 */
 			upgradeMine.draw(g);
 			upgradeTurret.draw(g);
 			upgradeRadar.draw(g);
@@ -499,27 +552,31 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 			
 			/*
 			 * Draw progress indication
-			 */
-			drawProgressIndicators(g);
+			 
+			
 		}
 	}
+	*/
 	
-	private void drawProgressIndicators(Graphics g) {
-		int progressX = getX() + getMenuWidth() - 3*margin/5 - inProgress.getWidth(null);
+	private void drawProgressIndicators(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
+		int x = getX() + getMenuWidth() - 3*margin/5 - inProgress.getBounds().getWidth();
 		if (mineUpgrading) {
-			g.drawImage(inProgress, progressX, mineRank.getY() + mineRank.getHeight() - inProgress.getHeight(null), null);
+			inProgress.draw(drawable, new Rectangle(x, mineRank.getY() + inProgress.getBounds().getHeight(), inProgress.getBounds().getWidth(), inProgress.getBounds().getHeight()), targetArea, zIndex);
 		}
 		if (turretUpgrading) {
-			g.drawImage(inProgress, progressX, turretRank.getY() + turretRank.getHeight() - inProgress.getHeight(null), null);
+			inProgress.draw(drawable, new Rectangle(x, turretRank.getY() + inProgress.getBounds().getHeight(), inProgress.getBounds().getWidth(), inProgress.getBounds().getHeight()), targetArea, zIndex);
+
 		}
 		if (radarUpgrading) {
-			g.drawImage(inProgress, progressX, radarRank.getY() + radarRank.getHeight() - inProgress.getHeight(null), null);
+			inProgress.draw(drawable, new Rectangle(x, radarRank.getY() + inProgress.getBounds().getHeight(), inProgress.getBounds().getWidth(), inProgress.getBounds().getHeight()), targetArea, zIndex);
+
 		}
 		if (hangarUpgrading) {
-			g.drawImage(inProgress, progressX, hangarRank.getY() + hangarRank.getHeight() - inProgress.getHeight(null), null);
+			inProgress.draw(drawable, new Rectangle(x, hangarRank.getY() + inProgress.getBounds().getHeight(), inProgress.getBounds().getWidth(), inProgress.getBounds().getHeight()), targetArea, zIndex);
+
 		}
 	}
-	
+	/*
 	private void drawColonyName(Graphics g) {
 		g.setColor(ownerColor);
 		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
@@ -527,6 +584,7 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + cityImage.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);
 	}
+	*/
 	
 	@Override
 	public boolean mousePressed(Point p) {

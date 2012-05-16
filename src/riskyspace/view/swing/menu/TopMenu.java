@@ -19,10 +19,10 @@ import riskyspace.view.Clickable;
 import riskyspace.view.IMenu;
 import riskyspace.view.ViewResources;
 import riskyspace.view.View;
-import riskyspace.view.swing.SwingDrawable;
+import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.SwingButton;
 
-public class TopMenu implements IMenu, Clickable, SwingDrawable {
+public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 	
 	private boolean enabled;
 	
