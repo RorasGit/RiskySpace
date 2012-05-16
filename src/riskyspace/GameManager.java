@@ -128,6 +128,19 @@ public enum GameManager {
 		return playerInfo.get(player);
 	}
 	
+	/**
+	 * Checks if a fleet has a path with more than its current position
+	 * @param fleet The Fleet to check
+	 * @return true if there is a path with at least than 1 step.
+	 */
+	public boolean hasPath(Fleet fleet) {
+		return (selections.get(fleet.getOwner()).fleetPaths.get(fleet) != null) && (selections.get(fleet.getOwner()).fleetPaths.get(fleet).getLength() > 1);
+	}
+	
+	public Position[] getPath(Fleet fleet) {
+		return selections.get(fleet.getOwner()).fleetPaths.get(fleet).getPositions();
+	}
+	
 	private void changePlayer() {
 		currentPlayer = activePlayers.get(((activePlayers.indexOf(currentPlayer) + 1) % activePlayers.size()));
 		Event event = new Event(Event.EventTag.ACTIVE_PLAYER_CHANGED, currentPlayer);
@@ -295,15 +308,13 @@ public enum GameManager {
 					 */
 					world.removeBuildQueue(battleStats.getLoser(), pos);
 				}
-				if (battleStats.isColonyDestroyed()) {
-					world.removeBuildQueue(world.getTerritory(pos).getPlanet().getColony().getOwner(), pos);
-					world.getTerritory(pos).getPlanet().destroyColony();
-				}
 				EventText et = new EventText(battleStats.getWinnerString(), pos);
 				Event event = new Event(Event.EventTag.EVENT_TEXT, et);
 //				EventBus.INSTANCE.publish(event);  TODO: Ignore evtText atm
 			}
 		}
+		Event event = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		EventBus.SERVER.publish(event);
 	}
 	
 	private void shipDestruct() {
@@ -473,6 +484,10 @@ public enum GameManager {
 		}
 	}
 
+	/*
+	 * TODO:
+	 * Check that you don't queue the same building twice in a buildqueue
+	 */
 	private void queueBuildAble(BuildAble build, Player player) {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {

@@ -114,14 +114,15 @@ public class World implements Serializable {
 			if (itemsToBuild.get(pos) instanceof ShipType) {
 				getTerritory(pos).addFleet(new Fleet(new Ship((ShipType) itemsToBuild.get(pos)), player));
 			} else if (itemsToBuild.get(pos) instanceof Ranked) {
-				System.out.println("ranked: " + itemsToBuild.get(pos));
-				System.out.println("before: " + ((Ranked) itemsToBuild.get(pos)).getRank() + "/" + ((Ranked) itemsToBuild.get(pos)).getMaxRank());
 				((Ranked) itemsToBuild.get(pos)).upgrade();
-				System.out.println("after: " +((Ranked) itemsToBuild.get(pos)).getRank() + "/" + ((Ranked) itemsToBuild.get(pos)).getMaxRank());
 			}
 		}
 		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
 		evt.setPlayer(player);
+		if (itemsToBuild.size() > 0) {
+			Event event = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+			EventBus.SERVER.publish(event);
+		}
 		EventBus.SERVER.publish(evt);
 	}
 	

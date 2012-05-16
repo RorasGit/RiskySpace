@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import riskyspace.GameManager;
+import riskyspace.logic.data.AnimationData;
 import riskyspace.logic.data.ColonizerData;
 import riskyspace.logic.data.ColonyData;
 import riskyspace.logic.data.FleetData;
@@ -40,6 +41,7 @@ public class SpriteMapData implements Serializable {
 	private List<ColonizerData> colonizerData = new ArrayList<ColonizerData>();
 	private List<FleetData> fleetData = new ArrayList<FleetData>();
 	private List<ColonyData> colonyData = new ArrayList<ColonyData>();
+	private List<AnimationData> animData = new ArrayList<AnimationData>();
 	private Map<Position, Integer> fleetSize = new HashMap<Position, Integer>();
 	private Map<Position, Integer> colonizerAmount = new HashMap<Position, Integer>();
 	private Position[][] paths = null;
@@ -111,15 +113,37 @@ public class SpriteMapData implements Serializable {
 					data.colonizerAmount.put(pos, world.getTerritory(pos).shipCount(ShipType.COLONIZER));
 				}
 				if (terr.hasFleet()) {
-					if (terr.getFleetsFlagships() != ShipType.COLONIZER) {
-						data.fleetData.add(new FleetData(pos, terr.controlledBy(), terr.getFleetsFlagships()));
+					if (FleetMove.isMoving()) {
+						for (Fleet fleet : terr.getFleets()) {
+							if (GameManager.INSTANCE.hasPath(fleet) && !terr.hasConflict()) {
+								Position[] steps = GameManager.INSTANCE.getPath(fleet);
+								data.animData.add(new AnimationData(pos, player, fleet.getFlagship(), FleetMove.stepTime(), steps));			
+							} else {
+								boolean changed = false;
+								for (FleetData fleetData : data.fleetData) {
+									if (fleetData.getPosition().equals(pos)) {
+										if (fleetData.getFlagships().compareTo(fleet.getFlagship()) < 0) {
+											fleetData.setFlagShip(fleet.getFlagship());
+											changed = true;
+										}
+									}
+								}
+								if (!changed && fleet.getFlagship() != ShipType.COLONIZER) {
+									data.fleetData.add(new FleetData(pos, player, fleet.getFlagship()));
+								}
+							}
+						}
+					} else {
+						if (terr.getFleetsFlagships() != ShipType.COLONIZER) {
+							data.fleetData.add(new FleetData(pos, terr.controlledBy(), terr.getFleetsFlagships()));
+						}
+						int size = 0;
+						for (Fleet fleet : terr.getFleets()) {
+							size += fleet.fleetSize();
+						}
+						size = size - world.getTerritory(pos).shipCount(ShipType.COLONIZER);
+						data.fleetSize.put(pos, size);
 					}
-					int size = 0;
-					for(Fleet fleet : world.getTerritory(pos).getFleets()) {
-						size += fleet.fleetSize();
-					}
-					size = size - world.getTerritory(pos).shipCount(ShipType.COLONIZER);
-					data.fleetSize.put(pos, size);
 				}
 			} else if (SpriteMapData.seen.get(player).contains(pos)) {
 				if (world.getTerritory(pos).hasPlanet()) {
@@ -161,7 +185,11 @@ public class SpriteMapData implements Serializable {
 	public List<ColonyData> getColonyData() {
 		return colonyData;
 	}
-
+	
+	public List<AnimationData> getAnimationData() {
+		return animData;
+	}
+	
 	public int getFleetSize(Position position) {
 		return fleetSize.get(position);
 	}
