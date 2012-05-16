@@ -1,25 +1,25 @@
 package riskyspace.model;
 
-import java.util.ArrayList;
+import static riskyspace.model.Resource.GAS;
+import static riskyspace.model.Resource.METAL;
+
+import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.services.EventText;
+import riskyspace.services.Event.EventTag;
 
-import static riskyspace.model.Resource.METAL;
-import static riskyspace.model.Resource.GAS;
-import static riskyspace.model.ShipType.*;
-
-public class PlayerStats {
+public class PlayerStats implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3246624526028664347L;
 	private Map<Resource, Integer> resources = null;
 	private Map<Resource, Integer> income = null;
-	
-	private Map<Position,LinkedList<QueueItem>> buildQueue = new HashMap<Position,LinkedList<QueueItem>>();
 	
 	private Supply supply = null;
 	
@@ -29,47 +29,115 @@ public class PlayerStats {
 		initIncome();
 	}
 	
+	/**
+	 * Sets starting resources to default value 150.
+	 */
 	private void initResources() {
 		resources = new HashMap<Resource, Integer>();
 		resources.put(METAL, 150);
 		resources.put(GAS, 0);
 	}
 	
+	/**
+	 * Sets the income for home planet to default value 50.
+	 */
 	private void initIncome() {
 		income = new HashMap<Resource, Integer>();
 		income.put(METAL, 50);
 		income.put(GAS, 0);
 	}
-	/*
-	 * NEW/YOUR TURN LISTENER: Changes income to relevant numbers and
-	 * increases resources.
-	 */
-
+	
 	/**
-	 * If there is enough resources then use them and return true, else return false.
-	 * @param resource The kind of resource needed
-	 * @param amount How much of the resource needed
-	 * @return true if the purchase was possible
+	 * Subtracts the cost of the BuildAble from Player's resources.
+	 * @param buildAble - the BuildAble object you want to buy.
+	 * @return returns true if Player could afford to buy the BuildAble.
 	 */
-	public boolean useResource(Resource resource, int amount) {
-		if (resources.get(resource) >= amount) {
-			resources.put(resource, resources.get(resource) - amount);
-			Event evt = new Event(Event.EventTag.RESOURCES_CHANGED, new ImmutablePlayerStats(this));
-			EventBus.INSTANCE.publish(evt);
+	public boolean purchase(BuildAble buildAble) {
+		if (canAfford(buildAble)) {
+			resources.put(METAL, resources.get(METAL) - buildAble.getMetalCost());
+			resources.put(GAS, resources.get(GAS) - buildAble.getGasCost());
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	public void increaseResource(Resource res, int amount) {
-		resources.put(res, amount + resources.get(res));
+	/**
+	 * Subtracts the cost of the BuildAbles in the list from Player's resources.
+	 * @param buildAbles - the list of BuildAble objects you want to buy.
+	 * @return returns true if Player could afford all the items in the list.
+	 */
+	public boolean purchase(List<BuildAble> buildAbles) {
+		if (canAfford(buildAbles)) {
+			for (BuildAble buildAble : buildAbles) {
+				purchase(buildAble);
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	public void update(int numberOfColonies, int usedSupply) {
+	/**
+	 * Refunds the cost of a BuildAble object.
+	 * @param buildAble - the BuildAble whose cost you want refunded.
+	 */
+	public void refund(BuildAble buildAble) {
+		resources.put(METAL, resources.get(METAL) + buildAble.getMetalCost());
+		resources.put(GAS, resources.get(GAS) + buildAble.getGasCost());
+	}
+	
+	/**
+	 * Refunds the cost of all the BuildAble items in the list.
+	 * @param buildAbles - a list containing the BuildAbles whose cost you want refunded.
+	 */
+	public void refund(List<BuildAble> buildAbles) {
+		for (BuildAble buildAble : buildAbles) {
+			refund(buildAble);
+		}
+	}
+	
+	/**
+	 * Returns a boolean representing whether this Player can or can not afford a 
+	 * BuildAble.
+	 * @param buildAble The BuildAble to check.
+	 * @return true if the Player can afford the BuildAbles.
+	 */
+	public boolean canAfford(BuildAble buildAble) {
+		return hasEnoughResources(buildAble.getMetalCost(), buildAble.getGasCost()) && supply.hasEnough(buildAble.getSupplyCost());
+	}
+	
+	/**
+	 * Returns a boolean representing whether this Player can or can not afford a 
+	 * List of BuildAbles. 
+	 * @param buildAbles The BuildAbles to check.
+	 * @return true if the Player can afford the BuildAbles.
+	 */
+	public boolean canAfford(List<BuildAble> buildAbles) {
+		int metalCost = 0;
+		int gasCost = 0;
+		for (BuildAble ba : buildAbles) {
+			metalCost += ba.getMetalCost();
+			gasCost += ba.getGasCost();
+		}
+		return hasEnoughResources(metalCost, gasCost);
+	}
+	
+	/**
+	 * Updates the Player's supply based on ships, queued ships and number of colonies.
+	 * @param numberOfColonies - amount of colonies owned by the Player
+	 * @param usedSupply - the supply currently occupied by ships and queued ships
+	 */
+	public void update(int numberOfColonies, int usedSupply, int queuedSupply) {
 		supply.update(numberOfColonies, usedSupply);
+		supply.setQueuedSupply(queuedSupply);
 	}
 	
+	/**
+	 * Checks if the Player has enough free supply.
+	 * @param supplyIncrease - the amount of supply you plan to add
+	 * @return returns true if enough supply is available
+	 */
 	public boolean hasEnoughSupply(int supplyIncrease) {
 		return supply.hasEnough(supplyIncrease);
 	}
@@ -81,10 +149,6 @@ public class PlayerStats {
 	 */
 	public void setIncome(Resource res, int newIncome) {
 		income.put(res, newIncome);
-	}
-	
-	public int getIncome(Resource res) {
-		return income.get(res);
 	}
 	
 	/**
@@ -117,74 +181,6 @@ public class PlayerStats {
 	public void gainNewResources() {
 		resources.put(METAL, resources.get(METAL) + income.get(METAL));
 		resources.put(GAS, resources.get(GAS) + income.get(GAS));
-		Event evt = new Event(Event.EventTag.RESOURCES_CHANGED, new ImmutablePlayerStats(this));
-		EventBus.INSTANCE.publish(evt);
-	}
-	
-	public List<QueueItem> reduceBuildQueue() {
-		List<QueueItem> buildShips = new ArrayList<QueueItem>();
-		for (Position pos : buildQueue.keySet()) {
-			if (!buildQueue.get(pos).isEmpty()) {
-				if (buildQueue.get(pos).getFirst().getBuildTime() == 1) {
-					buildShips.add(buildQueue.get(pos).getFirst());
-					supply.setQueuedSupply(supply.getQueuedSupply() - buildQueue.get(pos).getFirst().getItem().getSupplyCost());
-					buildQueue.get(pos).removeFirst();
-				} else {
-					buildQueue.get(pos).getFirst().subtractBuildTime();
-				}
-			}
-		}
-		if (buildShips.size() >= 1) {
-			Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
-			EventBus.INSTANCE.publish(evt);
-		}
-		return buildShips;
-	}
-	
-	public void queueItem(BuildAble buildAble, Position position) {
-		if (!hasEnoughSupply(buildAble.getSupplyCost())) {
-			EventText et = new EventText("Not enough supply!", position);
-			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-			EventBus.INSTANCE.publish(event);
-			return;
-		}
-		if (!hasEnoughResources(buildAble.getMetalCost(), buildAble.getGasCost())) {
-			EventText et = new EventText("Not enough resources!", position);
-			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-			EventBus.INSTANCE.publish(event);
-			return;
-		}
-		useResource(Resource.METAL, buildAble.getMetalCost());
-		useResource(Resource.GAS, buildAble.getGasCost());
-		if (!buildQueue.containsKey(position)) {
-			buildQueue.put(position, new LinkedList<QueueItem>());
-		}
-		buildQueue.get(position).add(new QueueItem(buildAble, position, buildAble.getBuildTime()));
-		supply.setQueuedSupply(supply.getQueuedSupply() + buildAble.getSupplyCost());
-		Event evt = new Event(Event.EventTag.SUPPLY_CHANGED, getSupply());
-		EventBus.INSTANCE.publish(evt);
-		EventText et = new EventText(buildAble.toString().toLowerCase() + " added to build queue!", position);
-		evt = new Event(Event.EventTag.EVENT_TEXT, et);
-		EventBus.INSTANCE.publish(evt);
-	}
-	
-	public void resetQueue(Position pos) {
- 		if (buildQueue.containsKey(pos)) {
-			while (!buildQueue.get(pos).isEmpty()) {
-					BuildAble building = buildQueue.get(pos).getFirst().getItem();
-					supply.setQueuedSupply(supply.getQueuedSupply() - building.getSupplyCost());
-					useResource(Resource.METAL, - building.getMetalCost());
-					useResource(Resource.GAS, - building.getGasCost());
-					buildQueue.get(pos).removeFirst();
-			}
- 		}
-	}
-	
-	public void resetAll() {
-		Iterator<Position> iter = buildQueue.keySet().iterator();
-		while(iter.hasNext()){
-			resetQueue(iter.next());
-		}
 	}
 	
 	private boolean hasEnoughResources(int metalCost, int gasCost) {
@@ -211,6 +207,16 @@ public class PlayerStats {
 		return supply.clone();
 	}
 	
+	public PlayerStats getImmutableStats() {
+		PlayerStats ips = new ImmutablePlayerStats();
+		ips.resources.put(METAL, resources.get(METAL));
+		ips.resources.put(GAS, resources.get(GAS));
+		ips.income.put(METAL, income.get(METAL));
+		ips.income.put(GAS, income.get(GAS));
+		ips.supply = getSupply();
+		return ips;
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -219,9 +225,9 @@ public class PlayerStats {
 			return false;
 		} else {
 			PlayerStats otherPlayerStats = (PlayerStats) other;
-			return (resources.get(GAS) == otherPlayerStats.resources.get(GAS) && 
-					resources.get(METAL) == otherPlayerStats.resources.get(METAL) &&
-					supply.getUsed() == otherPlayerStats.supply.getUsed());
+			return (resources.get(GAS) == otherPlayerStats.getResource(GAS) && 
+					resources.get(METAL) == otherPlayerStats.getResource(METAL) &&
+					supply.getUsed() == otherPlayerStats.getSupply().getUsed());
 		}
 	}
 	

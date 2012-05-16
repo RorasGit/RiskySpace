@@ -1,13 +1,18 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 
-public class Territory {
+public class Territory implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5304788297620351928L;
 	private List<Fleet> fleets = null;
 	private Planet planet = null;
 	
@@ -29,28 +34,28 @@ public class Territory {
 	
 	public void addFleet(Fleet fleet){
 		this.fleets.add(fleet);
-		Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
-		EventBus.INSTANCE.publish(evt);
+		Event evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	public void addFleets(List<Fleet> fleets) {
 		for (int i = 0; i < fleets.size(); i++) {
 			this.fleets.add(fleets.get(i));
 		}
-		Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
-		EventBus.INSTANCE.publish(evt);
+		Event evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	public void removeFleet(Fleet fleet){
 		this.fleets.remove(fleet);
-		Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
-		EventBus.INSTANCE.publish(evt);
+		Event evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		EventBus.SERVER.publish(evt);
 	}
 
 	public void removeFleets(List<Fleet> destroyedFleets) {
 		fleets.removeAll(destroyedFleets);
-		Event evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
-		EventBus.INSTANCE.publish(evt);
+		Event evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	/**

@@ -3,6 +3,7 @@ package riskyspace.logic;
 import java.util.Map;
 import java.util.Set;
 
+import riskyspace.GameManager;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
@@ -45,7 +46,7 @@ public class FleetMove {
 					} catch (InterruptedException e) {}
 				}
 				moving = false;
-				EventBus.INSTANCE.publish(new Event(Event.EventTag.MOVES_COMPLETE, null));
+				GameManager.INSTANCE.handleEvent(new Event(Event.EventTag.MOVES_COMPLETE, null), null);
 			}
 		};
 		mover = new Thread(runner);

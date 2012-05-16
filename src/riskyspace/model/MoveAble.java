@@ -1,6 +1,8 @@
 package riskyspace.model;
 
-public interface MoveAble {
+import java.io.Serializable;
+
+public interface MoveAble extends Serializable {
 	/**
 	 * Check if this MoveAble has energy left to use
 	 * @return true if this MoveAble has at least 1 energy left.

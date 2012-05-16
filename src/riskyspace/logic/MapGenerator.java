@@ -50,6 +50,14 @@ public class MapGenerator {
 		Position pos = new Position(3 + ((int) (Math.random() * 2)),3 + ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.RED);
+		// Level 2 Mine
+		territories.get(pos).getPlanet().getColony().getMine().upgrade();
+		
+		// Level 2 Turret
+		territories.get(pos).getPlanet().getColony().getTurret().upgrade();
+		
+		// Level 1 Hangar
+		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
 		addStartingFleets(territories.get(pos));
 		//Player 1:s closest planets
 		territories.get(new Position(pos.getRow()+2,pos.getCol()-1)).setPlanet(Resource.METAL);
@@ -59,6 +67,17 @@ public class MapGenerator {
 		pos = new Position((rows - 3) + ((int) (Math.random() * 2)), (cols - 3) + ((int) (Math.random() * 2)));
 		territories.get(pos).setPlanet(Resource.METAL);
 		territories.get(pos).getPlanet().buildColony(Player.BLUE);
+		// Level 2 Mine
+		territories.get(pos).getPlanet().getColony().getMine().upgrade();
+		
+		// Level 2 Turret
+		territories.get(pos).getPlanet().getColony().getTurret().upgrade();
+		
+		// Level 3 Hangar (for colonizer TODO: Colonizer only from homeplanet)
+		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
+		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
+		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
+		
 		addStartingFleets(territories.get(pos));
 		//Player 2:s closest planets
 		territories.get(new Position(pos.getRow()-2,pos.getCol()+1)).setPlanet(Resource.METAL);

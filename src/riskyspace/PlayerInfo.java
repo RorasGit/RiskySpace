@@ -1,33 +1,18 @@
 package riskyspace;
 
-import java.awt.Color;
-
-import riskyspace.model.Player;
+import java.net.InetAddress;
 
 public class PlayerInfo {
 	
-	private String ip = "127.0.0.1";
-	private Color playerColor;
+	private InetAddress ip = null;
 	
-	public PlayerInfo(Player player) {
-		if (player == Player.BLUE) {
-			playerColor = Color.BLUE;
-		} else if (player == Player.RED) {
-			playerColor = Color.RED;
-		} else {
-			playerColor = Color.GRAY;
-		}
-	}
+	public PlayerInfo() {}
 	
-	public Color getColor() {
-		return playerColor;
-	}
-
-	public void setIP(String ip) {
+	public void setIP(InetAddress ip) {
 		this.ip = ip;
 	}
 	
-	public String getIP() {
+	public InetAddress getIP() {
 		return ip;
 	}
 }

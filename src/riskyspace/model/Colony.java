@@ -1,76 +1,81 @@
 package riskyspace.model;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-import riskyspace.services.Event;
-import riskyspace.services.EventBus;
+import riskyspace.model.building.Hangar;
+import riskyspace.model.building.Mine;
+import riskyspace.model.building.Radar;
+import riskyspace.model.building.Turret;
 
-public class Colony implements BattleAble {
+public class Colony implements BattleAble, Sight, Serializable{
 	
-	private Player owner = null;
-	private int income = 0;
-	private String colonyName = null;
-	/*
-	 * Turret stats will be kept in a seperate class later.
+	/**
+	 * 
 	 */
-	private int damage = 0;
-	private int shield = 0;
-	private int variation = 0;
+	private static final long serialVersionUID = -6914731084464404944L;
+	private Player owner = null;
+	private String colonyName = null;
+	private Resource resource = null;
+	
+	private Mine mine = null;
+	private Radar radar = null;
+	private Turret turret = null;
+	private Hangar hangar = null;
 	
 	public Colony (Resource resource, Player owner) {
 		this.owner = owner;
-		if (resource == Resource.METAL) {
-			income = 40;
-		} else {
-			income = 20;
-		}
-		constructTurret();
-		/*
-		 * Test name setter (Semi-Random the names later)
-		 */
-		if (owner == Player.BLUE) {
-			colonyName = "Atlantis";
-		} else {
-			colonyName = "Gargaloo";
-		}
+		this.resource = resource;
+		colonyName = ColonyNames.getName(owner);
+		mine = new Mine(resource);
+		radar = new Radar();
+		turret = new Turret();
+		hangar = new Hangar();
 	}
 	
-	public void constructTurret() {
-		this.damage = 5;
-		this.shield = 30;
-		this.variation = 1;
+	public Mine getMine() {
+		return mine;
 	}
 	
+	public Turret getTurret() {
+		return turret;
+	}
+	
+	public Radar getRadar() {
+		return radar;
+	}
+	
+	public Hangar getHangar() {
+		return hangar;
+	}
+		
 	public int getIncome() {
-		return income;
+		return mine.mine();
 	}
-
-	@Override
-	public boolean takeDamage(int damage) {
-		shield -= damage;
-		return shield <= 0;
-	}
-
-	@Override
-	public List<Integer> getAttacks() {
-		List<Integer> damage = new ArrayList<Integer>();
-		damage.add(this.damage + (int) (Math.random()*(variation+1)));
-		return damage;
-	}
-
+	
 	public Player getOwner() {
 		return owner;
-	}
-	
-	public void resetShield() {
-		shield = 30;
 	}
 	
 	public String getName() {
 		return colonyName;
 	}
-	
+
+	@Override
+	public boolean takeDamage(int damage) {
+		return turret.takeDamage(damage);
+	}
+
+	@Override
+	public List<Integer> getAttacks() {
+		return turret.getAttacks();
+	}
+
+	@Override
+	public int getSightRange() {
+		return radar.getSightRange();
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -79,17 +84,22 @@ public class Colony implements BattleAble {
 			return false;
 		} else {
 			Colony otherColony = (Colony) other;
-			return (this.income == otherColony.income && this.owner == otherColony.owner);
+			return this.owner == otherColony.owner && this.colonyName.equals(otherColony.colonyName)
+					&& this.resource == otherColony.resource;
 		}
 	}
 	
 	@Override
 	public String toString() {
-		return "Colony [" + owner + ", " + income + "]";
+		return "Colony [" + owner 
+				+ ", " + mine + "]" 
+				+ ", " + turret + "]" 
+				+ ", " + radar + "]" 
+				+ ", " + hangar + "]" + "]";
 	}
 	
 	@Override
 	public int hashCode() {
-		return income*13;
+		return owner.hashCode()*13 + colonyName.hashCode()*7 + resource.hashCode()*17;
 	}
 }

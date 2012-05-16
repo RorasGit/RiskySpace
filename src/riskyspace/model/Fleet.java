@@ -1,12 +1,17 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class Fleet implements MoveAble {
+public class Fleet implements MoveAble, Sight, Serializable  {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5624695760395662299L;
 	private ShipType flagship = null;
 	private Player owner = null;
 	private List<Ship> ships = new ArrayList<Ship>();
@@ -234,5 +239,14 @@ public class Fleet implements MoveAble {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int getSightRange() {
+		int sight = 0;
+		for (Ship ship : ships) {
+			sight = Math.max(sight, ship.getType().getSightRange());
+		}
+		return sight;
 	}
 }

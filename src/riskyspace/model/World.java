@@ -1,17 +1,22 @@
 package riskyspace.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import riskyspace.logic.MapGenerator;
+import riskyspace.model.building.Ranked;
+import riskyspace.services.Event;
+import riskyspace.services.EventBus;
 
-public class World {
+public class World implements Serializable {
 	private int rows = 0;
 	private int cols = 0;
 	private Map<Position, Territory> territories = null;
 	private Map<Player, PlayerStats> playerstats = null;
+	private Map<Player, BuildQueue> buildqueue = null;
 
 	public World(int rows, int cols) {
 		this.rows = rows;
@@ -32,6 +37,11 @@ public class World {
 		 */
 		playerstats.put(Player.BLUE, new PlayerStats());
 		playerstats.put(Player.RED, new PlayerStats());
+		
+		buildqueue = new HashMap<Player, BuildQueue>();
+		
+		buildqueue.put(Player.BLUE, new BuildQueue(5));
+		buildqueue.put(Player.RED, new BuildQueue(5));
 	}
 
 	public Territory getTerritory(Position p) {
@@ -53,6 +63,16 @@ public class World {
 		}
 		return hasContent;
 	}
+	public Map<Colony, List<BuildAble>> getBuildQueue(Player player){
+		Map <Position, List<BuildAble>> buildQueue = buildqueue.get(player).peek();
+		Map <Colony, List<BuildAble>> returnedBuildQueue = new HashMap<Colony, List<BuildAble>>();
+		for (Position pos : buildQueue.keySet()) {
+			returnedBuildQueue.put(this.territories.get(pos).getColony(), buildQueue.get(pos));
+		}
+		
+		return returnedBuildQueue;
+		
+	}
 	
 	public void resetShips() {
 		for (Position pos : getContentPositions()) {
@@ -62,28 +82,56 @@ public class World {
 		}
 	}
 	
-	public void addToBuildQueue(BuildAble buildAble, Player player, Position position) {
-		playerstats.get(player).queueItem(buildAble, position);
+	public boolean addToBuildQueue(BuildAble buildAble, Player player, Position position) {
+		boolean added = buildqueue.get(player).add(buildAble, position);
+		updatePlayerStats(player);
+		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
+		return added;
 	}
+	
+	/**
+	 * Removes all BuildAbles from one position and refunds the Resources used
+	 * @param player The owner of the queue to remove from
+	 * @param position The position to remove
+	 */
 	public void removeBuildQueue(Player player, Position position){
-		playerstats.get(player).resetQueue(position);	
+		List<BuildAble> items = buildqueue.get(player).clear(position);	
+		playerstats.get(player).refund(items);
+		updatePlayerStats(player);
+		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	public void processBuildQueue(Player player) {
-		List<QueueItem> itemsToBuild = playerstats.get(player).reduceBuildQueue();
-		for (QueueItem q : itemsToBuild) {
-			if (q.getItem() instanceof ShipType) {
-				getTerritory(q.getPosition()).addFleet(new Fleet(new Ship((ShipType) q.getItem()), getTerritory(q.getPosition()).getColony().getOwner()));
+		if (playerstats.get(player).getSupply().fieldSupply() + buildqueue.get(player).queuedSupply(true) > playerstats.get(player).getSupply().getMax()) {
+			buildqueue.get(player).clearSupply(true);
+		}
+		Map<Position, BuildAble> itemsToBuild = buildqueue.get(player).processQueue();
+		for (Position pos : itemsToBuild.keySet()) {
+			if (itemsToBuild.get(pos) instanceof ShipType) {
+				getTerritory(pos).addFleet(new Fleet(new Ship((ShipType) itemsToBuild.get(pos)), player));
+			} else if (itemsToBuild.get(pos) instanceof Ranked) {
+				System.out.println("ranked: " + itemsToBuild.get(pos));
+				System.out.println("before: " + ((Ranked) itemsToBuild.get(pos)).getRank() + "/" + ((Ranked) itemsToBuild.get(pos)).getMaxRank());
+				((Ranked) itemsToBuild.get(pos)).upgrade();
+				System.out.println("after: " +((Ranked) itemsToBuild.get(pos)).getRank() + "/" + ((Ranked) itemsToBuild.get(pos)).getMaxRank());
 			}
 		}
-	}
-	
-	public void resetBuildQueue(Player player, Position pos) {
-		playerstats.get(player).resetQueue(pos);
+		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	public void resetAllQueues(Player player) {
-		playerstats.get(player).resetAll();
+		List<BuildAble> deletedItems = buildqueue.get(player).clearAll();
+		playerstats.get(player).refund(deletedItems);
+		updatePlayerStats(player);
+		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	public List<Position> getContentPositions(){
@@ -94,16 +142,29 @@ public class World {
 		return cols;
 	}
 	
+	public PlayerStats getStats(Player player) {
+		return playerstats.get(player).getImmutableStats();
+	}
+	
 	public void giveIncome(Player player) {
 		playerstats.get(player).gainNewResources();
+		Event evt = new Event(Event.EventTag.STATS_CHANGED, getStats(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
-	public int getResources(Player player, Resource resource) {
-		return playerstats.get(player).getResource(resource);
+	public boolean purchase(Player player, BuildAble buildAble) {
+		if( playerstats.get(player).purchase(buildAble)){
+			Event evt = new Event(Event.EventTag.STATS_CHANGED, getStats(player));
+			evt.setPlayer(player);
+			EventBus.SERVER.publish(evt);
+			return true;
+		}
+		return false;
 	}
 	
-	public boolean useResource(Player player, Resource type, int amount) {
-		return playerstats.get(player).useResource(type, amount);
+	public boolean canAfford(Player currentPlayer, BuildAble buildAble) {
+		return playerstats.get(currentPlayer).canAfford(buildAble);
 	}
 	
 	public void setIncome(Player player, Resource type, int amount) {
@@ -125,11 +186,10 @@ public class World {
 				}
 			}
 		}
-		playerstats.get(player).update(numberOfColonies, supply);
-	}
-	
-	public Supply getSupply(Player player) {
-		return playerstats.get(player).getSupply();
+		playerstats.get(player).update(numberOfColonies, supply, buildqueue.get(player).queuedSupply(false));
+		Event evt = new Event(Event.EventTag.STATS_CHANGED, getStats(player));
+		evt.setPlayer(player);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	@Override
@@ -153,5 +213,4 @@ public class World {
 	public int hashCode() {
 		return rows * 17 + cols * 23;
 	}
-
 }

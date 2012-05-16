@@ -1,6 +1,8 @@
 package riskyspace.model;
 
-public enum Resource {
+import java.io.Serializable;
+
+public enum Resource implements Serializable {
 	METAL,
 	GAS;
 }

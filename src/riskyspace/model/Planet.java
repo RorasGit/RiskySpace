@@ -1,9 +1,17 @@
 package riskyspace.model;
 
+import java.io.Serializable;
+
+import riskyspace.GameManager;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 
-public class Planet {
+public class Planet implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1929426414384910072L;
 
 	/**
 	 * This Planets Resource type
@@ -42,9 +50,9 @@ public class Planet {
 	public void buildColony(Player owner) {
 		colony = new Colony(type, owner);
 		Event evt = new Event(Event.EventTag.INCOME_CHANGED, owner);
-		EventBus.INSTANCE.publish(evt);
-		evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
-		EventBus.INSTANCE.publish(evt);
+		GameManager.INSTANCE.handleEvent(evt, owner);
+		evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		EventBus.SERVER.publish(evt);
 	}
 	
 	/**
@@ -54,11 +62,10 @@ public class Planet {
 		Player owner = colony.getOwner();
 		colony = null;
 		Event evt = new Event(Event.EventTag.INCOME_CHANGED, owner);
-		EventBus.INSTANCE.publish(evt);
-		evt = new Event(Event.EventTag.TERRITORY_CHANGED, null);
-		EventBus.INSTANCE.publish(evt);
+		GameManager.INSTANCE.handleEvent(evt, owner);
+		evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		EventBus.SERVER.publish(evt);
 	}
-	
 	public boolean hasColony() {
 		return colony != null;
 	}

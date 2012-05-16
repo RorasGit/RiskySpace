@@ -1,10 +1,17 @@
 package riskyspace.logic;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import riskyspace.model.Position;
 
-public class Path {
+public class Path implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -489479371459853926L;
+	
 	private LinkedList<Position> path = null;
 	private Position current = null;
 	

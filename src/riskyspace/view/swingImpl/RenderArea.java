@@ -20,27 +20,31 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import riskyspace.GameManager;
+import riskyspace.PlayerColors;
+import riskyspace.logic.SpriteMapData;
+import riskyspace.model.BuildAble;
+import riskyspace.model.Colony;
+import riskyspace.model.Fleet;
 import riskyspace.model.Player;
+import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
-import riskyspace.model.World;
+import riskyspace.model.Territory;
 import riskyspace.services.Event;
-import riskyspace.services.Event.EventTag;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.services.EventText;
+import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 import riskyspace.view.SpriteMap;
+import riskyspace.view.ViewResources;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
-import riskyspace.view.menu.IMenu;
 import riskyspace.view.menu.swingImpl.ColonyMenu;
 import riskyspace.view.menu.swingImpl.FleetMenu;
 import riskyspace.view.menu.swingImpl.PlanetMenu;
-import riskyspace.view.menu.swingImpl.RecruitMenu;
 import riskyspace.view.menu.swingImpl.TopMenu;
 
-public class RenderArea extends JPanel implements EventHandler {
+public class RenderArea extends JPanel {
 
 	private static final long serialVersionUID = 8209691542499926289L;
 	
@@ -64,13 +68,12 @@ public class RenderArea extends JPanel implements EventHandler {
 	private CameraController cc = null;
 	
 	/*
-	 * Side menu settings
+	 * Menu settings
 	 */
-	private IMenu colonyMenu = null;
-	private IMenu recruitMenu = null;
-	private IMenu fleetMenu = null;
-	private IMenu topMenu = null;
-	private IMenu planetMenu = null;
+	private ColonyMenu colonyMenu = null;
+	private FleetMenu fleetMenu = null;
+	private PlanetMenu planetMenu = null;
+	private TopMenu topMenu = null;
 	
 	/*
 	 * Screen measures
@@ -94,19 +97,28 @@ public class RenderArea extends JPanel implements EventHandler {
 	
 	private int rows, cols;
 	
-	
 	/*
 	 * FPS printout
 	 */
 	private int times = 0;
 	private Timer fpsTimer = null;
 	private String fps = "";
-	
+	private Font fpsFont = null;
+
+	/*
+	 * The player viewing this renderArea right now
+	 */
+	private Player viewer = null;
+
+	/*
+	 * The Player currently playing
+	 */
+	private Button otherPlayerActive = null;
+
 	public RenderArea(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
 		measureScreen();
-		SpriteMap.init(squareSize);
 		createBackground();
 		initCameras();
 		createMenues();
@@ -117,18 +129,20 @@ public class RenderArea extends JPanel implements EventHandler {
 			}		
 		});
 		eventTextPrinter = new EventTextPrinter();
-		EventBus.INSTANCE.addHandler(this);
 		clickHandler = new ClickHandler();
+		fpsFont = ViewResources.getFont().deriveFont(17f);
+		otherPlayerActive = new Button(width/2 - width/10, height/2 - height/10, width/5, height/10);
+		otherPlayerActive.setImage("res/menu/wide_button.png");
+		otherPlayerActive.setEnabled(false);
 		addMouseListener(clickHandler);
 	}
 
 	private void createMenues() {
 		int menuWidth = height / 3;
 		colonyMenu = new ColonyMenu(width - menuWidth, 80, menuWidth, height-80);
-		recruitMenu = new RecruitMenu(width - menuWidth, 80, menuWidth, height-80);
 		fleetMenu = new FleetMenu(width - menuWidth, 80, menuWidth, height-80);
 		planetMenu = new PlanetMenu(width - menuWidth, 80, menuWidth, height-80);
-		topMenu = new TopMenu(0, 0, width, height);
+		topMenu = new TopMenu(0, 0, width, 80);
 	}
 	
 	private void createBackground() {
@@ -173,15 +187,11 @@ public class RenderArea extends JPanel implements EventHandler {
 	
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
-		/*
-		 * TODO: Cameras only support 2 players
-		 */
 		cameras.put(Player.BLUE, new Camera(0.93f,0.92f));
 		cameras.put(Player.RED, new Camera(0.07f,0.08f));
-		currentCamera = cameras.get(Player.BLUE);
+		cameras.put(Player.GREEN, new Camera(0.07f,0.92f));
+		cameras.put(Player.PINK, new Camera(0.93f,0.08f));
 		cc = new CameraController();
-		cc.setCamera(currentCamera);
-		cc.start();
 	}
 	
 	/*
@@ -193,10 +203,20 @@ public class RenderArea extends JPanel implements EventHandler {
 		squareSize = Math.min(width/6,height/6);
 	}
 	
-	public void setPlayer(Player player) {
-		spriteMap = SpriteMap.getSprites(player);
+	public void setViewer(Player player) {
+		this.viewer = player;
 		currentCamera = cameras.get(player);
 		cc.setCamera(currentCamera);
+		if (!cc.isAlive()) {
+			cc.start();
+		}
+	}
+	
+	public void setActivePlayer(Player activePlayer) {
+		String player = activePlayer.toString().substring(0, 1)+ activePlayer.toString().substring(1, activePlayer.toString().length());
+		otherPlayerActive.setText(player + "'s turn");
+		otherPlayerActive.setTextColor(PlayerColors.getColor(activePlayer));
+		otherPlayerActive.setEnabled(viewer != activePlayer);
 	}
 	
 	public int translatePixelsX() {
@@ -208,7 +228,7 @@ public class RenderArea extends JPanel implements EventHandler {
 	}
 
 
-	public void paintComponent(Graphics g) {
+	public void paintComponent(Graphics graphics) {
 		if (!fpsTimer.isRunning()) {
 			fpsTimer.start();
 		}
@@ -218,39 +238,31 @@ public class RenderArea extends JPanel implements EventHandler {
 		 */
 		int xTrans = -translatePixelsX();
 		int yTrans = -translatePixelsY();
-		g.translate(xTrans, yTrans);
+		graphics.translate(xTrans, yTrans);
 		
 		// Draw background
-		g.drawImage(background, 0, 0, null);
+		graphics.drawImage(background, 0, 0, null);
 		
-		spriteMap.draw(g, squareSize, EXTRA_SPACE_HORIZONTAL, EXTRA_SPACE_VERTICAL);
+		spriteMap.draw(graphics, squareSize, EXTRA_SPACE_HORIZONTAL, EXTRA_SPACE_VERTICAL);
 		
 		// Draw texts
-		eventTextPrinter.drawEventText(g);
+		eventTextPrinter.drawEventText(graphics);
 		
-		drawSelectionArea(g, xTrans, yTrans);
+		drawSelectionArea(graphics, xTrans, yTrans);
 		
 		// Draw menu
-		g.translate(-xTrans, -yTrans);
+		graphics.translate(-xTrans, -yTrans);
 		
-		/*
-		 * TODO: Do not check isVisible, the menus should handle that part
-		 */
-		if (colonyMenu.isVisible()) {
-			colonyMenu.draw(g);
-		}
-		if (recruitMenu.isVisible()) {
-			recruitMenu.draw(g);
-		}
-		if (fleetMenu.isVisible()) {
-			fleetMenu.draw(g);
-		}
-		if (planetMenu.isVisible()) {
-			planetMenu.draw(g);
-		}
-		topMenu.draw(g);
-		g.setColor(Color.GREEN);
-		g.drawString(fps, 20, 100);
+		colonyMenu.draw(graphics);
+		fleetMenu.draw(graphics);
+		planetMenu.draw(graphics);
+		topMenu.draw(graphics);
+		
+		otherPlayerActive.draw(graphics);
+		
+		graphics.setColor(ViewResources.WHITE);
+		graphics.setFont(fpsFont);
+		graphics.drawString(fps, 10, 110);
 	}
 	
 	private void drawSelectionArea(Graphics g, int xTrans, int yTrans) {
@@ -284,15 +296,50 @@ public class RenderArea extends JPanel implements EventHandler {
 		boolean colLegal = pos.getCol() >= 1 && pos.getCol() <= cols;
 		return rowLegal && colLegal;
 	}
+	
+	public void updateData(SpriteMapData data) {
+		spriteMap = SpriteMap.getSprites(data, squareSize);
+	}
 
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
-			setPlayer((Player) evt.getObjectValue());
+	public void setStats(PlayerStats stats) {
+		topMenu.setStats(stats);
+		colonyMenu.setStats(stats);
+	}
+	
+	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
+		colonyMenu.setQueues(colonyQueues);
+		/*
+		 * Set for BuildQueueMenu
+		 */
+	}
+	
+	public void showTerritory(Territory selection) {
+		hideSideMenus();
+		planetMenu.setTerritory(selection);
+		planetMenu.setVisible(true);
+	}
+
+	public void showColony(Colony selection) {
+		if (selection.equals(colonyMenu.getColony()) && colonyMenu.isVisible()) {
+			// Update colony
+			colonyMenu.setColony(selection);
+		} else {
+			hideSideMenus();
+			colonyMenu.setColony(selection);
+			colonyMenu.setVisible(true);
 		}
-		if (evt.getTag() == EventTag.TERRITORY_CHANGED || evt.getTag() == EventTag.PATHS_UPDATED) {
-			spriteMap = SpriteMap.getSprites(GameManager.INSTANCE.getCurrentPlayer());
-		}
+	}
+
+	public void showFleet(Fleet selection) {
+		hideSideMenus();
+		fleetMenu.setFleet(selection);
+		fleetMenu.setVisible(true);
+	}
+	
+	public void hideSideMenus() {
+		colonyMenu.setVisible(false);
+		fleetMenu.setVisible(false);
+		planetMenu.setVisible(false);
 	}
 	
 	private class ClickHandler implements MouseListener {
@@ -302,33 +349,20 @@ public class RenderArea extends JPanel implements EventHandler {
 		 * Click handling for different parts
 		 */
 		public boolean menuClick(Point point) {
+			boolean clicked = false;
 			if (topMenu instanceof Clickable) {
-				if (((Clickable) topMenu).mousePressed(point)) {
-					return true;
-				}
+				clicked = clicked || ((Clickable) topMenu).mousePressed(point);
 			}
-			if (colonyMenu.isVisible()) {
-				if (colonyMenu instanceof Clickable) {
-					return ((Clickable) colonyMenu).mousePressed(point);
-				}
+			if (colonyMenu instanceof Clickable) {
+				clicked = clicked || ((Clickable) colonyMenu).mousePressed(point);
 			}
-			if (recruitMenu.isVisible()) {
-				if (recruitMenu instanceof Clickable) {
-					return ((Clickable) recruitMenu).mousePressed(point);
-				}
+			if (fleetMenu instanceof Clickable) {
+				clicked = clicked || ((Clickable) fleetMenu).mousePressed(point);
 			}
-			if (fleetMenu.isVisible()) {
-				if (fleetMenu instanceof Clickable) {
-					return ((Clickable) fleetMenu).mousePressed(point);
-				}
+			if (planetMenu instanceof Clickable) {
+				clicked = clicked || ((Clickable) planetMenu).mousePressed(point);
 			}
-			if (planetMenu.isVisible()) {
-				if (planetMenu instanceof Clickable) {
-					return ((Clickable) planetMenu).mousePressed(point);
-				}
-			}
-			
-			return false;
+			return clicked;
 		}
 
 		public boolean colonizerClick(Point point) {
@@ -338,7 +372,7 @@ public class RenderArea extends JPanel implements EventHandler {
 				int dY = (point.y + translatePixelsY()) % squareSize;
 				if (dX > squareSize/2 && dY > squareSize/2) {
 					Event evt = new Event(Event.EventTag.COLONIZER_SELECTED, pos);
-					EventBus.INSTANCE.publish(evt);
+					EventBus.CLIENT.publish(evt);
 					return true;
 				}
 			}
@@ -354,10 +388,10 @@ public class RenderArea extends JPanel implements EventHandler {
 				if (dX <= squareSize/2 && dY >= squareSize/2) {
 					if (me.isShiftDown()) {
 						Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
-						EventBus.INSTANCE.publish(evt);
+						EventBus.CLIENT.publish(evt);
 					} else {
 						Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, pos);
-						EventBus.INSTANCE.publish(evt);
+						EventBus.CLIENT.publish(evt);
 					}
 					return true;
 				}
@@ -369,7 +403,7 @@ public class RenderArea extends JPanel implements EventHandler {
 			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				Event evt = new Event(Event.EventTag.PLANET_SELECTED, pos);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 				return true;
 			}
 			return false;
@@ -379,7 +413,7 @@ public class RenderArea extends JPanel implements EventHandler {
 			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				Event evt = new Event(Event.EventTag.SET_PATH, pos);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 				return true;
 			}
 			return false;
@@ -392,12 +426,6 @@ public class RenderArea extends JPanel implements EventHandler {
 				pressedPoint.y += translatePixelsY();
 			} else if (me.getButton() == MouseEvent.BUTTON3) {
 				if (pathClick(me.getPoint())) {return;}
-				else {
-					/*
-					 * Click was not in any trigger zone. Call deselect.
-					 */
-					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
-				}
 			}
 		}
 		@Override public void mouseClicked(MouseEvent me) {
@@ -413,7 +441,8 @@ public class RenderArea extends JPanel implements EventHandler {
 					/*
 					 * Click was not in any trigger zone. Call deselect.
 					 */
-					EventBus.INSTANCE.publish(new Event(Event.EventTag.DESELECT, null));
+					EventBus.CLIENT.publish(new Event(Event.EventTag.DESELECT, null));
+					hideSideMenus();
 				}
 			}
 		}
@@ -457,10 +486,11 @@ public class RenderArea extends JPanel implements EventHandler {
 				}
 				if (!selectPos.isEmpty()) {
 					Event evt = new Event(Event.EventTag.NEW_FLEET_SELECTION, selectPos);
-					EventBus.INSTANCE.publish(evt);
+					EventBus.CLIENT.publish(evt);
 				} else {
 					Event evt = new Event(Event.EventTag.DESELECT, null);
-					EventBus.INSTANCE.publish(evt);
+					EventBus.CLIENT.publish(evt);
+					hideSideMenus();
 				}
 				pressedPoint = null;
 			}
@@ -472,7 +502,10 @@ public class RenderArea extends JPanel implements EventHandler {
 		final List<EventText> texts = new ArrayList<EventText>();
 		
 		public EventTextPrinter() {
-			EventBus.INSTANCE.addHandler(this);
+			/*
+			 * TODO:
+			 * What Bus should be used if any?
+			 */
 		}
 		
 		@Override

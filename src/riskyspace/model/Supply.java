@@ -1,6 +1,12 @@
 package riskyspace.model;
 
-public class Supply {
+import java.io.Serializable;
+
+public class Supply implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1183574126628825765L;
 	private int baseSupply;
 	private int usedSupply;
 	private int maxSupply;
@@ -14,8 +20,20 @@ public class Supply {
 		this.baseSupply = baseSupply;
 	}
 	
+	/**
+	 * Returns the amount of supply used by fleets and queue.
+	 * @return Total supply in use.
+	 */
 	public int getUsed() {
 		return usedSupply + queuedSupply;
+	}
+	
+	/**
+	 * Returns the amount of supply used by fleets.
+	 * @return supply on the field
+	 */
+	public int fieldSupply() {
+		return usedSupply;
 	}
 	
 	public int getMax() {

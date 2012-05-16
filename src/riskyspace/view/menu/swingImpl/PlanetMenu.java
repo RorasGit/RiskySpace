@@ -5,12 +5,10 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
-import riskyspace.GameManager;
-import riskyspace.model.Player;
-import riskyspace.model.Position;
+import riskyspace.model.Fleet;
+import riskyspace.model.Planet;
 import riskyspace.model.Resource;
 import riskyspace.model.Territory;
-import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
@@ -25,8 +23,6 @@ public class PlanetMenu extends AbstractSideMenu{
 	private Image planetPicture = null;
 	private Image metalPlanetPicture = null;
 	private Image gasPlanetPicture = null;
-	
-	private Territory planetTer = null;
 	
 	private Button colonizeButton;
 	
@@ -43,21 +39,24 @@ public class PlanetMenu extends AbstractSideMenu{
 		colonizeButton.setAction(new Action(){
 			@Override
 			public void performAction() {
-				Event evt = new Event(Event.EventTag.COLONIZE_PLANET, planetTer);
-				EventBus.INSTANCE.publish(evt);
+				Event evt = new Event(Event.EventTag.COLONIZE_PLANET, null);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
-		EventBus.INSTANCE.addHandler(this);
 	}
 	
-	public void setPlanet(Territory ter) {
-		setPlayer(Player.WORLD);
-		planetTer = ter;
-		planetPicture = ter.getPlanet().getType() == Resource.METAL? metalPlanetPicture : gasPlanetPicture;
+	public void setTerritory(Territory selection) {
+		planetPicture = selection.getPlanet().getType() == Resource.METAL? metalPlanetPicture : gasPlanetPicture;
 		colonizeButton.setImage("res/menu/world/colonizeButton" + View.res);
 		colonizeButton.setEnabled(false);
+		for (Fleet fleet : selection.getFleets()) {
+			if (fleet.hasColonizer()) {
+				colonizeButton.setEnabled(true);
+				break;
+			}
+		}
 	}
-
+	
 	@Override
 	public boolean mousePressed(Point p) {
 		/*
@@ -89,27 +88,13 @@ public class PlanetMenu extends AbstractSideMenu{
 	
 	@Override
 	public void draw(Graphics g) {
-		super.draw(g);
 		/*
 		 * Only draw if enabled
 		 */
 		if (isVisible()) {
+			super.draw(g);
 			g.drawImage(planetPicture, getX() + margin, getY() + margin + 15,null);
 			colonizeButton.draw(g);
 		}
 	}
-	
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.SHOW_PLANETMENU) {
-			setPlanet((Territory)evt.getObjectValue());
-			setVisible(true);
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU) {
-			setVisible(false);
-		}
-		if (evt.getTag() == Event.EventTag.COLONIZER_PRESENT) {
-			colonizeButton.setEnabled(true);
-		}
-	}
-
 }

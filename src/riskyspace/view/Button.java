@@ -17,6 +17,7 @@ public class Button implements Clickable {
 	private Image scaledDisabledImage = null;
 	private Action action = null;
 	private String text = null;
+	private Color textColor = null;
 	private Boolean enabled = true;
 	
 	public Button(int x, int y, int width, int height) {
@@ -35,7 +36,6 @@ public class Button implements Clickable {
 		if (location.endsWith(View.res)) {
 			location = location.substring(0, location.indexOf(View.res));
 		}
-		System.out.println(location);
 		disabledImage = Toolkit.getDefaultToolkit().getImage(location + "_disabled" + View.res);
 		scaledDisabledImage = disabledImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
@@ -43,6 +43,10 @@ public class Button implements Clickable {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public void setTextColor(Color color) {
+		this.textColor = color;
 	}
 	
 	public String getText() {
@@ -52,27 +56,23 @@ public class Button implements Clickable {
 	public void draw(Graphics g) {
 		if (isEnabled()) {	
 			g.drawImage(scaledImage, x, y, null);
+			/*
+			 * Draw centered text
+			 */
+			if (text != null) {
+				drawButtonText(g);
+			}
 		} else {
 			g.drawImage(scaledDisabledImage, x, y, null);
-		}
-		/*
-		 * Draw centered text
-		 */
-		if (text != null) {
-			drawButtonText(g);
 		}
 	}
 	
 	private void drawButtonText(Graphics g) {
-		Color prev = g.getColor();
-		g.setColor(Color.LIGHT_GRAY);
-		Font saveFont = g.getFont();
-		g.setFont(new Font("Comic Sanc MS", Font.BOLD, 15));
+		g.setFont(ViewResources.getFont().deriveFont(18f));
+		g.setColor(textColor != null ? textColor : ViewResources.WHITE);
 		int textX = x - (g.getFontMetrics().stringWidth(text) / 2) + (width / 2);
 		int textY = y + (g.getFontMetrics().getHeight() / 3) + (height / 2);
 		g.drawString(text, textX, textY);
-		g.setFont(saveFont);
-		g.setColor(prev);
 	}
 	
 	public void setLocation(Point p) {

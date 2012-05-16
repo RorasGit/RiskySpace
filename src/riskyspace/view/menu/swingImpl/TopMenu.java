@@ -1,6 +1,7 @@
 package riskyspace.view.menu.swingImpl;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -16,10 +17,11 @@ import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
+import riskyspace.view.ViewResources;
 import riskyspace.view.View;
 import riskyspace.view.menu.IMenu;
 
-public class TopMenu implements IMenu, Clickable, EventHandler {
+public class TopMenu implements IMenu, Clickable {
 	
 	private boolean enabled;
 	
@@ -40,18 +42,22 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	private int menuWidth = 0;
 	private int margin = 5;
 	
+	private Font resourceFont = null;
+	
 	public TopMenu (int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		menuHeight = height;
 		menuWidth = width;
 		
-		supplyImage = Toolkit.getDefaultToolkit().getImage("res/menu/supply.png");
-		metalImage = Toolkit.getDefaultToolkit().getImage("res/menu/resource_metal.png");
-		gasImage = Toolkit.getDefaultToolkit().getImage("res/menu/resource_gas.png");
+		supplyImage = Toolkit.getDefaultToolkit().getImage("res/menu/supply_square.png");
+		metalImage = Toolkit.getDefaultToolkit().getImage("res/menu/metal_square.png");
+		gasImage = Toolkit.getDefaultToolkit().getImage("res/menu/gas_square.png");
 		
-		menuButton = new Button(margin, margin, 79, 30);
-		menuButton.setImage("res/menu/menuButton3" + View.res);
+		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		
+		menuButton = new Button(x, y, screenHeight/6, height);
+		menuButton.setImage("res/menu/menu" + View.res);
 		menuButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -59,29 +65,29 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 			}
 		});
 		
-		buildQueueButton = new Button(margin + 79 + 4, margin, 79, 30);
-		buildQueueButton.setImage("res/menu/menuButton2" + View.res);
+		buildQueueButton = new Button(x + screenHeight/6, y, screenHeight/6, height);
+		buildQueueButton.setImage("res/menu/build_queue" + View.res);
 		
-		endTurnButton = new Button(width - margin - 79, margin, 79, 66);
-		endTurnButton.setImage("res/menu/endTurn" + View.res);
+		endTurnButton = new Button(width - screenHeight/6, 0, screenHeight/6, height);
+		endTurnButton.setImage("res/menu/end_turn" + View.res);
 		endTurnButton.setAction(new Action() {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.NEXT_TURN, null);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		
-		performMovesButton = new Button(width - margin - 2*79 - 5, margin, 79, 66);
-		performMovesButton.setImage("res/menu/moves" + View.res);
+		performMovesButton = new Button(width - screenHeight/3, y, screenHeight/6, height);
+		performMovesButton.setImage("res/menu/perform_moves" + View.res);
 		performMovesButton.setAction(new Action() {
 			@Override
 			public void performAction() {
-				Event evt = new Event(FleetMove.isMoving() ? Event.EventTag.INTERRUPT_MOVES : Event.EventTag.PERFORM_MOVES, null);
-				EventBus.INSTANCE.publish(evt);
+				Event evt = new Event(Event.EventTag.MOVE, null);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
-		EventBus.INSTANCE.addHandler(this);
+		resourceFont = ViewResources.getFont().deriveFont(17f);
 		setVisible(true);
 	}
 
@@ -113,25 +119,27 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	@Override
 	public void draw(Graphics g) {
 		int a = menuWidth/10;
-		g.setColor(Color.GREEN);
+		g.setColor(ViewResources.WHITE);
+		g.setFont(resourceFont);
 		
+		int fontHeight = g.getFontMetrics(resourceFont).getHeight();
 		/*
 		 * Draw the player's metal
 		 */
 		g.drawImage(metalImage, a*6, margin, null);
-		g.drawString("" + metal, a*6 + metalImage.getWidth(null) + 5, margin + metalImage.getHeight(null)/2);
+		g.drawString("" + metal, a*6 + metalImage.getWidth(null) + 5, margin + metalImage.getHeight(null)/2 + fontHeight/2);
 		/*
 		 * Draw the player's gas
 		 */
 		g.drawImage(gasImage, a*7, margin, null);
-		g.drawString("" + gas, a*7 + gasImage.getWidth(null) + 5, margin + gasImage.getHeight(null)/2);
+		g.drawString("" + gas, a*7 + gasImage.getWidth(null) + 5, margin + gasImage.getHeight(null)/2 + fontHeight/2);
 		/*
 		 * Draw the player's supply
 		 */
 		if (supply.isCapped())
 			g.setColor(Color.RED);
 		g.drawImage(supplyImage, a*5, margin, null);
-		g.drawString(supply.getUsed() + "/" + supply.getMax(), a*5 + supplyImage.getWidth(null) + 5, margin + supplyImage.getHeight(null)/2);
+		g.drawString(supply.getUsed() + "/" + supply.getMax(), a*5 + supplyImage.getWidth(null) + 5, margin + supplyImage.getHeight(null)/2 + fontHeight/2);
 		
 		menuButton.draw(g);
 		buildQueueButton.draw(g);
@@ -139,6 +147,12 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 		performMovesButton.draw(g);
 	}
 
+	public void setStats(PlayerStats stats) {
+		gas = stats.getResource(Resource.GAS);
+		metal = stats.getResource(Resource.METAL);
+		supply = stats.getSupply();
+	}
+	
 	@Override
 	public boolean isVisible() {
 		return enabled;
@@ -147,18 +161,5 @@ public class TopMenu implements IMenu, Clickable, EventHandler {
 	@Override
 	public void setVisible(boolean set) {
 		enabled = set;
-	}
-	
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.RESOURCES_CHANGED) {
-			PlayerStats stats = (PlayerStats) evt.getObjectValue();
-			gas = stats.getResource(Resource.GAS);
-			metal = stats.getResource(Resource.METAL);
-		}
-		if (evt.getTag() == Event.EventTag.SUPPLY_CHANGED) {
-			Supply supply = (Supply) evt.getObjectValue();
-			this.supply = supply;
-		}
 	}
 }

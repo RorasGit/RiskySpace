@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import riskyspace.GameManager;
+import riskyspace.PlayerColors;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
@@ -20,6 +21,7 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
+import riskyspace.view.ViewResources;
 import riskyspace.view.View;
 import riskyspace.view.menu.AbstractSideMenu;
 
@@ -27,23 +29,33 @@ public class RecruitMenu extends AbstractSideMenu {
 	
 	private Color ownerColor = null;
 
-	private int margin = 30;
+	private int margin;
+
+	private Colony colony = null;
+	private PlayerStats stats = null;
 	
-	private Image colonyPicture = null;
-	
+	/*
+	 * Build Buttons
+	 */
 	private Button buildScoutButton = null;
 	private Button buildHunterButton = null;
 	private Button buildDestroyerButton = null;
 	private Button buildColonizerButton = null;
+	
+	/*
+	 * Back Button
+	 */
 	private Button backButton = null;
 	
 	/*
 	 * Images
 	 */
+	private Image colonyPicture = null;
 	private Map<Player, Image> cities = new HashMap<Player, Image>();
 	
 	public RecruitMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
+		margin = menuHeight/20;
 		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
@@ -54,7 +66,7 @@ public class RecruitMenu extends AbstractSideMenu {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.SCOUT);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		buildHunterButton = new Button(x + menuWidth/2 + margin/3, 2*y + menuHeight - (2*menuWidth), 90, 90);
@@ -62,7 +74,7 @@ public class RecruitMenu extends AbstractSideMenu {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.HUNTER);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		buildDestroyerButton = new Button(x + menuWidth/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
@@ -70,7 +82,7 @@ public class RecruitMenu extends AbstractSideMenu {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.DESTROYER);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		buildColonizerButton = new Button(x + menuWidth/2 + margin/3, 2*y + menuHeight - (2*menuWidth) + 90 + margin/2, 90, 90);
@@ -78,25 +90,29 @@ public class RecruitMenu extends AbstractSideMenu {
 			@Override
 			public void performAction() {
 				Event evt = new Event(Event.EventTag.QUEUE_SHIP, ShipType.COLONIZER);
-				EventBus.INSTANCE.publish(evt);
+				EventBus.CLIENT.publish(evt);
 			}
 		});
 		backButton = new Button(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		backButton.setAction(new Action(){
 			@Override
-			public void performAction() {
-				Event evt = new Event(Event.EventTag.BACK, null);
-				EventBus.INSTANCE.publish(evt);
+			public void performAction() { 
+				setVisible(false);
 			}
 		});
-		EventBus.INSTANCE.addHandler(this);
+	}
+	
+	public RecruitMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
+		this(x, y, menuWidth, menuHeight);
+		backButton.setAction(backAction);
 	}
 	
 	public void setColony(Colony colony) {
+		this.colony = colony;
 		setMenuName(colony.getName());
-		setPlayer(colony.getOwner());
-		ownerColor = GameManager.INSTANCE.getInfo(colony.getOwner()).getColor();
+		ownerColor = PlayerColors.getColor(colony.getOwner());
 		colonyPicture = cities.get(colony.getOwner());
+		checkRecruitOptions(stats);
 		
 		String playerString = colony.getOwner().toString().toLowerCase();
 		backButton.setImage("res/menu/" + playerString + "/backButton" + View.res);
@@ -108,33 +124,19 @@ public class RecruitMenu extends AbstractSideMenu {
 	
 	private void drawColonyName(Graphics g) {
 		g.setColor(ownerColor);
-		Font saveFont = g.getFont();
-		g.setFont(new Font("Monotype", Font.BOLD, 38));
+		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
 		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
 		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
 		g.drawString(getMenuName(), textX, textY);
-		g.setFont(saveFont);
 	}
 
-	private void checkRecruitOptions(PlayerStats stats) {
-		buildScoutButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.SCOUT.getMetalCost());
-		buildHunterButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.HUNTER.getMetalCost() && stats.getResource(Resource.GAS) >= ShipType.HUNTER.getGasCost());
-		buildColonizerButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.COLONIZER.getMetalCost());
-		buildDestroyerButton.setEnabled(stats.getResource(Resource.METAL) >= ShipType.DESTROYER.getMetalCost() && stats.getResource(Resource.GAS) >= ShipType.DESTROYER.getGasCost());
-	}
-
-	@Override
-	public void performEvent(Event evt) {
-		if (evt.getTag() == Event.EventTag.SHOW_RECRUITMENU) {
-			if (evt.getObjectValue() instanceof Colony) {
-				setColony((Colony) evt.getObjectValue());
-				setVisible(true);
-			}
-		} else if (evt.getTag() == Event.EventTag.HIDE_MENU || evt.getTag() == Event.EventTag.BACK) {
-				setVisible(false);
-		} else if (evt.getTag() == Event.EventTag.RESOURCES_CHANGED) {
-			PlayerStats stats = (PlayerStats) evt.getObjectValue();
-			checkRecruitOptions(stats);
+	public void checkRecruitOptions(PlayerStats stats) {
+		this.stats = stats;
+		if (colony != null && stats != null){
+			buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT) && colony.getHangar().canBuild(ShipType.SCOUT));
+			buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER) && colony.getHangar().canBuild(ShipType.HUNTER));
+			buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER) && colony.getHangar().canBuild(ShipType.COLONIZER));
+			buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER) && colony.getHangar().canBuild(ShipType.DESTROYER));
 		}
 	}
 
@@ -144,18 +146,10 @@ public class RecruitMenu extends AbstractSideMenu {
 		 * Only handle mouse event if enabled
 		 */
 		if (isVisible()) {
-			if (buildScoutButton.mousePressed(p)) {
-				return true;
-				}
-			else if (buildHunterButton.mousePressed(p)) {
-				return true;
-				}
-			else if (buildDestroyerButton.mousePressed(p)) {
-				return true;
-				} 
-			else if (buildColonizerButton.mousePressed(p)) {
-				return true;
-				}
+			if (buildScoutButton.mousePressed(p)) {return true;}
+			else if (buildHunterButton.mousePressed(p)) {return true;}
+			else if (buildDestroyerButton.mousePressed(p)) {return true;} 
+			else if (buildColonizerButton.mousePressed(p)) {return true;}
 			else if (backButton.mousePressed(p)) {return true;}
 			if (this.contains(p)) {return true;}
 			else {
