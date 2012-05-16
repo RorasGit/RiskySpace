@@ -115,7 +115,7 @@ public class SpriteMapData implements Serializable {
 				if (terr.hasFleet()) {
 					if (FleetMove.isMoving()) {
 						for (Fleet fleet : terr.getFleets()) {
-							if (GameManager.INSTANCE.hasPath(fleet) && !terr.hasConflict()) {
+							if (fleet.getOwner() == player && GameManager.INSTANCE.hasPath(fleet) && !terr.hasConflict()) {
 								Position[] steps = GameManager.INSTANCE.getPath(fleet);
 								data.animData.add(new AnimationData(pos, player, fleet.getFlagship(), FleetMove.stepTime(), steps));			
 							} else {

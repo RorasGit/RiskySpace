@@ -36,15 +36,18 @@ public class GLAnimation implements GLRenderAble {
 		this.squareSize = squareSize;
 		this.startX = rect.getX();
 		this.startY = rect.getY();
-		moveRotation = Path.getRotation(null, steps[0], steps[1]) + 90.0;
-		endRotation = Path.getRotation(null, steps[1], steps[2]) + 90.0;
+		moveRotation = Path.getRotation(null, steps[0], steps[1]) - 90.0;
+		endRotation = Path.getRotation(null, steps[1], steps[2]) - 90.0;
+		rotation = moveRotation;
+		dX = steps[1].getCol() - steps[0].getCol();
+		dY = steps[0].getRow() - steps[1].getRow();
 	}
 	
 	private void update() {
 		if (startTime == 0) {
 			startTime = System.currentTimeMillis();
 		}
-		float pDone = (System.currentTimeMillis() - startTime) / maxTime;
+		float pDone = ((float) (System.currentTimeMillis() - startTime)) / maxTime;
 		if (pDone > 0.85f) {
 			rotation = moveRotation + (moveRotation - endRotation)*((pDone - 0.85f)/0.15f);
 		} else {
