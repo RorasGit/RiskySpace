@@ -364,7 +364,6 @@ public enum GameManager {
 			}
 		}
 		Event evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
-		evt.setPlayer(getCurrentPlayer());
 		EventBus.SERVER.publish(evt);
 	}
 	

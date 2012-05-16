@@ -197,7 +197,6 @@ public class GLSpriteMap implements GLRenderAble {
 				map.fleets.get(fleetData.getPlayer()).put(fleetData.getFlagships(), new HashMap<Rectangle, Double>());
 			Map<Rectangle, Double> dataMap = map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships());
 			double angle = Math.toDegrees(Path.getRotation(null, fleetData.getSteps()[0], fleetData.getSteps()[1])) - 90.0;
-			System.out.println("angle: " + angle);
 			dataMap.put(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f), angle);
 		}
 		/* Add Animation Data*/

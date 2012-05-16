@@ -118,14 +118,14 @@ public class SpriteMapData implements Serializable {
 							if (GameManager.INSTANCE.hasPath(fleet) && !terr.hasConflict() && fleet.hasEnergy() &&
 									GameManager.INSTANCE.getCurrentPlayer() == fleet.getOwner()) {
 								Position[] steps = GameManager.INSTANCE.getPath(fleet);
-								data.animData.add(new AnimationData(pos, player, fleet.getFlagship(), FleetMove.stepTime(), steps));			
+								data.animData.add(new AnimationData(pos, fleet.getOwner(), fleet.getFlagship(), FleetMove.stepTime(), steps));			
 							} else {
-								addFleetData(player, data, pos, fleet);
+								addFleetData(data, pos, fleet);
 							}
 						}
 					} else {
 						for (Fleet fleet : terr.getFleets()) {
-							addFleetData(player, data, pos, fleet);
+							addFleetData(data, pos, fleet);
 						}
 						int size = 0;
 						for (Fleet fleet : terr.getFleets()) {
@@ -146,7 +146,7 @@ public class SpriteMapData implements Serializable {
 		return data;
 	}
 
-	private static void addFleetData(Player player, SpriteMapData data,
+	private static void addFleetData(SpriteMapData data,
 			Position pos, Fleet fleet) {
 		boolean changed = false;
 		for (FleetData fleetData : data.fleetData) {
@@ -163,9 +163,9 @@ public class SpriteMapData implements Serializable {
 		}
 		if (!changed && fleet.getFlagship() != ShipType.COLONIZER) {
 			if (GameManager.INSTANCE.hasPath(fleet)) {
-				data.fleetData.add(new FleetData(pos, player, fleet.getFlagship(), GameManager.INSTANCE.getPath(fleet)));
+				data.fleetData.add(new FleetData(pos, fleet.getOwner(), fleet.getFlagship(), GameManager.INSTANCE.getPath(fleet)));
 			} else {
-				data.fleetData.add(new FleetData(pos, player, fleet.getFlagship(), new Position[2]));
+				data.fleetData.add(new FleetData(pos, fleet.getOwner(), fleet.getFlagship(), new Position[2]));
 			}
 		}
 	}
