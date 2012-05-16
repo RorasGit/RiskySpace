@@ -16,7 +16,7 @@ public class FleetMove {
 	private static boolean moving = false;
 	private static Object lock = new Object();
 	private static Thread mover = null;
-	private static final int STEP_TIME = 1000;
+	private static final int STEP_TIME = 100;
 	
 	public static void interrupt() {
 		synchronized (lock) {
