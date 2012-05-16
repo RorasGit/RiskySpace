@@ -134,7 +134,7 @@ public enum GameManager {
 	 * @return true if there is a path with at least than 1 step.
 	 */
 	public boolean hasPath(Fleet fleet) {
-		return (selections.get(fleet.getOwner()).fleetPaths.get(fleet) != null) && (selections.get(fleet.getOwner()).fleetPaths.get(fleet).getLength() > 1);
+		return (selections.get(fleet.getOwner()).fleetPaths.get(fleet) != null) && (selections.get(fleet.getOwner()).fleetPaths.get(fleet).getLength() > 0);
 	}
 	
 	public Position[] getPath(Fleet fleet) {

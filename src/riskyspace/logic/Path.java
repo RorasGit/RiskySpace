@@ -106,13 +106,26 @@ public class Path implements Serializable {
 	}
 	
 	/**
-	 * Determine the Rotation in radians for a Path arrow part depending on path segments.
+	 * Determine the Rotation in radians for a Path arrow part depending on path segments, or
+	 * for a ship depending on its Path.
 	 * @param previous The path segment previous to the current one.
 	 * @param current The current path segment.
 	 * @param next The next path segment.
 	 * @return Rotation for the current segment in radians.
+	 * @see Math.toDegrees(double radian)
 	 */
 	public static double getRotation(Position previous, Position current, Position next) {
+		/*
+		 * All values are PI/2 too high as a result of the arrow graphics
+		 * Ship Graphics should remove PI/2 before drawing
+		 * TODO: Fix?
+		 */
+		/*
+		 * Return PI/2 if current is null as we can not calculate a rotation.
+		 */
+		if (current == null) {
+			return Math.PI/2;
+		}
 		/*
 		 * Variables for determining where the previous and next positions
 		 * are relative to the current position
@@ -129,7 +142,7 @@ public class Path implements Serializable {
 		
 		/*
 		 * Only calculate values if there is a previous
-		 * respective next position in.
+		 * respective next position.
 		 */
 		if (previous != null) {
 			prevAbove = previous.getRow() < current.getRow();
@@ -212,9 +225,9 @@ public class Path implements Serializable {
 			}
 		}
 		/*
-		 * Return 0 to make the compiler happy, will never run
-		 * unless previous == current || current == next which
-		 * is wrong usage.
+		 * Return 0 if all are false:
+		 * previous is null and next is null
+		 * or previous.equals(next)
 		 */
 		return 0;
 	}

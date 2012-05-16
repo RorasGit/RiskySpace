@@ -36,8 +36,12 @@ public class GLAnimation implements GLRenderAble {
 		this.squareSize = squareSize;
 		this.startX = rect.getX();
 		this.startY = rect.getY();
-		moveRotation = Path.getRotation(null, steps[0], steps[1]) - 90.0;
-		endRotation = Path.getRotation(null, steps[1], steps[2]) - 90.0;
+		moveRotation = Math.toDegrees(Path.getRotation(null, steps[0], steps[1])) - 90.0;
+		if (steps[2] != null) {
+			endRotation = Math.toDegrees(Path.getRotation(null, steps[1], steps[2])) - 90.0;
+		} else {
+			endRotation = 0.0;
+		}
 		rotation = moveRotation;
 		dX = steps[1].getCol() - steps[0].getCol();
 		dY = steps[0].getRow() - steps[1].getRow();
@@ -48,12 +52,12 @@ public class GLAnimation implements GLRenderAble {
 			startTime = System.currentTimeMillis();
 		}
 		float pDone = ((float) (System.currentTimeMillis() - startTime)) / maxTime;
-		if (pDone > 0.85f) {
-			rotation = moveRotation + (moveRotation - endRotation)*((pDone - 0.85f)/0.15f);
+		if (pDone > 0.6f) {
+			rotation = moveRotation - (moveRotation - endRotation) * ((pDone - 0.6f) / 0.4f);
 		} else {
-			float mDone = pDone / 0.85f;
-			rect.setX(startX + (int) (dX*squareSize*mDone));
-			rect.setY(startY + (int) (dY*squareSize*mDone));
+			float mDone = pDone / 0.6f;
+			rect.setX(startX + (int) (dX * squareSize * mDone));
+			rect.setY(startY + (int) (dY * squareSize * mDone));
 		}
 	}
 	

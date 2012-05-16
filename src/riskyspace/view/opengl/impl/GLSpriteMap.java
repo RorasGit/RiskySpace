@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
 import riskyspace.logic.Path;
@@ -23,7 +23,7 @@ import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
 
 /**
- * Drawing all game Sprites in openGL
+ * Drawing all game sprites in openGL
  * @author Alexander Hederstaf
  *
  */
@@ -88,7 +88,7 @@ public class GLSpriteMap implements GLRenderAble {
 	private List<GLAnimation> fleetAnimations = new ArrayList<GLAnimation>();
 	private Map<Resource, Map<Position, Rectangle>> planets = new HashMap<Resource, Map<Position, Rectangle>>();
 	private Map<Player, List<Rectangle>> colonies = new HashMap<Player, List<Rectangle>>();
-	private Map<Player, Map<ShipType , List<Rectangle>>> fleets = new HashMap<Player, Map<ShipType , List<Rectangle>>>();
+	private Map<Player, Map<ShipType , Map<Rectangle, Double>>> fleets = new HashMap<Player, Map<ShipType , Map<Rectangle, Double>>>();
 	private Map<String, Map<Rectangle, Double>> paths = new HashMap<String, Map<Rectangle, Double>>();
 	
 	/* Integers for display, draw text how? */
@@ -192,11 +192,13 @@ public class GLSpriteMap implements GLRenderAble {
 		/* Add Fleet Data */
 		for (FleetData fleetData : GLSpriteMap.data.getFleetData()) {
 			if (map.fleets.get(fleetData.getPlayer()) == null)
-				map.fleets.put(fleetData.getPlayer(), new HashMap<ShipType, List<Rectangle>>());
+				map.fleets.put(fleetData.getPlayer(), new HashMap<ShipType, Map<Rectangle, Double>>());
 			if (map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships()) == null)
-				map.fleets.get(fleetData.getPlayer()).put(fleetData.getFlagships(), new ArrayList<Rectangle>());
-			List<Rectangle> list = map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships());
-			list.add(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f));
+				map.fleets.get(fleetData.getPlayer()).put(fleetData.getFlagships(), new HashMap<Rectangle, Double>());
+			Map<Rectangle, Double> dataMap = map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships());
+			double angle = Math.toDegrees(Path.getRotation(null, fleetData.getSteps()[0], fleetData.getSteps()[1])) - 90.0;
+			System.out.println("angle: " + angle);
+			dataMap.put(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f), angle);
 		}
 		/* Add Animation Data*/
 		for (AnimationData animData : GLSpriteMap.data.getAnimationData()) {
@@ -209,11 +211,12 @@ public class GLSpriteMap implements GLRenderAble {
 		/* Add Colonizer Data */
 		for (ColonizerData colonizerData : GLSpriteMap.data.getColonizerData()) {
 			if (map.fleets.get(colonizerData.getPlayer()) == null)
-				map.fleets.put(colonizerData.getPlayer(), new HashMap<ShipType, List<Rectangle>>());
+				map.fleets.put(colonizerData.getPlayer(), new HashMap<ShipType, Map<Rectangle, Double>>());
 			if (map.fleets.get(colonizerData.getPlayer()).get(ShipType.COLONIZER) == null)
-				map.fleets.get(colonizerData.getPlayer()).put(ShipType.COLONIZER, new ArrayList<Rectangle>());
-			List<Rectangle> list = map.fleets.get(colonizerData.getPlayer()).get(ShipType.COLONIZER);
-			list.add(calculateRect(colonizerData.getPosition(), 0.5f, 0, squareSize, 0.5f));
+				map.fleets.get(colonizerData.getPlayer()).put(ShipType.COLONIZER, new HashMap<Rectangle, Double>());
+			Map<Rectangle, Double> dataMap = map.fleets.get(colonizerData.getPlayer()).get(ShipType.COLONIZER);
+			double angle = 0.0; //TODO: Rotate colonizers
+			dataMap.put(calculateRect(colonizerData.getPosition(), 0.5f, 0, squareSize, 0.5f), angle);
 		}
 		/* Add Fog Data */
 		for (Position pos : GLSpriteMap.data.getFog()) {
@@ -300,8 +303,9 @@ public class GLSpriteMap implements GLRenderAble {
 		/* Draw Fleets */
 		for (Player player : fleets.keySet()) {
 			for (ShipType type : fleets.get(player).keySet()) {
-				List<Rectangle> list = fleets.get(player).get(type);
-				for (Rectangle r : list) {
+				Set<Rectangle> rects = fleets.get(player).get(type).keySet();
+				for (Rectangle r : rects) {
+					shipSprites.get(type + "_" + player).setRotation(fleets.get(player).get(type).get(r));
 					shipSprites.get(type + "_" + player).draw(drawable, r, targetArea, zIndex + 3);
 				}
 			}
