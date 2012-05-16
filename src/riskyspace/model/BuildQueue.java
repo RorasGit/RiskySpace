@@ -31,6 +31,32 @@ public class BuildQueue implements Serializable {
 	 * @author rapp
 	 *
 	 */
+	private class QueueItem implements Serializable {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5271692685385186036L;
+		private int buildTime;
+		private BuildAble item;
+		
+		public QueueItem (BuildAble buildAble) {
+			this.item = buildAble;
+			this.buildTime = buildAble.getBuildTime();
+		}
+		
+		public BuildAble getItem() {
+			return item;
+		}
+		
+		public int getBuildTime() {
+			return buildTime;
+		}
+		
+		public void subtractBuildTime(int time) {
+			buildTime -= time;
+		}
+	}
 	
 	/**
 	 * Adds the BuildAble item to the build queue at the provided position.
