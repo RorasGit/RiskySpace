@@ -75,8 +75,8 @@ public class StartScreen extends JPanel{
 	}
 	
 	public void createButtons() {
-		localGame = new Button(width/2 - 130, height/2 - 130, 240, 50);
-		localGame.setImage("res/menu/lobby/localGameButton.png");
+		localGame = new Button(width/2 - 130, height/2 - 130, 250, 50);
+		localGame.setImage("res/menu/lobby/localGameButton" + View.res);
 		localGame.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -84,8 +84,8 @@ public class StartScreen extends JPanel{
 				startScreenVisible = false;
 			}
 		});
-		multiplayer = new Button(width/2 - 130, height/2 - 130 + 75, 240, 50);
-		multiplayer.setImage("res/menu/lobby/multiplayerButton.png");
+		multiplayer = new Button(width/2 - 130, height/2 - 130 + 75, 250, 50);
+		multiplayer.setImage("res/menu/lobby/multiplayerButton" + View.res);
 		multiplayer.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -93,10 +93,10 @@ public class StartScreen extends JPanel{
 				startScreenVisible = false;
 			}
 		});
-		loadGame = new Button(width/2 - 130, height/2 - 130 + 150, 240, 50);
-		loadGame.setImage("res/menu/lobby/loadGameButton.png");
-		settings = new Button(width/2 - 130, height/2 - 130 + 225, 240, 50);
-		settings.setImage("res/menu/lobby/settingsButton.png");
+		loadGame = new Button(width/2 - 130, height/2 - 130 + 150, 250, 50);
+		loadGame.setImage("res/menu/lobby/loadGameButton" + View.res);
+		settings = new Button(width/2 - 130, height/2 - 130 + 225, 250, 50);
+		settings.setImage("res/menu/lobby/settingsButton" + View.res);
 		settings.setAction(new Action(){
 			@Override
 			public void performAction() {

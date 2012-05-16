@@ -5,18 +5,22 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.io.File;
 
-public class Button implements Clickable {
+public class Button implements Clickable, Glowable {
 
 	private int x, y, width, height;
 	private Image image = null;
 	private Image scaledImage = null;
 	private Image disabledImage = null;
 	private Image scaledDisabledImage = null;
+	private Image glowImage = null;
 	private Action action = null;
 	private String text = null;
+	private String imageLocation = null;
 	private Color textColor = null;
 	private Boolean enabled = true;
 	
@@ -34,11 +38,12 @@ public class Button implements Clickable {
 	public void setImage(String location) {
 		image = Toolkit.getDefaultToolkit().getImage(location);
 		if (location.endsWith(View.res)) {
-			location = location.substring(0, location.indexOf(View.res));
+			imageLocation = location.substring(0, location.indexOf(View.res));
 		}
-		disabledImage = Toolkit.getDefaultToolkit().getImage(location + "_disabled" + View.res);
+		disabledImage = Toolkit.getDefaultToolkit().getImage(imageLocation + "_disabled" + View.res);
 		scaledDisabledImage = disabledImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		glowImage = Toolkit.getDefaultToolkit().getImage(imageLocation + "Glow" + View.res);
 	}
 
 	public void setText(String text) {
@@ -54,8 +59,12 @@ public class Button implements Clickable {
 	}
 	
 	public void draw(Graphics g) {
-		if (isEnabled()) {	
-			g.drawImage(scaledImage, x, y, null);
+		if (isEnabled()) {
+			if (cursorOver()) {
+				g.drawImage(glowImage, x, y, null);
+			} else {
+				g.drawImage(scaledImage, x, y, null);
+			}
 			/*
 			 * Draw centered text
 			 */
@@ -134,6 +143,26 @@ public class Button implements Clickable {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean cursorOver() {
+		if(this.contains(MouseInfo.getPointerInfo().getLocation())) {
+			if (hasGlowImage()) {
+			return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean hasGlowImage() {
+		File file = new File(imageLocation + "Glow" + View.res);
+		if (file.exists()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	@Override

@@ -41,18 +41,19 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 		 * TODO: fix none absolute values
 		 */
 		playerOne = new Button(getX() + margin, getY() + margin, 240, 50);
-		playerOne.setImage("res/menu/lobby/multiplayer/playerButton.png");
+		playerOne.setImage("res/menu/lobby/wideButton" + View.res);
 		playerTwo = new Button(getX() + margin, getY() + 2*margin + 50, 240, 50);
-		playerTwo.setImage("res/menu/lobby/multiplayer/playerButton.png");
+		playerTwo.setImage("res/menu/lobby/wideButton" + View.res);
 		playerThree = new Button(getX() + margin, getY() + 3*margin + 100, 240, 50);
-		playerThree.setImage("res/menu/lobby/multiplayer/playerButton.png");
+		playerThree.setImage("res/menu/lobby/wideButton" + View.res);
 		playerThree.setEnabled(false);
 		playerFour = new Button(getX() + margin, getY() + 4*margin + 150, 240, 50);
-		playerFour.setImage("res/menu/lobby/multiplayer/playerButton.png");
+		playerFour.setImage("res/menu/lobby/wideButton" + View.res);
 		playerFour.setEnabled(false);
 		
 		startGame = new Button(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
-		startGame.setImage("res/menu/lobby/startButton.png");
+		startGame.setImage("res/menu/lobby/standardButton" + View.res);
+		startGame.setText("Start Game");
 		
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("2 players");
