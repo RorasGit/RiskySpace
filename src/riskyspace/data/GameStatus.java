@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
@@ -34,8 +35,24 @@ public class GameStatus implements Serializable {
 		
 	}
 	
-	public static void main(String[] args) {
+	public static void loadGame() throws IOException {
+		
+		try {
+			FileInputStream fis = new FileInputStream(newSave);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			
+			World world2 = (World) ois.readObject();
+			
+			System.out.println(world2.getCols());
+			
+		} catch (ClassNotFoundException  e) {
+			System.out.println(e);
+		}
+	}
+	
+	public static void main(String[] args) throws IOException {
 		saveGame(new World(), Player.BLUE, 0);
+		loadGame();
 	}
 
 }
