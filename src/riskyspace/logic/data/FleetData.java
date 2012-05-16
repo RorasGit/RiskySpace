@@ -19,4 +19,7 @@ public class FleetData extends SpriteData {
 	public ShipType getFlagships(){
 		return flagship;
 	}
+	public void setFlagShip(ShipType flagship) {
+		this.flagship = flagship;
+	}
 }

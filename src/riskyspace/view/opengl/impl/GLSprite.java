@@ -88,12 +88,14 @@ public class GLSprite implements GLRenderAble {
 			
 			float renderZ = 1f / zIndex;
 			
-			gl.glMatrixMode( GL2.GL_TEXTURE );
-			gl.glPushMatrix();
-			gl.glLoadIdentity();
-			gl.glTranslatef(texCenterX, texCenterY, 0);
-			gl.glRotated(rotation, 0, 0, 1);
-			gl.glTranslatef(-texCenterX, -texCenterY, 0);
+			if (rotation != 0) {
+				gl.glMatrixMode( GL2.GL_TEXTURE );
+				gl.glPushMatrix();
+				gl.glLoadIdentity();
+				gl.glTranslatef(texCenterX, texCenterY, 0);
+				gl.glRotated(rotation, 0, 0, 1);
+				gl.glTranslatef(-texCenterX, -texCenterY, 0);
+			}
 			
 			gl.glBegin(GL2.GL_QUADS);
 			
@@ -111,8 +113,10 @@ public class GLSprite implements GLRenderAble {
 
 			gl.glEnd();
 			
-			gl.glLoadIdentity();
-			gl.glPopMatrix();
+			if (rotation != 0) {
+				gl.glLoadIdentity();
+				gl.glPopMatrix();
+			}
 		}
 	}
 }

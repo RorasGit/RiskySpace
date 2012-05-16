@@ -10,6 +10,7 @@ import javax.media.opengl.GLAutoDrawable;
 
 import riskyspace.logic.Path;
 import riskyspace.logic.SpriteMapData;
+import riskyspace.logic.data.AnimationData;
 import riskyspace.logic.data.ColonizerData;
 import riskyspace.logic.data.ColonyData;
 import riskyspace.logic.data.FleetData;
@@ -84,6 +85,7 @@ public class GLSpriteMap implements GLRenderAble {
 	private Rectangle bounds;
 	
 	private List<Rectangle> fogOfWar = new ArrayList<Rectangle>();
+	private List<GLAnimation> fleetAnimations = new ArrayList<GLAnimation>();
 	private Map<Resource, Map<Position, Rectangle>> planets = new HashMap<Resource, Map<Position, Rectangle>>();
 	private Map<Player, List<Rectangle>> colonies = new HashMap<Player, List<Rectangle>>();
 	private Map<Player, Map<ShipType , List<Rectangle>>> fleets = new HashMap<Player, Map<ShipType , List<Rectangle>>>();
@@ -196,6 +198,14 @@ public class GLSpriteMap implements GLRenderAble {
 			List<Rectangle> list = map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships());
 			list.add(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f));
 		}
+		/* Add Animation Data*/
+		for (AnimationData animData : GLSpriteMap.data.getAnimationData()) {
+			GLSprite sprite = shipSprites.get(animData.getFlagships() + "_" + animData.getPlayer());
+			Rectangle startRect = calculateRect(animData.getPosition(), 0, 0, squareSize, 0.5f);
+			int maxTime = animData.getTime();
+			Position[] steps = animData.getSteps();
+			map.fleetAnimations.add(new GLAnimation(sprite, startRect, maxTime, squareSize, steps));
+		}
 		/* Add Colonizer Data */
 		for (ColonizerData colonizerData : GLSpriteMap.data.getColonizerData()) {
 			if (map.fleets.get(colonizerData.getPlayer()) == null)
@@ -304,10 +314,16 @@ public class GLSpriteMap implements GLRenderAble {
 				pathSprites.get(s).draw(drawable, r, targetArea, zIndex + 4);
 			}
 		}
+		for (GLAnimation glAnim : fleetAnimations) {
+			/*
+			 * Animation supplies Rectangle itself
+			 */
+			glAnim.draw(drawable, null, targetArea, zIndex + 5);
+		}
 		
 		/* Draw Fog */
 		for (Rectangle r : fogOfWar) {
-			fogSprite.draw(drawable, r, targetArea, zIndex + 5);
+			fogSprite.draw(drawable, r, targetArea, zIndex + 6);
 		}
 	}
 }
