@@ -83,19 +83,6 @@ public class GLSprite implements GLRenderAble {
 			float x1 = ((float) (2*objectRect.getX() + 2*objectRect.getWidth() - 2*targetArea.getX() - targetArea.getWidth()))/targetArea.getWidth();
 			float y1 = ((float) (2*objectRect.getY() + 2*objectRect.getHeight() - 2*targetArea.getY() - targetArea.getHeight()))/targetArea.getHeight();
 			
-			/*
-			 * TODO: 
-			 * Fix rotation
-			 */
-			float cX = x + ((float) objectRect.getWidth())/targetArea.getWidth();
-			float cY = y + ((float) objectRect.getHeight())/targetArea.getHeight();
-			if (textureName.startsWith("col")) {
-				System.out.println(textureName);
-				System.out.println("cX: " + cX);
-				System.out.println("cY: " + cY);
-				System.out.println("***********");
-			}
-			
 			float texCenterX = tX + (0.5f * textureRect.getWidth()) / tex.getWidth();
 			float texCenterY = tY + (0.5f * textureRect.getHeight()) / tex.getHeight();
 			
