@@ -142,7 +142,6 @@ public class GLRenderArea implements GLRenderAble {
 	 * @param zIndex 
 	 */
 	public void add(GLRenderAble renderAble, int zIndex){
-		System.out.println(zIndex);
 		if (renderAble == null) {
 			return;
 		}
@@ -285,9 +284,6 @@ public class GLRenderArea implements GLRenderAble {
 		float y = 2*((float) (clickHandler.pressedPoint.y - translatePixelsY())/screenArea.getHeight()) -1f;
 		float x1 = 2*((float) mouseLoc.x)/screenArea.getWidth() - 1f;
 		float y1 = 2*(float) (screenArea.getHeight() - mouseLoc.y)/screenArea.getHeight() - 1f;
-		
-		System.out.println("(x, y) = (" + x + ", " + y + ")");
-		System.out.println("(x1, y1) = (" + x1 + ", " + y1 + ")");
 		
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glDisable(GL.GL_TEXTURE_2D);

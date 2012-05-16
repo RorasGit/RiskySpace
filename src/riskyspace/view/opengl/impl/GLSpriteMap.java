@@ -258,7 +258,6 @@ public class GLSpriteMap implements GLRenderAble {
 	 */
 	private static Rectangle calculateRect(Position pos, float dX, float dY, int squareSize, float dS) {
 		int rows = 2*GLRenderArea.EXTRA_SPACE_VERTICAL + GLSpriteMap.data.getRows();
-		System.out.println("rows = " + rows);
 		int x = (GLRenderArea.EXTRA_SPACE_HORIZONTAL + pos.getCol() - 1) * squareSize;
 		int y = (rows - GLRenderArea.EXTRA_SPACE_VERTICAL - pos.getRow()) * squareSize;
 		x += (int) (dX * squareSize);
