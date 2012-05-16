@@ -24,7 +24,7 @@ import riskyspace.view.ViewResources;
 import riskyspace.view.View;
 import riskyspace.view.swing.impl.SwingButton;
 
-public class RecruitMenu extends AbstractSideMenu {
+public class RecruitMenu extends SwingAbstractSideMenu {
 	
 	private Color ownerColor = null;
 

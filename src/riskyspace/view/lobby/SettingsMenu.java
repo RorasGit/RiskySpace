@@ -1,15 +1,12 @@
 package riskyspace.view.lobby;
 
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Point;
-import java.awt.Toolkit;
 
-import riskyspace.view.View;
 import riskyspace.view.VolumeSlider;
-import riskyspace.view.swing.SwingDrawable;
+import riskyspace.view.swing.SwingRenderAble;
 
-public class SettingsMenu extends AbstractPreGameMenu implements SwingDrawable {
+public class SettingsMenu extends AbstractPreGameMenu implements SwingRenderAble {
 	
 	private VolumeSlider musicVolume = null;
 	private VolumeSlider effectsVolume = null;

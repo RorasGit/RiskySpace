@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 import riskyspace.view.DropdownButton;
 import riskyspace.view.View;
-import riskyspace.view.swing.SwingDrawable;
+import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.SwingButton;
 
 
-public class Lobby extends AbstractPreGameMenu implements SwingDrawable {
+public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 
 	private SwingButton playerOne = null;
 	private SwingButton playerTwo = null;

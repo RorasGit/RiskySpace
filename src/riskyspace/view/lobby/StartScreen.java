@@ -14,7 +14,7 @@ import riskyspace.view.Action;
 import riskyspace.view.Clickable;
 import riskyspace.view.IMenu;
 import riskyspace.view.View;
-import riskyspace.view.swing.SwingDrawable;
+import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.SwingButton;
 
 public class StartScreen extends JPanel {
@@ -147,16 +147,16 @@ public class StartScreen extends JPanel {
 		if (!startScreenVisible) {
 			backButton.draw(g);
 			if (localLobby.isVisible()) {
-				((SwingDrawable) localLobby).draw(g);
+				((SwingRenderAble) localLobby).draw(g);
 			}
 			if (loadGameMenu.isVisible()) {
-				((SwingDrawable) loadGameMenu).draw(g);
+				((SwingRenderAble) loadGameMenu).draw(g);
 			}
 			if (multiplayerLobby.isVisible()) {
-				((SwingDrawable) multiplayerLobby).draw(g);
+				((SwingRenderAble) multiplayerLobby).draw(g);
 			}
 			if (settingsMenu.isVisible()) {
-				((SwingDrawable) settingsMenu).draw(g);
+				((SwingRenderAble) settingsMenu).draw(g);
 			}
 		}
 		if (startScreenVisible) {

@@ -15,7 +15,7 @@ import riskyspace.view.Action;
 import riskyspace.view.View;
 import riskyspace.view.swing.impl.SwingButton;
 
-public class PlanetMenu extends AbstractSideMenu{
+public class PlanetMenu extends SwingAbstractSideMenu{
 	
 	private int margin = 30;
 	

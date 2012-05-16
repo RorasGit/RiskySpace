@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 import riskyspace.view.ScrollableList;
 import riskyspace.view.View;
-import riskyspace.view.swing.SwingDrawable;
+import riskyspace.view.swing.SwingRenderAble;
 
-public class LoadGameMenu<E> extends AbstractPreGameMenu implements SwingDrawable {
+public class LoadGameMenu<E> extends AbstractPreGameMenu implements SwingRenderAble {
 	
 	private ScrollableList<E> savedGames = null;
 	

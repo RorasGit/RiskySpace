@@ -21,12 +21,16 @@ import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.view.Clickable;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.camera.GLCamera;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
+import riskyspace.view.opengl.menu.GLColonyMenu;
+import riskyspace.view.swing.menu.ColonyMenu;
+import riskyspace.view.swing.menu.FleetMenu;
+import riskyspace.view.swing.menu.PlanetMenu;
+import riskyspace.view.swing.menu.TopMenu;
 
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
@@ -74,16 +78,17 @@ public class GLRenderArea implements GLRenderAble {
 	 */
 	private Player viewer = null;
 
-	/**
-	 * Layers of GLRenderAble objects
-	 * @deprecated No need for this any more
-	 */
-	private GLRenderAble[][] renderAbles;
 
 	/*
 	 * Sprites
 	 */
 	private GLSpriteMap sprites;
+	
+	/*
+	 * Menus
+	 */
+	private GLColonyMenu colonyMenu = null;
+
 	
 	public GLRenderArea(int width, int height, int rows, int cols) {
 		screenArea = new Rectangle(0, 0, width, height);
@@ -94,9 +99,17 @@ public class GLRenderArea implements GLRenderAble {
 		this.cols = cols;
 		initCameras();
 		createBackground();
+		createMenus();
 	}
 
 	
+	private void createMenus() {
+		int menuWidth = screenArea.getHeight() / 3;
+		colonyMenu = new GLColonyMenu(screenArea.getWidth() - menuWidth, 80,
+				menuWidth, screenArea.getHeight()-80);
+	}
+
+
 	private void createBackground() {
 		backgroundImage = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = backgroundImage.createGraphics();
@@ -134,77 +147,7 @@ public class GLRenderArea implements GLRenderAble {
 			g.fillRect(x, y, 1, 1);
 		}
 	}
-	
-	/**
-	 * Add GLRenderAble to a zIndex for this RenderArea to draw.
-	 * @deprecated No need for this any more
-	 * @param renderAble The GLRenderAble
-	 * @param zIndex 
-	 */
-	public void add(GLRenderAble renderAble, int zIndex){
-		if (renderAble == null) {
-			return;
-		}
-		
-		if (renderAbles == null) {
-			renderAbles = new GLRenderAble[1 + zIndex][];
-		}
-		
-		if (zIndex >= renderAbles.length) {
-			renderAbles = getIncreasedArray(renderAbles, 1 + zIndex);
-		}
-		
-		if (renderAbles[zIndex] == null) {
-			// Index is empty, create new Array with place for 3 object
-			renderAbles[zIndex] = new GLRenderAble[3];
-		}
-		
-		if (renderAbles[zIndex][renderAbles[zIndex].length-1] != null){
-			// Index is full, add place for another 3 objects
-			GLRenderAble[] newArray = new GLRenderAble[3 + renderAbles[zIndex].length];
-			for (int i = 0; i < renderAbles[zIndex].length; i++) {
-				newArray[i] = renderAbles[zIndex][i];
-			}
-			renderAbles[zIndex] = newArray;
-		}
-		
-		for (int i = 0; i < renderAbles[zIndex].length; i++) {
-			// Find first null and add the GLRenderAble there
-			if (renderAbles[zIndex][i] == null) {
-				renderAbles[zIndex][i] = renderAble;
-				break;
-			}
-		}
-	}
-	
-	/**
-	 * Remove the GLRenderAble from being drawn
-	 * @deprecated No need for this any more
-	 * @param renderAble The GLRenderAble to remove
-	 */
-	public void remove(GLRenderAble renderAble) {
-		if (renderAble == null || renderAbles == null) {
-			return;
-		}
-		for (int i = 0; i < renderAbles.length; i++) {
-			for (int j = 0; j < renderAbles[i].length; j++) {
-				if (renderAbles[i][j] == renderAble) {
-					renderAbles[i][j] = null;
-				}
-			}
-		}
-	}
-	
-	private GLRenderAble[][] getIncreasedArray(GLRenderAble[][] ra, int newLength) {
-		// Create new tmp array
-		GLRenderAble[][] tmp = new GLRenderAble[newLength][];
-		for (int i = 0; i < ra.length; i++) {
-			// Transfer all data from current GLRenderAble array
-			tmp[i] = ra[i];
-		}
-		return tmp;
-	}
-	
+
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
 		cameras.put(Player.BLUE, new GLCamera(0.93f,0.92f));
@@ -237,21 +180,11 @@ public class GLRenderArea implements GLRenderAble {
 			sprites.draw(drawable, getCameraRect(), getCameraRect(), 2);
 		
 		drawSelectionBox(drawable, 10);
-		
-		/*TODO: 
-		 * Remove this code when done, old render code
+
+		/*
+		 * Draw menus
 		 */
-//		if (renderAbles == null)
-//			return;
-//		for (int i = 0; i < renderAbles.length; i++) {
-//			if (renderAbles[i] == null)
-//				continue;
-//			for (GLRenderAble g : renderAbles[i]) {
-//				if (g == null)
-//					continue;
-//				glra.draw(drawable, glra.getBounds(), getCameraRect(), i);
-//			}
-//		}
+		colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
 	}
 
 	private Rectangle getCameraRect() {

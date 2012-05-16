@@ -28,7 +28,7 @@ import riskyspace.view.swing.impl.SwingButton;
  * @author flygarn
  * Menu showing information and options for a Colony
  */
-public class ColonyMenu extends AbstractSideMenu{
+public class ColonyMenu extends SwingAbstractSideMenu{
 
 	/*
 	 * Strings to be printed on the menu
