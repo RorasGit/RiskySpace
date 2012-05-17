@@ -151,7 +151,7 @@ public class OpenGLView implements View, GLEventListener {
 
 	@Override
 	public void setViewer(Player player) {
-		
+		renderArea.setViewer(player);
 	}
 
 	@Override
