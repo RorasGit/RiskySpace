@@ -33,10 +33,6 @@ import riskyspace.view.View;
 import com.jogamp.opengl.util.FPSAnimator;
 
 public class OpenGLView implements View, GLEventListener {
-
-	public static void main(String[] args) {
-		new OpenGLView(20, 20);
-	}
 	
 	private GLRenderArea renderArea = null;
 	
@@ -55,7 +51,6 @@ public class OpenGLView implements View, GLEventListener {
 		int height = Toolkit.getDefaultToolkit().getScreenSize().height;
 		
 		renderArea = new GLRenderArea(width, height, rows, cols);
-		renderArea.setViewer(Player.BLUE);
 		JFrame frame = new JFrame("RiskySpace");
 		frame.setCursor(c);
 		canvas.addKeyListener(new KeyListener() {
@@ -86,9 +81,6 @@ public class OpenGLView implements View, GLEventListener {
 			System.err.println("Fullscreen not supported");
 		}
 		canvas.requestFocusInWindow();
-//		frame.pack();
-//		frame.setVisible(true);
-//		frame.setLocationRelativeTo(null);
 		
 		FPSAnimator anim = new FPSAnimator(canvas, 60);
 		anim.start();
