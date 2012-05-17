@@ -167,17 +167,18 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		// Set Size for Rank Indicators
 		int width = menuHeight/35;
 		int height = 3*width;
+
+		// Set Location
+		mineRank.setLocation(x + margin/2, menuHeight - (7*margin/2 + imageHeight));
+		turretRank.setLocation(x + margin/2, menuHeight - (height + 9*margin/2 + imageHeight));
+		radarRank.setLocation(x + margin/2, menuHeight - (height*2 + 11*margin/2 + imageHeight));
+		hangarRank.setLocation(x + margin/2, menuHeight - (height*3 + 13*margin/2 + imageHeight));
 		
 		mineRank.setSize(width, height);
 		turretRank.setSize(width, height);
 		radarRank.setSize(width, height);
 		hangarRank.setSize(width, height);
 		
-		// Set Location
-		mineRank.setLocation(x + margin/2, menuHeight - (7*margin/2 + imageHeight));
-		turretRank.setLocation(x + margin/2, menuHeight - (height + 9*margin/2 + imageHeight));
-		radarRank.setLocation(x + margin/2, menuHeight - (height*2 + 11*margin/2 + imageHeight));
-		hangarRank.setLocation(x + margin/2, menuHeight - (height*3 + 13*margin/2 + imageHeight));
 		
 		setButtons(menuWidth, menuHeight, height);
 	}
