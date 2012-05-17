@@ -16,6 +16,7 @@ public class GLAnimation implements GLRenderAble {
 
 	private final double moveRotation;
 	private final double endRotation;
+	private final double dRotation;
 	private double rotation;
 	
 	private GLSprite sprite;
@@ -41,23 +42,42 @@ public class GLAnimation implements GLRenderAble {
 		if (steps[2] != null) {
 			eR = Math.toDegrees(Path.getRotation(null, steps[1], steps[2]));
 		} else {
-			eR = 360;
+			eR = 0;
 		}
-		/*
-		 * 0 <= rotations <= 360
-		 */
-		mR = mR >= 0 ? mR : mR + 360;
-		eR = eR >= 0 ? eR : eR + 360;
-		if (Math.abs(eR - mR) > 180) {
-			eR = eR - 360;
-		}
-		moveRotation = mR;
-		endRotation = eR;
+		moveRotation = mR % 360;
+		endRotation = eR % 360;
+		dRotation = getDeltaRotation(moveRotation, endRotation);
 		rotation = moveRotation;
 		dX = steps[1].getCol() - steps[0].getCol();
 		dY = steps[0].getRow() - steps[1].getRow();
+		System.out.println("mR: " + moveRotation);
+		System.out.println("eR: " + endRotation);
 	}
 	
+	/**
+	 * Get the angle in degrees between to angles.
+	 * Positive value for clockwise rotation
+	 * Negative value for counter-clockwise rotation
+	 * @return double value x; (-180 < x < 180)
+	 */
+	private double getDeltaRotation(double from, double to) {
+		/*
+		 * Angle between from and to
+		 */
+		double a = Math.abs((from - to) % 360);
+		if (a > 180) {
+			a -= 180;
+		}
+		if (a % 180 != 0) {
+			if (from % 180 == 0) {
+				a = (Math.cos(Math.toRadians(from)) * Math.sin(Math.toRadians(to))) * a;
+			} else if (from % 90 == 0) {
+				a = -(Math.cos(Math.toRadians(to)) * Math.sin(Math.toRadians(from))) * a;
+			}
+		}
+		return a;
+	}
+
 	private void update() {
 		if (startTime == 0) {
 			startTime = System.currentTimeMillis();
@@ -65,7 +85,7 @@ public class GLAnimation implements GLRenderAble {
 		float pDone = ((float) (System.currentTimeMillis() - startTime)) / maxTime;
 		if (moveRotation != endRotation) {
 			if (pDone > 0.7f) {
-				rotation = moveRotation - ((moveRotation - endRotation) % 360) * ((pDone - 0.7f) / 0.3f);
+				rotation = moveRotation + dRotation * ((pDone - 0.7f) / 0.3f);
 			} else {
 				float mDone = pDone / 0.7f;
 				rect.setX(startX + (int) (dX * squareSize * mDone));
