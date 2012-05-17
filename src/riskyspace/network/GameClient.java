@@ -1,5 +1,6 @@
 package riskyspace.network;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -189,6 +190,9 @@ public class GameClient implements EventHandler {
 							}
 						} 
 					}
+				} catch (EOFException e){
+					System.out.println("Server shutdown!");
+					System.exit(0);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
