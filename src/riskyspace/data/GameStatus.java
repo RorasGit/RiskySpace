@@ -21,17 +21,21 @@ import riskyspace.model.World;
 
 public class GameStatus {
 	
-	static File oldSave = new File("c:\\old_saved.txt");
-	static File newSave = new File("c:\\new_saved.txt");
+	static File oldSave = new File("c:\\RiskySPace\\old_saved.txt");
+	static File newSave = new File("c:\\RiskySpace\\new_saved.txt");
 	
-	static Path pathOldSave = FileSystems.getDefault().getPath("c:\\old_saved.txt");
-	static Path pathNewSave = FileSystems.getDefault().getPath("c:\\new_saved.txt");
+	static Path RiskySpace = FileSystems.getDefault().getPath("c:\\home");
+	
+	static Path pathOldSave = FileSystems.getDefault().getPath("c:\\RiskySpace\\old_saved.txt");
+	static Path pathNewSave = FileSystems.getDefault().getPath("c:\\RiskySpace\\new_saved.txt");
 	
 	static Position pos = new Position (1, 1);
 
 	public static void saveGame(World world, Player currentPlayer, int turn ) throws ClassNotFoundException {
 		
 		try {
+			
+			Files.createDirectory(RiskySpace);
 			
 			move(pathNewSave, pathOldSave);
 			
@@ -51,30 +55,23 @@ public class GameStatus {
 		
 	}
 	
-	public static void move(Path from, Path to) {
-				
-			try {
-				Files.move(from, to, REPLACE_EXISTING);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
+	public static void move(Path from, Path to) {	
+		try {
+			Files.move(from, to, REPLACE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 		
 	
-	public static void loadGame() throws IOException {
-		
+	public static void loadGame() throws IOException {	
 		try {
-			
 			FileInputStream fis = new FileInputStream(newSave);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			
 			World world2 = (World) ois.readObject();
 			
 			ois.close();
-			
-			System.out.println("Content positions :" + world2.getContentPositions());
-		
 		} catch (ClassNotFoundException  e) {
 			System.out.println(e);
 		}
@@ -82,7 +79,6 @@ public class GameStatus {
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		saveGame(new World(), Player.BLUE, 0);
-
 		loadGame();
 	}
 
