@@ -150,10 +150,10 @@ public class GLRenderArea implements GLRenderAble {
 
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
-		cameras.put(Player.BLUE, new GLCamera(0.93f,0.92f));
-		cameras.put(Player.RED, new GLCamera(0.07f,0.08f));
-		cameras.put(Player.GREEN, new GLCamera(0.07f,0.92f));
-		cameras.put(Player.PINK, new GLCamera(0.93f,0.08f));
+		cameras.put(Player.BLUE, new GLCamera(0.93f,0.08f));
+		cameras.put(Player.RED, new GLCamera(0.07f,0.92f));
+		cameras.put(Player.GREEN, new GLCamera(0.07f,0.08f));
+		cameras.put(Player.PINK, new GLCamera(0.93f,0.92f));
 		cc = new CameraController();
 	}
 	
@@ -174,17 +174,19 @@ public class GLRenderArea implements GLRenderAble {
 
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
+		
 		drawBackground(drawable);
 		
-		if (sprites != null)
+		if (sprites != null) {
 			sprites.draw(drawable, getCameraRect(), getCameraRect(), 2);
+		}
 		
 		drawSelectionBox(drawable, 10);
 
 		/*
 		 * Draw menus
 		 */
-		colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
+//		colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
 	}
 
 	private Rectangle getCameraRect() {
@@ -284,8 +286,9 @@ public class GLRenderArea implements GLRenderAble {
 	}
 	
 	public MouseListener getClickHandler() {
-		if (clickHandler == null)
+		if (clickHandler == null) {
 			clickHandler = new ClickHandler();
+		}
 		return clickHandler;
 	}
 	
