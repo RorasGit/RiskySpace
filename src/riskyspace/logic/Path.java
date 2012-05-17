@@ -5,6 +5,8 @@ import java.util.LinkedList;
 
 import riskyspace.model.Position;
 
+import static java.lang.Math.PI;
+
 public class Path implements Serializable {
 	
 	/**
@@ -116,16 +118,15 @@ public class Path implements Serializable {
 	 */
 	public static double getRotation(Position previous, Position current, Position next) {
 		/*
-		 * All values are PI/2 too high as a result of the arrow graphics
-		 * Ship Graphics should remove PI/2 before drawing
-		 * TODO: Fix?
+		 * Return 0 if we can not calculate a rotation.
+		 * - current is null
+		 * - next equals previous
 		 */
-		/*
-		 * Return PI/2 if current is null as we can not calculate a rotation.
-		 */
-		if (current == null) {
-			return Math.PI/2;
+		if (current == null || (next == null && previous == null) || (next != null && next.equals(previous) 
+				|| (previous != null && previous.equals(next)))) {
+			return 0;
 		}
+		
 		/*
 		 * Variables for determining where the previous and next positions
 		 * are relative to the current position
@@ -159,18 +160,16 @@ public class Path implements Serializable {
 		/*
 		 * If previous is null then only determine rotation based on 
 		 * next position.
-		 * >> Path is always of length 2 at least, therefore no point can
-		 * have neither previous or next location.
 		 */
 		if (previous == null) {
 			if (nextAbove) {
-				return 3*Math.PI/2;
+				return 2*PI/2;
 			} else if (nextUnder) {
-				return Math.PI/2;
-			} else if (nextLeft) {
-				return Math.PI;
-			} else if (nextRight) {
 				return 0;
+			} else if (nextLeft) {
+				return PI/2;
+			} else if (nextRight) {
+				return 3*PI/2;
 			}
 		}
 		/*
@@ -179,56 +178,58 @@ public class Path implements Serializable {
 		 */
 		if (next == null) {
 			if (prevAbove) {
-				return Math.PI/2;
-			} else if (prevUnder) {
-				return 3*Math.PI/2;
-			} else if (prevLeft) {
 				return 0;
+			} else if (prevUnder) {
+				return PI;
+			} else if (prevLeft) {
+				return 3*PI/2;
 			} else if (prevRight) {
-				return Math.PI;
+				return PI/2;
 			}
 		}
+		
 		/*
-		 * Return rotation based on where the previous and next locations are.
+		 * Column movement first
+		 */
+		if (prevLeft) {
+			if (nextRight) {
+				return 3*PI/2;
+			} else if (nextAbove) {
+				return 0;
+			} else {
+				return 3*PI/2;
+			}
+		} else if (prevRight) {
+			if (nextLeft) {
+				return PI/2;
+			} else if (nextAbove) {
+				return PI/2;
+			} else {
+				return PI;
+			}
+		}
+		
+		/*
+		 * Row movement first
 		 */
 		if (prevAbove) {
 			if (nextUnder) {
-				return Math.PI/2;
+				return 0; // Standard rotation
 			} else if (nextLeft) {
-				return Math.PI/2;
-			} else if (nextRight) {
-				return Math.PI;
-			}
-		} else if (nextAbove) {
-			if (prevUnder) {
-				return Math.PI/2;
-			} else if (prevLeft) {
-				return Math.PI/2;
-			} else if (prevRight) {
-				return Math.PI;
+				return 0;
+			} else {
+				return PI/2;
 			}
 		} else if (prevUnder) {
 			if (nextAbove) {
-				return Math.PI/2;
+				return PI;
 			} else if (nextLeft) {
-				return 0;
-			} else if (nextRight) {
-				return 3*Math.PI/2;
-			}
-		} else if (nextUnder) {
-			if (prevAbove) {
-				return Math.PI/2;
-			} else if (prevLeft) {
-				return 0;
-			} else if (prevRight) {
-				return 3*Math.PI/2;
+				return 3*PI/2;
+			} else {
+				return PI;
 			}
 		}
-		/*
-		 * Return 0 if all are false:
-		 * previous is null and next is null
-		 * or previous.equals(next)
-		 */
+		
 		return 0;
 	}
 	

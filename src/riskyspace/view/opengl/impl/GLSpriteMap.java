@@ -41,7 +41,8 @@ public class GLSpriteMap implements GLRenderAble {
 	private static final String HEAD = "head";
 	private static final String START = "start";
 	private static final String STRAIGHT = "straight";
-	private static final String TURN = "turn";
+	private static final String TURN1 = "turn1";
+	private static final String TURN2 = "turn2";
 	
 	/*
 	 * Planet Sprites
@@ -157,10 +158,11 @@ public class GLSpriteMap implements GLRenderAble {
 		colonyMarkerSprites.put(Player.PINK, 	new GLSprite("colonymarker:PINK",  64, 64));
 		colonyMarkerSprites.put(Player.GREEN, 	new GLSprite("colonymarker:GREEN", 64, 64));
 		
-		pathSprites.put(HEAD, new GLSprite("path/head", 128, 128));
-		pathSprites.put(START, new GLSprite("path/start", 128, 128));
-		pathSprites.put(STRAIGHT, new GLSprite("path/straight", 128, 128));
-		pathSprites.put(TURN, new GLSprite("path/turn", 128, 128));
+		pathSprites.put(START, 		new GLSprite("arrows", 0, 0, 128, 128));
+		pathSprites.put(TURN1, 		new GLSprite("arrows", 0, 128, 128, 128));
+		pathSprites.put(STRAIGHT, 	new GLSprite("arrows", 128, 0, 128, 128));
+		pathSprites.put(HEAD, 		new GLSprite("arrows", 128, 128, 128, 128));
+		pathSprites.put(TURN2, 		new GLSprite("arrows", 255, 0, 128, 128));
 		
 		fogSprite = new GLSprite("cloud", 256, 256);
 	}
@@ -196,7 +198,7 @@ public class GLSpriteMap implements GLRenderAble {
 			if (map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships()) == null)
 				map.fleets.get(fleetData.getPlayer()).put(fleetData.getFlagships(), new HashMap<Rectangle, Double>());
 			Map<Rectangle, Double> dataMap = map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships());
-			double angle = Math.toDegrees(Path.getRotation(null, fleetData.getSteps()[0], fleetData.getSteps()[1])) - 90.0;
+			double angle = Math.toDegrees(Path.getRotation(null, fleetData.getSteps()[0], fleetData.getSteps()[1]));
 			dataMap.put(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f), angle);
 		}
 		/* Add Animation Data*/
@@ -240,12 +242,26 @@ public class GLSpriteMap implements GLRenderAble {
 						}
 						rotation = Path.getRotation(paths[i][j-1], paths[i][j], null);
 						map.paths.get(HEAD).put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+						
+						
+						
+						
+						
+						
 					} else if (paths[i][j-1].getCol() != paths[i][j+1].getCol() && paths[i][j-1].getRow() != paths[i][j+1].getRow()) {
-						if (map.paths.get(TURN) == null) {
-							map.paths.put(TURN, new HashMap<Rectangle, Double>());
+						if (!flipTurnTexture(paths[i][j-1], paths[i][j], paths[i][j+1])) {
+							if (map.paths.get(TURN1) == null) {
+								map.paths.put(TURN1, new HashMap<Rectangle, Double>());
+							}
+							rotation = Path.getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]);
+							map.paths.get(TURN1).put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
+						} else {
+							if (map.paths.get(TURN2) == null) {
+								map.paths.put(TURN2, new HashMap<Rectangle, Double>());
+							}
+							rotation = Path.getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]);
+							map.paths.get(TURN2).put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
 						}
-						rotation = Path.getRotation(paths[i][j-1], paths[i][j], paths[i][j+1]);
-						map.paths.get(TURN).put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
 					} else {
 						if (map.paths.get(STRAIGHT) == null) {
 							map.paths.put(STRAIGHT, new HashMap<Rectangle, Double>());
@@ -259,6 +275,15 @@ public class GLSpriteMap implements GLRenderAble {
 		return map;
 	}
 	
+	private static boolean flipTurnTexture(Position prev, Position current, Position next) {
+		boolean row = next.getRow() - prev.getRow() > 0;
+		boolean col = next.getCol() - prev.getCol() > 0;
+		boolean curCol = prev.getCol() == current.getCol();
+		boolean curRow = prev.getRow() == current.getRow();
+		
+		return (!row && col && curRow) || (row && !col && curRow) || (row && col && curCol) || (!row && !col && curCol);
+	}
+
 	/**
 	 * Calculates a Rectangle for the area to draw a GLSprite
 	 * @param pos The Position of the GLSprite

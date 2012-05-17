@@ -36,10 +36,10 @@ public class GLAnimation implements GLRenderAble {
 		this.squareSize = squareSize;
 		this.startX = rect.getX();
 		this.startY = rect.getY();
-		double mR = Math.toDegrees(Path.getRotation(null, steps[0], steps[1])) - 90.0;
+		double mR = Math.toDegrees(Path.getRotation(null, steps[0], steps[1]));
 		double eR;
 		if (steps[2] != null) {
-			eR = Math.toDegrees(Path.getRotation(null, steps[1], steps[2])) - 90.0;
+			eR = Math.toDegrees(Path.getRotation(null, steps[1], steps[2]));
 		} else {
 			eR = 360;
 		}
