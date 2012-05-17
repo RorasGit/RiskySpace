@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -21,16 +22,12 @@ import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
+import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.camera.GLCamera;
-import riskyspace.view.camera.Camera;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
 import riskyspace.view.opengl.menu.GLColonyMenu;
-import riskyspace.view.swing.menu.ColonyMenu;
-import riskyspace.view.swing.menu.FleetMenu;
-import riskyspace.view.swing.menu.PlanetMenu;
-import riskyspace.view.swing.menu.TopMenu;
 
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
@@ -290,6 +287,10 @@ public class GLRenderArea implements GLRenderAble {
 			clickHandler = new ClickHandler();
 		}
 		return clickHandler;
+	}
+	
+	public KeyListener getCameraKeyListener() {
+		return cc;
 	}
 	
 	/* Data management Methods*/

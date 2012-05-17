@@ -69,6 +69,7 @@ public class OpenGLView implements View, GLEventListener {
 			@Override public void keyReleased(KeyEvent arg0) {}
 			@Override public void keyTyped(KeyEvent arg0) {}
 		});
+		canvas.addKeyListener(renderArea.getCameraKeyListener());
 		canvas.addMouseListener(renderArea.getClickHandler());
 		canvas.addGLEventListener(this);
 		
