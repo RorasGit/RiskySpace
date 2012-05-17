@@ -3,6 +3,7 @@ package riskyspace.view.opengl.impl;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
 
 import javax.media.opengl.GLAutoDrawable;
 
@@ -37,6 +38,11 @@ public class GLRankIndicator extends RankIndicator implements GLRenderAble {
 		renderRect = new Rectangle(getX(), getY(), width, height);
 
 	}
+	@Override
+	public void setLocation(int x, int y) {
+		super.setLocation(x, y);
+		renderRect = new Rectangle(x, y, getWidth(), getHeight());
+	}
 
 	@Override
 	public Rectangle getBounds() {
@@ -51,17 +57,19 @@ public class GLRankIndicator extends RankIndicator implements GLRenderAble {
 			 * Draw lights
 			 */
 			//TODO: FIX!
+			/*
 			for (int i = 1; i <= 3; i++) {
 				if (i <= getMaxRank()) {
 					if (i <= getRank()) {
 						greenLight.draw(drawable, new Rectangle(getX(), getY() + (i-1)*dHeight - getHeight(), getWidth(), getHeight()), targetArea, zIndex);
 					} else {
-					//	redLight.draw(drawable, new Rectangle(getX(), getY() + (i-1)*dHeight - getHeight(), getWidth(), getHeight()), targetArea, zIndex);
+						redLight.draw(drawable, new Rectangle(getX(), getY() + (i-1)*dHeight - getHeight(), getWidth(), getHeight()), targetArea, zIndex);
 					}
 				} else {
 					offLight.draw(drawable, new Rectangle(getX(), getY() + (i-1)*dHeight - getHeight(), getWidth(), getHeight()), targetArea, zIndex);
 				}
 			}
+			*/
 		}
 	}
 }

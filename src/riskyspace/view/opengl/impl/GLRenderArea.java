@@ -186,7 +186,7 @@ public class GLRenderArea implements GLRenderAble {
 		/*
 		 * Draw menus
 		 */
-//		colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
+		//colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
 	}
 
 	private Rectangle getCameraRect() {
