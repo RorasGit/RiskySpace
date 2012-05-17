@@ -46,7 +46,7 @@ public class GLAnimation implements GLRenderAble {
 		/*
 		 * 0 <= rotations <= 360
 		 */
-		mR = mR >= 0 ? mR : mR + 360;		
+		mR = mR >= 0 ? mR : mR + 360;
 		eR = eR >= 0 ? eR : eR + 360;
 		if (Math.abs(eR - mR) > 180) {
 			eR = eR - 360;
