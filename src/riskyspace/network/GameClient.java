@@ -39,7 +39,7 @@ public class GameClient implements EventHandler {
 	private Socket socket = null;
 
 	public static void main(String[] args) {
-		new GameClient("129.16.188.104", 6013);
+		new GameClient("129.16.199.113", 6013);
 	}
 	
 	public GameClient(String hostIP, int hostPort) {
