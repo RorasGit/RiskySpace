@@ -44,16 +44,16 @@ public class Hangar implements BuildAble, Ranked {
 		}
 	}
 	public boolean canBuild(ShipType shiptype){
-		if (shiptype == ShipType.SCOUT) {
+		if (shiptype == ShipType.SCOUT || shiptype == ShipType.HUNTER) {
 			return getRank() >= 1;
-		}else if (shiptype == ShipType.COLONIZER) {
-			return getRank() >= 3;
 		}else if (shiptype == ShipType.DESTROYER) {
 			return getRank() >= 3;
-		}else if (shiptype == ShipType.HUNTER) {
-			return getRank() >= 1;
 		}
 		return false;
+	}
+	
+	public boolean canRepair() {
+		return rank >= 2;
 	}
 
 	@Override

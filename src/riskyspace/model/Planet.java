@@ -42,6 +42,7 @@ public class Planet implements Serializable{
 		id = nextId;
 		nextId++;
 	}
+
 	
 	/**
 	 * Places a new Colony on this Planet.
@@ -55,12 +56,21 @@ public class Planet implements Serializable{
 		EventBus.SERVER.publish(evt);
 	}
 	
+	public void buildHomeColony(Player owner) {
+		colony = new HomeColony(type, owner);
+	}
+	
 	/**
 	 * Removes the Colony on this Planet if there is one, otherwise it does nothing.
 	 */
 	public void destroyColony() {
 		Player owner = colony.getOwner();
+		boolean wasHome = colony.isHomeColony();
 		colony = null;
+		if (wasHome) {
+			Event evt = new Event(Event.EventTag.HOME_LOST, owner);
+			GameManager.INSTANCE.handleEvent(evt, owner);
+		}
 		Event evt = new Event(Event.EventTag.INCOME_CHANGED, owner);
 		GameManager.INSTANCE.handleEvent(evt, owner);
 		evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);

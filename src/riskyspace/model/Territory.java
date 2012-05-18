@@ -64,6 +64,11 @@ public class Territory implements Serializable{
 		}
 	}
 	
+	public void setHomePlanet(Player player) {
+		planet = new Planet(Resource.METAL);
+		planet.buildHomeColony(player);
+	}
+	
 	public boolean hasPlanet() {
 		return planet != null;
 	}
