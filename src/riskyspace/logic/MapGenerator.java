@@ -51,20 +51,20 @@ public class MapGenerator {
 		int[][] startPos = new int[][]{
 				{3, 3},
 				{rows - 3, cols - 3},
-				{3, cols - 3},
 				{rows - 3, 3},
+				{3, cols - 3},
 		};
 		int[][] closePos = new int[][]{
 				{+2, -1, -1, +2},
 				{-2, +1, +1, -2},
-				{-2, -1, +1, -2},
 				{-1, -2, +2, +1},
+				{-2, -1, +1, -2},
 		};
 		Player[] players = new Player[]{
 				Player.RED,
 				Player.BLUE,
-				Player.PINK,
 				Player.GREEN,
+				Player.PINK,
 		};
 		
 		for (int i = 0; i < numberOfPlayers; i++) {
