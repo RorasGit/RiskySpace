@@ -2,21 +2,25 @@ package riskyspace.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.io.File;
 
-public class Button implements Clickable {
+public class Button implements Clickable, GlowableGraphic {
 
 	private int x, y, width, height;
 	private Image image = null;
 	private Image scaledImage = null;
 	private Image disabledImage = null;
 	private Image scaledDisabledImage = null;
+	private Image glowImage = null;
+	private Image scaledGlowImage = null;
 	private Action action = null;
 	private String text = null;
+	private String imageLocation = null;
 	private Color textColor = null;
 	private Boolean enabled = true;
 	
@@ -34,11 +38,13 @@ public class Button implements Clickable {
 	public void setImage(String location) {
 		image = Toolkit.getDefaultToolkit().getImage(location);
 		if (location.endsWith(View.res)) {
-			location = location.substring(0, location.indexOf(View.res));
+			imageLocation = location.substring(0, location.indexOf(View.res));
 		}
-		disabledImage = Toolkit.getDefaultToolkit().getImage(location + "_disabled" + View.res);
+		disabledImage = Toolkit.getDefaultToolkit().getImage(imageLocation + "_disabled" + View.res);
 		scaledDisabledImage = disabledImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		glowImage = Toolkit.getDefaultToolkit().getImage(imageLocation + "_glow" + View.res);
+		scaledGlowImage = glowImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 	}
 
 	public void setText(String text) {
@@ -49,9 +55,17 @@ public class Button implements Clickable {
 		this.textColor = color;
 	}
 	
+	public String getText() {
+		return text;
+	}
+	
 	public void draw(Graphics g) {
-		if (isEnabled()) {	
-			g.drawImage(scaledImage, x, y, null);
+		if (isEnabled()) {
+			if (cursorOver()) {
+				g.drawImage(scaledGlowImage, x, y, null);
+			} else {
+				g.drawImage(scaledImage, x, y, null);
+			}
 			/*
 			 * Draw centered text
 			 */
@@ -123,10 +137,33 @@ public class Button implements Clickable {
 	public boolean mouseReleased(Point p) {
 		if (isEnabled()) {
 			if (contains(p)) {
+				if (action != null) {
+					action.performAction();
+				}
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean cursorOver() {
+		if(this.contains(MouseInfo.getPointerInfo().getLocation())) {
+			if (hasGlowImage()) {
+			return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean hasGlowImage() {
+		File file = new File(imageLocation + "_glow" + View.res);
+		if (file.exists()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	@Override
