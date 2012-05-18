@@ -22,6 +22,7 @@ import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
+import riskyspace.view.ViewResources;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
 import riskyspace.view.camera.GLCamera;
@@ -29,6 +30,7 @@ import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
 import riskyspace.view.opengl.menu.GLColonyMenu;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
@@ -86,6 +88,7 @@ public class GLRenderArea implements GLRenderAble {
 	 */
 	private GLColonyMenu colonyMenu = null;
 
+	private TextRenderer textRenderer;
 	
 	public GLRenderArea(int width, int height, int rows, int cols) {
 		screenArea = new Rectangle(0, 0, width, height);
@@ -97,6 +100,7 @@ public class GLRenderArea implements GLRenderAble {
 		initCameras();
 		createBackground();
 		createMenus();
+		textRenderer = new TextRenderer(ViewResources.getFont().deriveFont(30.0f));
 	}
 
 	
@@ -179,7 +183,15 @@ public class GLRenderArea implements GLRenderAble {
 		}
 		
 		drawSelectionBox(drawable, 10);
-
+		
+		textRenderer.beginRendering(screenArea.getWidth(), screenArea.getHeight());
+		textRenderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
+	    textRenderer.draw("That was easy, check GLRenderArea", 300, 400);
+	    textRenderer.draw("Rapp is noob LOL player!", 300, 350);
+	    textRenderer.setColor(0.2f, 0.7f, 0.7f, 0.8f);
+	    textRenderer.draw("//Roras", 300, 300);
+	    textRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		textRenderer.endRendering();
 		/*
 		 * Draw menus
 		 */
