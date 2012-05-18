@@ -35,6 +35,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class OpenGLView implements View, GLEventListener {
 	
 	private GLRenderArea renderArea = null;
+	private JFrame frame = null;
 	
 	public OpenGLView (int rows, int cols) {
 		System.setProperty("sun.java2d.noddraw", "true");
@@ -51,7 +52,7 @@ public class OpenGLView implements View, GLEventListener {
 		int height = Toolkit.getDefaultToolkit().getScreenSize().height;
 		
 		renderArea = new GLRenderArea(width, height, rows, cols);
-		JFrame frame = new JFrame("RiskySpace");
+		frame = new JFrame("RiskySpace");
 		frame.setCursor(c);
 		canvas.addKeyListener(new KeyListener() {
 			@Override
@@ -149,17 +150,17 @@ public class OpenGLView implements View, GLEventListener {
 
 	@Override
 	public void setActivePlayer(Player player) {
-		
+		renderArea.setActivePlayer(player);
 	}
 
 	@Override
 	public void setVisible(boolean visible) {
-		
+		frame.setVisible(visible);
 	}
 
 	@Override
 	public boolean isVisible() {
-		return false;
+		return frame.isVisible();
 	}
 
 	@Override
@@ -169,31 +170,31 @@ public class OpenGLView implements View, GLEventListener {
 
 	@Override
 	public void setPlayerStats(PlayerStats stats) {
-		
+		renderArea.setStats(stats);
 	}
 
 	@Override
 	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
-		
+		renderArea.setQueue(colonyQueues);
 	}
 
 	@Override
 	public void showPlanet(Territory selection) {
-		
+		renderArea.showTerritory(selection);
 	}
 
 	@Override
 	public void showColony(Colony selection) {
-		
+		renderArea.showColony(selection);
 	}
 
 	@Override
 	public void showFleet(Fleet selection) {
-		
+		renderArea.showFleet(selection);
 	}
 
 	@Override
 	public void hideMenus() {
-		
+		renderArea.hideSideMenus();
 	}
 }
