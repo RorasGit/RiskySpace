@@ -6,6 +6,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 
+import org.hamcrest.core.IsEqual;
+
 import riskyspace.view.Button;
 import riskyspace.view.DropdownButton;
 import riskyspace.view.View;
@@ -98,27 +100,29 @@ public class Lobby extends AbstractPreGameMenu {
 	
 	@Override
 	public boolean mousePressed(Point p) {
-		if (numberOfPlayersButton.mousePressed(p)) {
-			gameModesButton.setOpen(false);
-			if (numberOfPlayersButton.getSelectedValue() == 3) {
-				playerThree.setEnabled(true);
-				playerFour.setEnabled(false);
+		if (isVisible()) {
+			if (numberOfPlayersButton.mousePressed(p)) {
+				gameModesButton.setOpen(false);
+				if (numberOfPlayersButton.getSelectedValue() == 3) {
+					playerThree.setEnabled(true);
+					playerFour.setEnabled(false);
+				}
+				else if (numberOfPlayersButton.getSelectedValue() == 4) {
+					playerThree.setEnabled(true);
+					playerFour.setEnabled(true);
+				} else {
+					playerThree.setEnabled(false);
+					playerFour.setEnabled(false);
+				}
+				return true;
 			}
-			else if (numberOfPlayersButton.getSelectedValue() == 4) {
-				playerThree.setEnabled(true);
-				playerFour.setEnabled(true);
-			} else {
-				playerThree.setEnabled(false);
-				playerFour.setEnabled(false);
+			if (gameModesButton.mousePressed(p)) {
+				numberOfPlayersButton.setOpen(false);
+				return true;
 			}
-			return true;
-		}
-		if (gameModesButton.mousePressed(p)) {
 			numberOfPlayersButton.setOpen(false);
-			return true;
+			gameModesButton.setOpen(false);
 		}
-		numberOfPlayersButton.setOpen(false);
-		gameModesButton.setOpen(false);
 		return false;
 	}
 
@@ -127,9 +131,7 @@ public class Lobby extends AbstractPreGameMenu {
 	public boolean mouseReleased(Point p) {
 		if (numberOfPlayersButton.mouseReleased(p)) {return true;}
 		if (gameModesButton.mouseReleased(p)) {return true;}
-		else {
 			return false;
-		}
 	}
 	
 

@@ -8,7 +8,7 @@ import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Slider implements Clickable {
+public class VolumeSlider implements Clickable {
 	
 	private Map<Integer, Image> sliderValues = new HashMap<Integer, Image>();
 	
@@ -19,7 +19,7 @@ public class Slider implements Clickable {
 	private Color textColor;
 	private String text;
 	
-	public Slider(int x, int y, int width, int height, String text) {
+	public VolumeSlider(int x, int y, int width, int height, String text) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
