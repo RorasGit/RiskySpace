@@ -65,7 +65,8 @@ public class StartScreen extends JPanel{
 	}
 	
 	public void createMenus() {
-		multiplayerLobby = new MultiplayerLobby(width/2 - width/3, height/2 - height/3, 2*width/3, 2*height/3);
+		localLobby = new Lobby(width/2 - width/3, height/2 - height/3, 2*width/3, 2*height/3);
+		multiplayerLobby = new Lobby(width/2 - width/3, height/2 - height/3, 2*width/3, 2*height/3);
 		settingsMenu = new SettingsMenu(width/2 - width/6, height/2 - height/4, width/3, height/3);
 	}
 	
@@ -120,9 +121,9 @@ public class StartScreen extends JPanel{
 		
 		if (!startScreenVisible) {
 			backButton.draw(g);
-	//		if (localLobby.isVisible()) {
-	//			localLobby.draw(g);
-	//		}
+//			if (localLobby.isVisible()) {
+//				localLobby.draw(g);
+//			}
 	//		if (loadGame.isVisible()) {
 	//			loadGame.draw(g);
 	//		}

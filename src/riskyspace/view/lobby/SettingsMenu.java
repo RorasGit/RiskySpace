@@ -3,17 +3,17 @@ package riskyspace.view.lobby;
 import java.awt.Graphics;
 import java.awt.Point;
 
-import riskyspace.view.Slider;
+import riskyspace.view.VolumeSlider;
 
 public class SettingsMenu extends AbstractPreGameMenu {
 	
-	private Slider musicVolume = null;
-	private Slider effectsVolume = null;
+	private VolumeSlider musicVolume = null;
+	private VolumeSlider effectsVolume = null;
 
 	public SettingsMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
-		musicVolume = new Slider(x + menuWidth/2 - 135, y + menuHeight/3, 270, 30, "Music volume");
-		effectsVolume = new Slider(x + menuWidth/2 - 135, y + 2*menuHeight/3, 270, 30, "eFFect volume");
+		musicVolume = new VolumeSlider(x + menuWidth/2 - 135, y + menuHeight/3, 270, 30, "Music volume");
+		effectsVolume = new VolumeSlider(x + menuWidth/2 - 135, y + 2*menuHeight/3, 270, 30, "eFFect volume");
 	}
 	
 	public void draw(Graphics g) {

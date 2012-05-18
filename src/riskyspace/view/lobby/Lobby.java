@@ -11,7 +11,7 @@ import riskyspace.view.DropdownButton;
 import riskyspace.view.View;
 
 
-public class MultiplayerLobby extends AbstractPreGameMenu {
+public class Lobby extends AbstractPreGameMenu {
 
 	private Button playerOne = null;
 	private Button playerTwo = null;
@@ -28,7 +28,7 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 	private Image rightsideMenu = null;
 	private Image gameModeImage = null;
 	
-	public MultiplayerLobby(int x, int y, int menuWidth, int menuHeight) {
+	public Lobby(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		createButtons();
 		createBackground();
