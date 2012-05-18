@@ -20,6 +20,7 @@ import javax.media.opengl.GLAutoDrawable;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
+import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
@@ -330,6 +331,23 @@ public class GLRenderArea implements GLRenderAble {
 		/*
 		 * Set for BuildQueueMenu
 		 */
+	}
+	
+	public void showFleet(Fleet selection) {
+		hideSideMenus();
+		fleetMenu.setFleet(selection);
+		fleetMenu.setVisible(true);
+	}
+	
+	public void showColony(Colony selection) {
+		if (selection.equals(colonyMenu.getColony()) && colonyMenu.isVisible()) {
+			// Update colony
+			colonyMenu.setColony(selection);
+		} else {
+			hideSideMenus();
+			colonyMenu.setColony(selection);
+			colonyMenu.setVisible(true);
+		}
 	}
 	
 	public void showTerritory(Territory selection) {

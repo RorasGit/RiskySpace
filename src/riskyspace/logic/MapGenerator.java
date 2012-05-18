@@ -11,6 +11,11 @@ import riskyspace.model.Ship;
 import riskyspace.model.ShipType;
 import riskyspace.model.Territory;
 
+/**
+ * 
+ * @author Daniel Augurell, Alexander Hederstaf
+ *
+ */
 public class MapGenerator {
 	
 	public static Map<Position, Territory> generateMap(int rows, int cols, int numberOfPlayers){
