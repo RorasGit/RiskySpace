@@ -119,6 +119,11 @@ public class GLRenderArea implements GLRenderAble {
 		int menuWidth = screenArea.getHeight() / 3;
 		colonyMenu = new GLColonyMenu(screenArea.getWidth() - menuWidth, 80,
 				menuWidth, screenArea.getHeight()-80);
+		fleetMenu = new GLFleetMenu(screenArea.getWidth() - menuWidth, 80,
+				menuWidth, screenArea.getHeight()-80);
+		planetMenu = new GLPlanetMenu(screenArea.getWidth() - menuWidth, 80,
+				menuWidth, screenArea.getHeight()-80);
+		
 	}
 
 
@@ -178,11 +183,17 @@ public class GLRenderArea implements GLRenderAble {
 		}
 	}
 	
+	public void setActivePlayer(Player player) {
+		/*
+		 * TODO: 
+		 * Print text if not active==viewer
+		 */
+	}
+	
 	@Override
 	public Rectangle getBounds() {
 		return screenArea;
 	}
-	
 
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
