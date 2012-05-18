@@ -98,7 +98,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		backButton = new GLButton(getX() + margin, 
 				(getBounds().getWidth() - 2*margin)/4, 
 				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
-		backButton.setImage("menu/back", 128, 32);
+		backButton.setTexture("menu/back", 128, 32);
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() { 

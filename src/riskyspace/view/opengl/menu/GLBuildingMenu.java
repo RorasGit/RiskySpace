@@ -213,7 +213,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		
 		upgradeMine = new GLButton(x, mineRank.getY() + upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeMine.setImage("menu/upgrade", 128, 32);
+		upgradeMine.setTexture("menu/upgrade", 128, 32);
 		upgradeMine.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -224,7 +224,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		
 		upgradeTurret = new GLButton(x, turretRank.getY() + upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeTurret.setImage("menu/upgrade", 128, 32);
+		upgradeTurret.setTexture("menu/upgrade", 128, 32);
 		upgradeTurret.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -236,7 +236,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		
 		upgradeRadar = new GLButton(x, radarRank.getY() + upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeRadar.setImage("menu/upgrade", 128, 32);
+		upgradeRadar.setTexture("menu/upgrade", 128, 32);
 		upgradeRadar.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -247,7 +247,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		
 		upgradeHangar = new GLButton(x, hangarRank.getY() + upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeHangar.setImage("menu/upgrade", 128, 32);
+		upgradeHangar.setTexture("menu/upgrade", 128, 32);
 		upgradeHangar.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -259,7 +259,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		backButton = new GLButton(getX() + margin, 
 				(getBounds().getWidth() - 2*margin)/4, 
 				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
-		backButton.setImage("menu/back", 128, 32);
+		backButton.setTexture("menu/back", 128, 32);
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {

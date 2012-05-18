@@ -37,7 +37,7 @@ public class GLPlanetMenu extends GLAbstractSideMenu{
 		planetPicture = metalPlanetPicture;
 		
 		colonizeButton = new GLButton(x + margin, (menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
-		colonizeButton.setImage("menu/colonizeButton", 180, 50);
+		colonizeButton.setTexture("menu/colonizeButton", 180, 50);
 		colonizeButton.setAction(new Action(){
 			@Override
 			public void performAction() {

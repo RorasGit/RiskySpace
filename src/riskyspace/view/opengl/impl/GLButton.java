@@ -22,7 +22,14 @@ public class GLButton extends Button implements GLRenderAble{
 		super(x, y, width, height);
 		renderRect = new Rectangle(x, y, width, height);
 	}
-	public void setImage(String textureName, int width, int height){
+	
+	/**
+	 * Set the Texture to be drawn as this button.
+	 * @param textureName The name of the texture
+	 * @param width Width of texture 
+	 * @param height Height of texture
+	 */
+	public void setTexture(String textureName, int width, int height){
 		image = new GLSprite(textureName, width, height);
 		disabledImage = new GLSprite(textureName + "_disabled", width, height);
 	}

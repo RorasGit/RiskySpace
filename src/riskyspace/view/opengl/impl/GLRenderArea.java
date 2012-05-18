@@ -18,8 +18,12 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
 import riskyspace.logic.SpriteMapData;
+import riskyspace.model.BuildAble;
+import riskyspace.model.Colony;
 import riskyspace.model.Player;
+import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
+import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.ViewResources;
@@ -29,6 +33,9 @@ import riskyspace.view.camera.GLCamera;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
 import riskyspace.view.opengl.menu.GLColonyMenu;
+import riskyspace.view.opengl.menu.GLFleetMenu;
+import riskyspace.view.opengl.menu.GLPlanetMenu;
+import riskyspace.view.opengl.menu.GLTopMenu;
 
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
@@ -87,6 +94,9 @@ public class GLRenderArea implements GLRenderAble {
 	 * Menus
 	 */
 	private GLColonyMenu colonyMenu = null;
+	private GLPlanetMenu planetMenu = null;
+	private GLFleetMenu fleetMenu = null;
+	private GLTopMenu topMenu = null;
 
 	private TextRenderer textRenderer;
 	
@@ -309,7 +319,31 @@ public class GLRenderArea implements GLRenderAble {
 	public void updateData(SpriteMapData data) {
 		sprites = GLSpriteMap.getSprites(data, squareSize);
 	}
+	
+	public void setStats(PlayerStats stats) {
+		topMenu.setStats(stats);
+		colonyMenu.setStats(stats);
+	}
 
+	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
+		colonyMenu.setQueues(colonyQueues);
+		/*
+		 * Set for BuildQueueMenu
+		 */
+	}
+	
+	public void showTerritory(Territory selection) {
+		hideSideMenus();
+		planetMenu.setTerritory(selection);
+		planetMenu.setVisible(true);
+	}
+	
+	public void hideSideMenus() {
+		colonyMenu.setVisible(false);
+		fleetMenu.setVisible(false);
+		planetMenu.setVisible(false);
+	}
+	
 	private class ClickHandler implements MouseListener {
 
 		public Point pressedPoint;
