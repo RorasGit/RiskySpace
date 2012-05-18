@@ -35,6 +35,7 @@ public class DropdownButton<E> implements Clickable {
 		createButtons();
 		mainButton = new Button(x,y,width,height);
 		mainButton.setImage("res/menu/lobby/dropdownMenu/dropdownButton.png");
+		mainButton.setText(buttonList.get(0).getText());
 		mainButton.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -47,15 +48,15 @@ public class DropdownButton<E> implements Clickable {
 	public void createButtons() {
 		buttonList.clear();
 		int yPos = y + height;
-		int menuHeight = height;
+		int buttonHeight = height;
 		int value = 2;
 		for(E item : itemList) {
-			Button b = new Button(x, yPos, width, menuHeight);
+			Button b = new Button(x, yPos, width, buttonHeight);
 			b.setImage("res/menu/lobby/dropdownMenu/dropdownItem.png");
 			b.setText(item.toString());
 			buttonList.add(b);
 			values.put(b, value);
-			yPos = yPos + menuHeight;
+			yPos = yPos + buttonHeight;
 			height = height + height;
 			value = value + 1;
 		}
@@ -101,6 +102,8 @@ public class DropdownButton<E> implements Clickable {
 			for (Button b : buttonList) {
 				if (b.mousePressed(p)) {
 					selectedValue = values.get(b);
+					mainButton.setText(b.getText());
+					open = false;
 					return true;
 				}
 			}

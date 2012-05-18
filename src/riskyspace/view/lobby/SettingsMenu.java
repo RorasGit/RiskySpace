@@ -7,26 +7,31 @@ import riskyspace.view.Slider;
 
 public class SettingsMenu extends AbstractPreGameMenu {
 	
-	private Slider volume = null;
+	private Slider musicVolume = null;
+	private Slider effectsVolume = null;
 
 	public SettingsMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
-		volume = new Slider(x,y + menuHeight/2, menuWidth, menuHeight/6);
+		musicVolume = new Slider(x + menuWidth/2 - 135, y + menuHeight/3, 270, 30, "Music volume");
+		effectsVolume = new Slider(x + menuWidth/2 - 135, y + 2*menuHeight/3, 270, 30, "eFFect volume");
 	}
 	
 	public void draw(Graphics g) {
-		volume.draw(g);
+		musicVolume.draw(g);
+		effectsVolume.draw(g);
 	}
 
 	@Override
 	public boolean mousePressed(Point p) {
-		if (volume.mousePressed(p)) {return true;}
+		if (musicVolume.mousePressed(p)) {return true;}
+		if (effectsVolume.mousePressed(p)) {return true;}
 		return false;
 	}
 
 	@Override
 	public boolean mouseReleased(Point p) {
-		if (volume.mouseReleased(p)) {return true;}
+		if (musicVolume.mouseReleased(p)) {return true;}
+		if (effectsVolume.mouseReleased(p)) {return true;}
 			return false;
 	}
 

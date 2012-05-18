@@ -2,7 +2,6 @@ package riskyspace.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MouseInfo;
@@ -10,7 +9,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.io.File;
 
-public class Button implements Clickable, Glowable {
+public class Button implements Clickable, GlowableGraphic {
 
 	private int x, y, width, height;
 	private Image image = null;
@@ -18,6 +17,7 @@ public class Button implements Clickable, Glowable {
 	private Image disabledImage = null;
 	private Image scaledDisabledImage = null;
 	private Image glowImage = null;
+	private Image scaledGlowImage = null;
 	private Action action = null;
 	private String text = null;
 	private String imageLocation = null;
@@ -43,7 +43,8 @@ public class Button implements Clickable, Glowable {
 		disabledImage = Toolkit.getDefaultToolkit().getImage(imageLocation + "_disabled" + View.res);
 		scaledDisabledImage = disabledImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		scaledImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
-		glowImage = Toolkit.getDefaultToolkit().getImage(imageLocation + "Glow" + View.res);
+		glowImage = Toolkit.getDefaultToolkit().getImage(imageLocation + "_glow" + View.res);
+		scaledGlowImage = glowImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 	}
 
 	public void setText(String text) {
@@ -61,7 +62,7 @@ public class Button implements Clickable, Glowable {
 	public void draw(Graphics g) {
 		if (isEnabled()) {
 			if (cursorOver()) {
-				g.drawImage(glowImage, x, y, null);
+				g.drawImage(scaledGlowImage, x, y, null);
 			} else {
 				g.drawImage(scaledImage, x, y, null);
 			}
@@ -157,7 +158,7 @@ public class Button implements Clickable, Glowable {
 	
 	@Override
 	public boolean hasGlowImage() {
-		File file = new File(imageLocation + "Glow" + View.res);
+		File file = new File(imageLocation + "_glow" + View.res);
 		if (file.exists()) {
 			return true;
 		} else {

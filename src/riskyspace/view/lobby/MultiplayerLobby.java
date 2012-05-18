@@ -25,8 +25,6 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 	
 	private int margin = 10;
 	
-	private int numberOfPlayers = 2;
-	
 	private Image rightsideMenu = null;
 	private Image gameModeImage = null;
 	
@@ -52,8 +50,7 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 		playerFour.setEnabled(false);
 		
 		startGame = new Button(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
-		startGame.setImage("res/menu/lobby/standardButton" + View.res);
-		startGame.setText("Start Game");
+		startGame.setImage("res/menu/lobby/startGameButton" + View.res);
 		
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("2 players");
@@ -103,12 +100,11 @@ public class MultiplayerLobby extends AbstractPreGameMenu {
 	public boolean mousePressed(Point p) {
 		if (numberOfPlayersButton.mousePressed(p)) {
 			gameModesButton.setOpen(false);
-			numberOfPlayers = numberOfPlayersButton.getSelectedValue();
-			if (numberOfPlayers == 3) {
+			if (numberOfPlayersButton.getSelectedValue() == 3) {
 				playerThree.setEnabled(true);
 				playerFour.setEnabled(false);
 			}
-			else if (numberOfPlayers == 4) {
+			else if (numberOfPlayersButton.getSelectedValue() == 4) {
 				playerThree.setEnabled(true);
 				playerFour.setEnabled(true);
 			} else {

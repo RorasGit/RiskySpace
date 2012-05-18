@@ -1,5 +1,6 @@
 package riskyspace.view;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -9,24 +10,21 @@ import java.util.Map;
 
 public class Slider implements Clickable {
 	
-	private Image slider0 = null;
-	private Image slider25 = null;
-	private Image slider50 = null;
-	private Image slider75 = null;
-	private Image slider100 = null;
-	
 	private Map<Integer, Image> sliderValues = new HashMap<Integer, Image>();
 	
 	private int selectedValue;
 	
 	private int x,y;
 	private int width, height;
+	private Color textColor;
+	private String text;
 	
-	public Slider(int x, int y, int width, int height) {
+	public Slider(int x, int y, int width, int height, String text) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.text = text;
 		mapImages();
 		selectedValue = 50;
 	}
@@ -51,6 +49,22 @@ public class Slider implements Clickable {
 	
 	public void draw(Graphics g) {
 		g.drawImage(sliderValues.get(selectedValue), x, y, null);
+		drawSliderText(g);
+	}
+	
+	private void drawSliderText(Graphics g) {
+		g.setFont(ViewResources.getFont().deriveFont(18f));
+		g.setColor(textColor != null ? textColor : ViewResources.WHITE);
+		if (selectedValue == 0) {
+			String offtext = text + " OFF";
+			int textX = x - (g.getFontMetrics().stringWidth(offtext) / 2) + (width / 2);
+			int textY = y + (g.getFontMetrics().getHeight() / 3) + (height / 2) - height;
+			g.drawString(offtext, textX, textY);
+		} else {
+			int textX = x - (g.getFontMetrics().stringWidth(text) / 2) + (width / 2);
+			int textY = y + (g.getFontMetrics().getHeight() / 3) + (height / 2) - height;
+			g.drawString(text, textX, textY);
+		}
 	}
 	
 	public boolean mouseEntered(Point p) {
@@ -93,7 +107,7 @@ public class Slider implements Clickable {
 
 	@Override
 	public boolean mouseReleased(Point p) {
-		// TODO Auto-generated method stub
+		if (contains(p)) {return true;}
 		return false;
 	}
 
