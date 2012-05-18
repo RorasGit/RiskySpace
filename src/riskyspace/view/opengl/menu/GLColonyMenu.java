@@ -64,7 +64,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 		buildShipButton = new GLButton(getX() + margin, 
 				(getBounds().getWidth() - 2*margin)/4 , 
 				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
-		buildShipButton.setImage("menu/recruit", 128, 32);
+		buildShipButton.setTexture("menu/recruit", 128, 32);
 		buildShipButton.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -75,7 +75,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 		buildingsButton = new GLButton(getX() + margin, 
 				2*(getBounds().getWidth() - margin)/4, 
 				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
-		buildingsButton.setImage("menu/build", 128, 32);
+		buildingsButton.setTexture("menu/build", 128, 32);
 		buildingsButton.setAction(new Action(){
 			@Override
 			public void performAction() {
