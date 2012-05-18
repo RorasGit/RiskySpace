@@ -179,7 +179,6 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		radarRank.setSize(width, height);
 		hangarRank.setSize(width, height);
 		
-		
 		setButtons(menuWidth, menuHeight, height);
 	}
 

@@ -27,6 +27,7 @@ import riskyspace.model.Position;
 import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
+import riskyspace.view.Clickable;
 import riskyspace.view.ViewResources;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -123,7 +124,7 @@ public class GLRenderArea implements GLRenderAble {
 				menuWidth, screenArea.getHeight()-80);
 		planetMenu = new GLPlanetMenu(screenArea.getWidth() - menuWidth, 80,
 				menuWidth, screenArea.getHeight()-80);
-		
+		topMenu = new GLTopMenu(0, screenArea.getHeight(), screenArea.getWidth(), 80);
 	}
 
 
@@ -217,7 +218,10 @@ public class GLRenderArea implements GLRenderAble {
 		/*
 		 * Draw menus
 		 */
-		//colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
+		topMenu.draw(drawable, topMenu.getBounds(), targetArea, 50);
+		colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
+		fleetMenu.draw(drawable, fleetMenu.getBounds(), screenArea, 50);
+		planetMenu.draw(drawable, planetMenu.getBounds(), screenArea, 50);
 	}
 
 	private Rectangle getCameraRect() {
@@ -381,6 +385,10 @@ public class GLRenderArea implements GLRenderAble {
 		 */
 		private boolean menuClick(Point point) {
 			boolean clicked = false;
+			clicked = clicked || topMenu.mousePressed(point);
+			clicked = clicked || colonyMenu.mousePressed(point);
+			clicked = clicked || fleetMenu.mousePressed(point);
+			clicked = clicked || planetMenu.mousePressed(point);
 			return clicked;
 		}
 

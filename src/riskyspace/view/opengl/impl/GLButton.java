@@ -1,5 +1,7 @@
 package riskyspace.view.opengl.impl;
 
+import java.awt.Toolkit;
+
 import javax.media.opengl.GLAutoDrawable;
 
 import riskyspace.view.Button;
@@ -20,7 +22,8 @@ public class GLButton extends Button implements GLRenderAble{
 
 	public GLButton(int x, int y, int width, int height) {
 		super(x, y, width, height);
-		renderRect = new Rectangle(x, y, width, height);
+		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		renderRect = new Rectangle(x, screenHeight - y - height, width, height);
 	}
 	
 	/**
@@ -40,8 +43,7 @@ public class GLButton extends Button implements GLRenderAble{
 	}
 
 	@Override
-	public void draw(GLAutoDrawable drawable, Rectangle objectRect,
-			Rectangle targetArea, int zIndex) {
+	public void draw(GLAutoDrawable drawable, Rectangle objectRect,	Rectangle targetArea, int zIndex) {
 		if (isEnabled()) {
 			image.draw(drawable, renderRect, targetArea, zIndex);
 		} else {

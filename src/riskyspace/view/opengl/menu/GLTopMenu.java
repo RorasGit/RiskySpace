@@ -24,9 +24,17 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 	
 	private boolean enabled;
 	
-	private GLSprite metalImage = null;
-	private GLSprite gasImage = null;
-	private GLSprite supplyImage = null;
+	private GLSprite supplySprite = null;
+	private GLSprite metalSprite = null;
+	private GLSprite gasSprite = null;
+	
+	/*
+	 * Rectangles for position and size of Sprites
+	 */
+	private Rectangle supplyRect;
+	private Rectangle metalRect;
+	private Rectangle gasRect;
+	
 	private int metal;
 	private int gas;
 	private Supply supply;
@@ -43,20 +51,24 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 	
 	private Font resourceFont = null;
 	
-	public GLTopMenu (int x, int y, int width, int height) {
+	public GLTopMenu(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		menuHeight = height;
 		menuWidth = width;
 		
-//		supplyImage = Toolkit.getDefaultToolkit().getImage("res/menu/supply_square.png");
-//		metalImage = Toolkit.getDefaultToolkit().getImage("res/menu/metal_square.png");
-//		gasImage = Toolkit.getDefaultToolkit().getImage("res/menu/gas_square.png");
+		supplySprite = new GLSprite("supply_square", 32, 32);
+		metalSprite = new GLSprite("metal_square", 32, 32);
+		gasSprite = new GLSprite("gas_square", 32, 32);
 		
 		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		int w = menuWidth/10;
+
+		supplyRect = new Rectangle(w*5, screenHeight - margin - 32, 32, 32);
+		metalRect = new Rectangle(w*6, screenHeight - margin - 32, 32, 32);
+		gasRect = new Rectangle(w*7, screenHeight - margin - 32, 32, 32);
 		
-		menuButton = new GLButton(x, y, screenHeight/6, height);
-//		menuButton.setImage("res/menu/menu" + View.res);
+		menuButton = new GLButton(x, screenHeight - y, screenHeight/6, height);
 		menuButton.setTexture("menu", 128, 80);
 		menuButton.setAction(new Action() {
 			@Override
@@ -65,10 +77,10 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 			}
 		});
 		
-		buildQueueButton = new GLButton(x + screenHeight/6, y, screenHeight/6, height);
+		buildQueueButton = new GLButton(x + screenHeight/6, screenHeight - y, screenHeight/6, height);
 		buildQueueButton.setTexture("build_queue", 128, 80);
 		
-		endTurnButton = new GLButton(width - screenHeight/6, 0, screenHeight/6, height);
+		endTurnButton = new GLButton(width - screenHeight/6, screenHeight - y, screenHeight/6, height);
 		endTurnButton.setTexture("end_turn", 128, 80);
 		endTurnButton.setAction(new Action() {
 			@Override
@@ -78,7 +90,7 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 			}
 		});
 		
-		performMovesButton = new GLButton(width - screenHeight/3, y, screenHeight/6, height);
+		performMovesButton = new GLButton(width - screenHeight/3, screenHeight - y, screenHeight/6, height);
 		performMovesButton.setTexture("perform_moves", 128, 80);
 		performMovesButton.setAction(new Action() {
 			@Override
@@ -165,13 +177,20 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 
 	@Override
 	public Rectangle getBounds() {
-		return null;
+		int height = Toolkit.getDefaultToolkit().getScreenSize().height;
+		return new Rectangle(x, height - y, menuWidth, menuHeight);
 	}
 
 	@Override
-	public void draw(GLAutoDrawable drawable, Rectangle objectRect,
-			Rectangle targetArea, int zIndex) {
-		// TODO Auto-generated method stub
+	public void draw(GLAutoDrawable drawable, Rectangle objectRect,	Rectangle targetArea, int zIndex) {
 		
+		metalSprite.draw(drawable, metalRect, targetArea, zIndex);
+		gasSprite.draw(drawable, gasRect, targetArea, zIndex);
+		supplySprite.draw(drawable, supplyRect, targetArea, zIndex);
+		
+		menuButton.draw(drawable, null, targetArea, zIndex);
+		buildQueueButton.draw(drawable, null, targetArea, zIndex);
+		endTurnButton.draw(drawable, null, targetArea, zIndex);
+		performMovesButton.draw(drawable, null, targetArea, zIndex);
 	}
 }
