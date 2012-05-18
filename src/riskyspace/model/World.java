@@ -18,23 +18,16 @@ public class World implements Serializable {
 	private Map<Player, PlayerStats> playerstats = null;
 	private Map<Player, BuildQueue> buildqueue = null;
 
-	public World(int rows, int cols) {
+	public World(int rows, int cols, int numberOfPlayers) {
 		this.rows = rows;
 		this.cols = cols;
 		initPlayers();
-		territories = MapGenerator.generateMap(rows, cols);
+		territories = MapGenerator.generateMap(rows, cols, numberOfPlayers);
 	}
 
-	public World() {
-		this(20, 20);
-	}
-
-	private void initPlayers(/*Player[] players ??*/) {
-//		for players.size()
+	private void initPlayers() {
 		playerstats = new HashMap<Player, PlayerStats>();
-		/*
-		 * Support for more players
-		 */
+		
 		playerstats.put(Player.BLUE, new PlayerStats());
 		playerstats.put(Player.RED, new PlayerStats());
 		playerstats.put(Player.PINK, new PlayerStats());
@@ -78,10 +71,18 @@ public class World implements Serializable {
 		
 	}
 	
-	public void resetShips() {
+	/**
+	 * Reset ships owned by a Player
+	 * @param player The owner of the fleets that should be repaired.
+	 */
+	public void resetShips(Player player) {
 		for (Position pos : getContentPositions()) {
+			Territory terr = getTerritory(pos);
+			boolean repair = terr.hasColony() && terr.getColony().canRepair() && terr.getColony().getOwner() == player;
 			for (Fleet fleet : getTerritory(pos).getFleets()) {
-				fleet.reset();
+				if (fleet.getOwner() == player) {
+					fleet.reset(repair);
+				}
 			}
 		}
 	}

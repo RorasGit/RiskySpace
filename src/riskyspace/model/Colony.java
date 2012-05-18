@@ -60,6 +60,25 @@ public class Colony implements BattleAble, Sight, Serializable{
 	public String getName() {
 		return colonyName;
 	}
+	
+	/**
+	 * Is this colony the home colony of any Player
+	 * default value false, override in subclass
+	 */
+	public boolean isHomeColony() {
+		return false;
+	}
+	
+	public boolean canBuild(ShipType type) {
+		if (isHomeColony() && type == ShipType.COLONIZER) {
+			return true;
+		}
+		return getHangar().canBuild(type);
+	}
+	
+	public boolean canRepair() {
+		return getHangar().canRepair();
+	}
 
 	@Override
 	public boolean takeDamage(int damage) {

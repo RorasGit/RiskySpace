@@ -14,7 +14,7 @@ public class Demo {
 	}
 	
 	public Demo () {
-		World world = new World();
+		World world = new World(20, 20, 2);
 		SpriteMapData.init(world);
 		GameManager.INSTANCE.init(world, 2);
 		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, world.getRows(), world.getCols());

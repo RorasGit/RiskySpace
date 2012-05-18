@@ -20,6 +20,7 @@ public class Event implements Serializable {
 		 */
 		INCOME_CHANGED,
 		STATS_CHANGED,
+		HOME_LOST,
 		/*
 		 * View triggered events
 		 */

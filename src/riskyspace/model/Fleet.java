@@ -168,9 +168,17 @@ public class Fleet implements MoveAble, Sight, Serializable  {
 		return shipCount(ShipType.COLONIZER) > 0;
 	}
 	
-	public void reset() {
+	/**
+	 * Reset energy for all ships in this fleet
+	 * May also repair.
+	 * @param repair true if the ships should be repaired aswell
+	 */
+	public void reset(boolean repair) {
 		for (int i = 0; i < ships.size(); i++) {
 			ships.get(i).reset();
+			if (repair) {
+				ships.get(i).repair();
+			}
 		}
 	}
 

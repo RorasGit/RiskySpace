@@ -41,7 +41,7 @@ public class GameServer implements EventHandler {
 	
 	public GameServer(int numberOfPlayers) {
 		this.numberOfPlayers = numberOfPlayers;
-		this.world = new World();
+		this.world = new World(20, 20, numberOfPlayers);
 		SpriteMapData.init(world);
 		GameManager.INSTANCE.init(world);
 		try {

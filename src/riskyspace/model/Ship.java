@@ -27,8 +27,11 @@ public class Ship implements BattleAble, MoveAble, Serializable {
 	}
 
 	public void reset() {
-		this.shield = type.getShield();
 		this.energy = type.getEnergy();
+	}
+	
+	public void repair() {
+		this.shield = type.getShield();		
 	}
 
 	@Override

@@ -13,12 +13,13 @@ import riskyspace.model.Territory;
 
 public class MapGenerator {
 	
-	public static Map<Position, Territory> generateMap(int rows, int cols){
+	public static Map<Position, Territory> generateMap(int rows, int cols, int numberOfPlayers){
 		Map<Position, Territory> territories = new HashMap<Position, Territory>();
 		initTerritories(territories, rows, cols);
-		setPlanets(territories, rows, cols);
+		setPlanets(territories, rows, cols, numberOfPlayers);
 		return territories;
 	}
+	
 	private static void initTerritories(Map<Position, Territory> territories, int rows, int cols) {
 		for (int row = 1; row <= rows; row++) {
 			for (int col = 1; col <= cols; col++) {
@@ -26,16 +27,16 @@ public class MapGenerator {
 			}
 		}
 	}
-	private static void setPlanets(Map<Position, Territory> territories, int rows, int cols) {
+	
+	private static void setPlanets(Map<Position, Territory> territories, int rows, int cols, int numberOfPlayers) {
 		/*
 		 * Starting planets
 		 */
-		setStartPlanets(territories, cols, cols);
+		setStartPlanets(territories, rows, cols, numberOfPlayers);
 
 		int planetCount = 0;
 		int resourceIntervall = 1;
 		while (planetCount < 25) {
-
 			Position random = new Position((int) (Math.random() * (rows-2) + 2),(int) (Math.random() * (cols-2) + 2));
 			if (checkNeighboringPlanets(territories, random, rows, cols)) {
 				territories.get(random).setPlanet(((resourceIntervall % 3) != 0 ? Resource.METAL: Resource.GAS));
@@ -45,47 +46,40 @@ public class MapGenerator {
 		}
 	}
 
-	private static void setStartPlanets(Map<Position, Territory> territories, int rows, int cols) {
-		//Player 1
-		Position pos = new Position(3 + ((int) (Math.random() * 2)),3 + ((int) (Math.random() * 2)));
-		territories.get(pos).setPlanet(Resource.METAL);
-		territories.get(pos).getPlanet().buildColony(Player.RED);
-		// Level 2 Mine
-		territories.get(pos).getPlanet().getColony().getMine().upgrade();
+	private static void setStartPlanets(Map<Position, Territory> territories, int rows, int cols, int numberOfPlayers) {
 		
-		// Level 2 Turret
-		territories.get(pos).getPlanet().getColony().getTurret().upgrade();
+		int[][] startPos = new int[][]{
+				{3, 3},
+				{rows - 3, cols - 3},
+				{3, cols - 3},
+				{rows - 3, 3},
+		};
+		int[][] closePos = new int[][]{
+				{+2, -1, -1, +2},
+				{-2, +1, +1, -2},
+				{-2, -1, +1, -2},
+				{-1, -2, +2, +1},
+		};
+		Player[] players = new Player[]{
+				Player.RED,
+				Player.BLUE,
+				Player.PINK,
+				Player.GREEN,
+		};
 		
-		// Level 1 Hangar
-		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
-		addStartingFleets(territories.get(pos));
-		//Player 1:s closest planets
-		territories.get(new Position(pos.getRow()+2,pos.getCol()-1)).setPlanet(Resource.METAL);
-		territories.get(new Position(pos.getRow()-1,pos.getCol()+2)).setPlanet(Resource.METAL);
-		
-		//Player 2
-		pos = new Position((rows - 3) + ((int) (Math.random() * 2)), (cols - 3) + ((int) (Math.random() * 2)));
-		territories.get(pos).setPlanet(Resource.METAL);
-		territories.get(pos).getPlanet().buildColony(Player.BLUE);
-		// Level 2 Mine
-		territories.get(pos).getPlanet().getColony().getMine().upgrade();
-		
-		// Level 2 Turret
-		territories.get(pos).getPlanet().getColony().getTurret().upgrade();
-		
-		// Level 3 Hangar (for colonizer TODO: Colonizer only from homeplanet)
-		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
-		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
-		territories.get(pos).getPlanet().getColony().getHangar().upgrade();
-		
-		addStartingFleets(territories.get(pos));
-		//Player 2:s closest planets
-		territories.get(new Position(pos.getRow()-2,pos.getCol()+1)).setPlanet(Resource.METAL);
-		territories.get(new Position(pos.getRow()+1,pos.getCol()-2)).setPlanet(Resource.METAL);
-		
-		
+		for (int i = 0; i < numberOfPlayers; i++) {
+			Position pos = startPos(startPos[i][0], startPos[i][1]);
+			territories.get(pos).setHomePlanet(players[i]);
+			territories.get(new Position(pos.getRow()+ closePos[i][0],pos.getCol()+ closePos[i][1])).setPlanet(Resource.METAL);
+			territories.get(new Position(pos.getRow()+ closePos[i][2],pos.getCol()+ closePos[i][3])).setPlanet(Resource.METAL);
+			addStartingFleets(territories.get(pos));
+		}
 	}
 
+	private static Position startPos(int row, int col) {
+		return new Position(row + ((int) (Math.random() * 2)), col + ((int) (Math.random() * 2)));
+	}
+	
 	/**
 	 * Check for other planets around the current position.
 	 * 

@@ -16,15 +16,14 @@ import riskyspace.logic.data.BattleStats;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
-import riskyspace.model.Planet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
 import riskyspace.model.Territory;
 import riskyspace.model.World;
+import riskyspace.model.building.Ranked;
 import riskyspace.services.Event;
-import riskyspace.services.Event.EventTag;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventText;
 
@@ -149,7 +148,7 @@ public enum GameManager {
 		world.updatePlayerStats(currentPlayer);
 		world.processBuildQueue(getCurrentPlayer());
 		world.updatePlayerStats(currentPlayer);
-		world.resetShips();
+		world.resetShips(currentPlayer);
 		updateSelections();
 		if (currentPlayer == players[0]) {
 			turn++;
@@ -157,7 +156,6 @@ public enum GameManager {
 	}
 
 	public void handleEvent(Event evt, Player player) {
-//		System.out.println("Current event handled: " + evt + " player: " + player + " | cur = " + currentPlayer);
 		if (!initiated) {
 			return;
 		}
@@ -486,14 +484,23 @@ public enum GameManager {
 	/*
 	 * TODO:
 	 * Check that you don't queue the same building twice in a buildqueue
+	 * Check that the colony can build the shiptype
 	 */
-	private void queueBuildAble(BuildAble build, Player player) {
+	private void queueBuildAble(BuildAble buildAble, Player player) {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {
 				if (world.getTerritory(pos).getColony() == world.getTerritory(selections.get(getCurrentPlayer()).selectedPosition).getColony()) {
-					if (world.canAfford(getCurrentPlayer(), build)) {
-						if(world.purchase(getCurrentPlayer(), build)){
-							world.addToBuildQueue(build, getCurrentPlayer(), pos);
+					if (buildAble instanceof ShipType && !world.getTerritory(pos).getColony().canBuild((ShipType) buildAble)) {
+						// If the colony can not build this shipType
+						return;
+					}
+					if (buildAble instanceof Ranked && world.getBuildQueue(player).get(pos).contains(buildAble)) {
+						// BuildAble Ranked of this type is already in queue
+						return;
+					}
+					if (world.canAfford(getCurrentPlayer(), buildAble)) {
+						if(world.purchase(getCurrentPlayer(), buildAble)){
+							world.addToBuildQueue(buildAble, getCurrentPlayer(), pos);
 						}
 					}
 				}
