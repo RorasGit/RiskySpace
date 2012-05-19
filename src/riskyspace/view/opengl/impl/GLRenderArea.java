@@ -27,7 +27,6 @@ import riskyspace.model.Position;
 import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.view.Clickable;
 import riskyspace.view.ViewResources;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -61,8 +60,20 @@ public class GLRenderArea implements GLRenderAble {
 	private int squareSize;
 	private int totalWidth;
 	private int totalHeight;
-	private BufferedImage backgroundImage;
-	private Texture backgroundTexture;
+	
+	
+	private BufferedImage gridImage;
+	private Texture gridTexture;
+
+	private int[][] hLines;
+	private int[][] vLines;
+	
+	/*
+	 * Star drawing variables
+	 */
+	private int starWidth;
+	private int starHeight;
+	private Point[] stars = new Point[800];
 	
 	/**
 	 * Game size
@@ -110,7 +121,8 @@ public class GLRenderArea implements GLRenderAble {
 		this.rows = rows;
 		this.cols = cols;
 		initCameras();
-		createBackground();
+		createGrid();
+		createStarMap();
 		createMenus();
 		textRenderer = new TextRenderer(ViewResources.getFont().deriveFont(30.0f));
 	}
@@ -128,44 +140,71 @@ public class GLRenderArea implements GLRenderAble {
 	}
 
 
-	private void createBackground() {
-		backgroundImage = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = backgroundImage.createGraphics();
+	private void createGrid() {
+		hLines = new int[rows + 1][];
+		vLines = new int[cols + 1][];
 		
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, totalWidth, totalHeight);
-		
-		g.setColor(Color.LIGHT_GRAY);
 		/*
 		 * Draw Horizontal lines
 		 */
 		for (int row = 0; row <= rows; row++) {
-			int x1 = (EXTRA_SPACE_HORIZONTAL) * squareSize;
-			int x2 = (EXTRA_SPACE_HORIZONTAL + cols) * squareSize;
-			int y = (EXTRA_SPACE_VERTICAL + row) * squareSize;
-			g.drawLine(x1, y, x2, y);
+			hLines[row] = new int[3];
+			hLines[row][0] = (EXTRA_SPACE_HORIZONTAL) * squareSize;
+			hLines[row][1] = (EXTRA_SPACE_HORIZONTAL + cols) * squareSize;
+			hLines[row][2] = (EXTRA_SPACE_VERTICAL + row) * squareSize;
+//			int x1 = (EXTRA_SPACE_HORIZONTAL) * squareSize;
+//			int x2 = (EXTRA_SPACE_HORIZONTAL + cols) * squareSize;
+//			int y = (EXTRA_SPACE_VERTICAL + row) * squareSize;
+//			g.drawLine(x1, y, x2, y);
 		}
 		/*
 		 * Draw Vertical lines
 		 */
-		for (int col = 0; col <= rows; col++) {
-			int x = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
-			int y1 = (EXTRA_SPACE_VERTICAL) * squareSize;
-			int y2 = (EXTRA_SPACE_VERTICAL + rows) * squareSize;
-			g.drawLine(x, y1, x, y2);
-		}
-		
-		/*
-		 * Draw stars
-		 */
-		g.setColor(Color.WHITE);
-		for (int i = 0; i < 5000; i++) {
-			int x = (int) (Math.random()*(cols+2*EXTRA_SPACE_HORIZONTAL)*squareSize);
-			int y = (int) (Math.random()*(rows+2*EXTRA_SPACE_VERTICAL)*squareSize);
-			g.fillRect(x, y, 1, 1);
+		for (int col = 0; col <= cols; col++) {
+			vLines[col] = new int[3];
+			vLines[col][0] = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
+			vLines[col][1] = (EXTRA_SPACE_VERTICAL) * squareSize;
+			vLines[col][2] = (EXTRA_SPACE_VERTICAL + rows) * squareSize;
+//			int x = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
+//			int y1 = (EXTRA_SPACE_VERTICAL) * squareSize;
+//			int y2 = (EXTRA_SPACE_VERTICAL + rows) * squareSize;
+//			g.drawLine(x, y1, x, y2);
 		}
 	}
-
+	
+	private void drawGrid(GLAutoDrawable drawable) {
+		GL2 gl = drawable.getGL().getGL2();
+		gl.glDisable(GL2.GL_TEXTURE_2D);
+		gl.glColor4f(0.8f, 0.8f, 0.8f, 1);
+		gl.glBegin(GL2.GL_LINES);
+		for (int i = 0; i < hLines.length; i++) {
+			float x, x1, y;
+			x = 2f * (hLines[i][0] - (totalWidth - screenArea.getWidth()) * currentCamera.getX()) / screenArea.getWidth() -1f;
+			x1 = 2f * (hLines[i][1] - (totalWidth - screenArea.getWidth()) * currentCamera.getX()) / screenArea.getWidth() -1f;
+			y = 2f * (hLines[i][2] - (totalHeight - screenArea.getHeight()) * currentCamera.getY()) / screenArea.getHeight() -1f;
+			gl.glVertex3f(x, y, 0.98f);
+			gl.glVertex3f(x1, y, 0.98f);
+		}
+		for (int i = 0; i < hLines.length; i++) {
+			float x, y, y1;
+			x = 2f * (vLines[i][0] - (totalWidth - screenArea.getWidth()) * currentCamera.getX()) / screenArea.getWidth() -1f;
+			y = 2f * (vLines[i][1] - (totalHeight - screenArea.getHeight()) * currentCamera.getY()) / screenArea.getHeight() -1f;
+			y1 = 2f * (vLines[i][2] - (totalHeight - screenArea.getHeight()) * currentCamera.getY()) / screenArea.getHeight() -1f;
+			gl.glVertex3f(x, y, 0.98f);
+			gl.glVertex3f(x, y1, 0.98f);
+		}
+		gl.glEnd();
+		gl.glEnable(GL2.GL_TEXTURE_2D);
+	}
+	
+	private void createStarMap() {
+		starWidth = (int) (screenArea.getWidth() * 1.5);
+		starHeight = (int) (screenArea.getHeight() * 1.5);
+		for (int i = 0; i < stars.length; i++) {
+			stars[i] = new Point((int) (Math.random()*starWidth), (int) (Math.random()*starHeight));
+		}
+	}
+	
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
 		cameras.put(Player.BLUE, new GLCamera(0.93f,0.08f));
@@ -199,7 +238,8 @@ public class GLRenderArea implements GLRenderAble {
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
 		
-		drawBackground(drawable);
+		drawStars(drawable);
+		drawGrid(drawable);
 		
 		if (sprites != null) {
 			sprites.draw(drawable, getCameraRect(), getCameraRect(), 2);
@@ -207,14 +247,6 @@ public class GLRenderArea implements GLRenderAble {
 		
 		drawSelectionBox(drawable, 10);
 		
-		textRenderer.beginRendering(screenArea.getWidth(), screenArea.getHeight());
-		textRenderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-	    textRenderer.draw("That was easy, check GLRenderArea", 300, 400);
-	    textRenderer.draw("Rapp is noob LOL player!", 300, 350);
-	    textRenderer.setColor(0.2f, 0.7f, 0.7f, 0.8f);
-	    textRenderer.draw("//Roras", 300, 300);
-	    textRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		textRenderer.endRendering();
 		/*
 		 * Draw menus
 		 */
@@ -282,34 +314,50 @@ public class GLRenderArea implements GLRenderAble {
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-	
-	private void drawBackground(GLAutoDrawable drawable) {
-		if (backgroundTexture == null) {
-			backgroundTexture = AWTTextureIO.newTexture(drawable.getGLProfile(), backgroundImage, false);
-		}
-		backgroundTexture.bind(drawable.getGL());
+
+	private void drawStars(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		
-		float x = ((float) (backgroundTexture.getWidth() - screenArea.getWidth())/backgroundTexture.getWidth())*currentCamera.getX();
-		float y = ((float) (backgroundTexture.getHeight() - screenArea.getHeight())/backgroundTexture.getHeight())*currentCamera.getY();
-		float width = (float) screenArea.getWidth() / backgroundTexture.getWidth();
-		float height = (float) screenArea.getHeight() / backgroundTexture.getHeight();
+		gl.glDisable(GL2.GL_TEXTURE_2D);
+		gl.glColor4f(1, 1, 1, 1);
+		float x, y;
+		gl.glBegin(GL2.GL_POINTS);
+		for (int i = 0; i < stars.length; i++) {
+			x = 2*(stars[i].x - (starWidth - screenArea.getWidth())*currentCamera.getX())/screenArea.getWidth() - 1f;
+			y = 2*(stars[i].y - (starHeight - screenArea.getHeight())*currentCamera.getY())/screenArea.getHeight() - 1f;
+			gl.glVertex3f(x, y, 0.99f);
+		}
+		gl.glEnd();
+		gl.glEnable(GL2.GL_TEXTURE_2D);
+	}
+	
+	private void drawGrid3(GLAutoDrawable drawable) {
+		if (gridTexture == null) {
+			gridTexture = AWTTextureIO.newTexture(drawable.getGLProfile(), gridImage, false);
+		}
+		gridTexture.bind(drawable.getGL());
+		GL2 gl = drawable.getGL().getGL2();
+		
+		float x = ((float) (gridTexture.getWidth() - screenArea.getWidth())/gridTexture.getWidth())*currentCamera.getX();
+		float y = ((float) (gridTexture.getHeight() - screenArea.getHeight())/gridTexture.getHeight())*currentCamera.getY();
+		float width = (float) screenArea.getWidth() / gridTexture.getWidth();
+		float height = (float) screenArea.getHeight() / gridTexture.getHeight();
 		float x1 = x + width;
 		float y1 = y + height;
 		
 		gl.glBegin(GL2.GL_QUADS);
 		
 		gl.glTexCoord2f(x, y);
-		gl.glVertex3f(-1, -1, 0.99f);
+		gl.glVertex3f(-1, -1, 0.98f);
 
 		gl.glTexCoord2f(x, y1);
-		gl.glVertex3f(-1, 1, 0.99f);
+		gl.glVertex3f(-1, 1, 0.98f);
 
 		gl.glTexCoord2f(x1, y1);
-		gl.glVertex3f(1, 1, 0.99f);
+		gl.glVertex3f(1, 1, 0.98f);
 
 		gl.glTexCoord2f(x1, y);
-		gl.glVertex3f(1, -1, 0.99f);
+		gl.glVertex3f(1, -1, 0.98f);
 		
 		gl.glEnd();
 	}
@@ -489,7 +537,7 @@ public class GLRenderArea implements GLRenderAble {
 					 * Click was not in any trigger zone. Call deselect.
 					 */
 					EventBus.CLIENT.publish(new Event(Event.EventTag.DESELECT, null));
-//					hideSideMenus();
+					hideSideMenus();
 				}
 			}
 		}
@@ -510,9 +558,6 @@ public class GLRenderArea implements GLRenderAble {
 				Position ltPos = getPosition(ltCorner, true);
 				Position rbPos = getPosition(rbCorner, true);
 				
-				System.out.println("lt" + ltPos);
-				System.out.println("rb" + rbPos);
-				
 				if (ltCorner.getX() % squareSize >= squareSize/2) {
 					ltPos = new Position(ltPos.getRow(), ltPos.getCol() + 1);
 				}
@@ -526,9 +571,6 @@ public class GLRenderArea implements GLRenderAble {
 					rbPos = new Position(rbPos.getRow() - 1, rbPos.getCol());
 				}
 				
-				System.out.println("lt" + ltPos);
-				System.out.println("rb" + rbPos);
-								
 				List<Position> selectPos = new ArrayList<Position>();
 				for (int col = ltPos.getCol(); col <= rbPos.getCol(); col++) {
 					for (int row = ltPos.getRow(); row <= rbPos.getRow(); row++) {
@@ -544,7 +586,7 @@ public class GLRenderArea implements GLRenderAble {
 				} else {
 					Event evt = new Event(Event.EventTag.DESELECT, null);
 					EventBus.CLIENT.publish(evt);
-//					hideSideMenus();
+					hideSideMenus();
 				}
 				pressedPoint = null;
 			}

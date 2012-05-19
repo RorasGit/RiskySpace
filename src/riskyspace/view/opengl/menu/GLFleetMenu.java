@@ -28,7 +28,7 @@ public class GLFleetMenu extends GLAbstractSideMenu {
 	public GLFleetMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		margin = menuWidth/10;
-		fleetPicture = new GLSprite("menu/palpatine.png", 640, 480);
+		fleetPicture = new GLSprite("palpatine", 640, 480);
 		fleetPicture.setBounds(new Rectangle(getX() + margin + margin/2 + 2, menuHeight - (margin + 15), menuWidth - 3*margin, 2*(menuWidth - 3*margin)/3));
 		itemSize = (menuWidth - margin*2) / 5;
 		initSprites(itemSize - margin/10);
@@ -36,25 +36,25 @@ public class GLFleetMenu extends GLAbstractSideMenu {
 	
 	public void initSprites(int size) { 
 		shipSize = size;
-		shipIcons.put("SCOUT_RED", 		new GLSprite("shipicon", 0, 	0, 		64, 64));
-		shipIcons.put("HUNTER_RED", 	new GLSprite("shipicon", 64,	0, 		64, 64));
-		shipIcons.put("DESTROYER_RED",	new GLSprite("shipicon", 128,	0, 		64, 64));
-		shipIcons.put("COLONIZER_RED",	new GLSprite("shipicon", 192,	0, 		64, 64));
+		shipIcons.put("SCOUT_RED", 		new GLSprite("ship_icons", 0, 	0, 		64, 64));
+		shipIcons.put("HUNTER_RED", 	new GLSprite("ship_icons", 64,	0, 		64, 64));
+		shipIcons.put("DESTROYER_RED",	new GLSprite("ship_icons", 128,	0, 		64, 64));
+		shipIcons.put("COLONIZER_RED",	new GLSprite("ship_icons", 192,	0, 		64, 64));
 		
-		shipIcons.put("SCOUT_BLUE", 	new GLSprite("shipicon", 0, 	64, 	64, 64));
-		shipIcons.put("HUNTER_BLUE", 	new GLSprite("shipicon", 64, 	64, 	64, 64));
-		shipIcons.put("DESTROYER_BLUE", new GLSprite("shipicon", 128, 	64, 	64, 64));
-		shipIcons.put("COLONIZER_BLUE",	new GLSprite("shipicon", 192, 	64, 	64, 64));
+		shipIcons.put("SCOUT_BLUE", 	new GLSprite("ship_icons", 0, 	64, 	64, 64));
+		shipIcons.put("HUNTER_BLUE", 	new GLSprite("ship_icons", 64, 	64, 	64, 64));
+		shipIcons.put("DESTROYER_BLUE", new GLSprite("ship_icons", 128, 	64, 	64, 64));
+		shipIcons.put("COLONIZER_BLUE",	new GLSprite("ship_icons", 192, 	64, 	64, 64));
 		
-		shipIcons.put("SCOUT_PINK", 	new GLSprite("shipicon", 0, 	128, 	64, 64));
-		shipIcons.put("HUNTER_PINK", 	new GLSprite("shipicon", 64, 	128, 	64, 64));
-		shipIcons.put("DESTROYER_PINK", new GLSprite("shipicon", 128, 	128, 	64, 64));
-		shipIcons.put("COLONIZER_PINK", new GLSprite("shipicon", 192, 	128, 	64, 64));
+		shipIcons.put("SCOUT_PINK", 	new GLSprite("ship_icons", 0, 	128, 	64, 64));
+		shipIcons.put("HUNTER_PINK", 	new GLSprite("ship_icons", 64, 	128, 	64, 64));
+		shipIcons.put("DESTROYER_PINK", new GLSprite("ship_icons", 128, 	128, 	64, 64));
+		shipIcons.put("COLONIZER_PINK", new GLSprite("ship_icons", 192, 	128, 	64, 64));
 		
-		shipIcons.put("SCOUT_GREEN", 	new GLSprite("shipicon", 0, 	192, 	64, 64));
-		shipIcons.put("HUNTER_GREEN", 	new GLSprite("shipicon", 64, 	192, 	64, 64));
-		shipIcons.put("DESTROYER_GREEN",new GLSprite("shipicon", 128, 	192, 	64, 64));
-		shipIcons.put("COLONIZER_GREEN",new GLSprite("shipicon", 192, 	192, 	64, 64));
+		shipIcons.put("SCOUT_GREEN", 	new GLSprite("ship_icons", 0, 	192, 	64, 64));
+		shipIcons.put("HUNTER_GREEN", 	new GLSprite("ship_icons", 64, 	192, 	64, 64));
+		shipIcons.put("DESTROYER_GREEN",new GLSprite("ship_icons", 128, 	192, 	64, 64));
+		shipIcons.put("COLONIZER_GREEN",new GLSprite("ship_icons", 192, 	192, 	64, 64));
 	}
 
 	@Override
