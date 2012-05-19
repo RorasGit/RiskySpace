@@ -56,8 +56,6 @@ public class GLRankIndicator extends RankIndicator implements GLRenderAble {
 			/*
 			 * Draw lights
 			 */
-			//TODO: FIX!
-			/*
 			for (int i = 1; i <= 3; i++) {
 				if (i <= getMaxRank()) {
 					if (i <= getRank()) {
@@ -69,7 +67,6 @@ public class GLRankIndicator extends RankIndicator implements GLRenderAble {
 					offLight.draw(drawable, new Rectangle(getX(), getY() + (i-1)*dHeight - getHeight(), getWidth(), getHeight()), targetArea, zIndex);
 				}
 			}
-			*/
 		}
 	}
 }

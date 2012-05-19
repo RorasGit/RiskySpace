@@ -402,6 +402,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		nextHangarMetal = colony.getHangar().getMetalCost()  + " M | ";
 		nextHangarGas = colony.getHangar().getGasCost()  + " G";
 	}
+	
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
 		super.draw(drawable, objectRect, targetArea, zIndex);

@@ -60,6 +60,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 		setPicture();
 		setButtons();
 	}
+	
 	private void setButtons() {
 		buildShipButton = new GLButton(getX() + margin, 
 				(getBounds().getWidth() - 2*margin)/4 , 
@@ -84,6 +85,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 			}
 		});
 	}
+	
 	private void setPicture(){
 		Rectangle renderRect = new Rectangle(getBounds().getX() + margin, 
 				getBounds().getHeight() - ((getBounds().getWidth() - 2*margin)*3)/4 - 3*margin/2, 
@@ -96,9 +98,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 		GLtmp.setBounds(renderRect);
 		cities.put(Player.BLUE, GLtmp);
 		colonyPicture = GLtmp;
-	
 	}
-	
 	
 	public void setColony(Colony colony) {
 		this.colony = colony;
@@ -121,16 +121,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 	public void setQueues(Map<Colony, List<BuildAble>> colonyQueues) {
 		buildingMenu.setQueue(colonyQueues);
 	}
-    /*
-	private void drawColonyName(Graphics g) {
-		g.setColor(ownerColor);
-		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
-		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
-		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
-		g.drawString(getMenuName(), textX, textY);
-	}
-	*/
-
+	
 	@Override
 	public boolean mousePressed(Point p) {
 		if (recruitMenu.isVisible()) {
@@ -159,7 +150,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 	}
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
-//		buildingMenu.setVisible(true);
+		buildingMenu.setVisible(true);
 		if(isVisible()){
 			super.draw(drawable, objectRect, targetArea, zIndex);
 			colonyPicture.draw(drawable, colonyPicture.getBounds(), targetArea, zIndex+1);

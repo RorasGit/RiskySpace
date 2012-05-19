@@ -194,6 +194,7 @@ public class GLRenderArea implements GLRenderAble {
 			gl.glVertex3f(x, y1, 0.98f);
 		}
 		gl.glEnd();
+		gl.glColor4f(1f, 1f, 1f, 1);
 		gl.glEnable(GL2.GL_TEXTURE_2D);
 	}
 	
