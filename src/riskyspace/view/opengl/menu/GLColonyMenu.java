@@ -159,7 +159,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 	}
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
-		buildingMenu.setVisible(true);
+//		buildingMenu.setVisible(true);
 		if(isVisible()){
 			super.draw(drawable, objectRect, targetArea, zIndex);
 			colonyPicture.draw(drawable, colonyPicture.getBounds(), targetArea, zIndex+1);

@@ -69,6 +69,7 @@ public class GLSprite implements GLRenderAble {
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
 		if (objectRect != null && objectRect.intersects(targetArea)) {
 			GL2 gl = drawable.getGL().getGL2();
+			gl.glEnable(GL2.GL_TEXTURE_2D);
 			Texture tex = Textures.bindTexture(textureName, drawable);
 			
 			/* Variables for texture position within larger texture*/
@@ -96,7 +97,7 @@ public class GLSprite implements GLRenderAble {
 				gl.glRotated(rotation, 0, 0, 1);
 				gl.glTranslatef(-texCenterX, -texCenterY, 0);
 			}
-			
+
 			gl.glBegin(GL2.GL_QUADS);
 			
 			gl.glTexCoord2f(tX, tY);
