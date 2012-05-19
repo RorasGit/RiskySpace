@@ -121,7 +121,7 @@ public class GameData {
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			
 			World world = (World) ois.readObject();
-			Player[] players = (Player[]) ois.readObject();
+			List<Player> players = (List<Player>) ois.readObject();
 			Player currentPlayer = (Player) ois.readObject();
 			int turn = (Integer) ois.readInt();
 			String gameMode = (String) ois.readObject();
@@ -190,11 +190,13 @@ public class GameData {
 				int turn = (Integer) ois.readInt();
 				String gameMode = (String) ois.readObject();
 				
+		
 				gameInfo[0] = players.toString();
 				gameInfo[1] = turn+"";
 				gameInfo[2] = gameMode;
-				
+			
 				ois.close();
+	
 				
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -221,12 +223,12 @@ public class GameData {
 			System.out.println(gd.getSavedGames()[i]);
 		}
 		
-		gd.autoSave(world, null, Player.BLUE, 0, "Annihilation");
+		gd.autoSave(world, players, Player.BLUE, 0, "Annihilation");
 		
 		gd.saveGame(world, players, Player.RED, 15, "Annihilation", "game7");
 		
-		for (int i = 0; i < gd.getGameInfo("game7").length; i++) {
-			System.out.println(gd.getGameInfo("game7")[i]);
+		for (int i = 0; i < gd.getGameInfo("last_autosave").length; i++) {
+			System.out.println(gd.getGameInfo("last_autosave")[i]);
 		}
 		
 		gd.loadAutoSave();
