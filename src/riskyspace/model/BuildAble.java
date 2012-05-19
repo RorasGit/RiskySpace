@@ -1,6 +1,7 @@
 package riskyspace.model;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 
 public interface BuildAble extends Serializable{
 	
