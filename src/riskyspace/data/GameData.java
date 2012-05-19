@@ -13,6 +13,8 @@ import java.io.ObjectOutputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -25,7 +27,7 @@ import riskyspace.model.Ship;
 import riskyspace.model.ShipType;
 import riskyspace.model.World;
 
-public class GameStatus {
+public class GameData {
 	
 	private Path riskySpace = null;
 	private Path riskySave = null;
@@ -39,7 +41,7 @@ public class GameStatus {
 	
 	private final static Position pos = new Position (1, 1);
 	
-	public GameStatus() {
+	public GameData() {
 		
 		pathOldSave = FileSystems.getDefault().getPath(saveFolder+"previous_autosave.rsg");
 		pathNewSave = FileSystems.getDefault().getPath(saveFolder+"last_autosave.rsg");
@@ -57,29 +59,31 @@ public class GameStatus {
 		}
 	}
 	
-	public GameStatus(String saveFolder) {
+	public GameData(String saveFolder) {
 		this();
 		this.saveFolder = saveFolder;
 	}
 
-	public void autoSave(World world, Player[] players, Player currentPlayer, int turn) throws IOException {
+	public void autoSave(World world, List<Player> players, Player currentPlayer, int turn,
+			String gameMode) throws IOException {
 
 		new File(pathOldSave.toString()).createNewFile();	
 		new File(pathNewSave.toString()).createNewFile();
 		
 		Files.copy(pathNewSave, pathOldSave, REPLACE_EXISTING);
 
-		saveGame(world, players, currentPlayer, turn, null);
+		saveGame(world, players, currentPlayer, turn, gameMode, null);
 	}
 	
-	public void saveGame(World world, Player[] players, Player currentPlayer, int turn, String gameName) {
+	public void saveGame(World world, List<Player> players, Player currentPlayer, int turn,
+			String gameMode, String gameName) {
 	
 		FileOutputStream fos;
 		try {
 			if (gameName == null) {
 				fos = new FileOutputStream(pathNewSave.toString());
 			} else {
-				File customSave = new File(saveFolder+ gameName + ".rsg");
+				File customSave = new File(saveFolder + gameName + ".rsg");
 				fos = new FileOutputStream(customSave);
 			}
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -88,11 +92,11 @@ public class GameStatus {
 			oos.writeObject(players);
 			oos.writeObject(currentPlayer);
 			oos.writeInt(turn);
-			oos.writeObject("last_autosave");
+			oos.writeObject(gameMode);
 			
 			oos.close();
 		} catch (IOException ioe) {
-			System.out.println(ioe);
+			ioe.printStackTrace();
 		}
 	}
 	
@@ -120,6 +124,7 @@ public class GameStatus {
 			Player[] players = (Player[]) ois.readObject();
 			Player currentPlayer = (Player) ois.readObject();
 			int turn = (Integer) ois.readInt();
+			String gameMode = (String) ois.readObject();
 			
 			/* TODO
 			 * Use this info to create a new game instance:
@@ -160,26 +165,43 @@ public class GameStatus {
 		}
 	}
 	
-	public String[] getGameInfo(String gameName) throws ClassNotFoundException, IOException {
+	public String[] getGameInfo(String gameName) {
 		
-		Path pathCustomSave = FileSystems.getDefault().getPath(saveFolder+ gameName + ".rsg");
+		Path pathCustomSave = FileSystems.getDefault().getPath(saveFolder + gameName + ".rsg");
 		
 		FileInputStream fis;
 		ObjectInputStream ois = null;
-		String[] gameInfo;
 
-
-			fis = new FileInputStream(pathCustomSave.toString());
-			ois = new ObjectInputStream(fis);
+			try {
+				fis = new FileInputStream(pathCustomSave.toString());
+				ois = new ObjectInputStream(fis);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			String[] gameInfo = {null, null, null};
 		
-			World world = (World) ois.readObject();
-			Player[] players = (Player[]) ois.readObject();
-			Player currentPlayer = (Player) ois.readObject();
-			int turn = (Integer) ois.readInt();
-
-
-		
-		return null;
+			try {
+				World world = (World) ois.readObject();
+				List<Player> players = (List<Player>) ois.readObject();
+				Player currentPlayer = (Player) ois.readObject();
+				int turn = (Integer) ois.readInt();
+				String gameMode = (String) ois.readObject();
+				
+				gameInfo[0] = players.toString();
+				gameInfo[1] = turn+"";
+				gameInfo[2] = gameMode;
+				
+				ois.close();
+				
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		return gameInfo;
 	}
 	
 	
@@ -190,18 +212,23 @@ public class GameStatus {
 			world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.SCOUT), Player.BLUE));
 		}
 		
-		GameStatus gs = new GameStatus();
+		GameData gd = new GameData();
+		List<Player> players = new ArrayList<Player>();
+		players.add(Player.BLUE);
+		players.add(Player.RED);
 		
-		for (int i = 0; i < gs.getSavedGames().length; i++) {
-			System.out.println(gs.getSavedGames()[i]);
+		for (int i = 0; i < gd.getSavedGames().length; i++) {
+			System.out.println(gd.getSavedGames()[i]);
 		}
 		
-		System.out.println(gs.getGameInfo("asd"));
+		gd.autoSave(world, null, Player.BLUE, 0, "Annihilation");
 		
-		gs.autoSave(world, null, Player.BLUE, 0);
+		gd.saveGame(world, players, Player.RED, 15, "Annihilation", "game7");
 		
-		gs.saveGame(world, null, Player.RED, 15, "game5");
+		for (int i = 0; i < gd.getGameInfo("game7").length; i++) {
+			System.out.println(gd.getGameInfo("game7")[i]);
+		}
 		
-		gs.loadAutoSave();
+		gd.loadAutoSave();
 	}
 }
