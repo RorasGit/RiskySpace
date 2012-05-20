@@ -1,7 +1,5 @@
 package riskyspace.data;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,9 +8,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,71 +27,60 @@ import riskyspace.model.World;
  */
 public class GameDataHandler {
 	
-	private Path riskySpace = null;
-	private Path riskySave = null;
-	private Path pathOldSave = null;
-	private Path pathNewSave = null;
-	
-	private File file = new File("asd");
-	
-	private String saveFolder = "c:\\RiskySpace\\Save\\";
-	
-	File newSave = null;
-	File oldSave = null;
+	private File riskySpace = null;
+	private File riskySave = null;
+	private File oldSave = null;
+	private File newSave = null;
 	
 	private final static Position pos = new Position (1, 1);
-	
-	// TODO : make system independant   (with file.separator)
-
 	
 	/**
 	 * 
 	 */
 	public GameDataHandler() {
+		this(System.getProperty("user.home"));
+	}
+	
+	public GameDataHandler(String saveFolder) {
+		saveFolder = saveFolder + File.separator + "RiskySpace" +
+				File.separator;
+		riskySpace = new File(saveFolder);
+		riskySave = new File(saveFolder + File.separator +
+				"Save");
 		
-		pathOldSave = FileSystems.getDefault().getPath(saveFolder+"previous_autosave.rsg");
-		pathNewSave = FileSystems.getDefault().getPath(saveFolder+"last_autosave.rsg");
-
-		riskySpace = FileSystems.getDefault().getPath("c:\\RiskySpace");
-		riskySave = FileSystems.getDefault().getPath(saveFolder);
+		oldSave = new File(riskySave + File.separator + "previous_autosave.rsg");
+		newSave = new File(riskySave + File.separator + "last_autosave.rsg");
 		
 		try {
-			if (Files.notExists(riskySpace) && Files.notExists(riskySave)) {
-				Files.createDirectory(riskySpace);
-				Files.createDirectory(riskySave);
-			}
+			riskySpace.mkdir();
+			riskySave.mkdir();
+			oldSave.createNewFile();
+			newSave.createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public GameDataHandler(String saveFolder) {
-		this();
-		this.saveFolder = saveFolder;
-	}
 
 	public void autoSave(World world, List<Player> players, Player currentPlayer, int turn,
-			String gameMode) throws IOException {
+			String gameMode) {
 
-		new File(pathOldSave.toString()).createNewFile();	
-		new File(pathNewSave.toString()).createNewFile();
+		try {
+			oldSave.createNewFile();
+			newSave.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 		
-		Files.copy(pathNewSave, pathOldSave, REPLACE_EXISTING);
+		newSave.renameTo(oldSave);
 
-		saveGame(world, players, currentPlayer, turn, gameMode, null);
+		saveGame(world, players, currentPlayer, turn, gameMode, "last_autosave");
 	}
 	
 	public void saveGame(World world, List<Player> players, Player currentPlayer, int turn,
 			String gameMode, String gameName) {
 	
-		FileOutputStream fos;
 		try {
-			if (gameName == null) {
-				fos = new FileOutputStream(pathNewSave.toString());
-			} else {
-				File customSave = new File(saveFolder + gameName + ".rsg");
-				fos = new FileOutputStream(customSave);
-			}
+			FileOutputStream fos = new FileOutputStream(riskySave + File.separator + gameName + ".rsg");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 		
 			oos.writeObject(world);
@@ -109,26 +93,11 @@ public class GameDataHandler {
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
-	}
-	
-	public static void move(Path from, Path to) {	
-		try {
-			Files.move(from, to, REPLACE_EXISTING);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-		
+	}	
 	
 	public void loadGame(String gameName) throws IOException {	
 		try {
-			FileInputStream fis;
-			if (gameName == null) {
-				fis = new FileInputStream(pathNewSave.toString());
-			} else {
-				Path pathCustomSave = FileSystems.getDefault().getPath(saveFolder+ gameName + ".rsg");
-				fis = new FileInputStream(pathCustomSave.toString());
-			}
+			FileInputStream fis = new FileInputStream(riskySave + File.separator + gameName + ".rsg");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			
 			World world = (World) ois.readObject();
@@ -142,8 +111,8 @@ public class GameDataHandler {
 			 * new GameManager() <- needs to be implemented
 			 * GameManager.init(world);  <- need new init for a world loaded from file
 			 */
-						
 			ois.close();
+			
 		} catch (ClassNotFoundException  e) {
 			System.out.println(e);
 		}
@@ -151,22 +120,22 @@ public class GameDataHandler {
 	
 	public void loadAutoSave() {
 		try {
-			loadGame(null);
+			loadGame("last_autosave");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public String[] getSavedGames() {
-		
-		File directory = new File(saveFolder);
+		File directory = riskySave;
 		FilenameFilter rsgFilter = new FilenameFilter() {
 			public boolean accept(File directory, String fileName) {
 				return fileName.endsWith(".rsg");
 			}
 		};
+		System.out.println(directory.getPath());
 		if (directory.list(rsgFilter).length == 0) {
-			return new String[] {"No saved games found in: \n" + saveFolder};
+			return new String[] {"No saved games found in: \n" + directory.getPath()};
 		} else {
 			String[] gameNames = directory.list(rsgFilter);
 			for (int i = 0; i < gameNames.length; i++) {
@@ -177,14 +146,11 @@ public class GameDataHandler {
 	}
 	
 	public String[] getGameInfo(String gameName) {
-		
-		Path pathCustomSave = FileSystems.getDefault().getPath(saveFolder + gameName + ".rsg");
-		
 		FileInputStream fis;
 		ObjectInputStream ois = null;
 
 			try {
-				fis = new FileInputStream(pathCustomSave.toString());
+				fis = new FileInputStream(riskySave + File.separator + gameName + ".rsg");
 				ois = new ObjectInputStream(fis);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -206,9 +172,7 @@ public class GameDataHandler {
 				gameInfo[1] = turn+"";
 				gameInfo[2] = gameMode;
 			
-				ois.close();
-	
-				
+				ois.close();				
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -226,6 +190,7 @@ public class GameDataHandler {
 		}
 		
 		GameDataHandler gd = new GameDataHandler();
+		
 		List<Player> players = new ArrayList<Player>();
 		players.add(Player.BLUE);
 		players.add(Player.RED);
