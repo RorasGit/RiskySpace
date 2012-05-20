@@ -7,16 +7,28 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
 public class PlayList {
+	
+	public static final String[] STANDARD_GAME_LOOP = {"morgantj_-_Wayfarer.mp3",
+													   "T-sonic - Collapsar.mp3",
+													   "zikweb_-_Black_Snow.mp3",
+													   "T-sonic - Expanse.mp3",
+													   "zikweb_-_Not_too_quiet.mp3",
+													   "zikweb_-_Lament_Harp.mp3",
+													   "T-sonic - Memory of Moon.p3",
+													   "T-sonic - Noising.mp3",
+													   "T-sonic - Singularity.mp3",};
+	public static final String[] STANDARD_LOBBY_LOOP = {"T-sonic - Nucleosynthesis.mp3", 
+														"T-sonic - AirTrance.mp3",};
+	
 	private String[] tracks;
 	private int songIndex = 0;
 	private boolean stopped = false;
 	private Player soundPlayer;
 	
 	private Thread playThread;
-	
+
 	public static void main(String[] args) {
-		PlayList p = new PlayList(new String[]{"zikweb_-_Not_too_quiet.mp3"});
-		p.start();
+		new PlayList(STANDARD_GAME_LOOP).start();
 	}
 	
 	public PlayList(String[] tracks) {
