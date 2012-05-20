@@ -27,7 +27,7 @@ public class GLPlanetMenu extends GLAbstractSideMenu{
 	public GLPlanetMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		
-		Rectangle renderRect = new Rectangle(x + margin, menuHeight - (margin + 15), menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4);
+		Rectangle renderRect = new Rectangle(x + margin, menuHeight - ((menuWidth - 2*margin)*3)/4 - margin - 15, menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4);
 		
 		metalPlanetPicture = new GLSprite("menu/metal_planet", 1024, 768);
 		metalPlanetPicture.setBounds(renderRect);
@@ -36,7 +36,7 @@ public class GLPlanetMenu extends GLAbstractSideMenu{
 		
 		planetPicture = metalPlanetPicture;
 		
-		colonizeButton = new GLButton(x + margin, (menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
+		colonizeButton = new GLButton(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
 		colonizeButton.setTexture("menu/colonizeButton", 180, 50);
 		colonizeButton.setAction(new Action(){
 			@Override
