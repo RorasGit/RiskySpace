@@ -96,6 +96,9 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 	@Override
 	public boolean mousePressed(Point p) {
 		if (isVisible()) {
+			if (startGame.mousePressed(p)) {
+				
+			}
 			if (numberOfPlayersButton.mousePressed(p)) {
 				gameModesButton.setOpen(false);
 				if (numberOfPlayersButton.getSelectedValue() == 3) {

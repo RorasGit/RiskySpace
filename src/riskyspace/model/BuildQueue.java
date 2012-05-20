@@ -11,15 +11,21 @@ import java.util.Set;
 import riskyspace.services.Event;
 import riskyspace.services.EventText;
 
+/**
+ * A class for representing queues of BuildAble items.
+ * @author rapp
+ *
+ */
 public class BuildQueue implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4795409046393892799L;
 	private Map<Position,ArrayList<QueueItem>> colonyQueue = null;
 	private int queueMaxSize = 0;
 
+	/**
+	 * A constructor for BuildQueue.
+	 * @param queueMaxSize - the length of the queues at each colony position.
+	 */
 	public BuildQueue(int queueMaxSize) {
 		this.queueMaxSize = queueMaxSize;
 		colonyQueue = new HashMap<Position,ArrayList<QueueItem>>();
@@ -33,9 +39,6 @@ public class BuildQueue implements Serializable {
 	 */
 	private class QueueItem implements Serializable {
 		
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -5271692685385186036L;
 		private int buildTime;
 		private BuildAble item;

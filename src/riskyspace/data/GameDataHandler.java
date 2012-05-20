@@ -16,10 +16,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.sun.xml.internal.bind.v2.runtime.Name;
-
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
@@ -27,12 +23,21 @@ import riskyspace.model.Ship;
 import riskyspace.model.ShipType;
 import riskyspace.model.World;
 
-public class GameData {
+/**
+ * A class for handling game data used for saving and loading games.
+ * All information required to load a game is saved to file. You can load last autosaved
+ * game, or you can load a game through its name as String.
+ * 
+ * @author rapp
+ */
+public class GameDataHandler {
 	
 	private Path riskySpace = null;
 	private Path riskySave = null;
 	private Path pathOldSave = null;
 	private Path pathNewSave = null;
+	
+	private File file = new File("asd");
 	
 	private String saveFolder = "c:\\RiskySpace\\Save\\";
 	
@@ -41,7 +46,13 @@ public class GameData {
 	
 	private final static Position pos = new Position (1, 1);
 	
-	public GameData() {
+	// TODO : make system independant   (with file.separator)
+
+	
+	/**
+	 * 
+	 */
+	public GameDataHandler() {
 		
 		pathOldSave = FileSystems.getDefault().getPath(saveFolder+"previous_autosave.rsg");
 		pathNewSave = FileSystems.getDefault().getPath(saveFolder+"last_autosave.rsg");
@@ -59,7 +70,7 @@ public class GameData {
 		}
 	}
 	
-	public GameData(String saveFolder) {
+	public GameDataHandler(String saveFolder) {
 		this();
 		this.saveFolder = saveFolder;
 	}
@@ -214,7 +225,7 @@ public class GameData {
 			world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.SCOUT), Player.BLUE));
 		}
 		
-		GameData gd = new GameData();
+		GameDataHandler gd = new GameDataHandler();
 		List<Player> players = new ArrayList<Player>();
 		players.add(Player.BLUE);
 		players.add(Player.RED);
