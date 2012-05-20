@@ -60,9 +60,7 @@ public class StartScreen extends JPanel {
 
 	public void measureScreen() {
 		width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-		System.out.println(width);
 		height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-		System.out.println(height);
 	}
 	
 	public void createMenus() {
