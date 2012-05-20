@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
+
 
 import riskyspace.PlayerColors;
 import riskyspace.model.BuildAble;
@@ -145,6 +147,13 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	
 	private Font titleFont;
 	private Font infoFont;
+	
+	/*
+	 * TextRenderer
+	 */
+	private TextRenderer nameRenderer = null;
+	private boolean initiated = false;
+	private int textX, textY;
 	
 	public GLBuildingMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
@@ -483,6 +492,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		backButton.draw(drawable, null, targetArea, zIndex);
 		
 		drawProgressIndicators(drawable, objectRect, targetArea, zIndex);
+		drawMenuName(drawable);
 	}
 	
 	private void drawProgressIndicators(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
@@ -504,13 +514,18 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		}
 	}
 	
-//	private void drawColonyName(Graphics g) {
-//		g.setColor(ownerColor);
-//		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
-//		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
-//		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + cityImage.getHeight(null));
-//		g.drawString(getMenuName(), textX, textY);
-//	}
+	private void drawMenuName(GLAutoDrawable drawable) {
+		if(!initiated){
+			nameRenderer = new TextRenderer(ViewResources.getFont().deriveFont((float)getMenuHeight()/20));
+			textX = getX() - ((int)nameRenderer.getBounds(getMenuName()).getWidth() / 2) + (getMenuWidth() / 2);
+			textY = getMenuHeight() - ((int)nameRenderer.getBounds(getMenuName()).getHeight() / 2) - (2*margin + citySprite.getBounds().getHeight());
+		}
+		nameRenderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		nameRenderer.setColor(ownerColor);
+		nameRenderer.draw(getMenuName(), textX, textY);
+		nameRenderer.setColor(1, 1, 1, 1);
+		nameRenderer.endRendering();
+	}
 	
 	@Override
 	public boolean mousePressed(Point p) {

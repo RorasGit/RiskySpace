@@ -454,37 +454,6 @@ public class GLRenderArea implements GLRenderAble {
 		gl.glEnd();
 		gl.glEnable(GL2.GL_TEXTURE_2D);
 	}
-	
-	private void drawGrid3(GLAutoDrawable drawable) {
-		if (gridTexture == null) {
-			gridTexture = AWTTextureIO.newTexture(drawable.getGLProfile(), gridImage, false);
-		}
-		gridTexture.bind(drawable.getGL());
-		GL2 gl = drawable.getGL().getGL2();
-		
-		float x = ((float) (gridTexture.getWidth() - screenArea.getWidth())/gridTexture.getWidth())*currentCamera.getX();
-		float y = ((float) (gridTexture.getHeight() - screenArea.getHeight())/gridTexture.getHeight())*currentCamera.getY();
-		float width = (float) screenArea.getWidth() / gridTexture.getWidth();
-		float height = (float) screenArea.getHeight() / gridTexture.getHeight();
-		float x1 = x + width;
-		float y1 = y + height;
-		
-		gl.glBegin(GL2.GL_QUADS);
-		
-		gl.glTexCoord2f(x, y);
-		gl.glVertex3f(-1, -1, 0.98f);
-
-		gl.glTexCoord2f(x, y1);
-		gl.glVertex3f(-1, 1, 0.98f);
-
-		gl.glTexCoord2f(x1, y1);
-		gl.glVertex3f(1, 1, 0.98f);
-
-		gl.glTexCoord2f(x1, y);
-		gl.glVertex3f(1, -1, 0.98f);
-		
-		gl.glEnd();
-	}
 
 	/**
 	 * Update the size of the screen
