@@ -6,17 +6,29 @@ import java.io.FileNotFoundException;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
+/**
+ * PlayList play sound files in a loop with a 45second break in between sound files.
+ * @author Alexander Hederstaf
+ *
+ */
 public class PlayList {
 	
-	public static final String[] STANDARD_GAME_LOOP = {"morgantj_-_Wayfarer.mp3",
-													   "T-sonic - Collapsar.mp3",
-													   "zikweb_-_Black_Snow.mp3",
-													   "T-sonic - Expanse.mp3",
+	/**
+	 * Standard game loop playlist order
+	 */
+	public static final String[] STANDARD_GAME_LOOP = {"zikweb_-_Black_Snow.mp3",
 													   "zikweb_-_Not_too_quiet.mp3",
+													   "T-sonic - Expanse.mp3",
 													   "zikweb_-_Lament_Harp.mp3",
-													   "T-sonic - Memory of Moon.p3",
+													   "T-sonic - Collapsar.mp3",
+													   "T-sonic - Memory of Moon.mp3",
 													   "T-sonic - Noising.mp3",
+													   "morgantj_-_Wayfarer.mp3",
 													   "T-sonic - Singularity.mp3",};
+	
+	/**
+	 * Standard lobby loop playlist
+	 */
 	public static final String[] STANDARD_LOBBY_LOOP = {"T-sonic - Nucleosynthesis.mp3", 
 														"T-sonic - AirTrance.mp3",};
 	
@@ -31,10 +43,21 @@ public class PlayList {
 		new PlayList(STANDARD_GAME_LOOP).start();
 	}
 	
+	/**
+	 * Create a new PlayList that will Loop a set of songs
+	 * @param tracks A String Array with song names.
+	 */
 	public PlayList(String[] tracks) {
 		this.tracks = new String[tracks.length];
-		for (int i = 0; i < tracks.length; i++) {
-			this.tracks[i] = tracks[i];
+		if (tracks == STANDARD_LOBBY_LOOP) {
+			// Random the starting track for Lobby
+			int r = (int) (Math.random() * 2);
+			this.tracks[0] = tracks[r];
+			this.tracks[1] = tracks[(r + 1) % 2];
+		} else {
+			for (int i = 0; i < tracks.length; i++) {
+				this.tracks[i] = tracks[i];
+			}
 		}
 	}
 
