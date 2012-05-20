@@ -26,6 +26,16 @@ public class GLSprite implements GLRenderAble {
 		renderRect = new Rectangle(0, 0, 0, 0);
 	}
 
+	/**
+	 * Copy constructor
+	 * @param sprite The GLSprite to copy.
+	 */
+	public GLSprite(GLSprite sprite) {
+		this.textureName = sprite.textureName;
+		this.textureRect = new Rectangle(sprite.textureRect);
+		this.renderRect = new Rectangle(sprite.renderRect);
+	}
+
 	public void setLocationX(int x) {
 		renderRect.setX(x);
 	}

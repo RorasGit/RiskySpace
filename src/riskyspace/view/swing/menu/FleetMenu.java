@@ -88,7 +88,9 @@ public class FleetMenu extends SwingAbstractSideMenu {
 			for (int i = 0; i < fleetIcons.size(); i++) {
 				int col = i % 5;
 				int row = i / 5;
-				g.drawImage(fleetIcons.get(i), getX() + margin + col*itemSize + 2, getY() + 2*margin + height + row*itemSize, null);
+				int x = getX() + margin + col * itemSize + 2;
+				int y = getY() + 2 * margin + height + row * itemSize;
+				g.drawImage(fleetIcons.get(i), x, y, null);
 			}
 		}
 	}

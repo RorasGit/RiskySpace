@@ -32,7 +32,7 @@ import riskyspace.view.RankIndicator;
 
 /**
  * 
- * @author flygarn
+ * @author Alexander Hederstaf
  *
  */
 public class BuildingMenu extends SwingAbstractSideMenu {
