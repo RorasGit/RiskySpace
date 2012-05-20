@@ -70,7 +70,7 @@ public class Lobby extends AbstractPreGameMenu {
 	}
 	
 	private void createBackground() {
-		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/multiplayer/menubackground" + View.res).
+		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/multiplayer/widerMenubackground" + View.res).
 				getScaledInstance(2*getMenuWidth()/7, getMenuHeight()-2*margin, Image.SCALE_DEFAULT);
 		gameModeImage = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/Annihilation" + View.res).
 				getScaledInstance(2*getMenuWidth()/7 - 6*margin, (2*getMenuWidth()/7 - 3*margin)/2, Image.SCALE_DEFAULT);

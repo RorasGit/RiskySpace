@@ -1,8 +1,11 @@
 package riskyspace.view.lobby;
 
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 
+import riskyspace.view.View;
 import riskyspace.view.VolumeSlider;
 
 public class SettingsMenu extends AbstractPreGameMenu {
@@ -13,7 +16,7 @@ public class SettingsMenu extends AbstractPreGameMenu {
 	public SettingsMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		musicVolume = new VolumeSlider(x + menuWidth/2 - 135, y + menuHeight/3, 270, 30, "Music volume");
-		effectsVolume = new VolumeSlider(x + menuWidth/2 - 135, y + 2*menuHeight/3, 270, 30, "eFFect volume");
+		effectsVolume = new VolumeSlider(x + menuWidth/2 - 135, y + 2*menuHeight/3, 270, 30, "eFFect volume");	
 	}
 	
 	public void draw(Graphics g) {

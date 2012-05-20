@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -67,11 +68,19 @@ public class StartScreen extends JPanel{
 		localLobby = new Lobby(width/2 - width/3, height/2 - height/3, 2*width/3, 2*height/3);
 		multiplayerLobby = new Lobby(width/2 - width/3, height/2 - height/3, 2*width/3, 2*height/3);
 		settingsMenu = new SettingsMenu(width/2 - width/6, height/2 - height/4, width/3, height/3);
+		
+		ArrayList<String> list = new ArrayList<String>();
+		for (int i=0; i<20; i++) {
+			list.add("" + i);
+		}
+		
+		loadGameMenu = new LoadGameMenu<String>(width/2 - width/4, height/2 - height/4, width/2, height/2, list);
 	}
 	
 	private void hideMenus() {
 		localLobby.setVisible(false);
 		multiplayerLobby.setVisible(false);
+		loadGameMenu.setVisible(false);
 		settingsMenu.setVisible(false);
 	}
 	
@@ -96,6 +105,13 @@ public class StartScreen extends JPanel{
 		});
 		loadGame = new Button(width/2 - 125, height/2 - 200 + 200, 250, 50);
 		loadGame.setImage("res/menu/lobby/loadGameButton" + View.res);
+		loadGame.setAction(new Action(){
+			@Override
+			public void performAction() {
+				loadGameMenu.setVisible(true);
+				startScreenVisible = false;
+			}
+		});
 		settings = new Button(width/2 - 125, height/2 - 200 + 300, 250, 50);
 		settings.setImage("res/menu/lobby/settingsButton" + View.res);
 		settings.setAction(new Action(){
@@ -132,9 +148,9 @@ public class StartScreen extends JPanel{
 			if (localLobby.isVisible()) {
 				localLobby.draw(g);
 			}
-//			if (loadGame.isVisible()) {
-//				loadGame.draw(g);
-//			}
+			if (loadGameMenu.isVisible()) {
+				loadGameMenu.draw(g);
+			}
 			if (multiplayerLobby.isVisible()) {
 				multiplayerLobby.draw(g);
 			}
@@ -157,9 +173,10 @@ public class StartScreen extends JPanel{
 		 */
 		public boolean menuClick(Point point) {
 			if (startScreenVisible) {
-				if (multiplayer.mousePressed(point)) {return true;}
-				if (settings.mousePressed(point)) {return true;}
 				if (localGame.mousePressed(point)) {return true;}
+				if (multiplayer.mousePressed(point)) {return true;}
+				if (loadGame.mousePressed(point)) {return true;}
+				if (settings.mousePressed(point)) {return true;}
 				if (exit.mousePressed(point)) {return true;}
 			}
 			if (backButton.mousePressed(point)) {
@@ -176,6 +193,12 @@ public class StartScreen extends JPanel{
 					return true;
 				}
 			}
+			if (loadGameMenu instanceof Clickable) {
+				if (((Clickable) loadGameMenu).mousePressed(point)) {
+					return true;
+				}
+			}
+			
 			if (settingsMenu instanceof Clickable) {
 				if (((Clickable) settingsMenu).mousePressed(point)) {
 					return true;
