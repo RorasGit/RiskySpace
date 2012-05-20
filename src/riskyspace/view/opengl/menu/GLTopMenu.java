@@ -1,5 +1,6 @@
 package riskyspace.view.opengl.menu;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -19,6 +20,8 @@ import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
 import riskyspace.view.opengl.impl.GLButton;
 import riskyspace.view.opengl.impl.GLSprite;
+
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 	
@@ -50,6 +53,7 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 	private int margin = 5;
 	
 	private Font resourceFont = null;
+	private TextRenderer textRenderer;
 	
 	public GLTopMenu(int x, int y, int width, int height) {
 		this.x = x;
@@ -128,36 +132,15 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 		return false;
 	}
 
-//	@Override
-//	public void draw(Graphics g) {
-//		int a = menuWidth/10;
-//		g.setColor(ViewResources.WHITE);
-//		g.setFont(resourceFont);
-//		
-//		int fontHeight = g.getFontMetrics(resourceFont).getHeight();
-//		/*
-//		 * Draw the player's metal
-//		 */
-//		g.drawImage(metalImage, a*6, margin, null);
-//		g.drawString("" + metal, a*6 + metalImage.getWidth(null) + 5, margin + metalImage.getHeight(null)/2 + fontHeight/2);
-//		/*
-//		 * Draw the player's gas
-//		 */
-//		g.drawImage(gasImage, a*7, margin, null);
-//		g.drawString("" + gas, a*7 + gasImage.getWidth(null) + 5, margin + gasImage.getHeight(null)/2 + fontHeight/2);
-//		/*
-//		 * Draw the player's supply
-//		 */
-//		if (supply.isCapped())
-//			g.setColor(Color.RED);
-//		g.drawImage(supplyImage, a*5, margin, null);
-//		g.drawString(supply.getUsed() + "/" + supply.getMax(), a*5 + supplyImage.getWidth(null) + 5, margin + supplyImage.getHeight(null)/2 + fontHeight/2);
-//		
-//		menuButton.draw(g);
-//		buildQueueButton.draw(g);
-//		endTurnButton.draw(g);
-//		performMovesButton.draw(g);
-//	}
+	private void drawInfoString(GLAutoDrawable drawable, Rectangle rect, String s, TextRenderer renderer, Color white) {
+		int x = rect.getX() + rect.getWidth() + margin;
+		int y = rect.getY() + rect.getHeight() / 2;
+		renderer.setColor(white);
+		renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		y -= renderer.getBounds(s).getHeight() / 2;
+		renderer.draw(s, x, y);
+		renderer.endRendering();
+	}
 
 	public void setStats(PlayerStats stats) {
 		gas = stats.getResource(Resource.GAS);
@@ -183,11 +166,23 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect,	Rectangle targetArea, int zIndex) {
+		if (textRenderer == null) {
+			textRenderer = new TextRenderer(resourceFont);
+		}
 		
 		metalSprite.draw(drawable, metalRect, targetArea, zIndex);
-		gasSprite.draw(drawable, gasRect, targetArea, zIndex);
-		supplySprite.draw(drawable, supplyRect, targetArea, zIndex);
+		drawInfoString(drawable, metalRect, "" + metal, textRenderer, ViewResources.WHITE);
 		
+		gasSprite.draw(drawable, gasRect, targetArea, zIndex);
+		drawInfoString(drawable, gasRect, "" + gas, textRenderer, ViewResources.WHITE);
+		
+		supplySprite.draw(drawable, supplyRect, targetArea, zIndex);
+		if (supply.isCapped()) {
+			drawInfoString(drawable, supplyRect, supply.getUsed() + "/" + supply.getMax(), textRenderer, Color.RED);
+		} else {
+			drawInfoString(drawable, supplyRect, supply.getUsed() + "/" + supply.getMax(), textRenderer, ViewResources.WHITE);
+		}
+		drawable.getGL().getGL2().glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		menuButton.draw(drawable, null, targetArea, zIndex);
 		buildQueueButton.draw(drawable, null, targetArea, zIndex);
 		endTurnButton.draw(drawable, null, targetArea, zIndex);
