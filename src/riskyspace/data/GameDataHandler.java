@@ -8,14 +8,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
-import riskyspace.model.Ship;
-import riskyspace.model.ShipType;
 import riskyspace.model.World;
 
 /**
@@ -35,12 +31,18 @@ public class GameDataHandler {
 	private final static Position pos = new Position (1, 1);
 	
 	/**
-	 * 
+	 * A default constructor.
 	 */
 	public GameDataHandler() {
 		this(System.getProperty("user.home"));
 	}
 	
+	/**
+	 * A constructor that sets the file path you want to save your games to.
+	 * Directories RiskySpace and RiskySpace\\Save will be created for you
+	 * at the chosen path destination.
+	 * @param saveFolder - A string representing the file path you wish to use.
+	 */
 	public GameDataHandler(String saveFolder) {
 		saveFolder = saveFolder + File.separator + "RiskySpace" +
 				File.separator;
@@ -51,6 +53,7 @@ public class GameDataHandler {
 		oldSave = new File(riskySave + File.separator + "previous_autosave.rsg");
 		newSave = new File(riskySave + File.separator + "last_autosave.rsg");
 		
+		// Create the folders and files unless they already exist.
 		try {
 			riskySpace.mkdir();
 			riskySave.mkdir();
@@ -61,16 +64,23 @@ public class GameDataHandler {
 		}
 	}
 
-	public void autoSave(World world, List<Player> players, Player currentPlayer, int turn,
-			String gameMode) {
-
+	/**
+	 * Save the current game to default game name "last_autosave".
+	 * The game currently saved in "last_autosave" will be moved to "previous_autosave".
+	 * "previous_autosave" will be overwritten.
+	 * @param world - the world describing the game you wish to save.
+	 * @param players - a list containing the active players in the game.
+	 * @param currentPlayer - the player whose turn it was when the save was performed.
+	 * @param turn - an integer representing a game counter of how many turns have been played.
+	 * @param gameMode - the game mode setting of game.
+	 */
+	public void autoSave(World world, List<Player> players, Player currentPlayer, int turn, String gameMode) {
 		try {
 			oldSave.createNewFile();
 			newSave.createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	
-		
 		
 		//Store the former last_autosave as previous_autosave
 		if (oldSave.delete()) {
@@ -80,6 +90,15 @@ public class GameDataHandler {
 		saveGame(world, players, currentPlayer, turn, gameMode, "last_autosave");
 	}
 	
+	/**
+	 * Saves the game with a custom name that will not be overwritten by saveGame.
+	 * @param world - the world describing the game you wish to save.
+	 * @param players - a list containing the active players in the game.
+	 * @param currentPlayer - the player whose turn it was when the save was performed.
+	 * @param turn - an integer representing a game counter of how many turns have been played.
+	 * @param gameMode - the game mode setting of game.
+	 * @param gameName - the name of the file to which you want to save the game.
+	 */
 	public void saveGame(World world, List<Player> players, Player currentPlayer, int turn,
 			String gameMode, String gameName) {
 	
@@ -99,6 +118,11 @@ public class GameDataHandler {
 		}
 	}	
 	
+	/**
+	 * Load a game from file name.
+	 * @param gameName - the name of the file which game has been saved to.
+	 * @throws IOException
+	 */
 	public void loadGame(String gameName) throws IOException {	
 		try {
 			FileInputStream fis = new FileInputStream(riskySave + File.separator + gameName + ".rsg");
@@ -114,6 +138,10 @@ public class GameDataHandler {
 			 * Use this info to create a new game instance:
 			 * new GameManager() <- needs to be implemented
 			 * GameManager.init(world);  <- need new init for a world loaded from file
+			 * 
+			 * OR
+			 * 
+			 * return it to someone who does it for you
 			 */
 			ois.close();
 			
@@ -122,6 +150,9 @@ public class GameDataHandler {
 		}
 	}
 	
+	/**
+	 * Load the game currently saved in default file "last_autosave".
+	 */
 	public void loadAutoSave() {
 		try {
 			loadGame("last_autosave");
@@ -130,6 +161,10 @@ public class GameDataHandler {
 		}
 	}
 	
+	/**
+	 * View the games in the RiskySpace\\Save folder.
+	 * @return - An array containing save file names as strings.
+	 */
 	public String[] getSavedGames() {
 		File directory = riskySave;
 		FilenameFilter rsgFilter = new FilenameFilter() {
@@ -148,6 +183,11 @@ public class GameDataHandler {
 		}
 	}
 	
+	/**
+	 * Get load game information for a specific game file.
+	 * @param gameName - the name of the save file you want to inspect.
+	 * @return - an array of strings representing players, turn and game mode of the save file.
+	 */
 	public String[] getGameInfo(String gameName) {
 		FileInputStream fis;
 		ObjectInputStream ois = null;
@@ -181,34 +221,5 @@ public class GameDataHandler {
 				e.printStackTrace();
 			}
 		return gameInfo;
-	}
-	
-	
-	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		World world = new World(20, 20, 2);
-		
-		for (int i = 0; i < 2; i++) {
-			world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.SCOUT), Player.BLUE));
-		}
-		
-		GameDataHandler gd = new GameDataHandler();
-		
-		List<Player> players = new ArrayList<Player>();
-		players.add(Player.BLUE);
-		players.add(Player.RED);
-		
-		for (int i = 0; i < gd.getSavedGames().length; i++) {
-			System.out.println(gd.getSavedGames()[i]);
-		}
-		
-		gd.autoSave(world, players, Player.BLUE, 0, "Annihilation");
-		
-		gd.saveGame(world, players, Player.RED, 15, "Annihilation", "game7");
-		
-		for (int i = 0; i < gd.getGameInfo("last_autosave").length; i++) {
-			System.out.println(gd.getGameInfo("last_autosave")[i]);
-		}
-		
-		gd.loadAutoSave();
 	}
 }
