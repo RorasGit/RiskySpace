@@ -465,8 +465,8 @@ public class GLRenderArea implements GLRenderAble {
 			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				int dX = (point.x + translatePixelsX()) % squareSize;
-				int dY = (point.y + translatePixelsY()) % squareSize;
-				if (dX > squareSize/2 && dY > squareSize/2) {
+				int dY = ((screenArea.getHeight() - point.y) + translatePixelsY()) % squareSize;
+				if (dX > squareSize/2 && dY <= squareSize/2) {
 					Event evt = new Event(Event.EventTag.COLONIZER_SELECTED, pos);
 					EventBus.CLIENT.publish(evt);
 					return true;
@@ -480,8 +480,8 @@ public class GLRenderArea implements GLRenderAble {
 			Position pos = getPosition(point, false);
 			if (isLegalPos(pos)) {
 				int dX = (point.x + translatePixelsX()) % squareSize;
-				int dY = (point.y + translatePixelsY()) % squareSize;
-				if (dX <= squareSize/2 && dY >= squareSize/2) {
+				int dY = ((screenArea.getHeight() - point.y) + translatePixelsY()) % squareSize;
+				if (dX <= squareSize/2 && dY <= squareSize/2) {
 					if (me.isShiftDown()) {
 						Event evt = new Event(Event.EventTag.ADD_FLEET_SELECTION, pos);
 						EventBus.CLIENT.publish(evt);
