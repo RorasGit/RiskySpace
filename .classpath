@@ -11,14 +11,15 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt.jar" sourcepath="lib/jogamp-all-platforms/jogamp-all-platforms/gluegen-java-src.zip">
-                <attributes>
-                        <attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="RiskySpace/lib/jogamp-all-platforms/jogamp-all-platforms/jar"/>
-                </attributes>
-        </classpathentry>
-        <classpathentry kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl.all.jar" sourcepath="lib/jogamp-all-platforms/jogamp-all-platforms/jogl-java-src.zip">
-                <attributes>
-                        <attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="RiskySpace/lib/jogamp-all-platforms/jogamp-all-platforms/jar"/>
-                </attributes>
-        </classpathentry>
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="RiskySpace/lib/jogamp-all-platforms/jogamp-all-platforms/jar"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl.all.jar" sourcepath="lib/jogamp-all-platforms/jogamp-all-platforms/jogl-java-src.zip">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="RiskySpace/lib/jogamp-all-platforms/jogamp-all-platforms/jar"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/JLayer1.0.1/jl1.0.1.jar" sourcepath="lib/JLayer1.0.1/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

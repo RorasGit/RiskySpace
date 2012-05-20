@@ -1,6 +1,11 @@
 package riskyspace.sound;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -53,5 +58,31 @@ public class Sound {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void main(String[] args) {
+		playMP3("zikweb_-_Not_too_quiet.mp3");
+	}
+
+	
+	
+	public static void playMP3(final String name) {
+		Runnable r = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					FileInputStream fis = new FileInputStream("res/sound/" + name);
+					Player play = new Player(fis);
+					play.play();
+					
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (JavaLayerException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		Thread t = new Thread(r);
+		t.start();
 	}
 }
