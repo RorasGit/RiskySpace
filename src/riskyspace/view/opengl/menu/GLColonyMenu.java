@@ -55,15 +55,20 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 	public GLColonyMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		margin = menuHeight/20;
-		recruitMenu = new GLRecruitMenu(x, y, menuWidth, menuHeight);
-		buildingMenu = new GLBuildingMenu(x, y, menuWidth, menuHeight);
+		Action backAction = new Action() {
+			@Override public void performAction() {
+				setVisible(true);
+			}
+		};
+		recruitMenu = new GLRecruitMenu(x, y, menuWidth, menuHeight, backAction);
+		buildingMenu = new GLBuildingMenu(x, y, menuWidth, menuHeight, backAction);
 		setPicture();
 		setButtons();
 	}
 	
 	private void setButtons() {
 		buildShipButton = new GLButton(getX() + margin, 
-				(getBounds().getWidth() - 2*margin)/4 , 
+				getY() + getMenuHeight() - 2*(getMenuWidth() - 2*margin)/4 , 
 				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
 		buildShipButton.setTexture("menu/recruit", 128, 32);
 		buildShipButton.setAction(new Action(){
@@ -74,7 +79,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 			}
 		});
 		buildingsButton = new GLButton(getX() + margin, 
-				2*(getBounds().getWidth() - margin)/4, 
+				getY() + getMenuHeight() - 3*(getMenuWidth() - margin)/4, 
 				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
 		buildingsButton.setTexture("menu/build", 128, 32);
 		buildingsButton.setAction(new Action(){
@@ -148,18 +153,30 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 		}
 		return false;
 	}
+	
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
-		buildingMenu.setVisible(true);
-		if(isVisible()){
+		if(recruitMenu.isVisible()){
+			recruitMenu.draw(drawable, objectRect, targetArea, zIndex);
+		} else if(buildingMenu.isVisible()){
+			buildingMenu.draw(drawable, objectRect, targetArea, zIndex);
+		} else if(isVisible()){
 			super.draw(drawable, objectRect, targetArea, zIndex);
 			colonyPicture.draw(drawable, colonyPicture.getBounds(), targetArea, zIndex+1);
 			buildingsButton.draw(drawable, null, targetArea, zIndex+1);
 			buildShipButton.draw(drawable, null, targetArea, zIndex+1);
-		} else if(recruitMenu.isVisible()){
-			recruitMenu.draw(drawable, objectRect, targetArea, zIndex);
-		} else if(buildingMenu.isVisible()){
-			buildingMenu.draw(drawable, objectRect, targetArea, zIndex);
-		}
+		} 
+	}
+	
+	@Override
+	public void setVisible(boolean enabled) {
+		super.setVisible(enabled);
+		recruitMenu.setVisible(false);
+		buildingMenu.setVisible(false);
+	}
+	
+	@Override
+	public boolean isVisible() {
+		return super.isVisible() || recruitMenu.isVisible() || buildingMenu.isVisible();
 	}
 }

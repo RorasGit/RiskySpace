@@ -3,6 +3,7 @@ package riskyspace.view.opengl.menu;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,26 +65,28 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	/*
 	 * Images for different Buildings
 	 */
-	private GLSprite mineImage;
-	private GLSprite turretImage;
-	private GLSprite radarImage;
-	private GLSprite hangarImage;
+	private GLSprite mineSprite;
+	private GLSprite turretSprite;
+	private GLSprite radarSprite;
+	private GLSprite hangarSprite;
 	
 	/*
-	 * City Images
+	 * City Sprites
 	 */
-	private GLSprite cityImage = null;
+	private GLSprite citySprite = null;
 	private Map<Player, GLSprite> cities = new HashMap<Player, GLSprite>();
 	
 	/*
-	 * Split Image
+	 * Split Sprite and Rectangle location/size
 	 */
 	private GLSprite split = null;
+	private Rectangle[] splits = null;
 	
 	/*
-	 * 
+	 * In Progress Sprite and Rectangle location/size
 	 */
 	private GLSprite inProgress = null;
+	private Rectangle[] progressRects = null;
 	
 	/*
 	 * Rank indicators
@@ -145,11 +148,11 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	
 	public GLBuildingMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
-		//TODO Create buttons and Load Images
+		//TODO Create buttons and Load Sprites
 		margin = menuHeight/20;
 		
 		/*
-		 * Load City Images for every Player
+		 * Load City Sprites for every Player
 		 */
 		int imageWidth = menuWidth - 2*margin;
 		int imageHeight = ((menuWidth - 2*margin)*3)/4;
@@ -168,16 +171,16 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		int width = menuHeight/35;
 		int height = 3*width;
 
-		// Set Location
-		mineRank.setLocation(x + margin/2, menuHeight - (7*margin/2 + imageHeight));
-		turretRank.setLocation(x + margin/2, menuHeight - (height + 9*margin/2 + imageHeight));
-		radarRank.setLocation(x + margin/2, menuHeight - (height*2 + 11*margin/2 + imageHeight));
-		hangarRank.setLocation(x + margin/2, menuHeight - (height*3 + 13*margin/2 + imageHeight));
-		
 		mineRank.setSize(width, height);
 		turretRank.setSize(width, height);
 		radarRank.setSize(width, height);
 		hangarRank.setSize(width, height);
+		
+		// Set Location
+		mineRank.setLocation(x + margin/2, 7*margin/2 + imageHeight);
+		turretRank.setLocation(x + margin/2, height + 9*margin/2 + imageHeight);
+		radarRank.setLocation(x + margin/2, height*2 + 11*margin/2 + imageHeight);
+		hangarRank.setLocation(x + margin/2, height*3 + 13*margin/2 + imageHeight);
 		
 		setButtons(menuWidth, menuHeight, height);
 	}
@@ -190,27 +193,64 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		int upgradeButtonHeight = height/4;
 		
 		/*
-		 * Load Images
+		 * Load Sprites
 		 */
-		mineImage = new GLSprite("menu/mine", 72, 72);
-		mineImage.setBounds(new Rectangle(mineRank.getX() + mineRank.getWidth(), mineRank.getY(), height, height));
-		turretImage = new GLSprite("menu/turret_laser", 72, 72);
-		turretImage.setBounds(new Rectangle(turretRank.getX() + turretRank.getWidth(), turretRank.getY(), height, height));
-		radarImage = new GLSprite("menu/radar", 72, 72);
-		radarImage.setBounds(new Rectangle(radarRank.getX() + radarRank.getWidth(), radarRank.getY(), height, height));
-		hangarImage = new GLSprite("menu/hangar", 72, 72);
-		hangarImage.setBounds(new Rectangle(radarRank.getX() + radarRank.getWidth(), radarRank.getY(), height, height));
-		split = new GLSprite("menu/split", 15, 72);
-		split.setBounds(new Rectangle(0, 0, height/5, height));
-		inProgress = new GLSprite("menu/progress", 128, 32);
-		inProgress.setBounds(new Rectangle(0, 0, upgradeButtonWidth, upgradeButtonHeight));
-				
+		mineSprite = 	new GLSprite("menu/mine", 			 72, 72);
+		turretSprite = 	new GLSprite("menu/turret_laser", 	 72, 72);
+		radarSprite = 	new GLSprite("menu/radar", 			 72, 72);
+		hangarSprite = 	new GLSprite("menu/hangar", 		 72, 72);
+		split =			new GLSprite("menu/split",			 15, 72);
+		inProgress = 	new GLSprite("menu/progress", 		128, 32);
+		
+		/*
+		 * Set location and height of Sprites
+		 */
+		int sHeight = Toolkit.getDefaultToolkit().getScreenSize().height; // Screen Height
+		int yDiff = sHeight - height; // (yDiff - y) will give correct openGL Y value
+		mineSprite.setBounds(new Rectangle(mineRank.getX() + mineRank.getWidth(),
+				yDiff - mineRank.getY(), height, height));
+		turretSprite.setBounds(new Rectangle(turretRank.getX() + turretRank.getWidth(),
+				yDiff - turretRank.getY(), height, height));
+		radarSprite.setBounds(new Rectangle(radarRank.getX() + radarRank.getWidth(),
+				yDiff - radarRank.getY(), height, height));
+		hangarSprite.setBounds(new Rectangle(hangarRank.getX() + hangarRank.getWidth(),
+				yDiff - hangarRank.getY(), height, height));
+		
+		int splitWidth = height/5; //Width of the "split" Image
+		/*
+		 * X location of "split" image
+		 */
+		int imageRightX = mineRank.getX() + mineRank.getWidth() + height; // Right side of Building Icon
+		int splitX = (menuWidth - margin - mineRank.getWidth() - height)/2 - splitWidth/2;
+		splitX += imageRightX;
+		
+		splits = new Rectangle[]{
+				new Rectangle(splitX, yDiff - mineRank.getY(), splitWidth, height),
+				new Rectangle(splitX, yDiff - turretRank.getY(), splitWidth, height),
+				new Rectangle(splitX, yDiff - radarRank.getY(), splitWidth, height),
+				new Rectangle(splitX, yDiff - hangarRank.getY(), splitWidth, height),
+		};
+		
+		/*
+		 * X location of the "inProgress" image and upgrade buttons
+		 */
+		int upgradeX = getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth;
+		
+		progressRects = new Rectangle[]{
+			new Rectangle(upgradeX, yDiff - mineRank.getY(), 	upgradeButtonWidth, upgradeButtonHeight),
+			new Rectangle(upgradeX, yDiff - turretRank.getY(), upgradeButtonWidth, upgradeButtonHeight),
+			new Rectangle(upgradeX, yDiff - radarRank.getY(), 	upgradeButtonWidth, upgradeButtonHeight),
+			new Rectangle(upgradeX, yDiff - hangarRank.getY(), upgradeButtonWidth, upgradeButtonHeight),
+		};
+		
 		/*
 		 * Create Buttons
+		 * Does not use yDiff as we want the y Coordinate in awt coordinate space for clicks
+		 * The Button will take care of correct drawing itself
 		 */
-		int x = getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth;
 		
-		upgradeMine = new GLButton(x, mineRank.getY() + upgradeButtonHeight
+		upgradeMine = new GLButton(upgradeX 
+				, mineRank.getY() + mineRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeMine.setTexture("menu/upgrade", 128, 32);
 		upgradeMine.setAction(new Action(){
@@ -221,7 +261,8 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 			}
 		});
 		
-		upgradeTurret = new GLButton(x, turretRank.getY() + upgradeButtonHeight
+		upgradeTurret = new GLButton(upgradeX 
+				, turretRank.getY() + turretRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeTurret.setTexture("menu/upgrade", 128, 32);
 		upgradeTurret.setAction(new Action(){
@@ -233,7 +274,8 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		});
 		
 		
-		upgradeRadar = new GLButton(x, radarRank.getY() + upgradeButtonHeight
+		upgradeRadar = new GLButton(upgradeX 
+				, radarRank.getY() + radarRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeRadar.setTexture("menu/upgrade", 128, 32);
 		upgradeRadar.setAction(new Action(){
@@ -244,7 +286,8 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 			}
 		});
 		
-		upgradeHangar = new GLButton(x, hangarRank.getY() + upgradeButtonHeight
+		upgradeHangar = new GLButton(upgradeX 
+				, hangarRank.getY() + hangarRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
 		upgradeHangar.setTexture("menu/upgrade", 128, 32);
 		upgradeHangar.setAction(new Action(){
@@ -256,7 +299,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		});
 		
 		backButton = new GLButton(getX() + margin, 
-				(getBounds().getWidth() - 2*margin)/4, 
+				 getY() + getMenuHeight() - margin - (menuWidth - 2*margin)/4, 
 				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
 		backButton.setTexture("menu/back", 128, 32);
 		backButton.setAction(new Action(){
@@ -275,33 +318,35 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	}
 	
 	private void setPicture(int imageWidth, int imageHeight){
-		Rectangle renderRect = new Rectangle(getBounds().getX() + margin, 
-				getBounds().getHeight() - imageHeight - 3*margin/2, 
+		int sHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		Rectangle imageRenderRect = new Rectangle(getX() + margin, 
+				sHeight - (getY() + imageHeight + 3*margin/2), 
 				imageWidth, imageHeight);
 
 		GLSprite GLtmp = new GLSprite("menu/city_red", 1280, 700);
-		GLtmp.setBounds(renderRect);
+		GLtmp.setBounds(imageRenderRect);
 		cities.put(Player.RED, GLtmp);
 		GLtmp = new GLSprite("menu/city_blue", 900, 486);
-		GLtmp.setBounds(renderRect);
+		GLtmp.setBounds(imageRenderRect);
 		cities.put(Player.BLUE, GLtmp);
-		cityImage = GLtmp;
-	
+		citySprite = GLtmp;
+		// TODO: YELLOW / GREEN
+//		GLSprite GLtmp = new GLSprite("menu/city_red", 1280, 700);
+//		GLtmp.setBounds(imageRenderRect);
+//		cities.put(Player.RED, GLtmp);
+//		GLtmp = new GLSprite("menu/city_blue", 900, 486);
+//		GLtmp.setBounds(imageRenderRect);
+//		cities.put(Player.BLUE, GLtmp);
+//		citySprite = GLtmp;
 	}
 	
 	public void setColony(Colony colony) {
-		/*
-		 * TODO:
-		 * Assign values to variables based on colony info.
-		 * make sure the colony supplies sufficient information
-		 * Immutable?
-		 */
 		this.colony = colony;
 		checkBuildOptions();
 		checkQueue();
 		setMenuName(colony.getName());
 		ownerColor = PlayerColors.getColor(colony.getOwner());
-		cityImage = cities.get(colony.getOwner());
+		citySprite = cities.get(colony.getOwner());
 		
 		/*
 		 * Set Rank Indicators
@@ -406,158 +451,39 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
 		super.draw(drawable, objectRect, targetArea, zIndex);
+		if (!isVisible()) {
+			return; // Only draw if visible
+		}
 		zIndex++;
-		cityImage.draw(drawable, cityImage.getBounds(), targetArea, zIndex);
+		citySprite.draw(drawable, citySprite.getBounds(), targetArea, zIndex);
 		
 		((GLRenderAble)mineRank).draw(drawable, mineRank.getBounds(), targetArea, zIndex);
 		((GLRenderAble)turretRank).draw(drawable, turretRank.getBounds(), targetArea, zIndex);
 		((GLRenderAble)radarRank).draw(drawable, radarRank.getBounds(), targetArea, zIndex);
 		((GLRenderAble)hangarRank).draw(drawable, hangarRank.getBounds(), targetArea, zIndex);
 		
-		turretImage.draw(drawable, turretImage.getBounds(), targetArea, zIndex);
-		mineImage.draw(drawable, mineImage.getBounds(), targetArea, zIndex);
-		hangarImage.draw(drawable, hangarImage.getBounds(), targetArea, zIndex);
-		radarImage.draw(drawable, radarImage.getBounds(), targetArea, zIndex);
+		turretSprite.draw(drawable, turretSprite.getBounds(), targetArea, zIndex);
+		mineSprite.draw(drawable, mineSprite.getBounds(), targetArea, zIndex);
+		hangarSprite.draw(drawable, hangarSprite.getBounds(), targetArea, zIndex);
+		radarSprite.draw(drawable, radarSprite.getBounds(), targetArea, zIndex);
 		
-		/*
-		 * The X coordinate of the right side of building images.
-		 */
-		int imageRightX = mineRank.getX() + mineRank.getWidth() + mineImage.getBounds().getWidth();
-		
-		/*
-		 * Draw Split Image between levels
-		 */
-		int splitX = (getMenuWidth() - margin - mineRank.getWidth() - mineImage.getBounds().getWidth())/2 - split.getBounds().getWidth()/2;
-		splitX += imageRightX;
-		
-		split.draw(drawable, new Rectangle(splitX, hangarRank.getY(), split.getBounds().getWidth(), split.getBounds().getWidth()), targetArea, zIndex);
-		split.draw(drawable, new Rectangle(splitX, radarRank.getY(), split.getBounds().getWidth(), split.getBounds().getWidth()), targetArea, zIndex);
-		split.draw(drawable, new Rectangle(splitX, mineRank.getY(), split.getBounds().getWidth(), split.getBounds().getWidth()), targetArea, zIndex);
-		split.draw(drawable, new Rectangle(splitX, turretRank.getY(), split.getBounds().getWidth(), split.getBounds().getWidth()), targetArea, zIndex);
+		split.draw(drawable, splits[0], targetArea, zIndex);
+		split.draw(drawable, splits[1], targetArea, zIndex);
+		split.draw(drawable, splits[2], targetArea, zIndex);
+		split.draw(drawable, splits[3], targetArea, zIndex);
 		
 		/*
 		 * Draw Buttons
+		 * Buttons know their own location
 		 */
-		upgradeMine.draw(drawable, upgradeMine.getBounds(), targetArea, zIndex);
-		upgradeTurret.draw(drawable, upgradeTurret.getBounds(), targetArea, zIndex);
-		upgradeRadar.draw(drawable, upgradeRadar.getBounds(), targetArea, zIndex);
-		upgradeHangar.draw(drawable, upgradeHangar.getBounds(), targetArea, zIndex);
-		backButton.draw(drawable, backButton.getBounds(), targetArea, zIndex);
+		upgradeMine.draw(drawable, null, targetArea, zIndex);
+		upgradeTurret.draw(drawable, null, targetArea, zIndex);
+		upgradeRadar.draw(drawable, null, targetArea, zIndex);
+		upgradeHangar.draw(drawable, null, targetArea, zIndex);
+		backButton.draw(drawable, null, targetArea, zIndex);
 		
 		drawProgressIndicators(drawable, objectRect, targetArea, zIndex);
 	}
-	/*
-	public void draw(Graphics g) {
-		//super.draw(g);
-		//TODO Draw all stuff
-		if (isVisible()) {
-			
-			g.drawImage(cityImage, getX() + margin, getY() + 3*margin/2,null);
-			drawColonyName(g);
-			
-			((SwingRenderAble)mineRank).draw(g);
-			((SwingRenderAble)turretRank).draw(g);
-			((SwingRenderAble)radarRank).draw(g);
-			((SwingRenderAble)hangarRank).draw(g);
-			
-			g.drawImage(turretImage, turretRank.getX() + turretRank.getWidth(), turretRank.getY(), null);
-			g.drawImage(mineImage, mineRank.getX() + mineRank.getWidth(), mineRank.getY(), null);
-			g.drawImage(radarImage, radarRank.getX() + radarRank.getWidth(), radarRank.getY(), null);
-			g.drawImage(hangarImage, hangarRank.getX() + hangarRank.getWidth(), hangarRank.getY(), null);
-			
-			int imageRightX = mineRank.getX() + mineRank.getWidth() + mineImage.getBounds().getWidth();
-			
-			int splitX = (getMenuWidth() - margin - mineRank.getWidth() - mineImage.getWidth(null))/2 - split.getWidth(null)/2;
-			splitX += imageRightX;
-			
-			g.drawImage(split, splitX, hangarRank.getY(), null);
-			g.drawImage(split, splitX, turretRank.getY(), null);
-			g.drawImage(split, splitX, mineRank.getY(), null);
-			g.drawImage(split, splitX, radarRank.getY(), null);
-			
-			
-			 * Draw Title Strings
-			 
-			g.setFont(titleFont);
-			g.setColor(ViewResources.WHITE);
-			FontMetrics fm = g.getFontMetrics();
-			g.drawString(mine, getX() + getMenuWidth()/2 - fm.stringWidth(mine)/2, mineRank.getY() - 5);
-			g.drawString(turret, getX() + getMenuWidth()/2 - fm.stringWidth(turret)/2, turretRank.getY() - 5);
-			g.drawString(radar, getX() + getMenuWidth()/2 - fm.stringWidth(radar)/2, radarRank.getY() - 5);
-			g.drawString(hangar, getX() + getMenuWidth()/2 - fm.stringWidth(hangar)/2, hangarRank.getY() - 5);
-			
-			/*
-			 * Draw info strings
-			 
-			g.setFont(infoFont);
-			fm = g.getFontMetrics();
-			
-			int height = fm.getHeight();
-			int infoWidth = splitX - imageRightX + split.getWidth(null)/2;
-			
-			g.drawString(currentMineLevel, imageRightX + infoWidth/2 - fm.stringWidth(currentMineLevel)/2, mineRank.getY() + 5 + height/2);
-			g.drawString(nextMineLevel, imageRightX + 3*infoWidth/2 - fm.stringWidth(nextMineLevel)/2, mineRank.getY() + 5 + height/2);
-			
-			g.drawString(currentTurretLevel, imageRightX + infoWidth/2 - fm.stringWidth(currentTurretLevel)/2, turretRank.getY() + 5 + height/2);
-			g.drawString(nextTurretLevel, imageRightX + 3*infoWidth/2 - fm.stringWidth(nextTurretLevel)/2, turretRank.getY() + 5 + height/2);
-			
-			g.drawString(currentRadarLevel, imageRightX + infoWidth/2 - fm.stringWidth(currentTurretLevel)/2, radarRank.getY() + 5 + height/2);
-			g.drawString(nextRadarLevel, imageRightX + 3*infoWidth/2 - fm.stringWidth(nextTurretLevel)/2, radarRank.getY() + 5 + height/2);
-			
-			g.drawString(currentHangarLevel, imageRightX + infoWidth/2 - fm.stringWidth(currentHangarLevel)/2, hangarRank.getY() + 5 + height/2);
-			g.drawString(nextHangarLevel, imageRightX + 3*infoWidth/2 - fm.stringWidth(nextHangarLevel)/2, hangarRank.getY() + 5 + height/2);
-			
-			// Mining Information
-			g.drawString(currentMineIncome, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 5, mineRank.getY() + margin/3 + 5 + height/2);
-			g.drawString(nextMineIncome, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 8 + infoWidth, mineRank.getY() + margin/3 + 5 + height/2);
-			
-			// Defense System Information
-			g.drawString(currentTurretDamage, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 5, turretRank.getY() + margin/3 + 5 + height/2);
-			g.drawString(currentTurretShield, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 5, turretRank.getY() + margin/3 + 5 + 3*height/2);
-			g.drawString(nextTurretDamage, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 8 + infoWidth, turretRank.getY() + margin/3 + 5 + height/2);
-			g.drawString(nextTurretShield, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 8 + infoWidth, turretRank.getY() + margin/3 + 5 + 3*height/2);
-			
-			// Radar Information
-			g.drawString(currentRadarRange, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 5, radarRank.getY() + margin/3 + 5 + height/2);
-			g.drawString(nextRadarRange, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 8 + infoWidth, radarRank.getY() + margin/3 + 5 + height/2);
-			g.drawString(currentRadarRange2, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 5, radarRank.getY() + margin/3 + 5 + 3*height/2);
-			g.drawString(nextRadarRange2, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 8 + infoWidth, radarRank.getY() + margin/3 + 5 + 3*height/2);
-			
-			// Hangar Information
-			g.drawString(currentHangarPerk, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 5, hangarRank.getY() + margin/3 + 5 + height/2);
-			g.drawString(currentHangarPerk2, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 5, hangarRank.getY() + margin/3 + 5 + 3*height/2);
-			g.drawString(nextHangarPerk, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 8 + infoWidth, hangarRank.getY() + margin/3 + 5 + height/2);
-			g.drawString(nextHangarPerk2, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 8 + infoWidth, hangarRank.getY() + margin/3 + 5 + 3*height/2);
-			
-			/*
-			 * Draw next Level costs if not maxed
-			 
-			if (!colony.getMine().isMaxRank()) {
-				g.drawString(nextMineMetal + nextMineGas, mineRank.getX() + mineRank.getWidth() + mineImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextMineGas)/2, mineRank.getY() + margin/3 + 5 + 5*height/2);
-			}
-			if (!colony.getTurret().isMaxRank()) {
-				g.drawString(nextTurretMetal + nextTurretGas, turretRank.getX() + turretRank.getWidth() + turretImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextTurretMetal + nextTurretGas)/2, turretRank.getY() + margin/3 + 5 + 5*height/2);
-			}
-			if (!colony.getRadar().isMaxRank()) {
-				g.drawString(nextRadarMetal + nextRadarGas, radarRank.getX() + radarRank.getWidth() + radarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextRadarMetal + nextRadarGas)/2, radarRank.getY() + margin/3 + 5 + 5*height/2);
-			}
-			if (!colony.getHangar().isMaxRank()) {
-				g.drawString(nextHangarMetal + nextHangarGas, hangarRank.getX() + hangarRank.getWidth() + hangarImage.getWidth(null) + 3*infoWidth/2 - fm.stringWidth(nextHangarMetal + nextHangarGas)/2, hangarRank.getY() + margin/3 + 5 + 5*height/2);
-			}
-			
-			upgradeMine.draw(g);
-			upgradeTurret.draw(g);
-			upgradeRadar.draw(g);
-			upgradeHangar.draw(g);
-			backButton.draw(g);
-			
-			/*
-			 * Draw progress indication
-			 
-			
-		}
-	}
-	*/
 	
 	private void drawProgressIndicators(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
 		int x = getX() + getMenuWidth() - 3*margin/5 - inProgress.getBounds().getWidth();
@@ -577,15 +503,14 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 
 		}
 	}
-	/*
-	private void drawColonyName(Graphics g) {
-		g.setColor(ownerColor);
-		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
-		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
-		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + cityImage.getHeight(null));
-		g.drawString(getMenuName(), textX, textY);
-	}
-	*/
+	
+//	private void drawColonyName(Graphics g) {
+//		g.setColor(ownerColor);
+//		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
+//		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
+//		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + cityImage.getHeight(null));
+//		g.drawString(getMenuName(), textX, textY);
+//	}
 	
 	@Override
 	public boolean mousePressed(Point p) {

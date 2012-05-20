@@ -42,6 +42,22 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 	private GLButton buildColonizerButton = null;
 	
 	/*
+	 * Texture coordinates for different Players
+	 */
+	private Player[] players = new Player[]{
+		Player.RED,
+		Player.BLUE,
+		Player.PINK,
+		Player.GREEN,
+	};
+	private int[] y = new int[]{
+		192,
+		128,
+		64,
+		0
+	};
+	
+	/*
 	 * Back Button
 	 */
 	private GLButton backButton = null;
@@ -57,11 +73,14 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		margin = menuHeight/20;
 		setPicture();
 		setButtons();
-		
 	}
+	
+	/*
+	 * Create and set location for Buttons in this menu
+	 */
 	private void setButtons() {
-		int x = getX() + getBounds().getWidth()/2 - margin/3;
-		int y = (2*getBounds().getWidth() - 90);
+		int x = getX() + getMenuWidth()/2 - margin/3;
+		int y = getY() + cities.get(Player.BLUE).getBounds().getHeight() + 3*margin;
 		
 		buildScoutButton = new GLButton(x - 90, y, 90, 90);
 		buildScoutButton.setAction(new Action() {
@@ -71,7 +90,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		buildHunterButton = new GLButton(x, y, 90, 90);
+		buildHunterButton = new GLButton(x + 2 * margin / 3, y, 90, 90);
 		buildHunterButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -87,7 +106,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		buildColonizerButton = new GLButton(x,  y + 90 + margin/2, 90, 90);
+		buildColonizerButton = new GLButton(x + 2 * margin / 3,  y + 90 + margin/2, 90, 90);
 		buildColonizerButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -96,16 +115,18 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 			}
 		});
 		backButton = new GLButton(getX() + margin, 
-				(getBounds().getWidth() - 2*margin)/4, 
-				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
+				getY() + getMenuHeight() - 2*(getMenuWidth() - 2*margin)/4, 
+				getMenuWidth() - 2 * margin,
+				(getMenuWidth() - 2 * margin) / 4);
 		backButton.setTexture("menu/back", 128, 32);
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() { 
 				setVisible(false);
 			}
-		});		
+		});
 	}
+	
 	private void setPicture(){
 		Rectangle renderRect = new Rectangle(getBounds().getX() + margin, 
 				getBounds().getHeight() - ((getBounds().getWidth() - 2*margin)*3)/4 - 3*margin/2, 
@@ -118,7 +139,6 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		GLtmp.setBounds(renderRect);
 		cities.put(Player.BLUE, GLtmp);
 		colonyPicture = GLtmp;
-	
 	}
 	
 	public GLRecruitMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
@@ -132,35 +152,35 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		ownerColor = PlayerColors.getColor(colony.getOwner());
 		colonyPicture = cities.get(colony.getOwner());
 		checkRecruitOptions(stats);
-		
-		String playerString = colony.getOwner().toString().toLowerCase();
-		setImages(playerString);
+		setImages(colony.getOwner());
 	}
 	
-	private void setImages(String playerString) {
-		/*
-		buildColonizerButton.setImage("menu/" + playerString + "/button/colonizerButton");
-		buildScoutButton.setImage("menu/" + playerString + "/button/scoutButton");
-		buildHunterButton.setImage("menu/" + playerString + "/button/hunterButton");
-		buildDestroyerButton.setImage("menu/" + playerString + "/button/destroyerButton");		
-		*/
+	private void setImages(Player player) {
+		int i = 0;
+		for (i = 0; i < players.length; i++) {
+			if (players[i] == player) {break;};
+		}
+		buildScoutButton.setTexture(	"ship_icons",   0, y[i], 64, 64);
+		buildHunterButton.setTexture(	"ship_icons",  64, y[i], 64, 64);
+		buildColonizerButton.setTexture("ship_icons", 128, y[i], 64, 64);
+		buildDestroyerButton.setTexture("ship_icons", 192, y[i], 64, 64);
 	}
-	/*
-	private void drawColonyName(Graphics g) {
-		g.setColor(ownerColor);
-		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
-		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
-		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
-		g.drawString(getMenuName(), textX, textY);
-	}
-	*/
+	
+//	private void drawColonyName(Graphics g) {
+//		g.setColor(ownerColor);
+//		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
+//		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
+//		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
+//		g.drawString(getMenuName(), textX, textY);
+//	}
+	
 	public void checkRecruitOptions(PlayerStats stats) {
 		this.stats = stats;
 		if (colony != null && stats != null){
-			buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT) && colony.getHangar().canBuild(ShipType.SCOUT));
-			buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER) && colony.getHangar().canBuild(ShipType.HUNTER));
-			buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER) && colony.getHangar().canBuild(ShipType.COLONIZER));
-			buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER) && colony.getHangar().canBuild(ShipType.DESTROYER));
+//			buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT) && colony.getHangar().canBuild(ShipType.SCOUT));
+//			buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER) && colony.getHangar().canBuild(ShipType.HUNTER));
+//			buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER) && colony.getHangar().canBuild(ShipType.COLONIZER));
+//			buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER) && colony.getHangar().canBuild(ShipType.DESTROYER));
 		}
 	}
 
@@ -190,24 +210,27 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		 */
 		if (isVisible()) {
 			if (buildScoutButton.mouseReleased(p)) {return true;}
+			else if (buildHunterButton.mouseReleased(p)) {return true;}
+			else if (buildDestroyerButton.mouseReleased(p)) {return true;} 
+			else if (buildColonizerButton.mouseReleased(p)) {return true;}
+			else if (backButton.mouseReleased(p)) {return true;}
+			if (this.contains(p)) {return true;}
 			else {
 				return false;
 			}
 		}
 		return false;
 	}
+	
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
 		super.draw(drawable, objectRect, targetArea, zIndex);
 		zIndex++;
 		colonyPicture.draw(drawable, colonyPicture.getBounds(), targetArea, zIndex);
-		/*
 		buildScoutButton.draw(drawable, null, targetArea, zIndex);
 		buildHunterButton.draw(drawable, null, targetArea, zIndex);
 		buildDestroyerButton.draw(drawable, null, targetArea, zIndex);
 		buildColonizerButton.draw(drawable, null, targetArea, zIndex);
-		*/
 		backButton.draw(drawable, null, targetArea, zIndex);
 	}
-
 }

@@ -1,6 +1,7 @@
 package riskyspace.view.opengl.menu;
 
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map;
 import javax.media.opengl.GLAutoDrawable;
 
 import riskyspace.model.Fleet;
+import riskyspace.model.Player;
 import riskyspace.model.ShipType;
 import riskyspace.view.opengl.Rectangle;
 import riskyspace.view.opengl.impl.GLSprite;
@@ -16,26 +18,40 @@ import riskyspace.view.opengl.impl.GLSprite;
 public class GLFleetMenu extends GLAbstractSideMenu {
 	
 	private int itemSize;
+	private Rectangle shipRect;
 	
 	private int margin;
+	
+	private Map<Player, GLSprite> fleetPictures = new HashMap<Player, GLSprite>();
 	private GLSprite fleetPicture = null;
+	private Rectangle commanderRect = null;
 	
 	private Map<String, GLSprite> shipIcons = new HashMap<String, GLSprite>();
 	private List<GLSprite> fleetIcons = new ArrayList<GLSprite>();
 	
-	private int shipSize;
-	
 	public GLFleetMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
-		margin = menuWidth/10;
-		fleetPicture = new GLSprite("palpatine", 640, 480);
-		fleetPicture.setBounds(new Rectangle(getX() + margin + margin/2 + 2, menuHeight - (margin + 15), menuWidth - 3*margin, 2*(menuWidth - 3*margin)/3));
-		itemSize = (menuWidth - margin*2) / 5;
-		initSprites(itemSize - margin/10);
+		margin = menuWidth / 10;
+		itemSize = (menuWidth - margin * 2) / 5;
+		int size = itemSize - margin / 10;
+		shipRect = new Rectangle(0, 0, size, size);
+		setFleetPictures();
+		initSprites();
 	}
 	
-	public void initSprites(int size) { 
-		shipSize = size;
+	private void setFleetPictures() {
+		int sHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		int imageWidth = getMenuWidth() - 8 * margin / 5;
+		int imageHeight = (int) (imageWidth * 0.8f);
+		commanderRect = new Rectangle(getX() + 4 * margin / 5,
+				sHeight - (getY() + 2 * margin / 3 + imageHeight),
+				imageWidth,
+				imageHeight);
+		fleetPictures.put(Player.RED, new GLSprite("palpatine", 640, 480));
+		fleetPictures.put(Player.BLUE, new GLSprite("not_stolen", 960, 720));
+	}
+
+	public void initSprites() { 
 		shipIcons.put("SCOUT_GREEN", 	new GLSprite("ship_icons", 	0, 		0, 		64, 64));
 		shipIcons.put("HUNTER_GREEN", 	new GLSprite("ship_icons", 	64,		0, 		64, 64));
 		shipIcons.put("DESTROYER_GREEN",new GLSprite("ship_icons", 	128,	0, 		64, 64));
@@ -85,17 +101,21 @@ public class GLFleetMenu extends GLAbstractSideMenu {
 		if (isVisible()) {
 			super.draw(drawable, objectRect, targetArea, zIndex);
 			zIndex++;
-			fleetPicture.draw(drawable, fleetPicture.getBounds(), targetArea, zIndex);
-			int height = fleetPicture.getBounds().getHeight();
+			fleetPicture.draw(drawable, commanderRect, targetArea, zIndex);
+			int cHeight = commanderRect.getHeight();
 			for (int i = 0; i < fleetIcons.size(); i++) {
 				int col = i % 5;
 				int row = i / 5;
-				fleetIcons.get(i).draw(drawable, new Rectangle(getX() + margin + col*itemSize + 2, getMenuHeight() - (2*margin + height + row*itemSize) - shipSize, shipSize, shipSize), targetArea, zIndex);
+				Rectangle rect = new Rectangle(shipRect);
+				rect.setX(getX() + margin + col * itemSize);
+				rect.setY(getMenuHeight() - (3*margin + cHeight + row * itemSize));
+				fleetIcons.get(i).draw(drawable, rect, targetArea, zIndex);
 			}
 		}
 	}
 	public void setFleet(Fleet fleet) {
 		createFleetIcons(fleet);
+		fleetPicture = fleetPictures.get(fleet.getOwner());
 	}
 	
 	private void createFleetIcons(Fleet fleet) {
