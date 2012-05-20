@@ -2,6 +2,7 @@ package riskyspace.view.opengl.menu;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,9 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 	public GLRecruitMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		margin = menuHeight/20;
-		setPicture();
+		int imageWidth = menuWidth - 2*margin;
+		int imageHeight = ((menuWidth - 2*margin)*3)/4;
+		setPicture(imageWidth, imageHeight);
 		setButtons();
 	}
 	
@@ -127,18 +130,27 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		});
 	}
 	
-	private void setPicture(){
-		Rectangle renderRect = new Rectangle(getBounds().getX() + margin, 
-				getBounds().getHeight() - ((getBounds().getWidth() - 2*margin)*3)/4 - 3*margin/2, 
-				getBounds().getWidth() - 2*margin, ((getBounds().getWidth() - 2*margin)*3)/4);
+	private void setPicture(int imageWidth, int imageHeight){
+		int sHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		Rectangle imageRenderRect = new Rectangle(getX() + margin, 
+				sHeight - (getY() + imageHeight + margin), 
+				imageWidth, imageHeight);
 
 		GLSprite GLtmp = new GLSprite("menu/city_red", 1280, 700);
-		GLtmp.setBounds(renderRect);
+		GLtmp.setBounds(imageRenderRect);
 		cities.put(Player.RED, GLtmp);
 		GLtmp = new GLSprite("menu/city_blue", 900, 486);
-		GLtmp.setBounds(renderRect);
+		GLtmp.setBounds(imageRenderRect);
 		cities.put(Player.BLUE, GLtmp);
 		colonyPicture = GLtmp;
+		// TODO: YELLOW / GREEN
+//		GLSprite GLtmp = new GLSprite("menu/city_red", 1280, 700);
+//		GLtmp.setBounds(imageRenderRect);
+//		cities.put(Player.RED, GLtmp);
+//		GLtmp = new GLSprite("menu/city_blue", 900, 486);
+//		GLtmp.setBounds(imageRenderRect);
+//		cities.put(Player.BLUE, GLtmp);
+//		citySprite = GLtmp;
 	}
 	
 	public GLRecruitMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
