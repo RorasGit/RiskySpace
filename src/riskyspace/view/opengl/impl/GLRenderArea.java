@@ -1,7 +1,6 @@
 package riskyspace.view.opengl.impl;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.KeyListener;
@@ -17,6 +16,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
+import riskyspace.PlayerColors;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
@@ -97,7 +97,14 @@ public class GLRenderArea implements GLRenderAble {
 	 */
 	private Player viewer = null;
 
-
+	/*
+	 * Status box, other player's turn
+	 */
+	private String statusString = "";
+	private Color statusStringColor;
+	private TextRenderer statusTextRenderer;
+	private GLSprite statusBackground;
+	
 	/*
 	 * Sprites
 	 */
@@ -111,7 +118,6 @@ public class GLRenderArea implements GLRenderAble {
 	private GLFleetMenu fleetMenu = null;
 	private GLTopMenu topMenu = null;
 
-	private TextRenderer textRenderer;
 	
 	public GLRenderArea(int width, int height, int rows, int cols) {
 		screenArea = new Rectangle(0, 0, width, height);
@@ -124,9 +130,18 @@ public class GLRenderArea implements GLRenderAble {
 		createGrid();
 		createStarMap();
 		createMenus();
-		textRenderer = new TextRenderer(ViewResources.getFont().deriveFont(30.0f));
+		createStatusBox();
 	}
 
+	private void createStatusBox() {
+		statusTextRenderer = new TextRenderer(ViewResources.getFont().deriveFont(screenArea.getHeight()/30.0f));
+		statusBackground = new GLSprite("wide_button", 128, 32);
+		int width = screenArea.getWidth()/4;
+		int height = width/4;
+		int x = screenArea.getWidth() / 2 - width / 2;
+		int y = screenArea.getHeight() / 2 - height / 2;
+		statusBackground.setBounds(new Rectangle(x, y, width, height));
+	}
 	
 	private void createMenus() {
 		int menuWidth = screenArea.getHeight() / 3;
@@ -152,10 +167,6 @@ public class GLRenderArea implements GLRenderAble {
 			hLines[row][0] = (EXTRA_SPACE_HORIZONTAL) * squareSize;
 			hLines[row][1] = (EXTRA_SPACE_HORIZONTAL + cols) * squareSize;
 			hLines[row][2] = (EXTRA_SPACE_VERTICAL + row) * squareSize;
-//			int x1 = (EXTRA_SPACE_HORIZONTAL) * squareSize;
-//			int x2 = (EXTRA_SPACE_HORIZONTAL + cols) * squareSize;
-//			int y = (EXTRA_SPACE_VERTICAL + row) * squareSize;
-//			g.drawLine(x1, y, x2, y);
 		}
 		/*
 		 * Draw Vertical lines
@@ -165,10 +176,6 @@ public class GLRenderArea implements GLRenderAble {
 			vLines[col][0] = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
 			vLines[col][1] = (EXTRA_SPACE_VERTICAL) * squareSize;
 			vLines[col][2] = (EXTRA_SPACE_VERTICAL + rows) * squareSize;
-//			int x = (EXTRA_SPACE_HORIZONTAL + col) * squareSize;
-//			int y1 = (EXTRA_SPACE_VERTICAL) * squareSize;
-//			int y2 = (EXTRA_SPACE_VERTICAL + rows) * squareSize;
-//			g.drawLine(x, y1, x, y2);
 		}
 	}
 	
@@ -225,10 +232,12 @@ public class GLRenderArea implements GLRenderAble {
 	}
 	
 	public void setActivePlayer(Player player) {
-		/*
-		 * TODO: 
-		 * Print text if not active==viewer
-		 */
+		if (player == viewer) {
+			statusString = "";
+		} else {
+			statusString = player + "'S TURN";
+			statusStringColor = PlayerColors.getColor(player);
+		}
 	}
 	
 	@Override
@@ -255,8 +264,41 @@ public class GLRenderArea implements GLRenderAble {
 		colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
 		fleetMenu.draw(drawable, fleetMenu.getBounds(), screenArea, 50);
 		planetMenu.draw(drawable, planetMenu.getBounds(), screenArea, 50);
+		
+		drawStatusBox(drawable, targetArea, 50);
 	}
 
+	/**
+	 * Draw a status box displaying the status text
+	 * @param drawable
+	 * @param targetArea
+	 * @param zIndex
+	 */
+	private void drawStatusBox(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
+		if (statusString.length() > 0) {
+			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
+			drawString(statusTextRenderer, statusBackground.getBounds(), statusString, statusStringColor);
+		}
+	}
+
+	/**
+	 * Draws a String centered at a Rectangle with the given TextRenderer
+	 * @param textRenderer The TextRenderer used for this font
+	 * @param rect The Rectangle this text should be centered at
+	 * @param s The String to draw
+	 * @param c The Color of the Text
+	 */
+	private void drawString(TextRenderer textRenderer, Rectangle rect, String s, Color c) {
+		textRenderer.beginRendering(screenArea.getWidth(), screenArea.getHeight());
+		textRenderer.setColor(c);
+		int textWidth = (int) textRenderer.getBounds(s).getWidth();
+		int textHeigth = (int) textRenderer.getBounds(s).getHeight();
+		int x = (rect.getX() + rect.getWidth() / 2) - textWidth / 2;
+		int y = (rect.getY() + rect.getHeight()/ 2) - textHeigth / 2;
+		textRenderer.draw(s, x, y);
+		textRenderer.endRendering();
+	}
+	
 	private Rectangle getCameraRect() {
 		int x = (int) ((totalWidth - screenArea.getWidth())*currentCamera.getX());
 		int y = (int) ((totalHeight - screenArea.getHeight())*currentCamera.getY());
