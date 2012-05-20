@@ -43,22 +43,8 @@ public class GameClient implements EventHandler {
 	
 	public GameClient(String hostIP, int hostPort) {
 		EventBus.CLIENT.addHandler(this);
-		int tries = 0;
-		while (socket == null) {
-			if (tries == 5) {
-				System.err.println("Couldn't Connect");
-				System.exit(1);
-			}
-			System.out.println("Connecting. Test #" + (tries+1));
-			/*
-			 * Loop until Connected
-			 */
-			connectToHost(hostIP, hostPort);
-			tries++;
-		}
-		System.out.println("Connected");
-		initiateView();
-		new ServerListener();
+		connectToLobby(hostIP, hostPort);
+		
 		Thread renderThread = new Thread(new Runnable() {
 			@Override public void run() {
 				while(true) {
@@ -75,7 +61,27 @@ public class GameClient implements EventHandler {
 		renderThread.start();
 	}
 
-	private void initiateView() {
+	private void connectToLobby(String hostIP, int hostPort) {
+		int tries = 0;
+		while (socket == null) {
+			if (tries == 5) {
+				System.err.println("Couldn't Connect");
+				System.exit(1);
+			}
+			System.out.println("Connecting. Test #" + (tries+1));
+			/*
+			 * Loop until Connected
+			 */
+			connectToHost(hostIP, hostPort);
+			tries++;
+		}
+		System.out.println("Connected");
+		initiateGameView();
+		new ServerListener(mainView, input);
+		
+	}
+
+	private void initiateGameView() {
 		System.out.println("start init");
 
 		SpriteMapData data = null;
@@ -151,8 +157,14 @@ public class GameClient implements EventHandler {
 	 * View accordingly.
 	 */
 	private class ServerListener implements Runnable {
+		
+		private View mainView = null;
+		private ObjectInputStream input = null;
+		
 
-		public ServerListener() {
+		public ServerListener(View view, ObjectInputStream input) {
+			this.mainView = view;
+			this.input = input;
 			Thread t = new Thread(this);
 			t.start();
 		}

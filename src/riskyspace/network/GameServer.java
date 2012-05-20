@@ -1,5 +1,6 @@
 package riskyspace.network;
 
+import java.awt.EventQueue;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -35,8 +36,13 @@ public class GameServer implements EventHandler {
 	 * MAIN METHOD
 	 */
 	public static void main(String[] args) throws IOException {
-		GameServer server = new GameServer(2);
-		new GameClient(server.getIP(), server.getPort());
+		final GameServer server = new GameServer(2);
+		Runnable r = new Runnable() {
+			public void run() {
+				new GameClient(server.getIP(), server.getPort());
+			}
+		};
+		EventQueue.invokeLater(r);
 	}
 	
 	public GameServer(int numberOfPlayers) {
@@ -45,7 +51,7 @@ public class GameServer implements EventHandler {
 		SpriteMapData.init(world);
 		GameManager.INSTANCE.init(world);
 		try {
-			ss = new ServerSocket(6013);
+			ss = new ServerSocket(port);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -106,7 +112,7 @@ public class GameServer implements EventHandler {
 		}
 	}
 
-	class ConnectionHandler implements Runnable {
+	private class ConnectionHandler implements Runnable {
 		private Socket socket;
 		private ObjectInputStream input = null;
 		private ObjectOutputStream output = null;
@@ -143,6 +149,10 @@ public class GameServer implements EventHandler {
 		public void run() {
 			while (true) {
 				try {
+					if(!socket.isConnected()){
+						disconnect();
+						break;
+					}
 					Object o = input.readObject();
 					if (o != null && o instanceof Event) {
 						Event evt = (Event) o;
@@ -155,16 +165,7 @@ public class GameServer implements EventHandler {
 						GameManager.INSTANCE.handleEvent(evt, p);
 					}
 				} catch (EOFException e) {
-					try {
-						socket.close();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-					connections.remove(this);
-					if(!at.getThread().isAlive()){
-						at = new AcceptThread();
-					}
-					System.out.println("Connection to :"+socket.getInetAddress()+" closed.");
+					disconnect();
 					break;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -174,9 +175,25 @@ public class GameServer implements EventHandler {
 						e1.printStackTrace();
 					}
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
+					/*
+					 * Server got an nonserializable object, nothing to do here.
+					 */
 				}
 			}
+		}
+
+
+		private void disconnect() {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			connections.remove(this);
+			if(!at.getThread().isAlive()){
+				at = new AcceptThread();
+			}
+			System.out.println("Connection to :"+socket.getInetAddress()+" closed.");
 		}
 	}
 
