@@ -71,8 +71,12 @@ public class GameDataHandler {
 			e.printStackTrace();
 		}	
 		
-		newSave.renameTo(oldSave);
-
+		
+		//Store the former last_autosave as previous_autosave
+		if (oldSave.delete()) {
+			newSave.renameTo(oldSave);
+		}
+		
 		saveGame(world, players, currentPlayer, turn, gameMode, "last_autosave");
 	}
 	
@@ -133,7 +137,6 @@ public class GameDataHandler {
 				return fileName.endsWith(".rsg");
 			}
 		};
-		System.out.println(directory.getPath());
 		if (directory.list(rsgFilter).length == 0) {
 			return new String[] {"No saved games found in: \n" + directory.getPath()};
 		} else {
@@ -166,7 +169,6 @@ public class GameDataHandler {
 				Player currentPlayer = (Player) ois.readObject();
 				int turn = (Integer) ois.readInt();
 				String gameMode = (String) ois.readObject();
-				
 		
 				gameInfo[0] = players.toString();
 				gameInfo[1] = turn+"";
@@ -183,7 +185,7 @@ public class GameDataHandler {
 	
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		World world = new World();
+		World world = new World(20, 20, 2);
 		
 		for (int i = 0; i < 2; i++) {
 			world.getTerritory(pos).addFleet(new Fleet(new Ship(ShipType.SCOUT), Player.BLUE));
