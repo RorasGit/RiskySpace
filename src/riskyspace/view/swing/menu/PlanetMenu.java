@@ -28,10 +28,10 @@ public class PlanetMenu extends SwingAbstractSideMenu{
 	public PlanetMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		
-		metalPlanetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/metal_planet"  + View.res).
+		metalPlanetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/metal_planet.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		
-		gasPlanetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/gas_planet"  + View.res).
+		gasPlanetPicture = Toolkit.getDefaultToolkit().getImage("res/menu/gas_planet.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT);
 		
 		colonizeButton = new SwingButton(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
@@ -46,7 +46,7 @@ public class PlanetMenu extends SwingAbstractSideMenu{
 	
 	public void setTerritory(Territory selection) {
 		planetPicture = selection.getPlanet().getType() == Resource.METAL? metalPlanetPicture : gasPlanetPicture;
-		colonizeButton.setImage("res/menu/world/colonizeButton" + View.res);
+		colonizeButton.setImage("res/menu/world/colonizeButton.png");
 		colonizeButton.setEnabled(false);
 		for (Fleet fleet : selection.getFleets()) {
 			if (fleet.hasColonizer()) {

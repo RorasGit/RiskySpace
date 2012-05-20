@@ -14,16 +14,7 @@ public class LobbyDemo {
 	}
 	
 	public LobbyDemo() {
-		mainView = new LobbyView(new KeyListener() {
-			@Override
-			public void keyPressed(KeyEvent event) {
-				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					System.exit(0);
-				}
-			}
-			@Override public void keyReleased(KeyEvent arg0) {}
-			@Override public void keyTyped(KeyEvent arg0) {}
-			});
+		mainView = new LobbyView();
 		
 		while(true) {
 			mainView.draw();
@@ -34,5 +25,6 @@ public class LobbyDemo {
 			}
 		}
 	}
+	
 
 }

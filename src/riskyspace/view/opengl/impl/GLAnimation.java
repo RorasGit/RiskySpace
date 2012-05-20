@@ -50,8 +50,6 @@ public class GLAnimation implements GLRenderAble {
 		rotation = moveRotation;
 		dX = steps[1].getCol() - steps[0].getCol();
 		dY = steps[0].getRow() - steps[1].getRow();
-		System.out.println("mR: " + moveRotation);
-		System.out.println("eR: " + endRotation);
 	}
 	
 	/**

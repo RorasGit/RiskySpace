@@ -37,15 +37,15 @@ public class FleetMenu extends SwingAbstractSideMenu {
 	}
 	
 	public void initSprites(int size) {
-		shipIcons.put("SCOUT_BLUE", Toolkit.getDefaultToolkit().getImage("res/menu/blue/ships/scout_icon" + View.res).getScaledInstance(size, size, Image.SCALE_DEFAULT));
-		shipIcons.put("HUNTER_BLUE", Toolkit.getDefaultToolkit().getImage("res/menu/blue/ships/hunter_icon" + View.res).getScaledInstance(size, size, Image.SCALE_DEFAULT));
-		shipIcons.put("DESTROYER_BLUE", Toolkit.getDefaultToolkit().getImage("res/menu/blue/ships/destroyer_icon" + View.res).getScaledInstance(size, size, Image.SCALE_DEFAULT));
-		shipIcons.put("COLONIZER_BLUE", Toolkit.getDefaultToolkit().getImage("res/menu/blue/ships/colonizer_icon" + View.res).getScaledInstance(size, size, Image.SCALE_DEFAULT));
+		shipIcons.put("SCOUT_BLUE", Toolkit.getDefaultToolkit().getImage("res/menu/blue/ships/scout_icon.png").getScaledInstance(size, size, Image.SCALE_DEFAULT));
+		shipIcons.put("HUNTER_BLUE", Toolkit.getDefaultToolkit().getImage("res/menu/blue/ships/hunter_icon.png").getScaledInstance(size, size, Image.SCALE_DEFAULT));
+		shipIcons.put("DESTROYER_BLUE", Toolkit.getDefaultToolkit().getImage("res/menu/blue/ships/destroyer_icon.png").getScaledInstance(size, size, Image.SCALE_DEFAULT));
+		shipIcons.put("COLONIZER_BLUE", Toolkit.getDefaultToolkit().getImage("res/menu/blue/ships/colonizer_icon.png").getScaledInstance(size, size, Image.SCALE_DEFAULT));
 		
-		shipIcons.put("SCOUT_RED", Toolkit.getDefaultToolkit().getImage("res/menu/red/ships/scout_icon" + View.res).getScaledInstance(size, size, Image.SCALE_DEFAULT));
-		shipIcons.put("HUNTER_RED", Toolkit.getDefaultToolkit().getImage("res/menu/red/ships/hunter_icon" + View.res).getScaledInstance(size, size, Image.SCALE_DEFAULT));
-		shipIcons.put("DESTROYER_RED", Toolkit.getDefaultToolkit().getImage("res/menu/red/ships/destroyer_icon" + View.res).getScaledInstance(size, size, Image.SCALE_DEFAULT));
-		shipIcons.put("COLONIZER_RED", Toolkit.getDefaultToolkit().getImage("res/menu/red/ships/colonizer_icon" + View.res).getScaledInstance(size, size, Image.SCALE_DEFAULT));
+		shipIcons.put("SCOUT_RED", Toolkit.getDefaultToolkit().getImage("res/menu/red/ships/scout_icon.png").getScaledInstance(size, size, Image.SCALE_DEFAULT));
+		shipIcons.put("HUNTER_RED", Toolkit.getDefaultToolkit().getImage("res/menu/red/ships/hunter_icon.png").getScaledInstance(size, size, Image.SCALE_DEFAULT));
+		shipIcons.put("DESTROYER_RED", Toolkit.getDefaultToolkit().getImage("res/menu/red/ships/destroyer_icon.png").getScaledInstance(size, size, Image.SCALE_DEFAULT));
+		shipIcons.put("COLONIZER_RED", Toolkit.getDefaultToolkit().getImage("res/menu/red/ships/colonizer_icon.png").getScaledInstance(size, size, Image.SCALE_DEFAULT));
 	}
 	
 	public void setFleet(Fleet fleet) {

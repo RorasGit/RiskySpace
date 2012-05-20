@@ -75,12 +75,12 @@ public class ColonyMenu extends SwingAbstractSideMenu{
 				buildingMenu.setVisible(false);
 			}
 		});
-		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
+		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
-		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
+		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		buildShipButton = new SwingButton(x + margin, y + menuHeight - 2*(menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
-		buildShipButton.setImage("res/menu/recruit" + View.res);
+		buildShipButton.setImage("res/menu/recruit.png");
 		buildShipButton.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -89,7 +89,7 @@ public class ColonyMenu extends SwingAbstractSideMenu{
 			}
 		});
 		buildingsButton = new SwingButton(x + margin, y + menuHeight - 3*(menuWidth - margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
-		buildingsButton.setImage("res/menu/build" + View.res);
+		buildingsButton.setImage("res/menu/build.png");
 		buildingsButton.setAction(new Action(){
 			@Override
 			public void performAction() {

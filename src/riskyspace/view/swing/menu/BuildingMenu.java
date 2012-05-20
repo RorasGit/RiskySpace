@@ -154,9 +154,9 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		 */
 		int imageWidth = menuWidth - 2*margin;
 		int imageHeight = ((menuWidth - 2*margin)*3)/4;
-		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
+		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city.png").
 				getScaledInstance(imageWidth, imageHeight, Image.SCALE_DEFAULT));
-		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
+		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city.png").
 				getScaledInstance(imageWidth, imageHeight, Image.SCALE_DEFAULT));
 		
 		/*
@@ -192,19 +192,19 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		/*
 		 * Load Images
 		 */
-		mineImage = Toolkit.getDefaultToolkit().getImage("res/menu/mine" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
-		turretImage = Toolkit.getDefaultToolkit().getImage("res/menu/turret_laser" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
-		radarImage = Toolkit.getDefaultToolkit().getImage("res/menu/radar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
-		hangarImage = Toolkit.getDefaultToolkit().getImage("res/menu/hangar" + View.res).getScaledInstance(height, height, Image.SCALE_DEFAULT);
-		split = Toolkit.getDefaultToolkit().getImage("res/menu/split" + View.res).getScaledInstance(height/5, height, Image.SCALE_DEFAULT);
-		inProgress = Toolkit.getDefaultToolkit().getImage("res/menu/progress" + View.res).getScaledInstance(upgradeButtonWidth, upgradeButtonHeight, Image.SCALE_DEFAULT);
+		mineImage = Toolkit.getDefaultToolkit().getImage("res/menu/mine.png").getScaledInstance(height, height, Image.SCALE_DEFAULT);
+		turretImage = Toolkit.getDefaultToolkit().getImage("res/menu/turret_laser.png").getScaledInstance(height, height, Image.SCALE_DEFAULT);
+		radarImage = Toolkit.getDefaultToolkit().getImage("res/menu/radar.png").getScaledInstance(height, height, Image.SCALE_DEFAULT);
+		hangarImage = Toolkit.getDefaultToolkit().getImage("res/menu/hangar.png").getScaledInstance(height, height, Image.SCALE_DEFAULT);
+		split = Toolkit.getDefaultToolkit().getImage("res/menu/split.png").getScaledInstance(height/5, height, Image.SCALE_DEFAULT);
+		inProgress = Toolkit.getDefaultToolkit().getImage("res/menu/progress.png").getScaledInstance(upgradeButtonWidth, upgradeButtonHeight, Image.SCALE_DEFAULT);
 				
 		/*
 		 * Create Buttons
 		 */
 		upgradeMine = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, mineRank.getY() + mineRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeMine.setImage("res/menu/upgrade" + View.res);
+		upgradeMine.setImage("res/menu/upgrade.png");
 		upgradeMine.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -215,7 +215,7 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		
 		upgradeTurret = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, turretRank.getY() + turretRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeTurret.setImage("res/menu/upgrade" + View.res);
+		upgradeTurret.setImage("res/menu/upgrade.png");
 		upgradeTurret.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -227,7 +227,7 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		
 		upgradeRadar = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, radarRank.getY() + radarRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeRadar.setImage("res/menu/upgrade" + View.res);
+		upgradeRadar.setImage("res/menu/upgrade.png");
 		upgradeRadar.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -238,7 +238,7 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		
 		upgradeHangar = new SwingButton(getX() + getMenuWidth() - 3*margin/5 - upgradeButtonWidth, hangarRank.getY() + hangarRank.getHeight() - upgradeButtonHeight
 				, upgradeButtonWidth, upgradeButtonHeight);
-		upgradeHangar.setImage("res/menu/upgrade" + View.res);
+		upgradeHangar.setImage("res/menu/upgrade.png");
 		upgradeHangar.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -248,7 +248,7 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 		});
 		
 		backButton = new SwingButton(x + margin, y + menuHeight - margin - (menuWidth - 2*margin)/4, menuWidth-2*margin, (menuWidth - 2*margin)/4);
-		backButton.setImage("res/menu/back" + View.res);
+		backButton.setImage("res/menu/back.png");
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {

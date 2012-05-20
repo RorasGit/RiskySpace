@@ -58,7 +58,7 @@ public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 		
 		menuButton = new SwingButton(x, y, screenHeight/6, height);
-		menuButton.setImage("res/menu/menu" + View.res);
+		menuButton.setImage("res/menu/menu.png");
 		menuButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -67,10 +67,10 @@ public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 		});
 		
 		buildQueueButton = new SwingButton(x + screenHeight/6, y, screenHeight/6, height);
-		buildQueueButton.setImage("res/menu/build_queue" + View.res);
+		buildQueueButton.setImage("res/menu/build_queue.png");
 		
 		endTurnButton = new SwingButton(width - screenHeight/6, 0, screenHeight/6, height);
-		endTurnButton.setImage("res/menu/end_turn" + View.res);
+		endTurnButton.setImage("res/menu/end_turn.png");
 		endTurnButton.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -80,7 +80,7 @@ public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 		});
 		
 		performMovesButton = new SwingButton(width - screenHeight/3, y, screenHeight/6, height);
-		performMovesButton.setImage("res/menu/perform_moves" + View.res);
+		performMovesButton.setImage("res/menu/perform_moves.png");
 		performMovesButton.setAction(new Action() {
 			@Override
 			public void performAction() {

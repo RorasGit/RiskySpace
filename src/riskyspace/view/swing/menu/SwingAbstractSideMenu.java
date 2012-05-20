@@ -23,7 +23,7 @@ public abstract class SwingAbstractSideMenu extends AbstractSideMenu implements 
 
 	public SwingAbstractSideMenu(int x, int y, int menuWidth, int menuHeight, String menuName) {
 		super(x, y, menuWidth, menuHeight, menuName);
-		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground" + View.res)
+		background = Toolkit.getDefaultToolkit().getImage("res/menu/menubackground.png")
 				.getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 	}
 	@Override

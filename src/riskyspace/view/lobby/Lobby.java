@@ -40,18 +40,18 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 		 * TODO: fix none absolute values
 		 */
 		playerOne = new SwingButton(getX() + margin, getY() + margin, 240, 50);
-		playerOne.setImage("res/menu/lobby/wideButton" + View.res);
+		playerOne.setImage("res/menu/lobby/wideButton.png");
 		playerTwo = new SwingButton(getX() + margin, getY() + 2*margin + 50, 240, 50);
-		playerTwo.setImage("res/menu/lobby/wideButton" + View.res);
+		playerTwo.setImage("res/menu/lobby/wideButton.png");
 		playerThree = new SwingButton(getX() + margin, getY() + 3*margin + 100, 240, 50);
-		playerThree.setImage("res/menu/lobby/wideButton" + View.res);
+		playerThree.setImage("res/menu/lobby/wideButton.png");
 		playerThree.setEnabled(false);
 		playerFour = new SwingButton(getX() + margin, getY() + 4*margin + 150, 240, 50);
-		playerFour.setImage("res/menu/lobby/wideButton" + View.res);
+		playerFour.setImage("res/menu/lobby/wideButton.png");
 		playerFour.setEnabled(false);
 		
 		startGame = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
-		startGame.setImage("res/menu/lobby/startGameButton" + View.res);
+		startGame.setImage("res/menu/lobby/startGameButton.png");
 		
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("2 players");
@@ -67,9 +67,9 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 	}
 	
 	private void createBackground() {
-		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/multiplayer/widerMenubackground" + View.res).
+		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/multiplayer/widerMenubackground.png").
 				getScaledInstance(2*getMenuWidth()/7, getMenuHeight()-2*margin, Image.SCALE_DEFAULT);
-		gameModeImage = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/Annihilation" + View.res).
+		gameModeImage = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/Annihilation.png").
 				getScaledInstance(2*getMenuWidth()/7 - 6*margin, (2*getMenuWidth()/7 - 3*margin)/2, Image.SCALE_DEFAULT);
 	}
 

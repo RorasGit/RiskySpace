@@ -11,22 +11,17 @@ public class LobbyView {
 	private JFrame frame = null;
 	private StartScreen startScreen = null;
 	
-	public LobbyView(KeyListener keyListener) {
+	public LobbyView() {
 		setFrame();
 		startScreen = new StartScreen();
 		frame.add(startScreen);
 		frame.setVisible(true);
-		frame.addKeyListener(keyListener);
 	}
 	
 	private void setFrame() {
-		frame = new JFrame();
+		frame = new JFrame("RiskySpace");
 		frame.setIgnoreRepaint(true);
 		frame.setUndecorated(true);
-		System.out.println("Mem: " + GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getAvailableAcceleratedMemory());
-		/*
-		 * If Mem is small set non transparent textures!
-		 */
 		if (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported()) {
 			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(frame);
 		} else {

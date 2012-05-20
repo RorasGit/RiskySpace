@@ -190,22 +190,22 @@ public enum GameManager {
 		} else if (FleetMove.isMoving() && evt.getTag() == Event.EventTag.MOVE && player == getCurrentPlayer()) {
 			FleetMove.interrupt();
 		}
-		if(evt.getTag() == Event.EventTag.PLANET_SELECTED) {
+		else if(evt.getTag() == Event.EventTag.PLANET_SELECTED) {
 			planetSelected((Position) evt.getObjectValue(), player);
 		} 
-		if (evt.getTag() == Event.EventTag.DESELECT) {
+		else if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables(player);
 		} 
-		if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
+		else if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
 			shipDestruct();
 		}
 		/*
 		 * Model or Controller triggered Events
 		 */
-		if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {
+		else if (evt.getTag() == Event.EventTag.MOVES_COMPLETE) {
 			movesComplete();
 		}
-		if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
+		else if (evt.getTag() == Event.EventTag.INCOME_CHANGED) {
 			if (evt.getObjectValue() != null) {
 				incomeChanged((Player) evt.getObjectValue());
 			} else {

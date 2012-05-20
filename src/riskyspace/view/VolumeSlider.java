@@ -30,19 +30,19 @@ public class VolumeSlider implements Clickable {
 	}
 	
 	public void mapImages() {
-		Image slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider0%" + View.res).
+		Image slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider0%.png").
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		sliderValues.put(0, slider);
-		slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider25%" + View.res).
+		slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider25%.png").
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		sliderValues.put(25, slider);
-		slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider50%" + View.res).
+		slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider50%.png").
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		sliderValues.put(50, slider);
-		slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider75%" + View.res).
+		slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider75%.png").
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		sliderValues.put(75, slider);
-		slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider100%" + View.res).
+		slider = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/slider100%.png").
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		sliderValues.put(100, slider);
 	}

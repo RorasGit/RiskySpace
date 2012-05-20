@@ -13,7 +13,6 @@ import riskyspace.model.PlayerStats;
 import riskyspace.model.Territory;
 
 public interface View {
-	public static final String res = ".png"; // _lowres.jpg
 	
 	public void draw();
 	public void setViewer(Player player);

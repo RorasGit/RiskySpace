@@ -55,9 +55,9 @@ public class RecruitMenu extends SwingAbstractSideMenu {
 	public RecruitMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		margin = menuHeight/20;
-		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city" + View.res).
+		cities.put(Player.BLUE, Toolkit.getDefaultToolkit().getImage("res/menu/blue/city.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
-		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city" + View.res).
+		cities.put(Player.RED, Toolkit.getDefaultToolkit().getImage("res/menu/red/city.png").
 				getScaledInstance(menuWidth - 2*margin, ((menuWidth - 2*margin)*3)/4, Image.SCALE_DEFAULT));
 		
 		buildScoutButton = new SwingButton(x + menuWidth/2 - margin/3 - 90, 2*y + menuHeight - (2*menuWidth), 90, 90);
@@ -114,11 +114,11 @@ public class RecruitMenu extends SwingAbstractSideMenu {
 		checkRecruitOptions(stats);
 		
 		String playerString = colony.getOwner().toString().toLowerCase();
-		backButton.setImage("res/menu/" + playerString + "/backButton" + View.res);
-		buildColonizerButton.setImage("res/menu/" + playerString + "/button/colonizerButton" + View.res);
-		buildScoutButton.setImage("res/menu/" + playerString + "/button/scoutButton" + View.res);
-		buildHunterButton.setImage("res/menu/" + playerString + "/button/hunterButton" + View.res);
-		buildDestroyerButton.setImage("res/menu/" + playerString + "/button/destroyerButton" + View.res);
+		backButton.setImage("res/menu/" + playerString + "/backButton.png");
+		buildColonizerButton.setImage("res/menu/" + playerString + "/button/colonizerButton.png");
+		buildScoutButton.setImage("res/menu/" + playerString + "/button/scoutButton.png");
+		buildHunterButton.setImage("res/menu/" + playerString + "/button/hunterButton.png");
+		buildDestroyerButton.setImage("res/menu/" + playerString + "/button/destroyerButton.png");
 	}
 	
 	private void drawColonyName(Graphics g) {

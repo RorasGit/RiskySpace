@@ -23,9 +23,9 @@ public class SwingRankIndicator extends RankIndicator implements SwingRenderAble
 		/*
 		 * Resize Images
 		 */
-		redLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_red" + View.res).getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
-		greenLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_green" + View.res).getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
-		offLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_off" + View.res).getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
+		redLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_red.png").getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
+		greenLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_green.png").getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
+		offLight = Toolkit.getDefaultToolkit().getImage("res/menu/light_off.png").getScaledInstance(width, height/3, Image.SCALE_DEFAULT);
 	}
 	
 	

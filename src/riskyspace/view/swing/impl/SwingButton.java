@@ -33,13 +33,13 @@ public class SwingButton extends Button implements GlowableGraphic, SwingRenderA
 	public void setImage(String location) {
 		image = Toolkit.getDefaultToolkit().getImage(location);
 		scaledImage = image.getScaledInstance(getWidth(), getHeight(), Image.SCALE_DEFAULT);
-		if (location.endsWith(View.res)) {
-			location = location.substring(0, location.indexOf(View.res));
+		if (location.endsWith(".png")) {
+			location = location.substring(0, location.indexOf(".png"));
 		}
-		disabledImage = Toolkit.getDefaultToolkit().getImage(location + "_disabled" + View.res);
+		disabledImage = Toolkit.getDefaultToolkit().getImage(location + "_disabled.png");
 		scaledDisabledImage = disabledImage.getScaledInstance(getWidth(), getHeight(), Image.SCALE_DEFAULT);
-		if (new File(location + "_glow" + View.res).exists()) {
-			glowImage = Toolkit.getDefaultToolkit().getImage(location + "_glow" + View.res);
+		if (new File(location + "_glow.png").exists()) {
+			glowImage = Toolkit.getDefaultToolkit().getImage(location + "_glow.png");
 			scaledGlowImage = glowImage.getScaledInstance(getWidth(), getHeight(), Image.SCALE_DEFAULT);
 			canGlow = true;
 		} else {
