@@ -254,6 +254,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		buildColonizerButton.draw(drawable, null, targetArea, zIndex);
 		backButton.draw(drawable, null, targetArea, zIndex);
 		drawMenuName(drawable);
+		
 	}
 	private void drawMenuName(GLAutoDrawable drawable) {
 		if(!initiated){
