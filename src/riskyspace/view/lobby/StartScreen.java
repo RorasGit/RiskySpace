@@ -206,18 +206,14 @@ public class StartScreen extends JPanel {
 			return false;
 		}
 
-		@Override
-		public void mouseClicked(MouseEvent me) {
-			if (me.getButton() == MouseEvent.BUTTON1) {
-				if (menuClick(me.getPoint())) {return;}
-			}
-			
-		}
-
+		@Override public void mouseClicked(MouseEvent me) {}
 		@Override public void mouseReleased(MouseEvent arg0) {}
 		@Override public void mouseEntered(MouseEvent arg0) {}
 		@Override public void mouseExited(MouseEvent arg0) {}
-		@Override public void mousePressed(MouseEvent arg0) {}
+		@Override public void mousePressed(MouseEvent me) {
+			if (me.getButton() == MouseEvent.BUTTON1) {
+				if (menuClick(me.getPoint())) {return;}
+			}
+		}
 	}
-	
 }
