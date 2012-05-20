@@ -17,7 +17,12 @@ public class World implements Serializable {
 	private Map<Position, Territory> territories = null;
 	private Map<Player, PlayerStats> playerstats = null;
 	private Map<Player, BuildQueue> buildqueue = null;
-
+	
+	public World(){
+		//Default 20x20 map with 2 players
+		this(20, 20, 2);
+	}
+	
 	public World(int rows, int cols, int numberOfPlayers) {
 		this.rows = rows;
 		this.cols = cols;
