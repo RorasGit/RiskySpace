@@ -6,7 +6,6 @@ import java.awt.Point;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +14,8 @@ import java.util.Map;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
+
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 import riskyspace.PlayerColors;
 import riskyspace.logic.SpriteMapData;
@@ -37,10 +38,6 @@ import riskyspace.view.opengl.menu.GLColonyMenu;
 import riskyspace.view.opengl.menu.GLFleetMenu;
 import riskyspace.view.opengl.menu.GLPlanetMenu;
 import riskyspace.view.opengl.menu.GLTopMenu;
-
-import com.jogamp.opengl.util.awt.TextRenderer;
-import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 public class GLRenderArea implements GLRenderAble {
 	
@@ -71,9 +68,6 @@ public class GLRenderArea implements GLRenderAble {
 	 */
 	private int totalWidth, totalHeight;
 	
-	private BufferedImage gridImage;
-	private Texture gridTexture;
-
 	/**
 	 * Array with coordinates used to draw all horizontal lines
 	 */

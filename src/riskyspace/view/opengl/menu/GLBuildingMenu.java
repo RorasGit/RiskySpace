@@ -2,8 +2,10 @@ package riskyspace.view.opengl.menu;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +107,8 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	private String turret = "DEFENSE SYSTEM";
 	private String radar = "SPACE RADAR";
 	private String hangar = "FLEET HANGAR";
+
+	private int mineX, hangarX, radarX, turretX; 
 	
 	/*
 	 * Strings with information to be drawn.
@@ -145,13 +149,19 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	private String nextHangarMetal = "";
 	private String nextHangarGas = "";
 	
+	private int[] currentLevelX, nextLevelX, nextLevelCostX;
+	
 	private Font titleFont;
 	private Font infoFont;
+	private int infoTextHeight;
+	private int infoWidth;
 	
 	/*
 	 * TextRenderer
 	 */
 	private TextRenderer nameRenderer = null;
+	private TextRenderer titleRenderer = null;
+	private TextRenderer infoRenderer = null;
 	private boolean initiated = false;
 	private int textX, textY;
 	
@@ -492,39 +502,160 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		backButton.draw(drawable, null, targetArea, zIndex);
 		
 		drawProgressIndicators(drawable, objectRect, targetArea, zIndex);
-		drawMenuName(drawable);
+		drawTexts(drawable);
 	}
 	
+	private void drawTexts(GLAutoDrawable drawable) {
+		if(!initiated){
+			initiateTextRenderers();
+			initiated = true;
+		}
+		drawMenuName(drawable);
+		drawTitle(drawable);
+		drawInfo(drawable);
+			
+	}
+
+	private void drawInfo(GLAutoDrawable drawable) {
+		infoRenderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		infoRenderer.setColor(ViewResources.WHITE);
+		
+		
+		infoRenderer.draw(currentMineLevel, currentLevelX[0], mineRank.getBounds().getY() + mineRank.getHeight() - 5 - infoTextHeight/2);
+		infoRenderer.draw(nextMineLevel, nextLevelX[0], mineRank.getBounds().getY() + mineRank.getHeight() - 5 - infoTextHeight/2);
+		
+		infoRenderer.draw(currentTurretLevel, currentLevelX[1], turretRank.getBounds().getY() + turretRank.getHeight() - 5 - infoTextHeight/2);
+		infoRenderer.draw(nextTurretLevel, nextLevelX[1], turretRank.getBounds().getY() + turretRank.getHeight() - 5 - infoTextHeight/2);
+		
+		infoRenderer.draw(currentRadarLevel, currentLevelX[2], radarRank.getBounds().getY() + radarRank.getHeight() - 5 - infoTextHeight/2);
+		infoRenderer.draw(nextRadarLevel, nextLevelX[2], radarRank.getBounds().getY() + radarRank.getHeight() - 5 - infoTextHeight/2);
+		
+		infoRenderer.draw(currentHangarLevel, currentLevelX[3], hangarRank.getBounds().getY() + hangarRank.getHeight() - 5 - infoTextHeight/2);
+		infoRenderer.draw(nextHangarLevel, nextLevelX[3], hangarRank.getBounds().getY() + hangarRank.getHeight() - 5 - infoTextHeight/2);
+		
+		// Mining Information
+		infoRenderer.draw(currentMineIncome, mineRank.getX() + mineRank.getWidth() + mineSprite.getBounds().getWidth() + 5, mineRank.getBounds().getY() + mineRank.getHeight() - (margin/3 + 5 + infoTextHeight/2));
+		infoRenderer.draw(nextMineIncome, splits[0].getX() + splits[0].getWidth() + 5, mineRank.getBounds().getY() + mineRank.getHeight() - (margin/3 + 5 + infoTextHeight/2));
+		
+		// Defense System Information
+		infoRenderer.draw(currentTurretDamage, turretRank.getX() + turretRank.getWidth() + turretSprite.getBounds().getWidth() + 5, turretRank.getBounds().getY() + turretRank.getBounds().getHeight() - (margin/3 + 5 + infoTextHeight/2));
+		infoRenderer.draw(currentTurretShield, turretRank.getX() + turretRank.getWidth() + turretSprite.getBounds().getWidth() + 5, turretRank.getBounds().getY() + turretRank.getBounds().getHeight() - (margin/3 + 5 + 3*infoTextHeight/2));
+		infoRenderer.draw(nextTurretDamage, splits[0].getX() + splits[0].getWidth() + 5, turretRank.getBounds().getY() + turretRank.getBounds().getHeight() - (margin/3 + 5 + infoTextHeight/2));
+		infoRenderer.draw(nextTurretShield, splits[0].getX() + splits[0].getWidth() + 5, turretRank.getBounds().getY() + turretRank.getBounds().getHeight() - (margin/3 + 5 + 3*infoTextHeight/2));
+		
+		// Radar Information
+		infoRenderer.draw(currentRadarRange, radarRank.getX() + radarRank.getWidth() + radarSprite.getBounds().getWidth() + 5, radarRank.getBounds().getY() + radarRank.getBounds().getHeight() - (margin/3 + 5 + infoTextHeight/2));
+		infoRenderer.draw(nextRadarRange, splits[0].getX() + splits[0].getWidth() + 5, radarRank.getBounds().getY() + radarRank.getBounds().getHeight() - (margin/3 + 5 + infoTextHeight/2));
+		infoRenderer.draw(currentRadarRange2, radarRank.getX() + radarRank.getWidth() + radarSprite.getBounds().getWidth() + 5, radarRank.getBounds().getY() + radarRank.getBounds().getHeight() - (margin/3 + 5 + 3*infoTextHeight/2));
+		infoRenderer.draw(nextRadarRange2, splits[0].getX() + splits[0].getWidth() + 5, radarRank.getBounds().getY() + radarRank.getBounds().getHeight() - (margin/3 + 5 + 3*infoTextHeight/2));
+		
+		// Hangar Information
+		infoRenderer.draw(currentHangarPerk, hangarRank.getX() + hangarRank.getWidth() + hangarSprite.getBounds().getWidth() + 5, hangarRank.getBounds().getY() + hangarRank.getBounds().getHeight() - (margin/3 + 5 + infoTextHeight/2));
+		infoRenderer.draw(currentHangarPerk2, hangarRank.getX() + hangarRank.getWidth() + hangarSprite.getBounds().getWidth() + 5, hangarRank.getBounds().getY() + hangarRank.getBounds().getHeight() - (margin/3 + 5 + 3*infoTextHeight/2));
+		infoRenderer.draw(nextHangarPerk, splits[0].getX() + splits[0].getWidth() + 5, hangarRank.getBounds().getY() + hangarRank.getBounds().getHeight() - (margin/3 + 5 + infoTextHeight/2));
+		infoRenderer.draw(nextHangarPerk2, splits[0].getX() + splits[0].getWidth() + 5, hangarRank.getBounds().getY() + hangarRank.getBounds().getHeight() - (margin/3 + 5 + 3*infoTextHeight/2));
+		
+		/*
+		 * Draw next Level costs if not maxed
+		 */
+		if (!colony.getMine().isMaxRank()) {
+			infoRenderer.draw(nextMineMetal + nextMineGas, splits[0].getX() + splits[0].getWidth() + 5, mineRank.getBounds().getY() + mineRank.getHeight() - (margin/3 + 5 + 5*infoTextHeight/2));
+		}
+		if (!colony.getTurret().isMaxRank()) {
+			infoRenderer.draw(nextTurretMetal + nextTurretGas, splits[0].getX() + splits[0].getWidth() + 5, turretRank.getBounds().getY() + turretRank.getBounds().getHeight() - (margin/3 + 5 + 5*infoTextHeight/2));
+		}
+		if (!colony.getRadar().isMaxRank()) {
+			infoRenderer.draw(nextRadarMetal + nextRadarGas, splits[0].getX() + splits[0].getWidth() + 5, radarRank.getBounds().getY() + radarRank.getBounds().getHeight() - (margin/3 + 5 + 5*infoTextHeight/2));
+		}
+		if (!colony.getHangar().isMaxRank()) {
+			infoRenderer.draw(nextHangarMetal + nextHangarGas, splits[0].getX() + splits[0].getWidth() + 5, hangarRank.getBounds().getY() + hangarRank.getBounds().getHeight() - (margin/3 + 5 + 5*infoTextHeight/2));
+		}	
+		
+		infoRenderer.setColor(1,1,1,1);
+		infoRenderer.endRendering();
+	}
+
+	private void drawTitle(GLAutoDrawable drawable) {
+		titleRenderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		titleRenderer.setColor(ViewResources.WHITE);
+		titleRenderer.draw(mine, mineX, mineRank.getBounds().getY() + mineRank.getHeight() + 5);
+		titleRenderer.draw(turret, turretX, turretRank.getBounds().getY() + turretRank.getHeight() + 5);
+		titleRenderer.draw(radar, radarX, radarRank.getBounds().getY() + radarRank.getHeight() + 5);
+		titleRenderer.draw(hangar, hangarX, hangarRank.getBounds().getY() + hangarRank.getHeight() + 5);
+		titleRenderer.setColor(1,1,1,1);
+		titleRenderer.endRendering();
+		
+	}
+
 	private void drawProgressIndicators(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
-		int x = getX() + getMenuWidth() - 3*margin/5 - inProgress.getBounds().getWidth();
 		if (mineUpgrading) {
-			inProgress.draw(drawable, new Rectangle(x, mineRank.getY() + inProgress.getBounds().getHeight(), inProgress.getBounds().getWidth(), inProgress.getBounds().getHeight()), targetArea, zIndex);
+			inProgress.draw(drawable, progressRects[0], targetArea, zIndex);
 		}
 		if (turretUpgrading) {
-			inProgress.draw(drawable, new Rectangle(x, turretRank.getY() + inProgress.getBounds().getHeight(), inProgress.getBounds().getWidth(), inProgress.getBounds().getHeight()), targetArea, zIndex);
+			inProgress.draw(drawable, progressRects[1], targetArea, zIndex);
 
 		}
 		if (radarUpgrading) {
-			inProgress.draw(drawable, new Rectangle(x, radarRank.getY() + inProgress.getBounds().getHeight(), inProgress.getBounds().getWidth(), inProgress.getBounds().getHeight()), targetArea, zIndex);
+			inProgress.draw(drawable, progressRects[2], targetArea, zIndex);
 
 		}
 		if (hangarUpgrading) {
-			inProgress.draw(drawable, new Rectangle(x, hangarRank.getY() + inProgress.getBounds().getHeight(), inProgress.getBounds().getWidth(), inProgress.getBounds().getHeight()), targetArea, zIndex);
+			inProgress.draw(drawable, progressRects[3], targetArea, zIndex);
 
 		}
 	}
 	
 	private void drawMenuName(GLAutoDrawable drawable) {
-		if(!initiated){
-			nameRenderer = new TextRenderer(ViewResources.getFont().deriveFont((float)getMenuHeight()/20));
-			textX = getX() - ((int)nameRenderer.getBounds(getMenuName()).getWidth() / 2) + (getMenuWidth() / 2);
-			textY = getMenuHeight() - ((int)nameRenderer.getBounds(getMenuName()).getHeight() / 2) - (2*margin + citySprite.getBounds().getHeight());
-		}
 		nameRenderer.beginRendering(drawable.getWidth(), drawable.getHeight());
 		nameRenderer.setColor(ownerColor);
 		nameRenderer.draw(getMenuName(), textX, textY);
 		nameRenderer.setColor(1, 1, 1, 1);
 		nameRenderer.endRendering();
+	}
+	private void initiateTextRenderers(){
+		/*
+		 * Colony name-renderer
+		 */
+		nameRenderer = new TextRenderer(ViewResources.getFont().deriveFont((float)getMenuHeight()/20));
+		textX = getX() - ((int)nameRenderer.getBounds(getMenuName()).getWidth() / 2) + (getMenuWidth() / 2);
+		textY = getMenuHeight() - ((int)nameRenderer.getBounds(getMenuName()).getHeight() / 2) - (2*margin + citySprite.getBounds().getHeight());
+		/*
+		 * Titlerenderer
+		 */
+		titleRenderer = new TextRenderer(titleFont);
+		mineX = getX() + getMenuWidth()/2 - (int)titleRenderer.getBounds(mine).getWidth()/2;
+		turretX = getX() + getMenuWidth()/2 - (int)titleRenderer.getBounds(turret).getWidth()/2;
+		radarX = getX() + getMenuWidth()/2 - (int)titleRenderer.getBounds(radar).getWidth()/2;
+		hangarX = getX() + getMenuWidth()/2 - (int)titleRenderer.getBounds(hangar).getWidth()/2;
+		
+		
+		/*
+		 * Inforenderer
+		 */
+		infoRenderer = new TextRenderer(infoFont);
+		infoTextHeight = infoFont.getSize();
+		int height = 3*getMenuHeight()/35;
+		infoWidth = (getMenuWidth() - margin - mineRank.getWidth() - height)/2 - height/10 + split.getBounds().getWidth()/2;
+		int imageRightX = mineRank.getBounds().getX() + mineRank.getBounds().getWidth() + height;
+		currentLevelX = new int[]{
+				imageRightX + infoWidth/2 - (int)infoRenderer.getBounds(currentMineLevel).getWidth()/2,
+				imageRightX + infoWidth/2 - (int)infoRenderer.getBounds(currentTurretLevel).getWidth()/2,
+				imageRightX + infoWidth/2 - (int)infoRenderer.getBounds(currentRadarLevel).getWidth()/2,
+				imageRightX + infoWidth/2 - (int)infoRenderer.getBounds(currentHangarLevel).getWidth()/2
+				
+		};
+		nextLevelX = new int[]{
+				imageRightX + 3*infoWidth/2 + splits[0].getWidth() - (int)infoRenderer.getBounds(nextMineLevel).getWidth()/2,
+				imageRightX + 3*infoWidth/2 + splits[0].getWidth() - (int)infoRenderer.getBounds(nextTurretLevel).getWidth()/2,
+				imageRightX + 3*infoWidth/2 + splits[0].getWidth() - (int)infoRenderer.getBounds(nextRadarLevel).getWidth()/2,
+				imageRightX + 3*infoWidth/2 + splits[0].getWidth() - (int)infoRenderer.getBounds(nextHangarLevel).getWidth()/2
+		};
+		nextLevelCostX = new int[]{
+				mineRank.getX() + mineRank.getWidth() + mineSprite.getBounds().getWidth() + 3*infoWidth/2 - (int)infoRenderer.getBounds(nextMineMetal + nextMineGas).getWidth()/2,
+				mineRank.getX() + mineRank.getWidth() + mineSprite.getBounds().getWidth() + 3*infoWidth/2 - (int)infoRenderer.getBounds(nextTurretMetal + nextTurretGas).getWidth()/2,
+				mineRank.getX() + mineRank.getWidth() + mineSprite.getBounds().getWidth() + 3*infoWidth/2 - (int)infoRenderer.getBounds(nextRadarMetal + nextRadarGas).getWidth()/2,
+				mineRank.getX() + mineRank.getWidth() + mineSprite.getBounds().getWidth() + 3*infoWidth/2 - (int)infoRenderer.getBounds(nextHangarMetal + nextHangarGas).getWidth()/2,
+		};
 	}
 	
 	@Override
