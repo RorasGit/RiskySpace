@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
+
 import riskyspace.PlayerColors;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
@@ -16,6 +18,7 @@ import riskyspace.model.ShipType;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
+import riskyspace.view.ViewResources;
 import riskyspace.view.opengl.Rectangle;
 import riskyspace.view.opengl.impl.GLButton;
 import riskyspace.view.opengl.impl.GLSprite;
@@ -69,6 +72,12 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 	private GLSprite colonyPicture = null;
 	private Map<Player, GLSprite> cities = new HashMap<Player, GLSprite>();
 	
+	/*
+	 * TextRenderer
+	 */
+	private TextRenderer nameRenderer = null;
+	private boolean initiated = false;
+	private int textX, textY;
 	public GLRecruitMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		margin = menuHeight/20;
@@ -244,5 +253,18 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		buildDestroyerButton.draw(drawable, null, targetArea, zIndex);
 		buildColonizerButton.draw(drawable, null, targetArea, zIndex);
 		backButton.draw(drawable, null, targetArea, zIndex);
+		drawMenuName(drawable);
+	}
+	private void drawMenuName(GLAutoDrawable drawable) {
+		if(!initiated){
+			nameRenderer = new TextRenderer(ViewResources.getFont().deriveFont((float)getMenuHeight()/20));
+			textX = getX() - ((int)nameRenderer.getBounds(getMenuName()).getWidth() / 2) + (getMenuWidth() / 2);
+			textY = getMenuHeight() - ((int)nameRenderer.getBounds(getMenuName()).getHeight() / 2) - (2*margin + colonyPicture.getBounds().getHeight());
+		}
+		nameRenderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		nameRenderer.setColor(ownerColor);
+		nameRenderer.draw(getMenuName(), textX, textY);
+		nameRenderer.setColor(1, 1, 1, 1);
+		nameRenderer.endRendering();
 	}
 }

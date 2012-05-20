@@ -9,12 +9,15 @@ import java.util.Map;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
+
 import riskyspace.PlayerColors;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.view.Action;
+import riskyspace.view.ViewResources;
 import riskyspace.view.opengl.Rectangle;
 import riskyspace.view.opengl.impl.GLButton;
 import riskyspace.view.opengl.impl.GLSprite;
@@ -50,8 +53,15 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 	 * Sprites
 	 */
 	private GLSprite colonyPicture = null;
-	
 	private Map<Player, GLSprite> cities = new HashMap<Player, GLSprite>();
+	
+	/*
+	 * TextRenderer
+	 */
+	private TextRenderer nameRenderer = null;
+	private boolean initiated = false;
+	private int textX, textY;
+	
 	
 	public GLColonyMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
@@ -106,7 +116,6 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 		GLtmp = new GLSprite("menu/city_blue", 900, 486);
 		GLtmp.setBounds(imageRenderRect);
 		cities.put(Player.BLUE, GLtmp);
-		colonyPicture = GLtmp;
 		// TODO: YELLOW / GREEN
 //		GLSprite GLtmp = new GLSprite("menu/city_red", 1280, 700);
 //		GLtmp.setBounds(imageRenderRect);
@@ -174,12 +183,27 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 			buildingMenu.draw(drawable, objectRect, targetArea, zIndex);
 		} else if(isVisible()){
 			super.draw(drawable, objectRect, targetArea, zIndex);
-			colonyPicture.draw(drawable, colonyPicture.getBounds(), targetArea, zIndex+1);
-			buildingsButton.draw(drawable, null, targetArea, zIndex+1);
-			buildShipButton.draw(drawable, null, targetArea, zIndex+1);
+			zIndex++;
+			colonyPicture.draw(drawable, colonyPicture.getBounds(), targetArea, zIndex);
+			buildingsButton.draw(drawable, null, targetArea, zIndex);
+			buildShipButton.draw(drawable, null, targetArea, zIndex);
+			drawMenuName(drawable);
 		} 
 	}
 	
+	private void drawMenuName(GLAutoDrawable drawable) {
+		if(!initiated){
+			nameRenderer = new TextRenderer(ViewResources.getFont().deriveFont((float)getMenuHeight()/20));
+			textX = getX() - ((int)nameRenderer.getBounds(getMenuName()).getWidth() / 2) + (getMenuWidth() / 2);
+			textY = getMenuHeight() - ((int)nameRenderer.getBounds(getMenuName()).getHeight() / 2) - (2*margin + colonyPicture.getBounds().getHeight());
+		}
+		nameRenderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		nameRenderer.setColor(ownerColor);
+		nameRenderer.draw(getMenuName(), textX, textY);
+		nameRenderer.setColor(1, 1, 1, 1);
+		nameRenderer.endRendering();
+	}
+
 	@Override
 	public void setVisible(boolean enabled) {
 		super.setVisible(enabled);
