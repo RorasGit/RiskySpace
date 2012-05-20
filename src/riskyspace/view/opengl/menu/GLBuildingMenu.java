@@ -177,10 +177,10 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		hangarRank.setSize(width, height);
 		
 		// Set Location
-		mineRank.setLocation(x + margin/2, 7*margin/2 + imageHeight);
-		turretRank.setLocation(x + margin/2, height + 9*margin/2 + imageHeight);
-		radarRank.setLocation(x + margin/2, height*2 + 11*margin/2 + imageHeight);
-		hangarRank.setLocation(x + margin/2, height*3 + 13*margin/2 + imageHeight);
+		mineRank.setLocation(	x + margin/2, 11*margin/2 + imageHeight);
+		turretRank.setLocation(	x + margin/2, height + 13*margin/2 + imageHeight);
+		radarRank.setLocation(	x + margin/2, height*2 + 15*margin/2 + imageHeight);
+		hangarRank.setLocation(	x + margin/2, height*3 + 17*margin/2 + imageHeight);
 		
 		setButtons(menuWidth, menuHeight, height);
 	}
@@ -299,8 +299,8 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		});
 		
 		backButton = new GLButton(getX() + margin, 
-				 getY() + getMenuHeight() - margin - (menuWidth - 2*margin)/4, 
-				getBounds().getWidth()-2*margin, (getBounds().getWidth() - 2*margin)/4);
+				getY() + getMenuHeight() - 2*(getMenuWidth() - 2*margin)/4 , 
+				getMenuWidth()-2*margin, (getMenuWidth() - 2*margin)/4);
 		backButton.setTexture("menu/back", 128, 32);
 		backButton.setAction(new Action(){
 			@Override
@@ -320,7 +320,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	private void setPicture(int imageWidth, int imageHeight){
 		int sHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 		Rectangle imageRenderRect = new Rectangle(getX() + margin, 
-				sHeight - (getY() + imageHeight + 3*margin/2), 
+				sHeight - (getY() + imageHeight + margin), 
 				imageWidth, imageHeight);
 
 		GLSprite GLtmp = new GLSprite("menu/city_red", 1280, 700);
