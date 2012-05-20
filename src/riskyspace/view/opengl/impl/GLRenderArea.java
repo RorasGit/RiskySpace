@@ -56,16 +56,31 @@ public class GLRenderArea implements GLRenderAble {
 	 */
 	public static final int EXTRA_SPACE_VERTICAL = 2;
 	
+	/**
+	 * The area of the screen
+	 */
 	private Rectangle screenArea = null;
-	private int squareSize;
-	private int totalWidth;
-	private int totalHeight;
 	
+	/**
+	 * The size of one game sqare
+	 */
+	private int squareSize;
+	
+	/**
+	 * Total size of the game
+	 */
+	private int totalWidth, totalHeight;
 	
 	private BufferedImage gridImage;
 	private Texture gridTexture;
 
+	/**
+	 * Array with coordinates used to draw all horizontal lines
+	 */
 	private int[][] hLines;
+	/**
+	 * Array with coordinates used to draw all vertical lines
+	 */
 	private int[][] vLines;
 	
 	/*
@@ -80,14 +95,22 @@ public class GLRenderArea implements GLRenderAble {
 	 */
 	private int rows, cols;
 	
-	/*
-	 * Cameras
+	/**
+	 * The current Camera used to move the View
 	 */
 	private Camera currentCamera = null;
+	
+	/**
+	 * Cameras for all Players
+	 */
 	private Map<Player, Camera> cameras = null;
+	
+	/**
+	 * Camera controller for the current Camera
+	 */
 	private CameraController cc = null;
 	
-	/*
+	/**
 	 * Clickhandler to handle all clicks on the screen
 	 */
 	private ClickHandler clickHandler;
@@ -105,8 +128,8 @@ public class GLRenderArea implements GLRenderAble {
 	private TextRenderer statusTextRenderer;
 	private GLSprite statusBackground;
 	
-	/*
-	 * Sprites
+	/**
+	 * All game sprites
 	 */
 	private GLSpriteMap sprites;
 	
@@ -118,7 +141,13 @@ public class GLRenderArea implements GLRenderAble {
 	private GLFleetMenu fleetMenu = null;
 	private GLTopMenu topMenu = null;
 
-	
+	/**
+	 * Create a new RenderArea that will be the view of a player
+	 * @param width The width of the Game Screen
+	 * @param height The height of the Game Screen
+	 * @param rows The number of rows in the world to display
+	 * @param cols The number of columns in the world to display
+	 */
 	public GLRenderArea(int width, int height, int rows, int cols) {
 		screenArea = new Rectangle(0, 0, width, height);
 		squareSize = Math.min(width/6,height/6);
@@ -133,6 +162,9 @@ public class GLRenderArea implements GLRenderAble {
 		createStatusBox();
 	}
 
+	/**
+	 * Initiates all variables used to draw the status box
+	 */
 	private void createStatusBox() {
 		statusTextRenderer = new TextRenderer(ViewResources.getFont().deriveFont(screenArea.getHeight()/30.0f));
 		statusBackground = new GLSprite("wide_button", 128, 32);
@@ -143,6 +175,10 @@ public class GLRenderArea implements GLRenderAble {
 		statusBackground.setBounds(new Rectangle(x, y, width, height));
 	}
 	
+	/**
+	 * Creates all Menus at the correct locations in awt coordinate space to handle clicks 
+	 * more easily.
+	 */
 	private void createMenus() {
 		int menuWidth = screenArea.getHeight() / 3;
 		colonyMenu = new GLColonyMenu(screenArea.getWidth() - menuWidth, 80,
@@ -154,7 +190,9 @@ public class GLRenderArea implements GLRenderAble {
 		topMenu = new GLTopMenu(0, screenArea.getHeight(), screenArea.getWidth(), 80);
 	}
 
-
+	/**
+	 * Create a grid through x and y coordinates
+	 */
 	private void createGrid() {
 		hLines = new int[rows + 1][];
 		vLines = new int[cols + 1][];
@@ -179,6 +217,10 @@ public class GLRenderArea implements GLRenderAble {
 		}
 	}
 	
+	/**
+	 * Draw the game grid
+	 * @param drawable The drawable to draw to.
+	 */
 	private void drawGrid(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glDisable(GL2.GL_TEXTURE_2D);
@@ -205,6 +247,9 @@ public class GLRenderArea implements GLRenderAble {
 		gl.glEnable(GL2.GL_TEXTURE_2D);
 	}
 	
+	/**
+	 * Creates random star locations on a background 50% wider and higher than the current screen
+	 */
 	private void createStarMap() {
 		starWidth = (int) (screenArea.getWidth() * 1.5);
 		starHeight = (int) (screenArea.getHeight() * 1.5);
@@ -213,6 +258,9 @@ public class GLRenderArea implements GLRenderAble {
 		}
 	}
 	
+	/**
+	 * Create cameras and starting locations for these for all players
+	 */
 	private void initCameras() {
 		cameras = new HashMap<Player, Camera>();
 		cameras.put(Player.BLUE, new GLCamera(0.93f,0.08f));
@@ -222,6 +270,10 @@ public class GLRenderArea implements GLRenderAble {
 		cc = new CameraController();
 	}
 	
+	/**
+	 * Set this view to the perspective of a Player
+	 * @param player The Player whos perspective is to be used for this view
+	 */
 	public void setViewer(Player player) {
 		this.viewer = player;
 		currentCamera = cameras.get(player);
@@ -231,6 +283,10 @@ public class GLRenderArea implements GLRenderAble {
 		}
 	}
 	
+	/**
+	 * Tell this view about the current player so that is may display useful information
+	 * @param player The current Player
+	 */
 	public void setActivePlayer(Player player) {
 		if (player == viewer) {
 			statusString = "";
@@ -299,20 +355,38 @@ public class GLRenderArea implements GLRenderAble {
 		textRenderer.endRendering();
 	}
 	
+	/**
+	 * Create a rectangle based on the current location of the camera
+	 * @return A Rectangle representing the current view of the camera.
+	 */
 	private Rectangle getCameraRect() {
 		int x = (int) ((totalWidth - screenArea.getWidth())*currentCamera.getX());
 		int y = (int) ((totalHeight - screenArea.getHeight())*currentCamera.getY());
 		return new Rectangle(x, y, screenArea.getWidth(), screenArea.getHeight());
 	}
 	
+	/**
+	 * Return the x coordinate of the camera in pixels
+	 * @return the current cameras x value
+	 */
 	public int translatePixelsX() {
 		return (int) (((cols+2*EXTRA_SPACE_HORIZONTAL)*squareSize - getBounds().getWidth())*currentCamera.getX());
 	}
 	
+	/**
+	 * Return the y coordinate of the camera in pixels 
+	 * @return the current cameras y value
+	 */
 	public int translatePixelsY() {
 		return (int) (((rows+2*EXTRA_SPACE_VERTICAL)*squareSize - getBounds().getHeight())*currentCamera.getY());
 	}
 	
+	/**
+	 * Draw a green box from the last pressed point to the current mouse selection if the 
+	 * mouse button has not yet been released.
+	 * @param drawable The drawable to draw to
+	 * @param zIndex The z Level of draw space to draw in
+	 */
 	private void drawSelectionBox(GLAutoDrawable drawable, int zIndex) {
 		/*
 		 * Draw a transparent box from pressed point
@@ -320,9 +394,10 @@ public class GLRenderArea implements GLRenderAble {
 		 * 
 		 * If mouse has not yet been clicked return.
 		 */
-		if (clickHandler == null || clickHandler.pressedPoint == null)
+		if (clickHandler == null || clickHandler.pressedPoint == null) {
 			return;
-
+		}
+		
 		Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
 		
 		float x = 2*((float) (clickHandler.pressedPoint.x - translatePixelsX())/screenArea.getWidth()) -1f;
@@ -358,6 +433,12 @@ public class GLRenderArea implements GLRenderAble {
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
+	/**
+	 * Draw white points representing stars at the locations
+	 * created by <code>createStars()</code>
+	 * @param drawable The drawable to draw to
+	 * @see createStars()
+	 */
 	private void drawStars(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		
@@ -405,12 +486,23 @@ public class GLRenderArea implements GLRenderAble {
 		gl.glEnd();
 	}
 
+	/**
+	 * Update the size of the screen
+	 * @deprecated The game is now fullscreen exclusive
+	 * @param width The new width
+	 * @param height The new height
+	 */
 	public void updateSize(int width, int height) {
 		this.squareSize = Math.min(width/6,height/6);
 		screenArea.setHeight(height);
 		screenArea.setWidth(width);
 	}
 	
+	/**
+	 * Returns the handler for all clicks in this RenderArea
+	 * @return a ClickHandler that will listen to clicks and 
+	 * process them in this renderArea
+ 	 */
 	public MouseListener getClickHandler() {
 		if (clickHandler == null) {
 			clickHandler = new ClickHandler();
@@ -418,6 +510,11 @@ public class GLRenderArea implements GLRenderAble {
 		return clickHandler;
 	}
 	
+	/**
+	 * Add this Listener to the current frame if the Camera 
+	 * should be moveable with keyboard arrows
+	 * @return
+	 */
 	public KeyListener getCameraKeyListener() {
 		return cc;
 	}
@@ -427,11 +524,19 @@ public class GLRenderArea implements GLRenderAble {
 		sprites = GLSpriteMap.getSprites(data, squareSize);
 	}
 	
+	/**
+	 * Set PlayerStats in this view to update shown information
+	 * @param stats PlayerStats to update the view with
+	 */
 	public void setStats(PlayerStats stats) {
 		topMenu.setStats(stats);
 		colonyMenu.setStats(stats);
 	}
 
+	/**
+	 * Set Queue Information in this view to update display
+	 * @param colonyQueues Queues to update the view with
+	 */
 	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
 		colonyMenu.setQueues(colonyQueues);
 		/*
@@ -439,15 +544,25 @@ public class GLRenderArea implements GLRenderAble {
 		 */
 	}
 	
+	/**
+	 * Tell this RenderArea to display information about
+	 * a selected Fleet
+	 * @param selection The selected Fleet
+	 */
 	public void showFleet(Fleet selection) {
 		hideSideMenus();
 		fleetMenu.setFleet(selection);
 		fleetMenu.setVisible(true);
 	}
 	
+	/**
+	 * Tell this RenderArea to display information about
+	 * a selected Colony, if the colony is already shown 
+	 * update the data in the view
+	 * @param selection The selected Colony
+	 */
 	public void showColony(Colony selection) {
 		if (selection.equals(colonyMenu.getColony()) && colonyMenu.isVisible()) {
-			// Update colony
 			colonyMenu.setColony(selection);
 		} else {
 			hideSideMenus();
@@ -456,20 +571,37 @@ public class GLRenderArea implements GLRenderAble {
 		}
 	}
 	
+	/**
+	 * Tell this RenderArea to display information about
+	 * a selected Territory
+	 * @param selection The selected Territory
+	 */
 	public void showTerritory(Territory selection) {
 		hideSideMenus();
 		planetMenu.setTerritory(selection);
 		planetMenu.setVisible(true);
 	}
 	
+	/**
+	 * Hide all menus except for the top Menu
+	 */
 	public void hideSideMenus() {
 		colonyMenu.setVisible(false);
 		fleetMenu.setVisible(false);
 		planetMenu.setVisible(false);
 	}
 	
+	/**
+	 * Inner class that handles all mouse interaction with the renderArea
+	 * <p>
+	 * Translates necessary clicks from awt coordinates to openGL coordinates
+	 * @author Alexander Hederstaf
+	 */
 	private class ClickHandler implements MouseListener {
 
+		/**
+		 * The Point currently pressed, null in not currently pressed
+		 */
 		public Point pressedPoint;
 		/*
 		 * Click handling for different parts
