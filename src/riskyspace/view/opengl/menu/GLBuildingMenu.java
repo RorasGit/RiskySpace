@@ -495,12 +495,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 		 * Draw Buttons
 		 * Buttons know their own location
 		 */
-		upgradeMine.draw(drawable, null, targetArea, zIndex);
-		upgradeTurret.draw(drawable, null, targetArea, zIndex);
-		upgradeRadar.draw(drawable, null, targetArea, zIndex);
-		upgradeHangar.draw(drawable, null, targetArea, zIndex);
 		backButton.draw(drawable, null, targetArea, zIndex);
-		
 		drawProgressIndicators(drawable, objectRect, targetArea, zIndex);
 		drawTexts(drawable);
 	}
@@ -590,18 +585,23 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	private void drawProgressIndicators(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
 		if (mineUpgrading) {
 			inProgress.draw(drawable, progressRects[0], targetArea, zIndex);
+		}else{
+			upgradeMine.draw(drawable, null, targetArea, zIndex);
 		}
 		if (turretUpgrading) {
 			inProgress.draw(drawable, progressRects[1], targetArea, zIndex);
-
+		}else {
+			upgradeTurret.draw(drawable, null, targetArea, zIndex);
 		}
 		if (radarUpgrading) {
 			inProgress.draw(drawable, progressRects[2], targetArea, zIndex);
-
+		}else {
+			upgradeRadar.draw(drawable, null, targetArea, zIndex);
 		}
 		if (hangarUpgrading) {
 			inProgress.draw(drawable, progressRects[3], targetArea, zIndex);
-
+		}else {
+			upgradeHangar.draw(drawable, null, targetArea, zIndex);
 		}
 	}
 	
