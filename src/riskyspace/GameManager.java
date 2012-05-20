@@ -494,7 +494,7 @@ public enum GameManager {
 						// If the colony can not build this shipType
 						return;
 					}
-					if (buildAble instanceof Ranked && world.getBuildQueue(player).get(pos).contains(buildAble)) {
+					if (buildAble instanceof Ranked && world.getBuildQueue(player).containsKey(pos) && world.getBuildQueue(player).get(pos).contains(buildAble)) {
 						// BuildAble Ranked of this type is already in queue
 						return;
 					}
