@@ -31,7 +31,7 @@ public class GLPlanetMenu extends GLAbstractSideMenu{
 		
 		metalPlanetPicture = new GLSprite("menu/metal_planet", 1024, 768);
 		metalPlanetPicture.setBounds(renderRect);
-		gasPlanetPicture = new GLSprite("res/menu/gas_planet", 350, 350);
+		gasPlanetPicture = new GLSprite("menu/gas_planet", 350, 350);
 		gasPlanetPicture.setBounds(renderRect);
 		
 		planetPicture = metalPlanetPicture;
