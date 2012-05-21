@@ -190,7 +190,7 @@ public enum GameManager {
 		} else if (FleetMove.isMoving() && evt.getTag() == Event.EventTag.MOVE && player == getCurrentPlayer()) {
 			FleetMove.interrupt();
 		}
-		if(evt.getTag() == Event.EventTag.PLANET_SELECTED) {
+		if (evt.getTag() == Event.EventTag.PLANET_SELECTED) {
 			planetSelected((Position) evt.getObjectValue(), player);
 		} 
 		if (evt.getTag() == Event.EventTag.DESELECT) {
@@ -214,11 +214,14 @@ public enum GameManager {
 				}
 			}
 		}
-		if (evt.getTag() == Event.EventTag.HOME_LOST) {
-			Player loser = (Player) evt.getObjectValue();
+		if (evt.getTag() == Event.EventTag.PLANET_SELECTED) {
+//			Player loser = (Player) evt.getObjectValue();
+			Player loser = Player.RED;
 			selections.remove(loser);
 			activePlayers.remove(loser);
-			playerInfo.remove(loser);
+			Event homeLostEvent = new Event(Event.EventTag.HOME_LOST, loser);
+			homeLostEvent.setPlayer(loser);
+			EventBus.SERVER.publish(homeLostEvent);
 		}
 	}
 	
