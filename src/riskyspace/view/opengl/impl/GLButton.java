@@ -1,11 +1,14 @@
 package riskyspace.view.opengl.impl;
 
+import java.awt.MouseInfo;
 import java.awt.Toolkit;
 import java.io.File;
 
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
 import riskyspace.view.Button;
+import riskyspace.view.GlowableGraphic;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
 
@@ -14,12 +17,13 @@ import riskyspace.view.opengl.Rectangle;
  * @author Daniel Augurell
  * @modified Alexander Hederstaf
  */
-public class GLButton extends Button implements GLRenderAble {
+public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 	
 	private GLSprite sprite;
 	private GLSprite disabledImage;
 	
 	private boolean canBeDisabled = false;
+	private boolean canGlow = true;
 	
 	private Rectangle renderRect;
 
@@ -92,10 +96,33 @@ public class GLButton extends Button implements GLRenderAble {
 
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect,	Rectangle targetArea, int zIndex) {
+		GL2 gl = drawable.getGL().getGL2();
+		if (canGlow() && cursorOver()) {
+			gl.glColor4f(0.8f, 0.8f, 1.0f, 1.0f);
+		}
 		if (isEnabled()) {
 			sprite.draw(drawable, renderRect, targetArea, zIndex);
 		} else if (canBeDisabled) {
 			disabledImage.draw(drawable, renderRect, targetArea, zIndex);
 		}
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	@Override
+	public boolean cursorOver() {
+		return this.contains(MouseInfo.getPointerInfo().getLocation());
+	}
+
+	/**
+	 * Set this button to glow on mouseover
+	 * @param enable <code>true</code> for glow effect.
+	 */
+	public void enableGlow(boolean enable) {
+		canGlow = enable;
+	}
+	
+	@Override
+	public boolean canGlow() {
+		return canGlow;
 	}
 }

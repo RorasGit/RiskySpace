@@ -81,11 +81,11 @@ public class SwingButton extends Button implements GlowableGraphic, SwingRenderA
 
 	@Override
 	public boolean cursorOver() {
-		return hasGlowImage() && contains(MouseInfo.getPointerInfo().getLocation());
+		return canGlow() && contains(MouseInfo.getPointerInfo().getLocation());
 	}
 
 	@Override
-	public boolean hasGlowImage() {
+	public boolean canGlow() {
 		return canGlow;
 	}
 }
