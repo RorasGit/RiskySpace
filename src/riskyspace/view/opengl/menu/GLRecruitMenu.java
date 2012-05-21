@@ -145,21 +145,18 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 				sHeight - (getY() + imageHeight + margin), 
 				imageWidth, imageHeight);
 
-		GLSprite GLtmp = new GLSprite("menu/city_red", 1280, 700);
-		GLtmp.setBounds(imageRenderRect);
-		cities.put(Player.RED, GLtmp);
-		GLtmp = new GLSprite("menu/city_blue", 900, 486);
-		GLtmp.setBounds(imageRenderRect);
-		cities.put(Player.BLUE, GLtmp);
-		colonyPicture = GLtmp;
-		// TODO: YELLOW / GREEN
-//		GLSprite GLtmp = new GLSprite("menu/city_red", 1280, 700);
-//		GLtmp.setBounds(imageRenderRect);
-//		cities.put(Player.RED, GLtmp);
-//		GLtmp = new GLSprite("menu/city_blue", 900, 486);
-//		GLtmp.setBounds(imageRenderRect);
-//		cities.put(Player.BLUE, GLtmp);
-//		citySprite = GLtmp;
+		GLSprite sprite = new GLSprite("menu/city_red", 1280, 700);
+		sprite.setBounds(imageRenderRect);
+		cities.put(Player.RED, sprite);
+		sprite = new GLSprite("menu/city_blue", 900, 486);
+		sprite.setBounds(imageRenderRect);
+		cities.put(Player.BLUE, sprite);
+		sprite = new GLSprite("menu/city_yellow", 970, 594);
+		sprite.setBounds(imageRenderRect);
+		cities.put(Player.PINK, sprite);
+		sprite = new GLSprite("menu/city_green", 606, 389);
+		sprite.setBounds(imageRenderRect);
+		cities.put(Player.GREEN, sprite);
 	}
 	
 	public GLRecruitMenu(int x, int y, int menuWidth, int menuHeight, Action backAction) {
