@@ -218,7 +218,7 @@ public enum GameManager {
 			Player loser = (Player) evt.getObjectValue();
 			activePlayers.remove(loser);
 			selections.clear();
-			Event homeLostEvent = new Event(Event.EventTag.HOME_LOST, player);
+			Event homeLostEvent = new Event(Event.EventTag.HOME_LOST, getCurrentPlayer());
 			homeLostEvent.setPlayer(loser);
 			EventBus.SERVER.publish(homeLostEvent);
 		}
