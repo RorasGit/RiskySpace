@@ -297,7 +297,7 @@ public class GLRenderArea implements GLRenderAble {
 	//TODO this is just the code from statusBox, need to make a new png or scale this.
 	public void showGameOver(Player loser) {
 		gameOverTextRenderer = new TextRenderer(ViewResources.getFont().deriveFont(screenArea.getHeight()/30.0f));
-		statusBackground = new GLSprite("wide_button", 128, 32);			
+		statusBackground = new GLSprite("square_button", 128, 80);			
 		int width = screenArea.getWidth()/2;
 		int height = screenArea.getHeight()/2;
 		int x = screenArea.getWidth() / 2 - width / 2;
