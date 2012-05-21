@@ -108,12 +108,6 @@ public class GameServer implements EventHandler {
 				sendObject(evt, evt.getPlayer());
 			} else if (evt.getTag() == Event.EventTag.HOME_LOST) {
 				sendObject(evt, evt.getPlayer());
-				for (ConnectionHandler ch : connections) {
-					if (GameManager.INSTANCE.getInfo(evt.getPlayer()).getIP().equals(ch.socket.getInetAddress())){
-						ch.endConnection();
-						break;
-					}
-				}
 			}
 			
 		} catch (IOException e) {
@@ -194,10 +188,6 @@ public class GameServer implements EventHandler {
 				} 
 			}
 		}
-		public void endConnection() throws IOException{
-			socket.close();
-		}
-
 
 		private void disconnect() {
 			try {
