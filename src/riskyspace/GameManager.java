@@ -176,7 +176,7 @@ public enum GameManager {
 				}
 			} else if (evt.getTag() == Event.EventTag.NEXT_TURN && player == getCurrentPlayer()) {
 				changePlayer();
-			}  else if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
+			} else if (evt.getTag() == Event.EventTag.NEW_FLEET_SELECTION) {
 				newFleetsSelection(evt, player);
 			} else if (evt.getTag() == Event.EventTag.MOVE && player == getCurrentPlayer()) {
 				performMoves();
@@ -184,7 +184,7 @@ public enum GameManager {
 				queueBuildAble((BuildAble) evt.getObjectValue(), player);
 			} else if (evt.getTag() == Event.EventTag.QUEUE_BUILDING && player == getCurrentPlayer()) {
 				queueBuilding((String)evt.getObjectValue(), player);
-			}else if (evt.getTag() == Event.EventTag.COLONIZE_PLANET && player == getCurrentPlayer()) {
+			} else if (evt.getTag() == Event.EventTag.COLONIZE_PLANET && player == getCurrentPlayer()) {
 				colonizePlanet(player);
 			} 
 		} else if (FleetMove.isMoving() && evt.getTag() == Event.EventTag.MOVE && player == getCurrentPlayer()) {
@@ -214,6 +214,12 @@ public enum GameManager {
 				}
 			}
 		}
+		if (evt.getTag() == Event.EventTag.HOME_LOST) {
+			Player loser = (Player) evt.getObjectValue();
+			selections.remove(loser);
+			activePlayers.remove(loser);
+			playerInfo.remove(loser);
+		}
 	}
 	
 	private void updateSelections() {
@@ -239,16 +245,16 @@ public enum GameManager {
 	private void queueBuilding(String objectValue, Player player) {
 		Colony c = world.getTerritory(selections.get(getCurrentPlayer()).selectedPosition).getColony();
 		BuildAble building = null;
-		if(objectValue.equals("MINE")){
+		if (objectValue.equals("MINE")){
 			building = c.getMine().isMaxRank() ? null: c.getMine();
-		}else if(objectValue.equals("RADAR")){
+		} else if(objectValue.equals("RADAR")){
 			building = c.getRadar().isMaxRank() ? null: c.getRadar();
-		}else if(objectValue.equals("HANGAR")){
+		} else if(objectValue.equals("HANGAR")){
 			building = c.getHangar().isMaxRank() ? null: c.getHangar();
-		}else if(objectValue.equals("TURRET")){
+		} else if(objectValue.equals("TURRET")){
 			building = c.getTurret().isMaxRank() ? null: c.getTurret();
 		}
-		if(building != null){
+		if (building != null){
 			queueBuildAble(building, player);
 		}
 	}

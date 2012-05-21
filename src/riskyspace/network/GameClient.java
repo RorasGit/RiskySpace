@@ -188,6 +188,8 @@ public class GameClient implements EventHandler {
 							mainView.setQueue((Map<Colony, List<BuildAble>>) event.getObjectValue());
 						} else if (event.getTag() == Event.EventTag.ACTIVE_PLAYER_CHANGED) {
 							mainView.setActivePlayer((Player) event.getObjectValue());
+						} else if (event.getTag() == Event.EventTag.HOME_LOST) {
+							mainView.showGameOver((Player) event.getObjectValue());
 						} else if (event.getTag() == Event.EventTag.SELECTION) {
 							Object selection = event.getObjectValue();
 							if (selection instanceof Colony) {

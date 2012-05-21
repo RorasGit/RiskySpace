@@ -197,4 +197,9 @@ public class OpenGLView implements View, GLEventListener {
 	public void hideMenus() {
 		renderArea.hideSideMenus();
 	}
+
+	@Override
+	public void removeActivePlayer(Player loser) {
+		renderArea.showGameOver(loser);
+	}
 }
