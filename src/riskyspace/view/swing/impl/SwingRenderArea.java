@@ -531,4 +531,12 @@ public class SwingRenderArea extends JPanel {
 			texts.removeAll(done);
 		}
 	}
+
+	public void showGameOver(Player loser) {
+		/*
+		 * Temporary solution, won't be needed because we'll
+		 * be using OpenGL as default.
+		 */
+		System.out.println("loser has lost the game!");
+	}
 }

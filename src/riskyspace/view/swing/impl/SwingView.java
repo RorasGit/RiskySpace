@@ -122,4 +122,9 @@ public class SwingView implements View {
 	public void setActivePlayer(Player player) {
 		renderArea.setActivePlayer(player);
 	}
+
+	@Override
+	public void showGameOver(Player loser) {
+		renderArea.showGameOver(loser);
+	}
 }
