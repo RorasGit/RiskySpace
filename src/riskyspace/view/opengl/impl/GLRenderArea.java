@@ -137,6 +137,8 @@ public class GLRenderArea implements GLRenderAble {
 	private GLFleetMenu fleetMenu = null;
 	private GLTopMenu topMenu = null;
 
+	private String killedByString;
+
 	/**
 	 * Create a new RenderArea that will be the view of a player
 	 * @param width The width of the Game Screen
@@ -292,7 +294,7 @@ public class GLRenderArea implements GLRenderAble {
 		}
 	}
 	
-	public void showGameOver(Player loser) {
+	public void showGameOver(Player killedBy) {
 		statusBackground = new GLSprite("square_button", 128, 80);
 		int width = screenArea.getWidth()/2;
 		int height = screenArea.getHeight()/2;
@@ -300,6 +302,7 @@ public class GLRenderArea implements GLRenderAble {
 		int y = screenArea.getHeight() / 2 - height / 2;
 		statusBackground.setBounds(new Rectangle(x, y, width, height));
 		statusString = "";
+		killedByString = killedBy.toString();
 		defeated = true;
 	}
 	
@@ -343,7 +346,7 @@ public class GLRenderArea implements GLRenderAble {
 			String line1 = "YOU HAVE BEEN DEFEATED!";
 			String line2 = "ALL YOUR BASE";
 			String line3 = "ARE BELONG TO";
-			String line4 = statusString.substring(0, statusString.length()-7);
+			String line4 = killedByString;
 			
 			/* Calculate lineHeight lH to use as Y offset */
 			int lH = (int) statusTextRenderer.getBounds("height").getHeight()+screenArea.getHeight() / 24;
