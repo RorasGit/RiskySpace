@@ -62,8 +62,8 @@ public class MapGenerator {
 		int[][] closePos = new int[][]{
 				{+2, -1, -1, +2},
 				{-2, +1, +1, -2},
-				{-1, -2, +2, +1},
-				{-2, -1, +1, -2},
+				{-2, -1, +1, +2},
+				{+2, +1, -1, -2},
 		};
 		Player[] players = new Player[]{
 				Player.RED,
@@ -139,6 +139,10 @@ public class MapGenerator {
 		} else if (p.getRow() <= 5 && p.getCol() <= 5) {
 			return false;
 		} else if (p.getRow() >= rows-4 && p.getCol() >= cols-4) {
+			return false;
+		} else if (p.getRow() >= rows-4 && p.getCol() <= 5) {
+			return false;
+		} else if (p.getRow() <= 5 && p.getCol() >= cols-4) {
 			return false;
 		}
 		return true;

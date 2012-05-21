@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,10 +79,8 @@ public class GameServer implements EventHandler {
 		for (ConnectionHandler ch : connections) {
 			if (GameManager.INSTANCE.getInfo(player).getIP().equals(ch.socket.getInetAddress())){
 				ch.output.writeObject(o);
-				/* TODO:
-				 * Can cause crashes if called while serializing, fix?
-				 */
 				ch.output.reset();
+				break;
 			}
 		}
 	}
@@ -109,6 +108,12 @@ public class GameServer implements EventHandler {
 				sendObject(evt, evt.getPlayer());
 			} else if (evt.getTag() == Event.EventTag.HOME_LOST) {
 				sendObject(evt, evt.getPlayer());
+				for (ConnectionHandler ch : connections) {
+					if (GameManager.INSTANCE.getInfo(evt.getPlayer()).getIP().equals(ch.socket.getInetAddress())){
+						ch.endConnection();
+						break;
+					}
+				}
 			}
 			
 		} catch (IOException e) {
@@ -169,6 +174,9 @@ public class GameServer implements EventHandler {
 						}
 						GameManager.INSTANCE.handleEvent(evt, p);
 					}
+				} catch(SocketException e){
+					disconnect();
+					break;
 				} catch (EOFException e) {
 					disconnect();
 					break;
@@ -183,8 +191,11 @@ public class GameServer implements EventHandler {
 					/*
 					 * Server got an nonserializable object, nothing to do here.
 					 */
-				}
+				} 
 			}
+		}
+		public void endConnection() throws IOException{
+			socket.close();
 		}
 
 
