@@ -23,6 +23,8 @@ public class TextBox extends Button implements SwingRenderAble{
 		setTextColor(240, 240, 240);
 		background = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/textItem.png").
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		hilightedBackground = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/textItem_glow.png").
+		getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		textListener = new TextBoxListener();
 		setAction(new Action() {
 			
