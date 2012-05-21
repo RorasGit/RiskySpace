@@ -105,7 +105,6 @@ public class GLFleetAnimation implements GLRenderAble {
 			} else if (index == flames.length + 1) {
 				index = index - 4;
 			}
-			System.out.println("index: " + index);
 			flame = flames[index];
 		}
 	}
