@@ -184,21 +184,14 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		buildDestroyerButton.setTexture("ship_icons", 192, y[i], 64, 64);
 	}
 	
-//	private void drawColonyName(Graphics g) {
-//		g.setColor(ownerColor);
-//		g.setFont(ViewResources.getFont().deriveFont((float) getMenuHeight()/20));
-//		int textX = getX() - (g.getFontMetrics().stringWidth(getMenuName()) / 2) + (getMenuWidth() / 2);
-//		int textY = getY() + (g.getFontMetrics().getHeight() / 2) + (2*margin + colonyPicture.getHeight(null));
-//		g.drawString(getMenuName(), textX, textY);
-//	}
 	
 	public void checkRecruitOptions(PlayerStats stats) {
 		this.stats = stats;
 		if (colony != null && stats != null){
-//			buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT) && colony.getHangar().canBuild(ShipType.SCOUT));
-//			buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER) && colony.getHangar().canBuild(ShipType.HUNTER));
-//			buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER) && colony.getHangar().canBuild(ShipType.COLONIZER));
-//			buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER) && colony.getHangar().canBuild(ShipType.DESTROYER));
+			buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT) && colony.getHangar().canBuild(ShipType.SCOUT));
+			buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER) && colony.getHangar().canBuild(ShipType.HUNTER));
+			buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER) && colony.getHangar().canBuild(ShipType.COLONIZER));
+			buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER) && colony.getHangar().canBuild(ShipType.DESTROYER));
 		}
 	}
 
@@ -258,6 +251,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 			nameRenderer = new TextRenderer(ViewResources.getFont().deriveFont((float)getMenuHeight()/20));
 			textX = getX() - ((int)nameRenderer.getBounds(getMenuName()).getWidth() / 2) + (getMenuWidth() / 2);
 			textY = getMenuHeight() - ((int)nameRenderer.getBounds(getMenuName()).getHeight() / 2) - (2*margin + colonyPicture.getBounds().getHeight());
+			initiated = true;
 		}
 		nameRenderer.beginRendering(drawable.getWidth(), drawable.getHeight());
 		nameRenderer.setColor(ownerColor);

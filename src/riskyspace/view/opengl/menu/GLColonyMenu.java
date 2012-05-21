@@ -194,6 +194,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 			nameRenderer = new TextRenderer(ViewResources.getFont().deriveFont((float)getMenuHeight()/20));
 			textX = getX() - ((int)nameRenderer.getBounds(getMenuName()).getWidth() / 2) + (getMenuWidth() / 2);
 			textY = getMenuHeight() - ((int)nameRenderer.getBounds(getMenuName()).getHeight() / 2) - (2*margin + colonyPicture.getBounds().getHeight());
+			initiated = true;
 		}
 		nameRenderer.beginRendering(drawable.getWidth(), drawable.getHeight());
 		nameRenderer.setColor(ownerColor);
