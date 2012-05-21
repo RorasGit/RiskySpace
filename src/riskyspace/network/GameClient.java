@@ -204,7 +204,6 @@ public class GameClient implements EventHandler {
 						} 
 					}
 				} catch (EOFException e){
-					System.out.println("Server shutdown!");
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {

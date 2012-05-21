@@ -37,7 +37,7 @@ public class GameServer implements EventHandler {
 	 * MAIN METHOD
 	 */
 	public static void main(String[] args) throws IOException {
-		final GameServer server = new GameServer(4);
+		final GameServer server = new GameServer(3);
 		Runnable r = new Runnable() {
 			public void run() {
 				new GameClient(server.getIP(), server.getPort());
