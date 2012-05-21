@@ -1,14 +1,11 @@
 package riskyspace.view.swing.impl;
 
 import java.awt.Graphics;
-import java.awt.MouseInfo;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 
