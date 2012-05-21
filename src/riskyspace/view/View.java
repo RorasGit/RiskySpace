@@ -17,7 +17,6 @@ public interface View {
 	public void draw();
 	public void setViewer(Player player);
 	public void setActivePlayer(Player player);
-	public void removeActivePlayer(Player objectValue);
 	public void setVisible(boolean visible);
 	public boolean isVisible();
 	
@@ -29,4 +28,7 @@ public interface View {
 	public void showColony(Colony selection);
 	public void showFleet(Fleet selection);
 	public void hideMenus();
+
+	public void showGameOver(Player loser);
 }
+

@@ -199,7 +199,7 @@ public class OpenGLView implements View, GLEventListener {
 	}
 
 	@Override
-	public void removeActivePlayer(Player loser) {
+	public void showGameOver(Player loser) {
 		renderArea.showGameOver(loser);
 	}
 }
