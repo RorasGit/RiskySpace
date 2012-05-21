@@ -32,7 +32,6 @@ public class GameServer implements EventHandler {
 	private AcceptThread at;
 	private String ip;
 	private int port = 6013;
-	
 
 	/**
 	 * MAIN METHOD

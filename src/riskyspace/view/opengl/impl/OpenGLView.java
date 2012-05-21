@@ -41,9 +41,6 @@ public class OpenGLView implements View, GLEventListener {
 		System.setProperty("sun.java2d.noddraw", "true");
 		System.setProperty("sun.awt.noerasebackground", "true");
 		
-		Image cursor = Toolkit.getDefaultToolkit().getImage("res/main_cursor.png");
-		Cursor c = Toolkit.getDefaultToolkit().createCustomCursor(cursor, new Point(0,0), "main");
-		
 		GLProfile glProfile = GLProfile.getDefault();
 		GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 		GLCanvas canvas = new GLCanvas(glCapabilities);
@@ -53,7 +50,11 @@ public class OpenGLView implements View, GLEventListener {
 		
 		renderArea = new GLRenderArea(width, height, rows, cols);
 		frame = new JFrame("RiskySpace");
-		frame.setCursor(c);
+		if (Toolkit.getDefaultToolkit().getMaximumCursorColors() > 0) {
+			Image cursor = Toolkit.getDefaultToolkit().getImage("res/blue_cursor.png");
+			Cursor c = Toolkit.getDefaultToolkit().createCustomCursor(cursor, new Point(0,0), "main");
+			frame.setCursor(c);
+		}
 		canvas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent event) {
