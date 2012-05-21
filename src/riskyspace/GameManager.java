@@ -196,9 +196,6 @@ public enum GameManager {
 		if (evt.getTag() == Event.EventTag.DESELECT) {
 			resetVariables(player);
 		} 
-		if (evt.getTag() == Event.EventTag.SHIP_SELFDESTCRUCT) {
-			shipDestruct();
-		}
 		/*
 		 * Model or Controller triggered Events
 		 */
@@ -308,37 +305,12 @@ public enum GameManager {
 					}
 				}
 				if (battleStats.isColonyDestroyed()) {
-					/*
-					 * Remove BuildQueue
-					 */
 					world.removeBuildQueue(battleStats.getLoser(), pos);
 				}
-				EventText et = new EventText(battleStats.getWinnerString(), pos);
-				Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-//				EventBus.INSTANCE.publish(event);  TODO: Ignore evtText atm
 			}
 		}
 		Event event = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
 		EventBus.SERVER.publish(event);
-	}
-	
-	private void shipDestruct() {
-		/*
-		 * TODO: Removes ships, but does so in an uncontrolled manner and needs to be redone somehow.
-		 * 		 It's in other words unfinished...
-		 */
-//		if (world.getTerritory(lastFleetSelectPos).hasFleet() && fleetSelectionIndex >=0) {
-//			selectedFleets.remove(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
-//			world.getTerritory(lastFleetSelectPos).removeFleet(world.getTerritory(lastFleetSelectPos).getFleet(fleetSelectionIndex));
-//			System.out.println(lastFleetSelectPos);
-//			System.out.println(world.getTerritory(lastFleetSelectPos).getFleets().size());
-//			if (!world.getTerritory(lastFleetSelectPos).hasFleet()) {
-//				resetVariables();
-//			} else {
-//				fleetSelectionIndex = Math.max(fleetSelectionIndex - 1, 0);
-//				Collections.unmodifiableSet(selectedFleets) Make it show fleet menu!
-//			}
-//		} TODO: Fix later, low prio
 	}
 	
 	public Position[][] getPaths(Player player) {

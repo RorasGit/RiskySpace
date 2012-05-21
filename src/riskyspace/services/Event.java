@@ -34,7 +34,6 @@ public class Event implements Serializable {
 		DESELECT,
 		QUEUE_SHIP,
 		QUEUE_BUILDING,
-		SHIP_SELFDESTCRUCT,
 		NEXT_TURN,
 		/*
 		 * Controller triggered events

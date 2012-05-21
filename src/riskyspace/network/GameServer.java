@@ -165,7 +165,9 @@ public class GameServer implements EventHandler {
 								p = player;
 							}
 						}
-						GameManager.INSTANCE.handleEvent(evt, p);
+						if (p != null) {
+							GameManager.INSTANCE.handleEvent(evt, p);
+						}
 					}
 				} catch(SocketException e){
 					disconnect();
