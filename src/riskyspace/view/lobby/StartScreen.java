@@ -89,7 +89,7 @@ public class StartScreen extends JPanel {
 			list.add("" + i);
 		}
 		
-		loadGameMenu = new LoadGameMenu<String>(width/2 - width/4, height/2 - height/4, width/2, height/2, list);
+		loadGameMenu = new LoadGameMenu<String>(2*width/5, height/5, width/5, height/2, list);
 	}
 	
 	private void hideMenus() {
@@ -229,11 +229,41 @@ public class StartScreen extends JPanel {
 			}
 			return false;
 		}
+		
+		private boolean menuRelease(Point point) {
+			if (localLobby instanceof Clickable) {
+				if (((Clickable) localLobby).mouseReleased(point)) {
+					return true;
+				}
+			}
+			if (multiplayerLobby instanceof Clickable) {
+				if (((Clickable) multiplayerLobby).mouseReleased(point)) {
+					return true;
+				}
+			}
+			if (loadGameMenu instanceof Clickable) {
+				if (((Clickable) loadGameMenu).mouseReleased(point)) {
+					return true;
+				}
+			}
+			
+			if (settingsMenu instanceof Clickable) {
+				if (((Clickable) settingsMenu).mouseReleased(point)) {
+					return true;
+				}
+			}
+			return false;
+		}
 
 		@Override public void mouseClicked(MouseEvent me) {}
-		@Override public void mouseReleased(MouseEvent arg0) {}
-		@Override public void mouseEntered(MouseEvent arg0) {}
-		@Override public void mouseExited(MouseEvent arg0) {}
+		@Override public void mouseReleased(MouseEvent me) {
+			if (me.getButton() == MouseEvent.BUTTON1) {
+				if (menuRelease(me.getPoint())) {return;}
+			}
+		}
+
+		@Override public void mouseEntered(MouseEvent me) {}
+		@Override public void mouseExited(MouseEvent me) {}
 		@Override public void mousePressed(MouseEvent me) {
 			if (me.getButton() == MouseEvent.BUTTON1) {
 				if (menuClick(me.getPoint())) {return;}

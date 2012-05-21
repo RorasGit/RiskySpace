@@ -44,7 +44,6 @@ public class LoadGameMenu<E> extends AbstractPreGameMenu implements SwingRenderA
 		if (isVisible()) {
 			if (savedGames.mouseReleased(p)) {return true;}
 		}
-			return false;
+		return false;
 	}
-
 }

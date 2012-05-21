@@ -36,6 +36,4 @@ public class SettingsMenu extends AbstractPreGameMenu implements SwingRenderAble
 		if (effectsVolume.mouseReleased(p)) {return true;}
 			return false;
 	}
-
 }
-

@@ -1,6 +1,7 @@
 package riskyspace.view.swing.impl;
 
 import java.awt.Graphics;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,13 +20,20 @@ public class ScrollableList<E> implements Clickable {
 		
 	private Map<Integer, SwingButton> values = new HashMap<Integer, SwingButton>();
 	
+	private Runnable scroll;
+	private Thread thread;
+	
 	private int selectedIndex;
 	
 	private E selectedSave = null;
 	
 	private SwingButton decreaseIndexButton;
 	private SwingButton increaseIndexButton;
-
+	
+	private boolean mousePressed = false;
+	private boolean clicked = false;
+	private boolean up;
+	
 	private int x;
 	private int y;
 	private int width;
@@ -39,41 +47,49 @@ public class ScrollableList<E> implements Clickable {
 		this.height = height;
 		decreaseIndexButton = new SwingButton(x, y, width, height);
 		decreaseIndexButton.setImage("res/menu/lobby/scrollUpButton.png");
-		decreaseIndexButton.setAction(new Action(){
-			@Override
-			public void performAction() {
-				selectedIndex = Math.max(selectedIndex - 1, 0);
-				selectButtons();
-				System.out.println(selectedIndex);
-			}
-		});
 		
 		increaseIndexButton = new SwingButton(x, y + 11*height, width, height);
 		increaseIndexButton.setImage("res/menu/lobby/scrollDownButton.png");
-		increaseIndexButton.setAction(new Action(){
-			@Override
-			public void performAction() {
-				selectedIndex = Math.min(selectedIndex + 1, savedGamesList.size() - 1);
-				selectButtons();
-				System.out.println(selectedIndex);
-			}
-		});
+		
 		selectedIndex = 0;
 		selectButtons();
+		scroll = new Runnable(){
+			@Override
+			public void run() {
+				while (true) {
+					if(mousePressed || clicked) {
+						clicked = false;
+						if (up) {
+							selectedIndex = Math.min(selectedIndex + 1, savedGamesList.size() - 1);
+						} else {
+							selectedIndex = Math.max(selectedIndex - 1, 0);
+						}
+						selectButtons();
+					}
+					try {
+						Thread.sleep(1000/5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
 		
 	}
 	
 	private void selectButtons() {
-		displayedButtonList.clear();
-		int yPos = y + height;
-		int buttonHeight = height;
-		for (int i = selectedIndex; i < selectedIndex+10; i++) {
-			if (i < savedGamesList.size()) {
-				SwingButton b = new SwingButton(x, yPos, width, buttonHeight);
-				b.setImage("res/menu/lobby/dropdownMenu/dropdownItem.png");
-				b.setText(savedGamesList.get(i).toString());
-				displayedButtonList.add(b);
-				yPos = yPos + buttonHeight;
+		synchronized (displayedButtonList) {
+			displayedButtonList.clear();
+			int yPos = y + height;
+			int buttonHeight = height;
+			for (int i = selectedIndex; i < selectedIndex+10; i++) {
+				if (i < savedGamesList.size()) {
+					SwingButton b = new SwingButton(x + 5, yPos, width - 10, buttonHeight);
+					b.setImage("res/menu/lobby/dropdownMenu/dropdownItem.png");
+					b.setText(savedGamesList.get(i).toString());
+					displayedButtonList.add(b);
+					yPos = yPos + buttonHeight;
+				}
 			}
 		}
 	}
@@ -81,8 +97,10 @@ public class ScrollableList<E> implements Clickable {
 	public void draw(Graphics g) {
 		decreaseIndexButton.draw(g);
 		increaseIndexButton.draw(g);
-		for (SwingButton b : displayedButtonList) {
-			b.draw(g);
+		synchronized (displayedButtonList) {
+			for (SwingButton b : displayedButtonList) {
+				b.draw(g);
+			}
 		}
 	}
 	
@@ -99,8 +117,21 @@ public class ScrollableList<E> implements Clickable {
 	
 	@Override
 	public boolean mousePressed(Point p) {
-		if (decreaseIndexButton.mousePressed(p)) {return true;}
-		if (increaseIndexButton.mousePressed(p)) {return true;}
+		if (thread == null || !thread.isAlive()) {
+			thread = new Thread(scroll);
+			thread.start();
+		}
+		if (decreaseIndexButton.mousePressed(p)) {
+			mousePressed = true;
+			clicked = true;
+			up = false;
+			return true;
+		} else if (increaseIndexButton.mousePressed(p)) {
+			mousePressed = true;
+			clicked = true;
+			up = true;
+			return true;
+		}
 		for (Button b : displayedButtonList) {
 			if(b.mousePressed(p)) {
 				selectedSave = savedGamesList.get(displayedButtonList.indexOf(b));
@@ -112,9 +143,13 @@ public class ScrollableList<E> implements Clickable {
 	}
 	@Override
 	public boolean mouseReleased(Point p) {
-		if(decreaseIndexButton.mouseReleased(p)) {return true;}
-		if(increaseIndexButton.mouseReleased(p)) {return true;}
+		if(decreaseIndexButton.mouseReleased(p) || !decreaseIndexButton.contains(p)) {
+			mousePressed = false;
+			return true;
+		} else if(increaseIndexButton.mouseReleased(p) || !increaseIndexButton.contains(p)) {
+			mousePressed = false;
+			return true;
+		}
 		return false;
 	}
-	
 }
