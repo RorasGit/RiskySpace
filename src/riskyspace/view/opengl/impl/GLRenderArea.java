@@ -288,7 +288,7 @@ public class GLRenderArea implements GLRenderAble {
 	public void setActivePlayer(Player player) {
 		if (player == viewer) {
 			statusString = "";
-		} else {
+		} else if (!defeated) {
 			statusString = player + "'S TURN";
 			statusStringColor = PlayerColors.getColor(player);
 		}
