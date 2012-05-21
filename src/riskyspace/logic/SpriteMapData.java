@@ -108,10 +108,6 @@ public class SpriteMapData implements Serializable {
 						data.colonyData.add(new ColonyData(pos, terr.getColony().getOwner()));
 					}
 				}
-				if (terr.hasColonizer()) {
-					data.colonizerData.add(new ColonizerData(pos, terr.controlledBy()));
-					data.colonizerAmount.put(pos, world.getTerritory(pos).shipCount(ShipType.COLONIZER));
-				}
 				if (terr.hasFleet()) {
 					if (FleetMove.isMoving()) {
 						for (Fleet fleet : terr.getFleets()) {
@@ -131,8 +127,10 @@ public class SpriteMapData implements Serializable {
 						for (Fleet fleet : terr.getFleets()) {
 							size += fleet.fleetSize();
 						}
-						size = size - world.getTerritory(pos).shipCount(ShipType.COLONIZER);
+						int colonizers = world.getTerritory(pos).shipCount(ShipType.COLONIZER);
+						size = size - colonizers;
 						data.fleetSize.put(pos, size);
+						data.colonizerAmount.put(pos, colonizers);
 					}
 				}
 			} else if (SpriteMapData.seen.get(player).contains(pos)) {
@@ -146,26 +144,44 @@ public class SpriteMapData implements Serializable {
 		return data;
 	}
 
-	private static void addFleetData(SpriteMapData data,
-			Position pos, Fleet fleet) {
-		boolean changed = false;
-		for (FleetData fleetData : data.fleetData) {
-			if (fleetData.getPosition().equals(pos)) {
-				if (fleetData.getFlagships().compareTo(fleet.getFlagship()) < 0) {
-					fleetData.setFlagShip(fleet.getFlagship());
-					changed = true;
-				}
-				if (fleetData.getSteps()[1] == null && GameManager.INSTANCE.hasPath(fleet) && GameManager.INSTANCE.getPath(fleet).length >= 1) {
-					fleetData.setSteps(GameManager.INSTANCE.getPath(fleet));
-					changed = true;
+	private static void addFleetData(SpriteMapData data, Position pos, Fleet fleet) {
+		boolean existed = false;
+		if (fleet.getFlagship() != ShipType.COLONIZER) {
+			for (FleetData fleetData : data.fleetData) {
+				if (fleetData.getPosition().equals(pos)) {
+					if (fleetData.getFlagships().compareTo(fleet.getFlagship()) > 0) {
+						fleetData.setFlagShip(fleet.getFlagship());
+						if (GameManager.INSTANCE.hasPath(fleet)) {
+							fleetData.setSteps(GameManager.INSTANCE.getPath(fleet));
+						} else {
+							fleetData.setSteps(GameManager.INSTANCE.getPath(fleet));
+						}
+					} else if (fleetData.getSteps()[1] == null && GameManager.INSTANCE.hasPath(fleet) && GameManager.INSTANCE.getPath(fleet).length >= 1) {
+						fleetData.setSteps(GameManager.INSTANCE.getPath(fleet));
+					}
+					existed = true;
 				}
 			}
-		}
-		if (!changed && fleet.getFlagship() != ShipType.COLONIZER) {
-			if (GameManager.INSTANCE.hasPath(fleet)) {
-				data.fleetData.add(new FleetData(pos, fleet.getOwner(), fleet.getFlagship(), GameManager.INSTANCE.getPath(fleet)));
-			} else {
-				data.fleetData.add(new FleetData(pos, fleet.getOwner(), fleet.getFlagship(), new Position[2]));
+			if (!existed) {
+				if (GameManager.INSTANCE.hasPath(fleet)) {
+					data.fleetData.add(new FleetData(pos, fleet.getOwner(), fleet.getFlagship(), GameManager.INSTANCE.getPath(fleet)));
+				} else {
+					data.fleetData.add(new FleetData(pos, fleet.getOwner(), fleet.getFlagship(), new Position[2]));
+				}
+			}
+		} else if (fleet.getFlagship() == ShipType.COLONIZER) {
+			for (ColonizerData colonizerData : data.colonizerData) {
+				if (colonizerData.getPosition().equals(pos)) {
+					if (colonizerData.getSteps()[1] == null && GameManager.INSTANCE.hasPath(fleet) && GameManager.INSTANCE.getPath(fleet).length >= 1) {
+						colonizerData.setSteps(GameManager.INSTANCE.getPath(fleet));
+					}
+				} else {
+					if (GameManager.INSTANCE.hasPath(fleet)) {
+						data.colonizerData.add(new ColonizerData(pos, fleet.getOwner(), GameManager.INSTANCE.getPath(fleet)));						
+					} else {
+						data.colonizerData.add(new ColonizerData(pos, fleet.getOwner(), new Position[2]));
+					}
+				}
 			}
 		}
 	}

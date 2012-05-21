@@ -137,7 +137,7 @@ public enum GameManager {
 	}
 	
 	public Position[] getPath(Fleet fleet) {
-		return selections.get(fleet.getOwner()).fleetPaths.get(fleet).getPositions();
+		return selections.get(fleet.getOwner()).fleetPaths.get(fleet).getPositions();	
 	}
 	
 	private void changePlayer() {

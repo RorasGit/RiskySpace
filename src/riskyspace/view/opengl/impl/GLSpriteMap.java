@@ -158,11 +158,11 @@ public class GLSpriteMap implements GLRenderAble {
 		colonyMarkerSprites.put(Player.PINK, 	new GLSprite("colonymarker:PINK",  64, 64));
 		colonyMarkerSprites.put(Player.GREEN, 	new GLSprite("colonymarker:GREEN", 64, 64));
 		
-		pathSprites.put(START, 		new GLSprite("arrows", 0, 0, 128, 128));
-		pathSprites.put(TURN1, 		new GLSprite("arrows", 0, 128, 128, 128));
-		pathSprites.put(STRAIGHT, 	new GLSprite("arrows", 128, 0, 128, 128));
+		pathSprites.put(START, 		new GLSprite("arrows", 0, 	  0, 128, 128));
+		pathSprites.put(TURN1, 		new GLSprite("arrows", 0, 	128, 128, 128));
+		pathSprites.put(STRAIGHT, 	new GLSprite("arrows", 128,   0, 128, 128));
 		pathSprites.put(HEAD, 		new GLSprite("arrows", 128, 128, 128, 128));
-		pathSprites.put(TURN2, 		new GLSprite("arrows", 255, 0, 128, 128));
+		pathSprites.put(TURN2, 		new GLSprite("arrows", 255,   0, 128, 128));
 		
 		fogSprite = new GLSprite("cloud", 256, 256);
 	}
@@ -199,7 +199,11 @@ public class GLSpriteMap implements GLRenderAble {
 				map.fleets.get(fleetData.getPlayer()).put(fleetData.getFlagships(), new HashMap<Rectangle, Double>());
 			Map<Rectangle, Double> dataMap = map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships());
 			double angle = Math.toDegrees(Path.getRotation(null, fleetData.getSteps()[0], fleetData.getSteps()[1]));
-			dataMap.put(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f), angle);
+			if (fleetData.getFlagships() == ShipType.COLONIZER) {
+				dataMap.put(calculateRect(fleetData.getPosition(), 0.5f, 0, squareSize, 0.5f), angle);
+			} else {
+				dataMap.put(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f), angle);
+			}
 		}
 		/* Add Animation Data*/
 		for (AnimationData animData : GLSpriteMap.data.getAnimationData()) {
