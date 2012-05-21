@@ -30,6 +30,8 @@ public class StartScreen extends JPanel {
 	private IMenu multiplayerLobby = null;
 	private IMenu settingsMenu = null;
 	
+	private PreMultiplayerMenu preMultiplayerMenu = null;
+	
 	private SwingButton localGame = null;
 	private SwingButton settings = null;
 	private SwingButton multiplayer = null;
@@ -61,17 +63,10 @@ public class StartScreen extends JPanel {
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		createButtons();
 		createMenus();
-		createJoinMenu();
 		
 		clickHandler = new ClickHandler();
 		addMouseListener(clickHandler);
-	}
-
-	private void createJoinMenu() {
-		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/widerMenubackground.png").
-				getScaledInstance((4*width/3)/7, 2*height/3-2*10, Image.SCALE_DEFAULT);	
-		textbox = new TextBox(width/2 - width/3 + 2*width/3 - (4*width/3)/7 + 20, 2*height/9 + 30, (4*width/3)/7-40, 2*height/3-6*10);
-	}
+	}	
 
 	private void measureScreen() {
 		width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
@@ -82,6 +77,8 @@ public class StartScreen extends JPanel {
 		localLobby = new Lobby(width/6, height/6, 2*width/3, 2*height/3);
 		multiplayerLobby = new Lobby(width/6, height/6, 2*width/3, 2*height/3);
 		settingsMenu = new SettingsMenu(width/3, height/4, width/3, height/3);
+		preMultiplayerMenu = new PreMultiplayerMenu(2*width/3, height/2 - height/6, width/5, 2*height/6);
+		
 		
 		/*
 		 * Just as a test, meant to be the saved games.
@@ -97,6 +94,7 @@ public class StartScreen extends JPanel {
 	private void hideMenus() {
 		localLobby.setVisible(false);
 		multiplayerLobby.setVisible(false);
+		preMultiplayerMenu.setVisible(false);
 		loadGameMenu.setVisible(false);
 		settingsMenu.setVisible(false);
 	}
@@ -116,8 +114,7 @@ public class StartScreen extends JPanel {
 		multiplayer.setAction(new Action(){
 			@Override
 			public void performAction() {
-				multiplayerLobby.setVisible(true);
-				startScreenVisible = false;
+				preMultiplayerMenu.setVisible(true);
 			}
 		});
 		loadGame = new SwingButton(width/2 - 125, height/2 - 200 + 200, 250, 50);
@@ -155,11 +152,7 @@ public class StartScreen extends JPanel {
 			}
 		});
 		
-		joinGame = new SwingButton(width/2 - width/3 + 2*width/3 - 2*(2*width/3)/7, 2*height/6 + 10, 180, 50);
-		joinGame.setImage("res/menu/lobby/joingame.png");
 		
-		hostGame = new SwingButton(width/2 - width/3 + 2*width/3 - 2*(2*width/3)/7, 4*height/6 + 10, 180, 50);
-		hostGame.setImage("res/menu/lobby/hostgame.png");
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -187,18 +180,12 @@ public class StartScreen extends JPanel {
 			loadGame.draw(g);
 			settings.draw(g);
 			exit.draw(g);
-			if(connectToMultiplayer){
-				drawJoinMenu(g);
+			if (preMultiplayerMenu.isVisible()) {
+				((SwingRenderAble) preMultiplayerMenu).draw(g);
 			}
 		}
 	}
-	
-	private void drawJoinMenu(Graphics g) {	
-		g.drawImage(rightsideMenu, width/2 - width/3 + 2*width/3 - 2*(2*width/3)/7, height/6 + 10, null);
-		textbox.draw(g);
-		joinGame.draw(g);
-		hostGame.draw(g);
-	}
+
 
 	private class ClickHandler implements MouseListener {
 		/*
@@ -211,6 +198,11 @@ public class StartScreen extends JPanel {
 				if (loadGame.mousePressed(point)) {return true;}
 				if (settings.mousePressed(point)) {return true;}
 				if (exit.mousePressed(point)) {return true;}
+				if (preMultiplayerMenu instanceof Clickable) {
+					if (((Clickable) preMultiplayerMenu).mousePressed(point)) {
+						return true;
+					}
+				}
 			}
 			if (backButton.mousePressed(point)) {
 				hideMenus();
@@ -281,7 +273,10 @@ public class StartScreen extends JPanel {
 		}
 	}
 
+	/*
+	 * TODO: fix :PPPPppppPPPpPPPpPpPP
+	 */
 	public KeyListener getKeyListener() {
-		return textbox.getKeyListener();
+		return preMultiplayerMenu.getKeyListener();
 	}
 }

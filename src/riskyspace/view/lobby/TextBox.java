@@ -8,14 +8,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import riskyspace.view.Action;
 import riskyspace.view.Button;
+import riskyspace.view.GlowableGraphic;
 import riskyspace.view.ViewResources;
 import riskyspace.view.swing.SwingRenderAble;
 
-public class TextBox extends Button implements SwingRenderAble{
+public class TextBox extends Button implements SwingRenderAble {
 	
 	private Image background;
 	private Image hilightedBackground;
+	private Image displayedImage;
 	private TextBoxListener textListener;
+	
+	private boolean canGlow;
 	
 	public TextBox(int x, int y, int width, int height) {
 		super(x, y, width, height);
@@ -25,6 +29,8 @@ public class TextBox extends Button implements SwingRenderAble{
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		hilightedBackground = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/textItem_glow.png").
 		getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		
+		
 		textListener = new TextBoxListener();
 		setAction(new Action() {
 			
@@ -49,7 +55,7 @@ public class TextBox extends Button implements SwingRenderAble{
 		g.drawImage(background, getX(), getY(), null);
 		g.setFont(ViewResources.getFont().deriveFont(g.getClipBounds().height/40.0f));
 		g.setColor(getTextColor());
-		g.drawString(getText(), getX(), getY());
+		g.drawString(getText(), getX() + getWidth()/10, getY() + 2*getHeight()/3);
 	}
 	
 	private class TextBoxListener extends KeyAdapter {
@@ -66,5 +72,4 @@ public class TextBox extends Button implements SwingRenderAble{
 			System.out.println("Text: "+ getText());
 		}
 	}
-
 }

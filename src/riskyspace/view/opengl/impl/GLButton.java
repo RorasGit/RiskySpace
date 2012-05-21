@@ -97,7 +97,7 @@ public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 		GL2 gl = drawable.getGL().getGL2();
 //		System.out.println("Can: " + canBeDisabled + " " + sprite.toString());
 		if (isEnabled()) {
-			if (canGlow() && cursorOver()) {
+			if (canGlow() && selected()) {
 				gl.glColor4f(0.8f, 0.8f, 1.0f, 1.0f);
 			}
 			sprite.draw(drawable, renderRect, targetArea, zIndex);
@@ -108,7 +108,7 @@ public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 	}
 
 	@Override
-	public boolean cursorOver() {
+	public boolean selected() {
 		return this.contains(MouseInfo.getPointerInfo().getLocation());
 	}
 

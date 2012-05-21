@@ -50,7 +50,7 @@ public class SwingButton extends Button implements GlowableGraphic, SwingRenderA
 	@Override
 	public void draw(Graphics g) {
 		if (isEnabled()) {	
-			if (cursorOver()) {
+			if (selected()) {
 				g.drawImage(scaledGlowImage, getX(), getY(), null);
 			} else {
 				g.drawImage(scaledImage, getX(), getY(), null);
@@ -80,7 +80,7 @@ public class SwingButton extends Button implements GlowableGraphic, SwingRenderA
 	}
 
 	@Override
-	public boolean cursorOver() {
+	public boolean selected() {
 		return canGlow() && contains(MouseInfo.getPointerInfo().getLocation());
 	}
 
