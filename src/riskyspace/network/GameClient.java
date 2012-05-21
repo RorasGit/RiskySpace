@@ -43,7 +43,7 @@ public class GameClient implements EventHandler {
 	
 	public GameClient(String hostIP, int hostPort) {
 		EventBus.CLIENT.addHandler(this);
-		connectToLobby(hostIP, hostPort);
+		connect(hostIP, hostPort);
 		
 		Thread renderThread = new Thread(new Runnable() {
 			@Override public void run() {
@@ -61,24 +61,17 @@ public class GameClient implements EventHandler {
 		renderThread.start();
 	}
 
-	private void connectToLobby(String hostIP, int hostPort) {
-		int tries = 0;
-		while (socket == null) {
-			if (tries == 5) {
-				System.err.println("Couldn't Connect");
-				System.exit(1);
-			}
-			System.out.println("Connecting. Test #" + (tries+1));
+	private void connect(String hostIP, int hostPort) {
+		long startTime = System.currentTimeMillis();
+		while (socket == null && System.currentTimeMillis() - startTime > 10000) {
 			/*
 			 * Loop until Connected
 			 */
 			connectToHost(hostIP, hostPort);
-			tries++;
 		}
 		System.out.println("Connected");
 		initiateGameView();
 		new ServerListener(mainView, input);
-		
 	}
 
 	private void initiateGameView() {

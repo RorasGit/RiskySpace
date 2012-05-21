@@ -8,6 +8,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import riskyspace.network.LobbyClient;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
 import riskyspace.view.IMenu;
@@ -29,6 +30,10 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 	private SwingButton hostGame;
 	
 	private TextBoxListener textListener;
+	
+	private LobbyClient client;
+	
+	
 
 	public PreMultiplayerMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
@@ -39,6 +44,18 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 		
 		joinGame = new SwingButton(x + menuWidth/2 - 90, y + margin + 2*menuHeight/10, 180, 50);
 		joinGame.setImage("res/menu/lobby/joingame.png");
+		joinGame.setAction(new Action() {
+			@Override
+			public void performAction() {
+				client = new LobbyClient();
+				if(client.connectToLobby(textbox.getText())){
+					//TODO: SET MULTIPLAYERLOBBY
+					// multiplayerLobby.setNumberOfPlayers(client.getNbrOfPlayers());
+					setVisible(false);
+					multiplayerLobby.setVisible(true);
+				}
+			}
+		});
 		
 		hostGame = new SwingButton(x + menuWidth/2 - 90, y + margin + 5*menuHeight/10, 180, 50);
 		hostGame.setImage("res/menu/lobby/hostgame.png");
@@ -66,19 +83,19 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 	}
 	@Override
 	public boolean mousePressed(Point p) {
-		if(this.isVisible()){
-			if(this.contains(p)){
-				if(textbox.mousePressed(p)){
+		if(this.isVisible()) {
+			if(this.contains(p)) {
+				if(joinGame.mousePressed(p)) {
+					return true;
+				}
+				if(textbox.mousePressed(p)) {
 					return true;
 				}
 				textbox.setEnabled(false);
-				if(hostGame.mousePressed(p)){
+				if(hostGame.mousePressed(p)) {
 					return true;
 				}
 				return true;
-			}else{
-				setVisible(false);
-				textbox.setEnabled(false);
 			}
 		}
 		if (multiplayerLobby instanceof Clickable) {

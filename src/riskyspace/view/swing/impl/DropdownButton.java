@@ -22,6 +22,7 @@ public class DropdownButton<E> implements Clickable {
 	private int selectedValue;
 	
 	private boolean open = false;
+	private boolean enabled = true;
 
 	private int x;
 	private int y;
@@ -71,6 +72,10 @@ public class DropdownButton<E> implements Clickable {
 		createButtons();
 	}
 	
+	public void setSelectedValue(int value) {
+		selectedValue = value;
+	}
+	
 	public int getSelectedValue() {
 		return selectedValue;
 	}
@@ -82,6 +87,10 @@ public class DropdownButton<E> implements Clickable {
 	
 	public void setOpen(boolean b) {
 		open = b;
+	}
+	
+	public void setEnabled(boolean b) {
+		enabled = b;
 	}
 	
 	public void draw(Graphics g) {
@@ -102,6 +111,7 @@ public class DropdownButton<E> implements Clickable {
 
 	@Override
 	public boolean mousePressed(Point p) {
+		if(enabled) {
 			if (mainButton.mousePressed(p)) {return true;}
 			for (Button b : buttonList) {
 				if (b.mousePressed(p)) {
@@ -112,11 +122,16 @@ public class DropdownButton<E> implements Clickable {
 				}
 			}
 			return this.contains(p);
+		}
+		return false;
 	}
 	
 	@Override
 	public boolean mouseReleased(Point p) {
-		if (mainButton.mouseReleased(p)) {return true;}
-		return this.contains(p);
+		if (enabled) {
+			if (mainButton.mouseReleased(p)) {return true;}
+			return this.contains(p);
+		}
+		return false;
 	}
 }

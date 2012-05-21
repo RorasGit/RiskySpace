@@ -66,6 +66,10 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 		gameModesButton = new DropdownButton<String>(getX() + getMenuWidth() - getMenuWidth()/7 - 80, getY() + 2*getMenuHeight()/6, 160, 30, list);
 	}
 	
+	public void setNumberOfPlayers(int nbrOfPlayers) {
+		numberOfPlayersButton.setSelectedValue(nbrOfPlayers);
+	}
+	
 	private void createBackground() {
 		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/widerMenubackground.png").
 				getScaledInstance(2*getMenuWidth()/7, getMenuHeight()-2*margin, Image.SCALE_DEFAULT);

@@ -4,6 +4,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import riskyspace.services.Event;
@@ -16,59 +17,52 @@ import riskyspace.view.swingImpl.LobbyView;
  * @author Daniel Augurell
  *
  */
-public class LobbyClient implements EventHandler {
+public class LobbyClient {
 
-	private LobbyView mainView = null;
 	private ObjectInputStream input = null;
 	private ObjectOutputStream output = null;
 	private Socket socket = null;
 	
-	public static void main(String[] args) {
-		new LobbyClient();
-	}
+	public static final String IS_HOST = "is_host=";
+	public static final String MAX_PLAYERS = "max_players=";
+	public static final String CURRENT_PLAYER = "players=";
+	public static final String GAME_MODE = "game_mode=";
+	public static final String CONNECT_TO_GAME = "connect_to_game";
+	
+	private boolean host = false;
+	private int maxPlayers;
+	private int players;
+	private String gameMode = "";
 	
 	public LobbyClient() {
-		EventBus.CLIENT.addHandler(this);
-		initiateGameView();
 		new ServerListener();		
-		Thread renderThread = new Thread(new Runnable() {
-			@Override public void run() {
-				while(true) {
-					mainView.draw();
-					try {
-						Thread.sleep(1000/60);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			
-		});
-		renderThread.start();
 	}
 
-	private void connectToLobby(String hostIP, int hostPort) {
+	public boolean connectToLobby(String hostIP) {
 		int tries = 0;
 		while (socket == null) {
 			if (tries == 5) {
 				System.err.println("Couldn't Connect");
-				System.exit(1);
+				return false;
 			}
 			System.out.println("Connecting. Test #" + (tries+1));
 			/*
 			 * Loop until Connected
 			 */
-			connectToHost(hostIP, hostPort);
+			connectToHost(hostIP, 6012);
 			tries++;
 		}
 		System.out.println("Connected");
-		
+		return true;
 		
 	}
 
-	private void initiateGameView() {
-		mainView = new LobbyView();
-				
+	public void startGame() {
+		try {
+			output.writeObject("start_game");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void connectToHost(String hostIP, int hostPort) {
@@ -78,19 +72,8 @@ public class LobbyClient implements EventHandler {
 			output = new ObjectOutputStream(socket.getOutputStream());
 		} catch (UnknownHostException e) {
 			System.err.println("Dont know about host: " + hostIP);
-			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public void performEvent(Event evt) {
-		try {
-			output.writeObject(evt);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
 		}
 	}
 	
@@ -103,8 +86,6 @@ public class LobbyClient implements EventHandler {
 	 */
 	private class ServerListener implements Runnable {
 		
-		
-
 		public ServerListener() {
 			Thread t = new Thread(this);
 			t.start();
@@ -112,16 +93,37 @@ public class LobbyClient implements EventHandler {
 		
 		@Override
 		public void run() {
-			while(true) {
+			boolean started = false;
+			while (!started) {
 				try {
 					Object o = input.readObject();
-					Event event = null;
-					if (o instanceof Event) {
-						event = (Event) o;
+					String input = null;
+					if (o instanceof String) {
+						input = (String) o;
 					}
-					if (event != null) {
-						System.out.println(event);
-						
+					if (input != null) {
+						System.out.println(input);
+						if (input.contains(CONNECT_TO_GAME)) {
+							// Create GameClient
+							String ip = socket.getInetAddress().getHostAddress();
+							int port = socket.getPort();
+							new GameClient(ip, port);
+							// Dispose window
+							
+							// Set boolean to cancel this thread
+							started = true;
+						} else {
+							String value = input.split("=")[1];
+							if (input.contains(IS_HOST)){
+								host = Boolean.parseBoolean(value);
+							} else if (input.contains(MAX_PLAYERS)){
+								maxPlayers = Integer.parseInt(value);
+							} else if (input.contains(CURRENT_PLAYER)){
+								players = Integer.parseInt(value);
+							} else if (input.contains(GAME_MODE)){
+								gameMode = value;
+							}	
+						}
 					}
 				} catch (EOFException e){
 					System.out.println("Server shutdown!");
