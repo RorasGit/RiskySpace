@@ -48,7 +48,9 @@ public class GLFleetMenu extends GLAbstractSideMenu {
 				imageWidth,
 				imageHeight);
 		fleetPictures.put(Player.RED, new GLSprite("palpatine", 640, 480));
-		fleetPictures.put(Player.BLUE, new GLSprite("not_stolen", 960, 720));
+		fleetPictures.put(Player.BLUE, new GLSprite("palpatine", 640, 480));
+		fleetPictures.put(Player.GREEN, new GLSprite("palpatine", 640, 480));
+		fleetPictures.put(Player.PINK, new GLSprite("palpatine", 640, 480));
 	}
 
 	public void initSprites() { 
