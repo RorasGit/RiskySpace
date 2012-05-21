@@ -67,14 +67,14 @@ public class Planet implements Serializable{
 		Player owner = colony.getOwner();
 		boolean wasHome = colony.isHomeColony();
 		colony = null;
-		if (wasHome) {
-			Event evt = new Event(Event.EventTag.HOME_LOST, owner);
-			GameManager.INSTANCE.handleEvent(evt, owner);
-		}
 		Event evt = new Event(Event.EventTag.INCOME_CHANGED, owner);
 		GameManager.INSTANCE.handleEvent(evt, owner);
 		evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
 		EventBus.SERVER.publish(evt);
+		if (wasHome) {
+			evt = new Event(Event.EventTag.HOME_LOST, owner);
+			GameManager.INSTANCE.handleEvent(evt, owner);
+		}
 	}
 	public boolean hasColony() {
 		return colony != null;
