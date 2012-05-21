@@ -12,7 +12,7 @@ import riskyspace.view.opengl.Rectangle;
  * @author Alexander Hederstaf
  *
  */
-public class GLAnimation implements GLRenderAble {
+public class GLFleetAnimation implements GLRenderAble {
 
 	private final double moveRotation;
 	private final double endRotation;
@@ -20,6 +20,10 @@ public class GLAnimation implements GLRenderAble {
 	private double rotation;
 	
 	private GLSprite sprite;
+	
+	private GLSprite[] flames;
+	private GLSprite flame;
+	
 	private Rectangle rect;
 	
 	private int maxTime;
@@ -30,8 +34,9 @@ public class GLAnimation implements GLRenderAble {
 	private int squareSize;
 	private int dX, dY;
 	
-	public GLAnimation(GLSprite sprite, Rectangle startRect, int maxTime, int squareSize, Position[] steps) {
+	public GLFleetAnimation(GLSprite sprite, GLSprite[] flames, Rectangle startRect, int maxTime, int squareSize, Position[] steps) {
 		this.sprite = sprite;
+		this.flames = flames;
 		this.rect = new Rectangle(startRect);
 		this.maxTime = maxTime;
 		this.squareSize = squareSize;
@@ -93,6 +98,15 @@ public class GLAnimation implements GLRenderAble {
 			rect.setX(startX + (int) (dX * squareSize * pDone));
 			rect.setY(startY + (int) (dY * squareSize * pDone));
 		}
+		if (flames != null && flames.length > 0) {
+			int index = (maxTime/20) % (flames.length + 2);
+			if (index == flames.length) {
+				index = index - 2;
+			} else if (index == flames.length + 1) {
+				index = index - 4;
+			}
+			flame = flames[index];
+		}
 	}
 	
 	@Override
@@ -104,7 +118,12 @@ public class GLAnimation implements GLRenderAble {
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect,	Rectangle targetArea, int zIndex) {
 		update();
 		sprite.setRotation(rotation);
-		sprite.draw(drawable, rect, targetArea, zIndex);
+		sprite.draw(drawable, rect, targetArea, zIndex + 1);
+		if (flame != null) {
+			flame.setRotation(rotation);
+			flame.draw(drawable, rect, targetArea, zIndex);
+			flame.setRotation(0);
+		}
 		sprite.setRotation(0);
 	}
 }

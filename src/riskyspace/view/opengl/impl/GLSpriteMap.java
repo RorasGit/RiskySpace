@@ -55,6 +55,8 @@ public class GLSpriteMap implements GLRenderAble {
 	 */
 	private static Map<String, GLSprite> shipSprites = new HashMap<String, GLSprite>();
 	
+	private static Map<ShipType, GLSprite[]> flameSprites = new HashMap<ShipType, GLSprite[]>();
+	
 	/*
 	 * All planets with randomized textures
 	 */
@@ -86,7 +88,7 @@ public class GLSpriteMap implements GLRenderAble {
 	private Rectangle bounds;
 	
 	private List<Rectangle> fogOfWar = new ArrayList<Rectangle>();
-	private List<GLAnimation> fleetAnimations = new ArrayList<GLAnimation>();
+	private List<GLFleetAnimation> fleetAnimations = new ArrayList<GLFleetAnimation>();
 	private Map<Resource, Map<Position, Rectangle>> planets = new HashMap<Resource, Map<Position, Rectangle>>();
 	private Map<Player, List<Rectangle>> colonies = new HashMap<Player, List<Rectangle>>();
 	private Map<Player, Map<ShipType , Map<Rectangle, Double>>> fleets = new HashMap<Player, Map<ShipType , Map<Rectangle, Double>>>();
@@ -144,6 +146,31 @@ public class GLSpriteMap implements GLRenderAble {
 		shipSprites.put("HUNTER_RED", 		new GLSprite("ships",  64, 192, 64, 64));
 		shipSprites.put("COLONIZER_RED",	new GLSprite("ships", 128, 192, 64, 64));
 		shipSprites.put("DESTROYER_RED", 	new GLSprite("ships", 192, 192, 64, 64));
+		
+		/* Load Scout flames */
+		flameSprites.put(ShipType.SCOUT, 		 new GLSprite[]{
+				new GLSprite("flames",   0,   0, 64, 64),
+				new GLSprite("flames",   0,  64, 64, 64),
+				new GLSprite("flames",   0, 128, 64, 64),
+				new GLSprite("flames",   0, 192, 64, 64),});
+		/* Load Hunter flames */
+		flameSprites.put(ShipType.HUNTER, 		 new GLSprite[]{
+				new GLSprite("flames",   64,   0, 64, 64),
+				new GLSprite("flames",   64,  64, 64, 64),
+				new GLSprite("flames",   64, 128, 64, 64),
+				new GLSprite("flames",   64, 192, 64, 64),});
+		/* Load Colonizer flames */
+		flameSprites.put(ShipType.COLONIZER,	 new GLSprite[]{
+				new GLSprite("flames",   128,   0, 64, 64),
+				new GLSprite("flames",   128,  64, 64, 64),
+				new GLSprite("flames",   128, 128, 64, 64),
+				new GLSprite("flames",   128, 192, 64, 64),});
+		/* Load Destroyer flames */
+		flameSprites.put(ShipType.DESTROYER,	 new GLSprite[]{
+				new GLSprite("flames",   192,   0, 64, 64),
+				new GLSprite("flames",   192,  64, 64, 64),
+				new GLSprite("flames",   192, 128, 64, 64),
+				new GLSprite("flames",   192, 192, 64, 64),});
 		
 		metalPlanets.put(0, new GLSprite("planets/metalplanet_0", 64, 64));
 		metalPlanets.put(1, new GLSprite("planets/metalplanet_1", 64, 64));
@@ -204,13 +231,14 @@ public class GLSpriteMap implements GLRenderAble {
 		/* Add Animation Data*/
 		for (AnimationData animData : GLSpriteMap.data.getAnimationData()) {
 			GLSprite sprite = shipSprites.get(animData.getFlagships() + "_" + animData.getPlayer());
+			GLSprite[] flames = flameSprites.get(animData.getFlagships());
 			Rectangle startRect = calculateRect(animData.getPosition(), 0, 0, squareSize, 0.5f);
 			if (animData.getFlagships() == ShipType.COLONIZER) {
 				startRect = calculateRect(animData.getPosition(), 0.5f, 0, squareSize, 0.5f);
 			}
 			int maxTime = animData.getTime();
 			Position[] steps = animData.getSteps();
-			map.fleetAnimations.add(new GLAnimation(sprite, startRect, maxTime, squareSize, steps));
+			map.fleetAnimations.add(new GLFleetAnimation(sprite, flames, startRect, maxTime, squareSize, steps));
 		}
 		/* Add Colonizer Data */
 		for (ColonizerData colonizerData : GLSpriteMap.data.getColonizerData()) {
@@ -345,7 +373,7 @@ public class GLSpriteMap implements GLRenderAble {
 				pathSprites.get(s).draw(drawable, r, targetArea, zIndex + 4);
 			}
 		}
-		for (GLAnimation glAnim : fleetAnimations) {
+		for (GLFleetAnimation glAnim : fleetAnimations) {
 			/*
 			 * Animation supplies Rectangle itself
 			 */
