@@ -330,6 +330,22 @@ public class GLRenderArea implements GLRenderAble {
 		planetMenu.draw(drawable, planetMenu.getBounds(), screenArea, 50);
 		
 		drawStatusBox(drawable, targetArea, 50);
+		drawGameOver(drawable, targetArea, 51);
+	}
+
+	private void drawGameOver(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
+		if(defeated){
+			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
+			
+			statusTextRenderer.beginRendering(screenArea.getWidth(), screenArea.getHeight());
+			statusTextRenderer.setColor(new Color(240, 240, 240));
+			
+			
+			statusTextRenderer.setColor(statusStringColor);
+			
+			statusTextRenderer.setColor(1,1,1,1);
+			statusTextRenderer.endRendering();
+		}
 	}
 
 	/**
@@ -360,6 +376,7 @@ public class GLRenderArea implements GLRenderAble {
 		int x = (rect.getX() + rect.getWidth() / 2) - textWidth / 2;
 		int y = (rect.getY() + rect.getHeight()/ 2) - textHeigth / 2;
 		textRenderer.draw(s, x, y);
+		textRenderer.setColor(1,1,1,1);
 		textRenderer.endRendering();
 	}
 	
