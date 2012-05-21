@@ -199,16 +199,15 @@ public class GLSpriteMap implements GLRenderAble {
 				map.fleets.get(fleetData.getPlayer()).put(fleetData.getFlagships(), new HashMap<Rectangle, Double>());
 			Map<Rectangle, Double> dataMap = map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships());
 			double angle = Math.toDegrees(Path.getRotation(null, fleetData.getSteps()[0], fleetData.getSteps()[1]));
-			if (fleetData.getFlagships() == ShipType.COLONIZER) {
-				dataMap.put(calculateRect(fleetData.getPosition(), 0.5f, 0, squareSize, 0.5f), angle);
-			} else {
-				dataMap.put(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f), angle);
-			}
+			dataMap.put(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f), angle);
 		}
 		/* Add Animation Data*/
 		for (AnimationData animData : GLSpriteMap.data.getAnimationData()) {
 			GLSprite sprite = shipSprites.get(animData.getFlagships() + "_" + animData.getPlayer());
 			Rectangle startRect = calculateRect(animData.getPosition(), 0, 0, squareSize, 0.5f);
+			if (animData.getFlagships() == ShipType.COLONIZER) {
+				startRect = calculateRect(animData.getPosition(), 0.5f, 0, squareSize, 0.5f);
+			}
 			int maxTime = animData.getTime();
 			Position[] steps = animData.getSteps();
 			map.fleetAnimations.add(new GLAnimation(sprite, startRect, maxTime, squareSize, steps));
@@ -220,7 +219,7 @@ public class GLSpriteMap implements GLRenderAble {
 			if (map.fleets.get(colonizerData.getPlayer()).get(ShipType.COLONIZER) == null)
 				map.fleets.get(colonizerData.getPlayer()).put(ShipType.COLONIZER, new HashMap<Rectangle, Double>());
 			Map<Rectangle, Double> dataMap = map.fleets.get(colonizerData.getPlayer()).get(ShipType.COLONIZER);
-			double angle = 0.0; //TODO: Rotate colonizers
+			double angle = Math.toDegrees(Path.getRotation(null, colonizerData.getSteps()[0], colonizerData.getSteps()[1]));
 			dataMap.put(calculateRect(colonizerData.getPosition(), 0.5f, 0, squareSize, 0.5f), angle);
 		}
 		/* Add Fog Data */

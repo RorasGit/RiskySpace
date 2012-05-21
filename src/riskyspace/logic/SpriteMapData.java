@@ -170,17 +170,20 @@ public class SpriteMapData implements Serializable {
 				}
 			}
 		} else if (fleet.getFlagship() == ShipType.COLONIZER) {
+			existed = false;
 			for (ColonizerData colonizerData : data.colonizerData) {
 				if (colonizerData.getPosition().equals(pos)) {
 					if (colonizerData.getSteps()[1] == null && GameManager.INSTANCE.hasPath(fleet) && GameManager.INSTANCE.getPath(fleet).length >= 1) {
 						colonizerData.setSteps(GameManager.INSTANCE.getPath(fleet));
+						existed = true;
 					}
+				}
+			}
+			if (!existed) {
+				if (GameManager.INSTANCE.hasPath(fleet)) {
+					data.colonizerData.add(new ColonizerData(pos, fleet.getOwner(), GameManager.INSTANCE.getPath(fleet)));						
 				} else {
-					if (GameManager.INSTANCE.hasPath(fleet)) {
-						data.colonizerData.add(new ColonizerData(pos, fleet.getOwner(), GameManager.INSTANCE.getPath(fleet)));						
-					} else {
-						data.colonizerData.add(new ColonizerData(pos, fleet.getOwner(), new Position[2]));
-					}
+					data.colonizerData.add(new ColonizerData(pos, fleet.getOwner(), new Position[2]));
 				}
 			}
 		}
