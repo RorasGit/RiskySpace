@@ -126,26 +126,28 @@ public class GLSpriteMap implements GLRenderAble {
 		 * reduce the amount of calls to Texture.bind() which is 
 		 * quite expensive.
 		 */
-		/* Load RED ships*/
-		shipSprites.put("SCOUT_GREEN", 		new GLSprite("ships",   0,   0, 64, 64));
-		shipSprites.put("HUNTER_GREEN", 	new GLSprite("ships",  64,   0, 64, 64));
-		shipSprites.put("COLONIZER_GREEN", 	new GLSprite("ships", 128,   0, 64, 64));
-		shipSprites.put("DESTROYER_GREEN", 	new GLSprite("ships", 192,   0, 64, 64));
-		/* Load BLUE ships*/
-		shipSprites.put("SCOUT_PINK", 		new GLSprite("ships",  0,   64, 64, 64));
-		shipSprites.put("HUNTER_PINK", 		new GLSprite("ships",  64,  64, 64, 64));
-		shipSprites.put("COLONIZER_PINK", 	new GLSprite("ships", 128,  64, 64, 64));
-		shipSprites.put("DESTROYER_PINK", 	new GLSprite("ships", 192,  64, 64, 64));
-		/* Load PINK ships*/
-		shipSprites.put("SCOUT_BLUE", 		new GLSprite("ships",   0, 128, 64, 64));
-		shipSprites.put("HUNTER_BLUE", 		new GLSprite("ships",  64, 128, 64, 64));
-		shipSprites.put("COLONIZER_BLUE", 	new GLSprite("ships", 128, 128, 64, 64));
-		shipSprites.put("DESTROYER_BLUE", 	new GLSprite("ships", 192, 128, 64, 64));
 		/* Load GREEN ships*/
-		shipSprites.put("SCOUT_RED", 		new GLSprite("ships",   0, 192, 64, 64));
-		shipSprites.put("HUNTER_RED", 		new GLSprite("ships",  64, 192, 64, 64));
-		shipSprites.put("COLONIZER_RED",	new GLSprite("ships", 128, 192, 64, 64));
-		shipSprites.put("DESTROYER_RED", 	new GLSprite("ships", 192, 192, 64, 64));
+		shipSprites.put("SCOUT_GREEN", 			new GLSprite("ships",   0,   0, 64, 64));
+		shipSprites.put("HUNTER_GREEN", 		new GLSprite("ships",  64,   0, 64, 64));
+		shipSprites.put("COLONIZER_GREEN", 		new GLSprite("ships", 128,   0, 64, 64));
+		shipSprites.put("DESTROYER_GREEN", 		new GLSprite("ships", 192,   0, 64, 64));
+		/* Load YELLOW ships*/
+		shipSprites.put("SCOUT_YELLOW", 		new GLSprite("ships",  0,   64, 64, 64));
+		shipSprites.put("HUNTER_YELLOW", 		new GLSprite("ships",  64,  64, 64, 64));
+		shipSprites.put("COLONIZER_YELLOW", 	new GLSprite("ships", 128,  64, 64, 64));
+		shipSprites.put("DESTROYER_YELLOW", 	new GLSprite("ships", 192,  64, 64, 64));
+
+		/* Load BLUE ships*/
+		shipSprites.put("SCOUT_BLUE", 			new GLSprite("ships",   0, 128, 64, 64));
+		shipSprites.put("HUNTER_BLUE", 			new GLSprite("ships",  64, 128, 64, 64));
+		shipSprites.put("COLONIZER_BLUE", 		new GLSprite("ships", 128, 128, 64, 64));
+		shipSprites.put("DESTROYER_BLUE", 		new GLSprite("ships", 192, 128, 64, 64));
+
+		/* Load RED ships*/
+		shipSprites.put("SCOUT_RED", 			new GLSprite("ships",   0, 192, 64, 64));
+		shipSprites.put("HUNTER_RED", 			new GLSprite("ships",  64, 192, 64, 64));
+		shipSprites.put("COLONIZER_RED",		new GLSprite("ships", 128, 192, 64, 64));
+		shipSprites.put("DESTROYER_RED", 		new GLSprite("ships", 192, 192, 64, 64));
 		
 		/* Load Scout flames */
 		flameSprites.put(ShipType.SCOUT, 		 new GLSprite[]{
@@ -182,7 +184,7 @@ public class GLSpriteMap implements GLRenderAble {
 		
 		colonyMarkerSprites.put(Player.RED, 	new GLSprite("colonymarker:RED",   64, 64));
 		colonyMarkerSprites.put(Player.BLUE, 	new GLSprite("colonymarker:BLUE",  64, 64));
-		colonyMarkerSprites.put(Player.PINK, 	new GLSprite("colonymarker:PINK",  64, 64));
+		colonyMarkerSprites.put(Player.YELLOW, 	new GLSprite("colonymarker:YELLOW",  64, 64));
 		colonyMarkerSprites.put(Player.GREEN, 	new GLSprite("colonymarker:GREEN", 64, 64));
 		
 		pathSprites.put(START, 		new GLSprite("arrows", 0, 	  0, 128, 128));
