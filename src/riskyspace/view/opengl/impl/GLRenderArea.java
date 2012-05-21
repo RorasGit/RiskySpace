@@ -59,7 +59,7 @@ public class GLRenderArea implements GLRenderAble {
 	private Rectangle screenArea = null;
 	
 	/**
-	 * The size of one game sqare
+	 * The size of one game square
 	 */
 	private int squareSize;
 	
@@ -121,10 +121,6 @@ public class GLRenderArea implements GLRenderAble {
 	private Color statusStringColor;
 	private TextRenderer statusTextRenderer;
 	private GLSprite statusBackground;
-	
-	private String gameOverString = "";
-	private Color gameOverStringColor;
-	private TextRenderer gameOverTextRenderer;
 	
 	/**
 	 * All game sprites
@@ -294,10 +290,13 @@ public class GLRenderArea implements GLRenderAble {
 		}
 	}
 	
-	//TODO this is just the code from statusBox, need to make a new png or scale this.
 	public void showGameOver(Player loser) {
-		gameOverTextRenderer = new TextRenderer(ViewResources.getFont().deriveFont(screenArea.getHeight()/30.0f));
-		statusBackground = new GLSprite("square_button", 128, 80);			
+		statusTextRenderer = new TextRenderer(ViewResources.getFont().deriveFont(screenArea.getHeight()/30.0f));
+		statusBackground = new GLSprite("square_button", 128, 80);
+		String killedYouString = statusString.substring(0, statusString.length()-7);
+		statusString = "YOU HAVE BEEN DEFEATED." + "\n" + "ALL YOUR BASE ARE"+ "\n" + "BELONG TO ";
+		statusStringColor = Color.white;
+		statusString = statusString + killedYouString;
 		int width = screenArea.getWidth()/2;
 		int height = screenArea.getHeight()/2;
 		int x = screenArea.getWidth() / 2 - width / 2;
