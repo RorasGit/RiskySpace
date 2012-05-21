@@ -113,6 +113,8 @@ public class GLRenderArea implements GLRenderAble {
 	 * The player viewing this renderArea
 	 */
 	private Player viewer = null;
+	
+	private boolean defeated = false;
 
 	/*
 	 * Status box, other player's turn
@@ -291,17 +293,14 @@ public class GLRenderArea implements GLRenderAble {
 	}
 	
 	public void showGameOver(Player loser) {
-		statusTextRenderer = new TextRenderer(ViewResources.getFont().deriveFont(screenArea.getHeight()/30.0f));
 		statusBackground = new GLSprite("square_button", 128, 80);
-		String killedYouString = statusString.substring(0, statusString.length()-7);
-		statusString = "YOU HAVE BEEN DEFEATED." + "\n" + "ALL YOUR BASE ARE"+ "\n" + "BELONG TO ";
-		statusStringColor = Color.white;
-		statusString = statusString + killedYouString;
 		int width = screenArea.getWidth()/2;
 		int height = screenArea.getHeight()/2;
 		int x = screenArea.getWidth() / 2 - width / 2;
 		int y = screenArea.getHeight() / 2 - height / 2;
 		statusBackground.setBounds(new Rectangle(x, y, width, height));
+		statusString = "";
+		defeated = true;
 	}
 	
 	@Override
