@@ -184,14 +184,13 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		buildDestroyerButton.setTexture("ship_icons", 192, y[i], 64, 64);
 	}
 	
-	
 	public void checkRecruitOptions(PlayerStats stats) {
 		this.stats = stats;
 		if (colony != null && stats != null){
-			buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT) && colony.getHangar().canBuild(ShipType.SCOUT));
-			buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER) && colony.getHangar().canBuild(ShipType.HUNTER));
-			buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER) && colony.getHangar().canBuild(ShipType.COLONIZER));
-			buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER) && colony.getHangar().canBuild(ShipType.DESTROYER));
+			buildScoutButton.setEnabled(stats.canAfford(ShipType.SCOUT) && colony.canBuild(ShipType.SCOUT));
+			buildHunterButton.setEnabled(stats.canAfford(ShipType.HUNTER) && colony.canBuild(ShipType.HUNTER));
+			buildColonizerButton.setEnabled(stats.canAfford(ShipType.COLONIZER) && colony.canBuild(ShipType.COLONIZER));
+			buildDestroyerButton.setEnabled(stats.canAfford(ShipType.DESTROYER) && colony.canBuild(ShipType.DESTROYER));
 		}
 	}
 
