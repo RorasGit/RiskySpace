@@ -20,7 +20,7 @@ import riskyspace.view.opengl.Rectangle;
 public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 	
 	private GLSprite sprite;
-	private GLSprite disabledImage;
+	private GLSprite disabledSprite;
 	
 	private boolean canBeDisabled = false;
 	private boolean canGlow = true;
@@ -41,10 +41,9 @@ public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 	 */
 	public void setTexture(String textureName, int width, int height){
 		sprite = new GLSprite(textureName, width, height);
-		canBeDisabled = false;
 		if (new File("res/textures" + textureName + "_disabled").exists()) {
 			canBeDisabled = true;
-			disabledImage = new GLSprite(textureName + "_disabled", width, height);
+			disabledSprite = new GLSprite(textureName + "_disabled", width, height);
 		}
 	}
 	
@@ -61,10 +60,9 @@ public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 	 */
 	public void setTexture(String textureName, int x, int y, int width, int height){
 		sprite = new GLSprite(textureName, x, y, width, height);
-		canBeDisabled = false;
 		if (new File("res/textures" + textureName + "_disabled").exists()) {
 			canBeDisabled = true;
-			disabledImage = new GLSprite(textureName + "_disabled",0 , 0, width, height);
+			disabledSprite = new GLSprite(textureName + "_disabled",0 , 0, width, height);
 		}
 	}
 	
@@ -86,7 +84,7 @@ public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 		if (sprite != null) {
 			canBeDisabled = true;
 		}
-		this.sprite = new GLSprite(sprite);
+		this.disabledSprite = new GLSprite(sprite);
 	}
 
 	@Override
@@ -97,13 +95,14 @@ public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect,	Rectangle targetArea, int zIndex) {
 		GL2 gl = drawable.getGL().getGL2();
-		if (canGlow() && cursorOver()) {
-			gl.glColor4f(0.8f, 0.8f, 1.0f, 1.0f);
-		}
+//		System.out.println("Can: " + canBeDisabled + " " + sprite.toString());
 		if (isEnabled()) {
+			if (canGlow() && cursorOver()) {
+				gl.glColor4f(0.8f, 0.8f, 1.0f, 1.0f);
+			}
 			sprite.draw(drawable, renderRect, targetArea, zIndex);
 		} else if (canBeDisabled) {
-			disabledImage.draw(drawable, renderRect, targetArea, zIndex);
+			disabledSprite.draw(drawable, renderRect, targetArea, zIndex);
 		}
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}

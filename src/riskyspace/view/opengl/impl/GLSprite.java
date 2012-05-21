@@ -130,4 +130,9 @@ public class GLSprite implements GLRenderAble {
 			}
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return "GLSprite: " + textureName + " " + textureRect ;
+	}
 }

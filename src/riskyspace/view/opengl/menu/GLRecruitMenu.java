@@ -102,7 +102,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		buildScoutButton.setDisabledSprite(new GLSprite("ship_icon_grey", 0, 64, 128, 128));
+		buildScoutButton.setDisabledSprite(new GLSprite("ship_icons_grey", 0, 64, 64, 64));
 		buildHunterButton = new GLButton(x + 2 * margin / 3, y, 90, 90);
 		buildHunterButton.setAction(new Action() {
 			@Override
@@ -111,7 +111,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		buildHunterButton.setDisabledSprite(new GLSprite("ship_icon_grey", 64, 64, 128, 128));
+		buildHunterButton.setDisabledSprite(new GLSprite("ship_icons_grey", 64, 64, 64, 64));
 		buildDestroyerButton = new GLButton(x - 90, y + 90 + margin/2, 90, 90);
 		buildDestroyerButton.setAction(new Action() {
 			@Override
@@ -120,7 +120,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		buildDestroyerButton.setDisabledSprite(new GLSprite("ship_icon_grey", 64, 0, 128, 128));
+		buildDestroyerButton.setDisabledSprite(new GLSprite("ship_icons_grey", 64, 0, 64, 64));
 		buildColonizerButton = new GLButton(x + 2 * margin / 3,  y + 90 + margin/2, 90, 90);
 		buildColonizerButton.setAction(new Action() {
 			@Override
@@ -129,7 +129,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 				EventBus.CLIENT.publish(evt);
 			}
 		});
-		buildColonizerButton.setDisabledSprite(new GLSprite("ship_icon_grey", 0, 0, 128, 128));
+		buildColonizerButton.setDisabledSprite(new GLSprite("ship_icons_grey", 0, 0, 64, 64));
 		backButton = new GLButton(getX() + margin, 
 				getY() + getMenuHeight() - 2*(getMenuWidth() - 2*margin)/4, 
 				getMenuWidth() - 2 * margin,
