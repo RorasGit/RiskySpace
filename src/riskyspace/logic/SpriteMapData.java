@@ -170,7 +170,6 @@ public class SpriteMapData implements Serializable {
 				}
 			}
 		} else if (fleet.getFlagship() == ShipType.COLONIZER) {
-			existed = false;
 			for (ColonizerData colonizerData : data.colonizerData) {
 				if (colonizerData.getPosition().equals(pos)) {
 					if (colonizerData.getSteps()[1] == null && GameManager.INSTANCE.hasPath(fleet) && GameManager.INSTANCE.getPath(fleet).length >= 1) {
