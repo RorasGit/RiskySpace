@@ -17,9 +17,9 @@ public class DropdownButton<E> implements Clickable {
 	
 	private List<SwingButton> buttonList = new ArrayList<SwingButton>();
 	
-	private Map<SwingButton, Integer> values = new HashMap<SwingButton, Integer>();
+	private Map<SwingButton, E> values = new HashMap<SwingButton, E>();
 	
-	private int selectedValue;
+	private E selectedValue;
 	
 	private boolean open = false;
 	private boolean enabled = true;
@@ -41,6 +41,7 @@ public class DropdownButton<E> implements Clickable {
 		mainButton = new SwingButton(x,y,width,height);
 		mainButton.setImage("res/menu/lobby/dropdownButton.png");
 		mainButton.setText(buttonList.get(0).getText());
+		selectedValue = array.get(0);
 		mainButton.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -60,7 +61,7 @@ public class DropdownButton<E> implements Clickable {
 			b.setImage("res/menu/lobby/textItem.png");
 			b.setText(item.toString());
 			buttonList.add(b);
-			values.put(b, value);
+			values.put(b, item);
 			yPos = yPos + buttonHeight;
 			height = height + height;
 			value = value + 1;
@@ -72,11 +73,11 @@ public class DropdownButton<E> implements Clickable {
 		createButtons();
 	}
 	
-	public void setSelectedValue(int value) {
-		selectedValue = value;
+	public void setSelectedValue(E e) {
+		selectedValue = e;
 	}
 	
-	public int getSelectedValue() {
+	public E getSelectedValue() {
 		return selectedValue;
 	}
 	

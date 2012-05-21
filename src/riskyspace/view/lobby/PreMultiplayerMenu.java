@@ -7,11 +7,11 @@ import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Observer;
 
 import riskyspace.network.LobbyClient;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
-import riskyspace.view.IMenu;
 import riskyspace.view.ViewResources;
 import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.SwingButton;
@@ -20,11 +20,11 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 	
 	private int margin = 30;
 
-	private IMenu multiplayerLobby = null;
+	private Lobby multiplayerLobby = null;
 	
 	private Image background = null;
 	
-	private TextBox textbox;
+	private TextBox ipBox;
 	
 	private SwingButton joinGame;
 	private SwingButton hostGame;
@@ -32,27 +32,25 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 	private TextBoxListener textListener;
 	
 	private LobbyClient client;
-	
-	
 
 	public PreMultiplayerMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		background = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/widerMenubackground.png").
 				getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);	
-		textbox = new TextBox(x + margin, y + margin + menuHeight/10, menuWidth - 2*margin, 30);
-		textbox.setEnabled(false);
+		ipBox = new TextBox(x + margin, y + margin + menuHeight/10, menuWidth - 2*margin, 30);
+		ipBox.setEnabled(false);
+		
+		client = new LobbyClient();
 		
 		joinGame = new SwingButton(x + menuWidth/2 - 90, y + margin + 2*menuHeight/10, 180, 50);
 		joinGame.setImage("res/menu/lobby/joingame.png");
 		joinGame.setAction(new Action() {
 			@Override
 			public void performAction() {
-				client = new LobbyClient();
-				if(client.connectToLobby(textbox.getText())){
-					//TODO: SET MULTIPLAYERLOBBY
-					// multiplayerLobby.setNumberOfPlayers(client.getNbrOfPlayers());
+				if (client.connectToLobby(ipBox.getText())){
 					setVisible(false);
 					multiplayerLobby.setVisible(true);
+					client.addObserver(multiplayerLobby);
 				}
 			}
 		});
@@ -73,6 +71,10 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 		textListener = new TextBoxListener();
 	}
 	
+	public void setObserver(Observer o) {
+		client.addObserver(o);
+	}
+	
 	public KeyListener getKeyListener() {
 		return textListener;
 	}
@@ -88,10 +90,10 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 				if(joinGame.mousePressed(p)) {
 					return true;
 				}
-				if(textbox.mousePressed(p)) {
+				if(ipBox.mousePressed(p)) {
 					return true;
 				}
-				textbox.setEnabled(false);
+				ipBox.setEnabled(false);
 				if(hostGame.mousePressed(p)) {
 					return true;
 				}
@@ -119,9 +121,9 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 		if (isVisible()) {
 			g.drawImage(background, getX(), getY(), null);
 			g.setFont(ViewResources.getFont().deriveFont(g.getClipBounds().height/40.0f));
-			g.setColor(textbox.getTextColor());
+			g.setColor(ipBox.getTextColor());
 			g.drawString("IP:", getX() + getMenuWidth()/2 - g.getFontMetrics().stringWidth("IP:")/2, getY() + 2*margin/3 + getMenuHeight()/10);
-			textbox.draw(g);
+			ipBox.draw(g);
 			joinGame.draw(g);
 			hostGame.draw(g);
 		}
@@ -130,13 +132,13 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 		String allowedChars = "1234567890.";
 		
 		public void keyPressed(KeyEvent e) {
-			if(textbox.isEnabled()){
+			if(ipBox.isEnabled()){
 				if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
-					if(textbox.getText().length() > 0){
-						textbox.setText(textbox.getText().substring(0, textbox.getText().length()-1));
+					if(ipBox.getText().length() > 0){
+						ipBox.setText(ipBox.getText().substring(0, ipBox.getText().length()-1));
 					}
-				}else if(allowedChars.contains(""+e.getKeyChar()) && textbox.getText().length() < 15){
-					textbox.setText(textbox.getText() + e.getKeyChar());
+				}else if(allowedChars.contains(""+e.getKeyChar()) && ipBox.getText().length() < 15){
+					ipBox.setText(ipBox.getText() + e.getKeyChar());
 				}
 			}
 		}

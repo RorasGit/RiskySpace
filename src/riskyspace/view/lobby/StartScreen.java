@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Observer;
 
 import javax.swing.JPanel;
 
@@ -52,21 +53,23 @@ public class StartScreen extends JPanel {
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		createButtons();
 		createMenus();
-		
 		clickHandler = new ClickHandler();
 		addMouseListener(clickHandler);
 	}	
 
+	public void setObserver(Observer o) {
+		preMultiplayerMenu.setObserver(o);
+	}
+	
 	private void measureScreen() {
 		width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	}
-	
+
 	public void createMenus() {
 		localLobby = new Lobby(width/6, height/6, 2*width/3, 2*height/3);
 		settingsMenu = new SettingsMenu(width/3, height/4, width/3, height/3);
 		preMultiplayerMenu = new PreMultiplayerMenu(4*width/10, height/3, width/5, 2*height/6);
-		
 		
 		/*
 		 * Just as a test, meant to be the saved games.
@@ -75,7 +78,6 @@ public class StartScreen extends JPanel {
 		for (int i=0; i<20; i++) {
 			list.add("" + i);
 		}
-		
 		loadGameMenu = new LoadGameMenu<String>(2*width/5, height/5, width/5, height/2, list);
 	}
 	
@@ -139,8 +141,6 @@ public class StartScreen extends JPanel {
 				startScreenVisible = true;
 			}
 		});
-		
-		
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -169,7 +169,6 @@ public class StartScreen extends JPanel {
 			
 		}
 	}
-
 
 	private class ClickHandler implements MouseListener {
 		/*

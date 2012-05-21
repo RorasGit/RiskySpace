@@ -7,17 +7,20 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Observable;
+import java.util.Observer;
+
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
-import riskyspace.view.swingImpl.LobbyView;
+import riskyspace.view.swing.impl.LobbyView;
 
 /**
  * 
  * @author Daniel Augurell
  *
  */
-public class LobbyClient {
+public class LobbyClient extends Observable {
 
 	private ObjectInputStream input = null;
 	private ObjectOutputStream output = null;
@@ -29,15 +32,6 @@ public class LobbyClient {
 	public static final String GAME_MODE = "game_mode=";
 	public static final String CONNECT_TO_GAME = "connect_to_game";
 	
-	private boolean host = false;
-	private int maxPlayers;
-	private int players;
-	private String gameMode = "";
-	
-	public LobbyClient() {
-		new ServerListener();		
-	}
-
 	public boolean connectToLobby(String hostIP) {
 		int tries = 0;
 		while (socket == null) {
@@ -53,8 +47,8 @@ public class LobbyClient {
 			tries++;
 		}
 		System.out.println("Connected");
+		new ServerListener();
 		return true;
-		
 	}
 
 	public void startGame() {
@@ -104,25 +98,18 @@ public class LobbyClient {
 					if (input != null) {
 						System.out.println(input);
 						if (input.contains(CONNECT_TO_GAME)) {
+							// Dispose window
+							setChanged();
+							notifyObservers("dispose");
 							// Create GameClient
 							String ip = socket.getInetAddress().getHostAddress();
 							int port = socket.getPort();
 							new GameClient(ip, port);
-							// Dispose window
-							
 							// Set boolean to cancel this thread
 							started = true;
 						} else {
-							String value = input.split("=")[1];
-							if (input.contains(IS_HOST)){
-								host = Boolean.parseBoolean(value);
-							} else if (input.contains(MAX_PLAYERS)){
-								maxPlayers = Integer.parseInt(value);
-							} else if (input.contains(CURRENT_PLAYER)){
-								players = Integer.parseInt(value);
-							} else if (input.contains(GAME_MODE)){
-								gameMode = value;
-							}	
+							setChanged();
+							notifyObservers(input);
 						}
 					}
 				} catch (EOFException e){

@@ -5,14 +5,17 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
+import riskyspace.network.LobbyClient;
 import riskyspace.view.View;
 import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.DropdownButton;
 import riskyspace.view.swing.impl.SwingButton;
 
 
-public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
+public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Observer {
 
 	private SwingButton playerOne = null;
 	private SwingButton playerTwo = null;
@@ -67,7 +70,7 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 	}
 	
 	public void setNumberOfPlayers(int nbrOfPlayers) {
-		numberOfPlayersButton.setSelectedValue(nbrOfPlayers);
+		numberOfPlayersButton.setSelectedValue("" +nbrOfPlayers);
 	}
 	
 	private void createBackground() {
@@ -105,11 +108,11 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 			}
 			if (numberOfPlayersButton.mousePressed(p)) {
 				gameModesButton.setOpen(false);
-				if (numberOfPlayersButton.getSelectedValue() == 3) {
+				if (Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]) == 3) {
 					playerThree.setEnabled(true);
 					playerFour.setEnabled(false);
 				}
-				else if (numberOfPlayersButton.getSelectedValue() == 4) {
+				else if (Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]) == 4) {
 					playerThree.setEnabled(true);
 					playerFour.setEnabled(true);
 				} else {
@@ -135,5 +138,25 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 		if (gameModesButton.mouseReleased(p)) {return true;}
 			return false;
 	}
+
+	private boolean host = false;
+	private int players;
 	
+	@Override
+	public void update(Observable o, Object arg) {
+		String input = (String) arg;
+		if (input.contains("=")) {
+			String value = input.split("=")[1];
+			if (input.contains(LobbyClient.IS_HOST)){
+				host = Boolean.parseBoolean(value);
+				startGame.setEnabled(host && players == Integer.parseInt(numberOfPlayersButton.getSelectedValue()));
+			} else if (input.contains(LobbyClient.MAX_PLAYERS)){
+				numberOfPlayersButton.setSelectedValue(value);
+			} else if (input.contains(LobbyClient.CURRENT_PLAYER)){
+				players = Integer.parseInt(value);
+			} else if (input.contains(LobbyClient.GAME_MODE)){
+				gameModesButton.setSelectedValue(value);
+			}	
+		}
+	}
 }
