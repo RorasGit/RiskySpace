@@ -1,0 +1,239 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (0xc0000029), pid=2804, tid=4996
+#
+# JRE version: 7.0-b147
+# Java VM: Java HotSpot(TM) Client VM (21.0-b17 mixed mode, sharing windows-x86 )
+# Problematic frame:
+# C  [ntdll.dll+0x90572]
+#
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x03961400):  JavaThread "AWT-EventQueue-0" [_thread_in_native, id=4996, stack(0x04580000,0x045d0000)]
+
+siginfo: ExceptionCode=0xc0000029
+
+Registers:
+EAX=0x045ce6d8, EBX=0x045cf534, ECX=0x045ce730, EDX=0x045ce66c
+ESP=0x045ce67c, EBP=0x045cea04, ESI=0x045cea24, EDI=0x00000001
+EIP=0x76e40572, EFLAGS=0x00000246
+
+Top of Stack: (sp=0x045ce67c)
+0x045ce67c:   04dba108 03961528 045ce920 045ce770
+0x045ce68c:   045ce74c 6a5775c5 0395ddb0 6a5775f2
+0x045ce69c:   03961400 3409bc00 045ce778 045ce74c
+0x045ce6ac:   015e0334 015d2888 00000000 045ce770
+0x045ce6bc:   045ce74c 045ce74c 015e0334 015d2888
+0x045ce6cc:   00000000 045ce770 045ce74c c0000029
+0x045ce6dc:   00000001 045cea24 76e40572 00000000
+0x045ce6ec:   0163e667 23d73880 015d2888 00000000 
+
+Instructions: (pc=0x76e40572)
+0x76e40552:   d4 fc ff ff 50 c7 85 d4 fc ff ff 29 00 00 c0 89
+0x76e40562:   bd d8 fc ff ff 89 b5 dc fc ff ff e8 36 6b fb ff
+0x76e40572:   e9 57 f5 f8 ff 48 48 74 2e 83 a5 e4 fc ff ff 00
+0x76e40582:   8d 85 d4 fc ff ff 50 c7 85 d4 fc ff ff 26 00 00 
+
+
+Register to memory mapping:
+
+EAX=0x045ce6d8 is pointing into the stack for thread: 0x03961400
+EBX=0x045cf534 is pointing into the stack for thread: 0x03961400
+ECX=0x045ce730 is pointing into the stack for thread: 0x03961400
+EDX=0x045ce66c is pointing into the stack for thread: 0x03961400
+ESP=0x045ce67c is pointing into the stack for thread: 0x03961400
+EBP=0x045cea04 is pointing into the stack for thread: 0x03961400
+ESI=0x045cea24 is pointing into the stack for thread: 0x03961400
+EDI=0x00000001 is an unknown value
+
+
+Stack: [0x04580000,0x045d0000],  sp=0x045ce67c,  free space=313k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [ntdll.dll+0x90572]  EtwSetMark+0x14c13
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  sun.font.T2KFontScaler.getGlyphImageNative(Lsun/font/Font2D;JJI)J+0
+j  sun.font.T2KFontScaler.getGlyphImage(JI)J+26
+J  sun.font.FileFontStrike.getGlyphImagePtr(I)J
+J  sun.font.FileFontStrike.getGlyphMetrics(IZ)Ljava/awt/geom/Point2D$Float;
+J  sun.font.FileFontStrike.getGlyphMetrics(I)Ljava/awt/geom/Point2D$Float;
+J  sun.font.StandardGlyphVector$GlyphStrike.addDefaultGlyphAdvance(ILjava/awt/geom/Point2D$Float;)V
+J  sun.font.StandardGlyphVector.initPositions()V
+J  sun.font.StandardGlyphVector.getGlyphOutlineBounds(I)Ljava/awt/geom/Rectangle2D;
+J  sun.font.StandardGlyphVector.getGlyphVisualBounds(I)Ljava/awt/Shape;
+j  sun.font.StandardGlyphVector.getGlyphMetrics(I)Ljava/awt/font/GlyphMetrics;+42
+J  com.jogamp.opengl.util.awt.TextRenderer$GlyphProducer.getGlyphs(Ljava/lang/CharSequence;)Ljava/util/List;
+J  com.jogamp.opengl.util.awt.TextRenderer.internal_draw3D(Ljava/lang/CharSequence;FFFF)V
+J  riskyspace.view.opengl.impl.GLRenderArea.drawGameOver(Ljavax/media/opengl/GLAutoDrawable;Lriskyspace/view/opengl/Rectangle;I)V
+J  riskyspace.view.opengl.impl.GLRenderArea.draw(Ljavax/media/opengl/GLAutoDrawable;Lriskyspace/view/opengl/Rectangle;Lriskyspace/view/opengl/Rectangle;I)V
+J  riskyspace.view.opengl.impl.OpenGLView.display(Ljavax/media/opengl/GLAutoDrawable;)V
+J  jogamp.opengl.GLDrawableHelper.displayImpl(Ljavax/media/opengl/GLAutoDrawable;)V
+J  javax.media.opengl.awt.GLCanvas$6.run()V
+J  jogamp.opengl.GLDrawableHelper.invokeGLImpl(Ljavax/media/opengl/GLDrawable;Ljavax/media/opengl/GLContext;Ljava/lang/Runnable;Ljava/lang/Runnable;Ljavax/media/opengl/GLAutoDrawable;)V
+J  jogamp.opengl.GLDrawableHelper.invokeGL(Ljavax/media/opengl/GLDrawable;Ljavax/media/opengl/GLContext;Ljava/lang/Runnable;Ljava/lang/Runnable;)V
+J  javax.media.opengl.awt.GLCanvas$8.run()V
+J  java.awt.event.InvocationEvent.dispatch()V
+J  java.awt.EventQueue.dispatchEventImpl(Ljava/awt/AWTEvent;Ljava/lang/Object;)V
+J  java.awt.EventQueue$3.run()Ljava/lang/Object;
+v  ~StubRoutines::call_stub
+J  java.security.AccessController.doPrivileged(Ljava/security/PrivilegedAction;Ljava/security/AccessControlContext;)Ljava/lang/Object;
+J  java.awt.EventQueue.dispatchEvent(Ljava/awt/AWTEvent;)V
+J  java.awt.EventDispatchThread.pumpOneEventForFilters(I)Z
+j  java.awt.EventDispatchThread.pumpEventsForFilter(ILjava/awt/Conditional;Ljava/awt/EventFilter;)V+35
+j  java.awt.EventDispatchThread.pumpEventsForHierarchy(ILjava/awt/Conditional;Ljava/awt/Component;)V+11
+j  java.awt.EventDispatchThread.pumpEvents(ILjava/awt/Conditional;)V+4
+j  java.awt.EventDispatchThread.pumpEvents(Ljava/awt/Conditional;)V+3
+j  java.awt.EventDispatchThread.run()V+9
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x04dbec00 JavaThread "Thread-21" [_thread_in_native, id=4124, stack(0x098f0000,0x09940000)]
+  0x04dbdc00 JavaThread "Thread-1" daemon [_thread_in_native, id=5084, stack(0x09610000,0x09660000)]
+  0x04dbc800 JavaThread "Thread-11" [_thread_in_native, id=4200, stack(0x07f50000,0x07fa0000)]
+  0x04dbc000 JavaThread "Thread-10" [_thread_blocked, id=5128, stack(0x06150000,0x061a0000)]
+  0x04dbbc00 JavaThread "Thread-9" [_thread_blocked, id=5176, stack(0x07d70000,0x07dc0000)]
+  0x04dbb400 JavaThread "Thread-6" [_thread_blocked, id=332, stack(0x07e20000,0x07e70000)]
+  0x04c60c00 JavaThread "Timer-0" [_thread_blocked, id=3232, stack(0x07c90000,0x07ce0000)]
+  0x015ca000 JavaThread "DestroyJavaVM" [_thread_blocked, id=3464, stack(0x012c0000,0x01310000)]
+=>0x03961400 JavaThread "AWT-EventQueue-0" [_thread_in_native, id=4996, stack(0x04580000,0x045d0000)]
+  0x0395fc00 JavaThread "AWT-Shutdown" [_thread_blocked, id=4152, stack(0x04230000,0x04280000)]
+  0x0395f000 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=3176, stack(0x04110000,0x04160000)]
+  0x011f4000 JavaThread "Service Thread" daemon [_thread_blocked, id=5628, stack(0x035d0000,0x03620000)]
+  0x011e7c00 JavaThread "C1 CompilerThread0" daemon [_thread_blocked, id=4048, stack(0x036d0000,0x03720000)]
+  0x011e6800 JavaThread "Attach Listener" daemon [_thread_blocked, id=1628, stack(0x03660000,0x036b0000)]
+  0x011e3800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=4516, stack(0x03860000,0x038b0000)]
+  0x011ddc00 JavaThread "Finalizer" daemon [_thread_blocked, id=2988, stack(0x03790000,0x037e0000)]
+  0x011d9000 JavaThread "Reference Handler" daemon [_thread_blocked, id=3588, stack(0x03740000,0x03790000)]
+
+Other Threads:
+  0x011d7000 VMThread [stack: 0x014b0000,0x01500000] [id=5144]
+  0x011f5c00 WatcherThread [stack: 0x038f0000,0x03940000] [id=4916]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ def new generation   total 4928K, used 2228K [0x23ba0000, 0x240f0000, 0x290f0000)
+  eden space 4416K,  48% used [0x23ba0000, 0x23db7d90, 0x23ff0000)
+  from space 512K,  16% used [0x23ff0000, 0x24005320, 0x24070000)
+  to   space 512K,   0% used [0x24070000, 0x24070000, 0x240f0000)
+ tenured generation   total 10944K, used 4138K [0x290f0000, 0x29ba0000, 0x33ba0000)
+   the space 10944K,  37% used [0x290f0000, 0x294fa878, 0x294faa00, 0x29ba0000)
+ compacting perm gen  total 12288K, used 5103K [0x33ba0000, 0x347a0000, 0x37ba0000)
+   the space 12288K,  41% used [0x33ba0000, 0x3409be48, 0x3409c000, 0x347a0000)
+    ro space 10240K,  42% used [0x37ba0000, 0x37fdc660, 0x37fdc800, 0x385a0000)
+    rw space 12288K,  53% used [0x385a0000, 0x38c18180, 0x38c18200, 0x391a0000)
+
+Code Cache  [0x015d0000, 0x017e8000, 0x035d0000)
+ total_blobs=1617 nmethods=1235 adapters=315 free_code_cache=30636Kb largest_free_block=31370496
+
+Dynamic libraries:
+0x013d0000 - 0x013ff000 	C:\Program Files\Java\jre7\bin\javaw.exe
+0x76db0000 - 0x76eec000 	C:\Windows\SYSTEM32\ntdll.dll
+0x74a70000 - 0x74b44000 	C:\Windows\system32\kernel32.dll
+0x74760000 - 0x747aa000 	C:\Windows\system32\KERNELBASE.dll
+0x74e60000 - 0x74f00000 	C:\Windows\system32\ADVAPI32.dll
+0x755d0000 - 0x7567c000 	C:\Windows\system32\msvcrt.dll
+0x75680000 - 0x75699000 	C:\Windows\SYSTEM32\sechost.dll
+0x763e0000 - 0x76481000 	C:\Windows\system32\RPCRT4.dll
+0x74b50000 - 0x74c19000 	C:\Windows\system32\USER32.dll
+0x75540000 - 0x7558e000 	C:\Windows\system32\GDI32.dll
+0x75330000 - 0x7533a000 	C:\Windows\system32\LPK.dll
+0x75340000 - 0x753dd000 	C:\Windows\system32\USP10.dll
+0x733b0000 - 0x7354e000 	C:\Windows\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7601.17514_none_41e6975e2bd6f2b2\COMCTL32.dll
+0x756b0000 - 0x75707000 	C:\Windows\system32\SHLWAPI.dll
+0x763c0000 - 0x763df000 	C:\Windows\system32\IMM32.DLL
+0x74d40000 - 0x74e0c000 	C:\Windows\system32\MSCTF.dll
+0x6de70000 - 0x6df2e000 	C:\Program Files\Java\jre7\bin\msvcr100.dll
+0x6a4f0000 - 0x6a811000 	C:\Program Files\Java\jre7\bin\client\jvm.dll
+0x6ed70000 - 0x6ed77000 	C:\Windows\system32\WSOCK32.dll
+0x75010000 - 0x75045000 	C:\Windows\system32\WS2_32.dll
+0x75590000 - 0x75596000 	C:\Windows\system32\NSI.dll
+0x72cd0000 - 0x72d02000 	C:\Windows\system32\WINMM.dll
+0x76630000 - 0x76635000 	C:\Windows\system32\PSAPI.DLL
+0x72dd0000 - 0x72ddc000 	C:\Program Files\Java\jre7\bin\verify.dll
+0x72db0000 - 0x72dd0000 	C:\Program Files\Java\jre7\bin\java.dll
+0x72d60000 - 0x72d73000 	C:\Program Files\Java\jre7\bin\zip.dll
+0x72c20000 - 0x72c34000 	C:\Program Files\Java\jre7\bin\net.dll
+0x74150000 - 0x7418c000 	C:\Windows\system32\mswsock.dll
+0x74140000 - 0x74146000 	C:\Windows\System32\wship6.dll
+0x73030000 - 0x73040000 	C:\Windows\system32\NLAapi.dll
+0x6f8d0000 - 0x6f8e0000 	C:\Windows\system32\napinsp.dll
+0x6d2a0000 - 0x6d2b2000 	C:\Windows\system32\pnrpnsp.dll
+0x6d6c0000 - 0x6d6cd000 	C:\Windows\system32\wshbth.dll
+0x73f50000 - 0x73f94000 	C:\Windows\system32\DNSAPI.dll
+0x6d290000 - 0x6d298000 	C:\Windows\System32\winrnr.dll
+0x73bc0000 - 0x73bc5000 	C:\Windows\System32\wshtcpip.dll
+0x71d40000 - 0x71d5c000 	C:\Windows\system32\IPHLPAPI.DLL
+0x71d20000 - 0x71d27000 	C:\Windows\system32\WINNSI.DLL
+0x708d0000 - 0x708d6000 	C:\Windows\system32\rasadhlp.dll
+0x71bf0000 - 0x71c28000 	C:\Windows\System32\fwpuclnt.dll
+0x67790000 - 0x678d2000 	C:\Program Files\Java\jre7\bin\awt.dll
+0x74f80000 - 0x7500f000 	C:\Windows\system32\OLEAUT32.dll
+0x753e0000 - 0x7553c000 	C:\Windows\system32\ole32.dll
+0x73330000 - 0x73370000 	C:\Windows\system32\uxtheme.dll
+0x72940000 - 0x72953000 	C:\Windows\system32\dwmapi.dll
+0x74660000 - 0x7466c000 	C:\Windows\system32\CRYPTBASE.dll
+0x74220000 - 0x74236000 	C:\Windows\system32\CRYPTSP.dll
+0x73f10000 - 0x73f4b000 	C:\Windows\system32\rsaenh.dll
+0x73d40000 - 0x73d57000 	C:\Windows\system32\USERENV.dll
+0x746e0000 - 0x746eb000 	C:\Windows\system32\profapi.dll
+0x73820000 - 0x7382f000 	C:\Program Files\Java\jre7\bin\nio.dll
+0x637c0000 - 0x637ca000 	C:\Users\jontini\AppData\Local\Temp\jogamp.tmp.cache_000000\jln6308205570081212046\jln7850781710156206393\gluegen-rt.dll
+0x72bd0000 - 0x72bd6000 	C:\Program Files\Java\jre7\bin\jawt.dll
+0x6a440000 - 0x6a44a000 	C:\Users\jontini\AppData\Local\Temp\jogamp.tmp.cache_000000\jln6308205570081212046\jln7850781710156206393\nativewindow_awt.dll
+0x75710000 - 0x7635a000 	C:\Windows\system32\SHELL32.dll
+0x6c100000 - 0x6c110000 	C:\Users\jontini\AppData\Local\Temp\jogamp.tmp.cache_000000\jln6308205570081212046\jln7850781710156206393\nativewindow_win32.dll
+0x6c180000 - 0x6c248000 	C:\Windows\system32\OpenGL32.dll
+0x721b0000 - 0x721d2000 	C:\Windows\system32\GLU32.dll
+0x6cd10000 - 0x6cdf7000 	C:\Windows\system32\DDRAW.dll
+0x72de0000 - 0x72de6000 	C:\Windows\system32\DCIMAN32.dll
+0x76490000 - 0x7662d000 	C:\Windows\system32\SETUPAPI.dll
+0x74890000 - 0x748b7000 	C:\Windows\system32\CFGMGR32.dll
+0x74870000 - 0x74882000 	C:\Windows\system32\DEVOBJ.dll
+0x64500000 - 0x6456b000 	C:\Users\jontini\AppData\Local\Temp\jogamp.tmp.cache_000000\jln6308205570081212046\jln7850781710156206393\jogl_desktop.dll
+0x04fc0000 - 0x05fb6000 	C:\Windows\system32\nvoglv32.DLL
+0x747b0000 - 0x747dd000 	C:\Windows\system32\WINTRUST.dll
+0x748c0000 - 0x749dd000 	C:\Windows\system32\CRYPT32.dll
+0x74750000 - 0x7475c000 	C:\Windows\system32\MSASN1.dll
+0x722f0000 - 0x7231a000 	C:\Program Files\Java\jre7\bin\fontmanager.dll
+0x6eb70000 - 0x6eba1000 	C:\Program Files\Java\jre7\bin\t2k.dll
+
+VM Arguments:
+jvm_args: -Djava.library.path=C:\Users\jontini\git\RiskySpace\lib\jogamp-all-platforms\jogamp-all-platforms\jar;C:\Users\jontini\git\RiskySpace\lib\jogamp-all-platforms\jogamp-all-platforms\jar -Dfile.encoding=Cp1252 
+java_command: riskyspace.network.GameServer
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=C:/Program Files/Java/jre7/bin/client;C:/Program Files/Java/jre7/bin;C:/Program Files/Java/jre7/lib/i386;C:\Program Files\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\MATLAB\R2009b\runtime\win32;C:\Program Files\MATLAB\R2009b\bin;C:\Program Files\Java\jdk1.7.0\bin;C:\Program Files\eclipse;
+USERNAME=jontini
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=x86 Family 6 Model 15 Stepping 10, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 Build 7601 Service Pack 1
+
+CPU:total 2 (2 cores per cpu, 1 threads per core) family 6 model 15 stepping 10, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3
+
+Memory: 4k page, physical 3143648k(1785920k free), swap 6285540k(4356700k free)
+
+vm_info: Java HotSpot(TM) Client VM (21.0-b17) for windows-x86 JRE (1.7.0-b147), built on Jun 27 2011 02:25:52 by "java_re" with unknown MS VC++:1600
+
+time: Mon May 21 17:37:35 2012
+elapsed time: 79 seconds
+
