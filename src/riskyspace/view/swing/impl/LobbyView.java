@@ -6,6 +6,7 @@ import java.util.Observer;
 
 import javax.swing.JFrame;
 
+import riskyspace.sound.PlayList;
 import riskyspace.view.lobby.StartScreen;
 
 public class LobbyView implements Observer {
@@ -13,6 +14,7 @@ public class LobbyView implements Observer {
 	private JFrame frame = null;
 	private StartScreen startScreen = null;
 	private Thread renderThread;
+	private PlayList playList;
 	
 	public LobbyView () {
 		setFrame();
@@ -20,6 +22,7 @@ public class LobbyView implements Observer {
 		startScreen.setObserver(this);
 		frame.addKeyListener(startScreen.getKeyListener());
 		frame.add(startScreen);
+		playList = new PlayList(PlayList.STANDARD_LOBBY_LOOP);
 		frame.setVisible(true);
 		renderThread = new Thread(new Runnable(){
 			@Override
@@ -34,6 +37,7 @@ public class LobbyView implements Observer {
 				}
 		}});
 		renderThread.start();
+		playList.start();
 	}
 	
 	private void setFrame() {
@@ -53,6 +57,7 @@ public class LobbyView implements Observer {
 			if (renderThread != null && renderThread.isAlive()) {
 				renderThread.interrupt();
 			}
+			playList.pause();
 			frame.dispose();
 		}
 	}
