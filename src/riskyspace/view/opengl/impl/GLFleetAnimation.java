@@ -99,7 +99,7 @@ public class GLFleetAnimation implements GLRenderAble {
 			rect.setY(startY + (int) (dY * squareSize * pDone));
 		}
 		if (flames != null && flames.length > 0) {
-			int index = (maxTime/20) % (flames.length + 2);
+			int index = (maxTime/40) % (flames.length + 2);
 			if (index == flames.length) {
 				index = index - 2;
 			} else if (index == flames.length + 1) {
