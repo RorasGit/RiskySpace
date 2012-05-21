@@ -37,7 +37,7 @@ public class GameServer implements EventHandler {
 	 * MAIN METHOD
 	 */
 	public static void main(String[] args) throws IOException {
-		final GameServer server = new GameServer(3);
+		final GameServer server = new GameServer(3, null); //NULL!
 		Runnable r = new Runnable() {
 			public void run() {
 				new GameClient(server.getIP(), server.getPort());
@@ -46,7 +46,7 @@ public class GameServer implements EventHandler {
 		EventQueue.invokeLater(r);
 	}
 	
-	public GameServer(int numberOfPlayers) {
+	public GameServer(int numberOfPlayers, InetAddress[] addresses) {
 		this.numberOfPlayers = numberOfPlayers;
 		this.world = new World(20, 20, numberOfPlayers);
 		SpriteMapData.init(world);
@@ -57,7 +57,7 @@ public class GameServer implements EventHandler {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		at = new AcceptThread();
+		at = new AcceptThread(addresses);
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
 			System.out.println("Server started with IP: " + ip + ":" + port);
@@ -197,22 +197,21 @@ public class GameServer implements EventHandler {
 				e.printStackTrace();
 			}
 			connections.remove(this);
-			if(!at.getThread().isAlive()){
-				at = new AcceptThread();
-			}
-			System.out.println("Connection to :"+socket.getInetAddress()+" closed.");
+//			if(!at.getThread().isAlive()){
+//				at = new AcceptThread();
+//			}
+			System.out.println("Connection to :" + socket.getInetAddress() + " closed.");
 		}
 	}
 
 	private class AcceptThread implements Runnable {
 		Thread t = null;
-
-		public AcceptThread() {
+		InetAddress[] addresses;
+		
+		public AcceptThread(InetAddress[] addresses) {
+			this.addresses = addresses;
 			t = new Thread(this);
 			t.start();
-		}
-		private Thread getThread(){
-			return t;
 		}
 
 		@Override
@@ -221,12 +220,17 @@ public class GameServer implements EventHandler {
 			while (connections.size() < numberOfPlayers) {
 				try {
 					cs = ss.accept();
-					connections.add(new ConnectionHandler(cs));
+					for (int i = 0; i < addresses.length; i++) {
+						if (cs.getInetAddress().equals(addresses[i])) {
+							connections.add(new ConnectionHandler(cs));		
+							System.out.println("IP Connected: " + cs.getInetAddress());
+							break;
+						}
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
 				}
-				System.out.println("IP Connected: " + cs.getInetAddress());
 			}
 			GameManager.INSTANCE.start();
 		}
