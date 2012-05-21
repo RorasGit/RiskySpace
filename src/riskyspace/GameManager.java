@@ -156,7 +156,7 @@ public enum GameManager {
 	}
 
 	public synchronized void handleEvent(Event evt, Player player) {
-		if (!initiated) {
+		if (!initiated || (!activePlayers.contains(player) && player != null)) {
 			return;
 		}
 		/*
@@ -516,10 +516,12 @@ public enum GameManager {
 	}
 
 	private void resetVariables(Player player) {
-		selections.get(player).selectedFleets.clear();
-		selections.get(player).selectedPosition = null;
-		Event evt = new Event(Event.EventTag.SELECTION, null);
-		evt.setPlayer(player);
-		EventBus.SERVER.publish(evt);
+		if(selections.get(player) != null){
+			selections.get(player).selectedFleets.clear();
+			selections.get(player).selectedPosition = null;
+			Event evt = new Event(Event.EventTag.SELECTION, null);
+			evt.setPlayer(player);
+			EventBus.SERVER.publish(evt);
+		}
 	}
 }
