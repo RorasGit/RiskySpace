@@ -2,6 +2,7 @@ package riskyspace.view.lobby;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -17,7 +18,6 @@ public class TextBox extends Button implements SwingRenderAble {
 	private Image background;
 	private Image hilightedBackground;
 	private Image displayedImage;
-	private TextBoxListener textListener;
 	
 	private boolean canGlow;
 	
@@ -31,45 +31,29 @@ public class TextBox extends Button implements SwingRenderAble {
 		getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		
 		
-		textListener = new TextBoxListener();
-		setAction(new Action() {
-			
-			@Override
-			public void performAction() {
-				if(isEnabled()){
-					setHilight();
-				}
-			}
-		});
 	}
-
-	private void setHilight() {
-		
+	@Override
+	public boolean mousePressed(Point p) {
+		if (contains(p)) {
+			setEnabled(true);
+			return true;
+		}
+		return false;
 	}
-	public KeyListener getKeyListener(){
-		return textListener;
+	@Override
+	public boolean mouseReleased(Point p) {
+		return mousePressed(p);
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawImage(background, getX(), getY(), null);
-		g.setFont(ViewResources.getFont().deriveFont(g.getClipBounds().height/40.0f));
-		g.setColor(getTextColor());
-		g.drawString(getText(), getX() + getWidth()/10, getY() + 2*getHeight()/3);
+		if(isEnabled()){
+			g.drawImage(hilightedBackground, getX(), getY(), null);
+		}else{
+			g.drawImage(background, getX(), getY(), null);
+		}
+		g.drawString(getText(), getX() + getWidth()/20, getY() + g.getFontMetrics().getHeight() + getHeight()/10);
 	}
 	
-	private class TextBoxListener extends KeyAdapter {
-		String allowedChars = "1234567890.";
-		
-		public void keyPressed(KeyEvent e) {
-			if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
-				if(getText().length() > 0){
-					setText(getText().substring(0, getText().length()-1));
-				}
-			}else if(allowedChars.contains(""+e.getKeyChar())){
-				setText(getText() + e.getKeyChar());
-			}
-			System.out.println("Text: "+ getText());
-		}
-	}
+	
 }

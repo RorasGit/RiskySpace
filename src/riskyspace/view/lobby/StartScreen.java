@@ -27,7 +27,6 @@ public class StartScreen extends JPanel {
 	
 	private IMenu localLobby = null;
 	private IMenu loadGameMenu = null;
-	private IMenu multiplayerLobby = null;
 	private IMenu settingsMenu = null;
 	
 	private PreMultiplayerMenu preMultiplayerMenu = null;
@@ -38,9 +37,6 @@ public class StartScreen extends JPanel {
 	private SwingButton loadGame = null;
 	private SwingButton exit = null;
 	private SwingButton backButton = null;
-	private SwingButton hostGame = null;
-	private SwingButton joinGame = null;
-	
 	
 	private ClickHandler clickHandler = null;
 	
@@ -49,13 +45,6 @@ public class StartScreen extends JPanel {
 	 */
 	private Image backGround = null;
 
-	/*
-	 * MultiplayerMenu
-	 */
-	private Image rightsideMenu = null;
-	private boolean connectToMultiplayer = true;
-	private TextBox textbox = null;
-	
 
 	public StartScreen() {
 		measureScreen();
@@ -75,9 +64,8 @@ public class StartScreen extends JPanel {
 	
 	public void createMenus() {
 		localLobby = new Lobby(width/6, height/6, 2*width/3, 2*height/3);
-		multiplayerLobby = new Lobby(width/6, height/6, 2*width/3, 2*height/3);
 		settingsMenu = new SettingsMenu(width/3, height/4, width/3, height/3);
-		preMultiplayerMenu = new PreMultiplayerMenu(2*width/3, height/2 - height/6, width/5, 2*height/6);
+		preMultiplayerMenu = new PreMultiplayerMenu(4*width/10, height/3, width/5, 2*height/6);
 		
 		
 		/*
@@ -93,7 +81,6 @@ public class StartScreen extends JPanel {
 	
 	private void hideMenus() {
 		localLobby.setVisible(false);
-		multiplayerLobby.setVisible(false);
 		preMultiplayerMenu.setVisible(false);
 		loadGameMenu.setVisible(false);
 		settingsMenu.setVisible(false);
@@ -115,6 +102,7 @@ public class StartScreen extends JPanel {
 			@Override
 			public void performAction() {
 				preMultiplayerMenu.setVisible(true);
+				startScreenVisible = false;
 			}
 		});
 		loadGame = new SwingButton(width/2 - 125, height/2 - 200 + 200, 250, 50);
@@ -167,12 +155,10 @@ public class StartScreen extends JPanel {
 			if (loadGameMenu.isVisible()) {
 				((SwingRenderAble) loadGameMenu).draw(g);
 			}
-			if (multiplayerLobby.isVisible()) {
-				((SwingRenderAble) multiplayerLobby).draw(g);
-			}
 			if (settingsMenu.isVisible()) {
 				((SwingRenderAble) settingsMenu).draw(g);
 			}
+			((SwingRenderAble) preMultiplayerMenu).draw(g);
 		}
 		else if (startScreenVisible) {
 			localGame.draw(g);
@@ -180,9 +166,7 @@ public class StartScreen extends JPanel {
 			loadGame.draw(g);
 			settings.draw(g);
 			exit.draw(g);
-			if (preMultiplayerMenu.isVisible()) {
-				((SwingRenderAble) preMultiplayerMenu).draw(g);
-			}
+			
 		}
 	}
 
@@ -198,23 +182,19 @@ public class StartScreen extends JPanel {
 				if (loadGame.mousePressed(point)) {return true;}
 				if (settings.mousePressed(point)) {return true;}
 				if (exit.mousePressed(point)) {return true;}
-				if (preMultiplayerMenu instanceof Clickable) {
-					if (((Clickable) preMultiplayerMenu).mousePressed(point)) {
-						return true;
-					}
-				}
+				
 			}
 			if (backButton.mousePressed(point)) {
 				hideMenus();
 				return true;
 			}
-			if (localLobby instanceof Clickable) {
-				if (((Clickable) localLobby).mousePressed(point)) {
+			if (preMultiplayerMenu instanceof Clickable) {
+				if (((Clickable) preMultiplayerMenu).mousePressed(point)) {
 					return true;
 				}
 			}
-			if (multiplayerLobby instanceof Clickable) {
-				if (((Clickable) multiplayerLobby).mousePressed(point)) {
+			if (localLobby instanceof Clickable) {
+				if (((Clickable) localLobby).mousePressed(point)) {
 					return true;
 				}
 			}
@@ -235,11 +215,6 @@ public class StartScreen extends JPanel {
 		private boolean menuRelease(Point point) {
 			if (localLobby instanceof Clickable) {
 				if (((Clickable) localLobby).mouseReleased(point)) {
-					return true;
-				}
-			}
-			if (multiplayerLobby instanceof Clickable) {
-				if (((Clickable) multiplayerLobby).mouseReleased(point)) {
 					return true;
 				}
 			}
@@ -273,9 +248,6 @@ public class StartScreen extends JPanel {
 		}
 	}
 
-	/*
-	 * TODO: fix :PPPPppppPPPpPPPpPpPP
-	 */
 	public KeyListener getKeyListener() {
 		return preMultiplayerMenu.getKeyListener();
 	}
