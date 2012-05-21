@@ -78,6 +78,9 @@ public class StartScreen extends JPanel {
 		multiplayerLobby = new Lobby(width/6, height/6, 2*width/3, 2*height/3);
 		settingsMenu = new SettingsMenu(width/3, height/4, width/3, height/3);
 		
+		/*
+		 * Just as a test, meant to be the saved games.
+		 */
 		ArrayList<String> list = new ArrayList<String>();
 		for (int i=0; i<20; i++) {
 			list.add("" + i);

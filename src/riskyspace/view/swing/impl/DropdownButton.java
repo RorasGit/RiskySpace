@@ -1,4 +1,4 @@
-package riskyspace.view;
+package riskyspace.view.swing.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,9 @@ import java.util.Map;
 import java.awt.Graphics;
 import java.awt.Point;
 
-import riskyspace.view.swing.impl.SwingButton;
+import riskyspace.view.Action;
+import riskyspace.view.Button;
+import riskyspace.view.Clickable;
 
 public class DropdownButton<E> implements Clickable {
 	

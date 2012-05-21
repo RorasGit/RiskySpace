@@ -1,4 +1,4 @@
-package riskyspace.view;
+package riskyspace.view.swing.impl;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -7,6 +7,9 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
+
+import riskyspace.view.Clickable;
+import riskyspace.view.ViewResources;
 
 public class VolumeSlider implements Clickable {
 	

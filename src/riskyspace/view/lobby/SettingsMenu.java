@@ -3,8 +3,8 @@ package riskyspace.view.lobby;
 import java.awt.Graphics;
 import java.awt.Point;
 
-import riskyspace.view.VolumeSlider;
 import riskyspace.view.swing.SwingRenderAble;
+import riskyspace.view.swing.impl.VolumeSlider;
 
 public class SettingsMenu extends AbstractPreGameMenu implements SwingRenderAble {
 	

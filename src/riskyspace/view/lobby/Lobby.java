@@ -6,9 +6,9 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 
-import riskyspace.view.DropdownButton;
 import riskyspace.view.View;
 import riskyspace.view.swing.SwingRenderAble;
+import riskyspace.view.swing.impl.DropdownButton;
 import riskyspace.view.swing.impl.SwingButton;
 
 
@@ -132,5 +132,4 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 			return false;
 	}
 	
-
 }

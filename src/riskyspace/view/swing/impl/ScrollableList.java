@@ -1,4 +1,4 @@
-package riskyspace.view;
+package riskyspace.view.swing.impl;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import riskyspace.view.swing.impl.SwingButton;
+import riskyspace.view.Action;
+import riskyspace.view.Button;
+import riskyspace.view.Clickable;
 
 public class ScrollableList<E> implements Clickable {
 		
@@ -67,11 +69,11 @@ public class ScrollableList<E> implements Clickable {
 		int buttonHeight = height;
 		for (int i = selectedIndex; i < selectedIndex+10; i++) {
 			if (i < savedGamesList.size()) {
-			SwingButton b = new SwingButton(x, yPos, width, buttonHeight);
-			b.setImage("res/menu/lobby/dropdownMenu/dropdownItem.png");
-			b.setText(savedGamesList.get(i).toString());
-			displayedButtonList.add(b);
-			yPos = yPos + buttonHeight;
+				SwingButton b = new SwingButton(x, yPos, width, buttonHeight);
+				b.setImage("res/menu/lobby/dropdownMenu/dropdownItem.png");
+				b.setText(savedGamesList.get(i).toString());
+				displayedButtonList.add(b);
+				yPos = yPos + buttonHeight;
 			}
 		}
 	}
@@ -110,7 +112,8 @@ public class ScrollableList<E> implements Clickable {
 	}
 	@Override
 	public boolean mouseReleased(Point p) {
-		// TODO Auto-generated method stub
+		if(decreaseIndexButton.mouseReleased(p)) {return true;}
+		if(increaseIndexButton.mouseReleased(p)) {return true;}
 		return false;
 	}
 	
