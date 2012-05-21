@@ -121,7 +121,6 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 				}else if(allowedChars.contains(""+e.getKeyChar()) && textbox.getText().length() < 15){
 					textbox.setText(textbox.getText() + e.getKeyChar());
 				}
-				System.out.println("Text: "+ textbox.getText());
 			}
 		}
 	}
