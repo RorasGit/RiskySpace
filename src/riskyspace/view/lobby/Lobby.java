@@ -67,7 +67,7 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble {
 	}
 	
 	private void createBackground() {
-		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/multiplayer/widerMenubackground.png").
+		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/widerMenubackground.png").
 				getScaledInstance(2*getMenuWidth()/7, getMenuHeight()-2*margin, Image.SCALE_DEFAULT);
 		gameModeImage = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/Annihilation.png").
 				getScaledInstance(2*getMenuWidth()/7 - 6*margin, (2*getMenuWidth()/7 - 3*margin)/2, Image.SCALE_DEFAULT);

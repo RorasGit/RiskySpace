@@ -36,6 +36,8 @@ public class StartScreen extends JPanel {
 	private SwingButton loadGame = null;
 	private SwingButton exit = null;
 	private SwingButton backButton = null;
+	private SwingButton hostGame = null;
+	private SwingButton joinGame = null;
 	
 	
 	private ClickHandler clickHandler = null;
@@ -152,6 +154,12 @@ public class StartScreen extends JPanel {
 				startScreenVisible = true;
 			}
 		});
+		
+		joinGame = new SwingButton(width/2 - width/3 + 2*width/3 - 2*(2*width/3)/7, 2*height/6 + 10, 180, 50);
+		joinGame.setImage("res/menu/lobby/joingame.png");
+		
+		hostGame = new SwingButton(width/2 - width/3 + 2*width/3 - 2*(2*width/3)/7, 4*height/6 + 10, 180, 50);
+		hostGame.setImage("res/menu/lobby/hostgame.png");
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -188,6 +196,8 @@ public class StartScreen extends JPanel {
 	private void drawJoinMenu(Graphics g) {	
 		g.drawImage(rightsideMenu, width/2 - width/3 + 2*width/3 - 2*(2*width/3)/7, height/6 + 10, null);
 		textbox.draw(g);
+		joinGame.draw(g);
+		hostGame.draw(g);
 	}
 
 	private class ClickHandler implements MouseListener {

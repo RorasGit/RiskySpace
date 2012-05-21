@@ -2,12 +2,10 @@ package riskyspace.view.lobby;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import com.sun.media.sound.Toolkit;
-
 import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.ViewResources;
@@ -23,6 +21,8 @@ public class TextBox extends Button implements SwingRenderAble{
 		super(x, y, width, height);
 		setText("");
 		setTextColor(240, 240, 240);
+		background = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/textItem.png").
+				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		textListener = new TextBoxListener();
 		setAction(new Action() {
 			

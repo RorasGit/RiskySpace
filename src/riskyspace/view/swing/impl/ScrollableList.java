@@ -82,7 +82,7 @@ public class ScrollableList<E> implements Clickable {
 			for (int i = selectedIndex; i < selectedIndex+10; i++) {
 				if (i < savedGamesList.size()) {
 					SwingButton b = new SwingButton(x + 5, yPos, width - 10, buttonHeight);
-					b.setImage("res/menu/lobby/dropdownMenu/dropdownItem.png");
+					b.setImage("res/menu/lobby/textItem.png");
 					b.setText(savedGamesList.get(i).toString());
 					displayedButtonList.add(b);
 					yPos = yPos + buttonHeight;
