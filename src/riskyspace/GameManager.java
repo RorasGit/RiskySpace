@@ -155,7 +155,7 @@ public enum GameManager {
 		}
 	}
 
-	public void handleEvent(Event evt, Player player) {
+	public synchronized void handleEvent(Event evt, Player player) {
 		if (!initiated) {
 			return;
 		}

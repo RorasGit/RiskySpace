@@ -31,6 +31,7 @@ public class GameServer implements EventHandler {
 	private AcceptThread at;
 	private String ip;
 	private int port = 6013;
+	
 
 	/**
 	 * MAIN METHOD
@@ -156,6 +157,7 @@ public class GameServer implements EventHandler {
 						disconnect();
 						break;
 					}
+
 					Object o = input.readObject();
 					if (o != null && o instanceof Event) {
 						Event evt = (Event) o;
