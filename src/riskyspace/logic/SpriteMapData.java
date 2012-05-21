@@ -58,7 +58,7 @@ public class SpriteMapData implements Serializable {
 		seen.put(Player.BLUE, new HashSet<Position>());
 		seen.put(Player.RED, new HashSet<Position>());
 		seen.put(Player.GREEN, new HashSet<Position>());
-		seen.put(Player.PINK, new HashSet<Position>());
+		seen.put(Player.YELLOW, new HashSet<Position>());
 	}
 	
 	/**

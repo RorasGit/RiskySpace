@@ -30,7 +30,7 @@ import riskyspace.services.EventText;
 public enum GameManager {
 	INSTANCE;
 	
-	private Player[] players = {Player.BLUE, Player.RED, Player.GREEN, Player.PINK};
+	private Player[] players = {Player.BLUE, Player.RED, Player.GREEN, Player.YELLOW};
 	
 	private Player currentPlayer = null;
 	private boolean initiated = false;

@@ -188,7 +188,7 @@ public class SwingRenderArea extends JPanel {
 		cameras.put(Player.BLUE, new Camera(0.93f,0.92f));
 		cameras.put(Player.RED, new Camera(0.07f,0.08f));
 		cameras.put(Player.GREEN, new Camera(0.07f,0.92f));
-		cameras.put(Player.PINK, new Camera(0.93f,0.08f));
+		cameras.put(Player.YELLOW, new Camera(0.93f,0.08f));
 		cc = new CameraController();
 	}
 	

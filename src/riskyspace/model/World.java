@@ -35,14 +35,14 @@ public class World implements Serializable {
 		
 		playerstats.put(Player.BLUE, new PlayerStats());
 		playerstats.put(Player.RED, new PlayerStats());
-		playerstats.put(Player.PINK, new PlayerStats());
+		playerstats.put(Player.YELLOW, new PlayerStats());
 		playerstats.put(Player.GREEN, new PlayerStats());
 		
 		buildqueue = new HashMap<Player, BuildQueue>();
 		
 		buildqueue.put(Player.BLUE, new BuildQueue(5));
 		buildqueue.put(Player.RED, new BuildQueue(5));
-		buildqueue.put(Player.PINK, new BuildQueue(5));
+		buildqueue.put(Player.YELLOW, new BuildQueue(5));
 		buildqueue.put(Player.GREEN, new BuildQueue(5));
 	}
 

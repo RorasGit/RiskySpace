@@ -51,7 +51,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 	private Player[] players = new Player[]{
 		Player.RED,
 		Player.BLUE,
-		Player.PINK,
+		Player.YELLOW,
 		Player.GREEN,
 	};
 	private int[] y = new int[]{
@@ -157,7 +157,7 @@ public class GLRecruitMenu extends GLAbstractSideMenu {
 		cities.put(Player.BLUE, sprite);
 		sprite = new GLSprite("menu/city_yellow", 970, 594);
 		sprite.setBounds(imageRenderRect);
-		cities.put(Player.PINK, sprite);
+		cities.put(Player.YELLOW, sprite);
 		sprite = new GLSprite("menu/city_green", 606, 389);
 		sprite.setBounds(imageRenderRect);
 		cities.put(Player.GREEN, sprite);

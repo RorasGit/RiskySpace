@@ -6,6 +6,6 @@ public enum Player implements Serializable  {
 	BLUE,
 	RED,
 	GREEN,
-	PINK,
+	YELLOW,
 	WORLD;
 }

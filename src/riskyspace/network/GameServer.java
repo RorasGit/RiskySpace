@@ -37,7 +37,7 @@ public class GameServer implements EventHandler {
 	 * MAIN METHOD
 	 */
 	public static void main(String[] args) throws IOException {
-		final GameServer server = new GameServer(2);
+		final GameServer server = new GameServer(4);
 		Runnable r = new Runnable() {
 			public void run() {
 				new GameClient(server.getIP(), server.getPort());
@@ -90,7 +90,7 @@ public class GameServer implements EventHandler {
 			if (evt.getTag() == Event.EventTag.STATS_CHANGED) {
 				sendObject(evt, evt.getPlayer());
 			} else if (evt.getTag() == Event.EventTag.UPDATE_SPRITEDATA) {
-				if(evt.getPlayer() != null){
+				if (evt.getPlayer() != null){
 					Event event = new Event(Event.EventTag.UPDATE_SPRITEDATA, SpriteMapData.getData(evt.getPlayer()));
 					sendObject(event, evt.getPlayer());
 				} else {

@@ -118,7 +118,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 		cities.put(Player.BLUE, sprite);
 		sprite = new GLSprite("menu/city_yellow", 970, 594);
 		sprite.setBounds(imageRenderRect);
-		cities.put(Player.PINK, sprite);
+		cities.put(Player.YELLOW, sprite);
 		sprite = new GLSprite("menu/city_green", 606, 389);
 		sprite.setBounds(imageRenderRect);
 		cities.put(Player.GREEN, sprite);
@@ -191,7 +191,7 @@ public class GLColonyMenu extends GLAbstractSideMenu{
 	
 	private void drawMenuName(GLAutoDrawable drawable) {
 		if(!initiated){
-			nameRenderer = new TextRenderer(ViewResources.getFont().deriveFont((float)getMenuHeight()/20));
+			nameRenderer = new TextRenderer(ViewResources.getFont().deriveFont((float)getMenuHeight()/35));
 			textX = getX() - ((int)nameRenderer.getBounds(getMenuName()).getWidth() / 2) + (getMenuWidth() / 2);
 			textY = getMenuHeight() - ((int)nameRenderer.getBounds(getMenuName()).getHeight() / 2) - (2*margin + colonyPicture.getBounds().getHeight());
 			initiated = true;

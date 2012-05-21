@@ -262,7 +262,7 @@ public class GLRenderArea implements GLRenderAble {
 		cameras.put(Player.BLUE, new GLCamera(0.93f,0.08f));
 		cameras.put(Player.RED, new GLCamera(0.07f,0.92f));
 		cameras.put(Player.GREEN, new GLCamera(0.07f,0.08f));
-		cameras.put(Player.PINK, new GLCamera(0.93f,0.92f));
+		cameras.put(Player.YELLOW, new GLCamera(0.93f,0.92f));
 		cc = new CameraController();
 	}
 	
@@ -333,17 +333,43 @@ public class GLRenderArea implements GLRenderAble {
 	}
 
 	private void drawGameOver(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
-		if(defeated){
+		if (defeated) {
 			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
 			
-			statusTextRenderer.beginRendering(screenArea.getWidth(), screenArea.getHeight());
-			statusTextRenderer.setColor(new Color(240, 240, 240));
+			/* Center of screen position */
+			int cX = screenArea.getWidth() / 2;
+			int cY = screenArea.getHeight() / 2;
 			
+			String line1 = "YOU HAVE BEEN DEFEATED!";
+			String line2 = "ALL YOUR BASE";
+			String line3 = "ARE BELONG TO";
+			String line4 = statusString.substring(0, statusString.length()-7);
 			
-			statusTextRenderer.setColor(statusStringColor);
+			/* Calculate lineHeight lH to use as Y offset */
+			int lH = (int) statusTextRenderer.getBounds("height").getHeight()+screenArea.getHeight() / 24;
+			
+			/* Calculate width offset for the intended string to print at row3 */
+			int wA = (int) statusTextRenderer.getBounds(line3).getWidth();
+			int wB = (int) statusTextRenderer.getBounds(line4).getWidth();
+			int cS = (int) statusTextRenderer.getCharWidth(' '); // Estimated width of one char
+			int wO = wA + wB;
+			
+			/* Calculate center of text Y */
+			int cTextY = cY + lH;
+			
+			Rectangle row1 = new Rectangle(cX - 1, cTextY + lH - 1, 2, 2);			
+			Rectangle row2 = new Rectangle(cX - 1, cTextY - 1, 2, 2);
+			Rectangle row3a = new Rectangle(cX - wO/2 + wA/2 - 1, cTextY - lH - 1, 2, 2);
+			Rectangle row3b = new Rectangle(cX + wO/2 - wB/2 + cS - 1, cTextY - lH - 1, 2, 2);
+			
+			/* Here we draw the game over message */
+
+			drawString(statusTextRenderer, row1, line1, ViewResources.WHITE);
+			drawString(statusTextRenderer, row2, line2, ViewResources.WHITE);
+			drawString(statusTextRenderer, row3a, line3, ViewResources.WHITE);
+			drawString(statusTextRenderer, row3b, line4, statusStringColor);
 			
 			statusTextRenderer.setColor(1,1,1,1);
-			statusTextRenderer.endRendering();
 		}
 	}
 
@@ -354,7 +380,7 @@ public class GLRenderArea implements GLRenderAble {
 	 * @param zIndex
 	 */
 	private void drawStatusBox(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
-		if (statusString.length() > 0) {
+		if (statusString.length() > 0 && !defeated) {
 			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
 			drawString(statusTextRenderer, statusBackground.getBounds(), statusString, statusStringColor);
 		}
@@ -373,7 +399,7 @@ public class GLRenderArea implements GLRenderAble {
 		int textWidth = (int) textRenderer.getBounds(s).getWidth();
 		int textHeigth = (int) textRenderer.getBounds(s).getHeight();
 		int x = (rect.getX() + rect.getWidth() / 2) - textWidth / 2;
-		int y = (rect.getY() + rect.getHeight()/ 2) - textHeigth / 2;
+		int y = (rect.getY() + rect.getHeight() / 2) - textHeigth / 2;
 		textRenderer.draw(s, x, y);
 		textRenderer.setColor(1,1,1,1);
 		textRenderer.endRendering();

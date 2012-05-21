@@ -69,7 +69,7 @@ public class MapGenerator {
 				Player.RED,
 				Player.BLUE,
 				Player.GREEN,
-				Player.PINK,
+				Player.YELLOW,
 		};
 		
 		for (int i = 0; i < numberOfPlayers; i++) {
