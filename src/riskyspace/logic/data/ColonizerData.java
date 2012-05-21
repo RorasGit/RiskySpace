@@ -27,7 +27,7 @@ public class ColonizerData extends SpriteData {
 	}
 
 	public Position[] getSteps() {
-		return null;
+		return steps;
 	}
 
 	public void setSteps(Position[] path) {

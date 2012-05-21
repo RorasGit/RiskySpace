@@ -214,9 +214,8 @@ public enum GameManager {
 				}
 			}
 		}
-		if (evt.getTag() == Event.EventTag.PLANET_SELECTED) {
-//			Player loser = (Player) evt.getObjectValue();
-			Player loser = Player.RED;
+		if (evt.getTag() == Event.EventTag.HOME_LOST) {
+			Player loser = (Player) evt.getObjectValue();
 			activePlayers.remove(loser);
 			Event homeLostEvent = new Event(Event.EventTag.HOME_LOST, loser);
 			homeLostEvent.setPlayer(loser);
