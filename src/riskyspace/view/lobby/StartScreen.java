@@ -68,7 +68,7 @@ public class StartScreen extends JPanel {
 	}
 
 	private void createJoinMenu() {
-		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/multiplayer/widerMenubackground.png").
+		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/widerMenubackground.png").
 				getScaledInstance((4*width/3)/7, 2*height/3-2*10, Image.SCALE_DEFAULT);	
 		textbox = new TextBox(width/2 - width/3 + 2*width/3 - (4*width/3)/7 + 20, 2*height/9 + 30, (4*width/3)/7-40, 2*height/3-6*10);
 	}
