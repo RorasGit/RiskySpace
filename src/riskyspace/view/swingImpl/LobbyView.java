@@ -14,6 +14,7 @@ public class LobbyView {
 	public LobbyView() {
 		setFrame();
 		startScreen = new StartScreen();
+		frame.addKeyListener(startScreen.getKeyListener());
 		frame.add(startScreen);
 		frame.setVisible(true);
 	}

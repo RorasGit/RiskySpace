@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -48,7 +49,8 @@ public class StartScreen extends JPanel {
 	 * MultiplayerMenu
 	 */
 	private Image rightsideMenu = null;
-	private boolean connectToMultiplayer = false;
+	private boolean connectToMultiplayer = true;
+	private TextBox textbox = null;
 	
 
 	public StartScreen() {
@@ -66,9 +68,10 @@ public class StartScreen extends JPanel {
 	private void createJoinMenu() {
 		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/multiplayer/widerMenubackground.png").
 				getScaledInstance((4*width/3)/7, 2*height/3-2*10, Image.SCALE_DEFAULT);	
+		textbox = new TextBox(width/2 - width/3 + 2*width/3 - (4*width/3)/7 + 20, 2*height/9 + 30, (4*width/3)/7-40, 2*height/3-6*10);
 	}
 
-	public void measureScreen() {
+	private void measureScreen() {
 		width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	}
@@ -183,7 +186,8 @@ public class StartScreen extends JPanel {
 	}
 	
 	private void drawJoinMenu(Graphics g) {	
-		g.drawImage(rightsideMenu, width/2 - width/3 + 2*width/3 - 2*(2*width/3)/7, height/2 - height/3 + 10, null);
+		g.drawImage(rightsideMenu, width/2 - width/3 + 2*width/3 - 2*(2*width/3)/7, height/6 + 10, null);
+		textbox.draw(g);
 	}
 
 	private class ClickHandler implements MouseListener {
@@ -235,5 +239,9 @@ public class StartScreen extends JPanel {
 				if (menuClick(me.getPoint())) {return;}
 			}
 		}
+	}
+
+	public KeyListener getKeyListener() {
+		return textbox.getKeyListener();
 	}
 }
