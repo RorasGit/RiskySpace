@@ -138,7 +138,9 @@ public class GameClient implements EventHandler {
 	@Override
 	public void performEvent(Event evt) {
 		try {
-			output.writeObject(evt);
+			if (socket.isConnected() && !socket.isOutputShutdown()) {
+				output.writeObject(evt);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
