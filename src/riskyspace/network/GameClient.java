@@ -63,7 +63,7 @@ public class GameClient implements EventHandler {
 
 	private void connect(String hostIP, int hostPort) {
 		long startTime = System.currentTimeMillis();
-		while (socket == null && System.currentTimeMillis() - startTime > 10000) {
+		while (socket == null && System.currentTimeMillis() - startTime < 5000) {
 			/*
 			 * Loop until Connected
 			 */
