@@ -115,6 +115,8 @@ public class GLRenderArea implements GLRenderAble {
 	 */
 	private Player viewer = null;
 	
+	private GLButton disconnectButton;
+	
 	private boolean gameOver = false;
 	private boolean winner = false;
 
@@ -270,6 +272,7 @@ public class GLRenderArea implements GLRenderAble {
 		cc = new CameraController();
 	}
 	
+	
 	/**
 	 * Set this view to the perspective of a Player
 	 * @param player The Player whos perspective is to be used for this view
@@ -296,15 +299,25 @@ public class GLRenderArea implements GLRenderAble {
 		}
 	}
 	
-	public void showGameOver(Player killedBy) {
+	public void showGameOver() {
+		int width = screenArea.getWidth() / 2;
+		int height = screenArea.getHeight() / 2;
+		int x = screenArea.getWidth() / 2 - width / 2;
+		int y = screenArea.getHeight() / 2 - height / 2;
+		statusBackground = new GLSprite("square_button", 128, 80);
+		statusBackground.setBounds(new Rectangle(x, y, width, height));
 		statusString = "";
-		killedByString = killedBy.toString();
 		gameOver = true;
 	}
 	
-	public void showWinnerScreen() {
-		gameOver = true;
+	public void setLoser(Player killedBy) {
+		killedByString = killedBy.toString();
+		showGameOver();
+	}
+	
+	public void setWinner() {
 		winner = true;
+		showGameOver();
 	}
 	
 	@Override
@@ -339,14 +352,6 @@ public class GLRenderArea implements GLRenderAble {
 
 	private void drawGameOver(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
 		if (gameOver) {
-			
-			int width = screenArea.getWidth() / 2;
-			int height = screenArea.getHeight() / 2;
-			int x = screenArea.getWidth() / 2 - width / 2;
-			int y = screenArea.getHeight() / 2 - height / 2;
-			statusBackground.setBounds(new Rectangle(x, y, width, height));
-			statusBackground = new GLSprite("square_button", 128, 80);
-			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
 			
 			/* Center of screen position */
 			int cX = screenArea.getWidth() / 2;
@@ -387,7 +392,8 @@ public class GLRenderArea implements GLRenderAble {
 			Rectangle row2 = new Rectangle(cX - 1, cTextY - 1, 2, 2);
 			Rectangle row3a = new Rectangle(cX - wO/2 + wA/2 - 1, cTextY - lH - 1, 2, 2);
 			Rectangle row3b = new Rectangle(cX + wO/2 - wB/2 + cS - 1, cTextY - lH - 1, 2, 2);
-			Rectangle row4 = new Rectangle(cX -1, cY - lH -1, 2, 2);
+			
+			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
 			
 			/* Here we draw the game over message */
 
@@ -395,17 +401,6 @@ public class GLRenderArea implements GLRenderAble {
 			drawString(statusTextRenderer, row2, line2, ViewResources.WHITE, drawable.getWidth(), drawable.getHeight());
 			drawString(statusTextRenderer, row3a, line3, ViewResources.WHITE, drawable.getWidth(), drawable.getHeight());
 			drawString(statusTextRenderer, row3b, line4, statusStringColor, drawable.getWidth(), drawable.getHeight());
-			
-			GLButton disconnectButton = new GLButton(cX -1, cY - cTextY - 1, 2, 2);
-			disconnectButton.setTexture("wide_button", 32, 8);
-			disconnectButton.setAction(new Action() {
-				@Override
-				public void performAction() {
-					System.exit(0);
-				}
-			});
-			disconnectButton.draw(drawable, null, targetArea, zIndex);
-			drawString(statusTextRenderer, row4, "Disconnect", ViewResources.WHITE);
 			
 			statusTextRenderer.setColor(1,1,1,1);
 		}
@@ -764,6 +759,7 @@ public class GLRenderArea implements GLRenderAble {
 				if (fleetClick(me)) {return;}
 				if (colonizerClick(me.getPoint())) {return;}
 				if (planetClick(me.getPoint())) {return;}
+				if (disconnectButton.mousePressed(me.getPoint())) {return;}
 				else {
 					/*
 					 * Click was not in any trigger zone. Call deselect.
