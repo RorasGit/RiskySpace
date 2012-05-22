@@ -1,0 +1,87 @@
+README RiskySpace
+
+Created by: Daniel Augurell, Alexander Hederstaf, Sebastian Odbjer, Jonatan Rapp
+-----------------------------------
+
+RiskySpace is a turn based strategy game set in a galaxy torn by war. Many great empires have fallen and it is now time to set a new foothold through colonization and warfare.
+
+-----------------------------------
+
+The game is coded in Java and uses the following libraries:
+JOGL openGL library for graphics. http://jogamp.org/jogl/www/
+JLayer version 1.0.1 for sound. http://javazoom.net/javalayer/javalayer.html
+
+-----------------------------------
+
+HOW TO PLAY:
+Start game:
+Start the game through the Lobby. (Main)
+Click on the multiplayer or local game buttons.
+Set number of players and game mode and either start game or start letting people join your server throught your ip that is printed in the top left corner.
+Click the Start Game button.
+
+Play the game:
+
+Turns:
+Blue Player start and you can only play during your own turn.
+When it is not your turn a box will be displayed with the name of the current player.
+
+Select Planet:
+Click on a planet with a ring of your color around it to select one of your colonies. In the Colony menu you can either upgrade buildings or recruit new ships
+
+Select BattleShips Fleet:
+BattleShips are in the bottom left part of a territory. They can be selected by either clicking (looping through all), Shift + clicking to add to your current selection or by pressing and holding somewhere to create a selection box when moving the mouse, all Fleets in the box will be selected.
+
+Colonization:
+To colonize planets you need to first recruit a Colonizer from your home planet, it is the only planet that can build colonizers. After it is built you can select it by simply clicking it. When it is in the same territory as an unoccupied planet you can select the Planet and build a colony, spending the colonizer.
+
+Set Paths:
+When fleets or a colonizer is selected you can right click on another territory to set a path to that territory. All fleets with a path will move on the next move fleets command.
+
+Move Fleets:
+To move all fleets that have a set path either click the perform moves button or hit SPACE. If you press space again before movement is completed is is Interrupted. Fleets may move until they reach their target, until their energy is out (see Energy) or they are blocked by an enemy fleet. Battle occurs at end of Move.
+
+Winning:
+To win a game with gamemode Annihilation you need to be the last man standing. You lose if your home planet is killed by enemy fleets so defend it well while lainching attacks at your enemies.
+
+Battle:
+Battle occurs after move in all territories that have a conflict, that is if there exists fleets or planets from two different players. In a Battle fleets shoot each other with lazers until one side is defeated. If the losing player had a colony in the battle territory it is destroyed.
+
+Resources:
+There are two resource types, gas and metal. Metal is used for building and is present in large amounts in the galaxy, Metal is mined from brown metal planets. Gas is used for more advanced technology such as higher level buildings and ships, Gas is extraced from blue gas planets. To gain resources you need to build a colony on the planet. You can upgrade the Mine in a colony to mine faster.
+
+Supply:
+Fleets cost supply and your empire can only support a certian amount of supply. The start supply is 5 and you gain an additional 2 for each of your planets. 
+All BattleShips cost 1 except for Destroyer which cost 2 supply. Colonizers doesn't take supply.
+
+Energy:
+All fleets have a base amount of Energy depending on their slowest ship. Each time a fleet is moved from one territory to another one energy is used on all ships. If the fleet is out of energy it can not move. Energy is reset on new turn.
+-Base Energy
+--Scout: 4
+--Hunter: 3
+--Destroyer: 3
+--Colonizer: 2
+
+Ship Costs:
+-Scout 50 Metal
+-Hunter 120 Metal and 25 gas
+-Destroyer 400 Metal and 100 gas
+-Colonizer 200 Metal
+
+Build Time:
+This is the time it takes to build a ship or upgrade a building, a colony can only handle one item at a time and can only keep 5 items in a queue.
+-Build Times
+--Scout, Hunter, Colonizer: 1
+--Destroyer: 2
+--Buildings take 1-3 turns to build.
+
+Tips:
+-Try to build up some early Scouts to secure a perimiter as they have long sight.
+-Expand to gain more supply and thereby a larger fleet.
+-Take some early gas to build up a bank to build advanced tech and heavy BattleShips.
+-----------------------------------
+
+MISC:
+The Awt View implementation is not used by the game at the moment though some classes in the swing packages are used by the lobby.
+
+
