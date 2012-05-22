@@ -1,4 +1,4 @@
-package riskyspace;
+package riskyspace.view;
 
 import java.awt.Color;
 import java.util.HashMap;

@@ -12,8 +12,8 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLException;
 import javax.media.opengl.GLProfile;
 
-import riskyspace.PlayerColors;
 import riskyspace.model.Player;
+import riskyspace.view.PlayerColors;
 
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;

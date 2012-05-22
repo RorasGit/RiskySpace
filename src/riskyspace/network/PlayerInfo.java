@@ -1,4 +1,4 @@
-package riskyspace;
+package riskyspace.network;
 
 import java.net.InetAddress;
 

@@ -25,6 +25,7 @@ import riskyspace.model.ShipType;
 import riskyspace.model.Territory;
 import riskyspace.model.World;
 import riskyspace.model.building.Ranked;
+import riskyspace.network.PlayerInfo;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 

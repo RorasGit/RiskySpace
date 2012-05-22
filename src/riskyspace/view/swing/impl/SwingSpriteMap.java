@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import riskyspace.PlayerColors;
 import riskyspace.logic.Path;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.logic.data.ColonizerData;
@@ -20,6 +19,7 @@ import riskyspace.logic.data.PlanetData;
 import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
+import riskyspace.view.PlayerColors;
 import riskyspace.view.ViewResources;
 
 /**

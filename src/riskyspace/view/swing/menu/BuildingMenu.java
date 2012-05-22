@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import riskyspace.PlayerColors;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
@@ -23,6 +22,7 @@ import riskyspace.model.building.Turret;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
+import riskyspace.view.PlayerColors;
 import riskyspace.view.RankIndicator;
 import riskyspace.view.ViewResources;
 import riskyspace.view.swing.SwingRenderAble;

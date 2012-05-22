@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import riskyspace.PlayerColors;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
 import riskyspace.view.Action;
+import riskyspace.view.PlayerColors;
 import riskyspace.view.ViewResources;
 import riskyspace.view.swing.impl.SwingButton;
 /**
