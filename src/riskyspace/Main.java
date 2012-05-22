@@ -19,7 +19,7 @@ public class Main {
 	public static void main(String[] args) {
 		GameDataHandler.init();
 		try {
-			Settings.loadSetting(GameDataHandler.getSaveFolder() + File.separator);
+			Settings.loadSetting(GameDataHandler.getSaveFolder() + File.separator + "settings.txt");
 		} catch (IOException e) {
 		}
 		new LobbyView();

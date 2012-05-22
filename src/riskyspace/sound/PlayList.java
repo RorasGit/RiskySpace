@@ -3,6 +3,8 @@ package riskyspace.sound;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import riskyspace.data.Settings;
+
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
@@ -61,39 +63,41 @@ public class PlayList {
 	 * Start playing this playList
 	 */
 	public void start() {
-		stopped = false;
-		Runnable r = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					if (tracks.length == 0) {
-						stopped = true;
-					}
-					while (!stopped) {
-						for (int i = songIndex; i < tracks.length; i++) {
-							FileInputStream fis = new FileInputStream("res/sound/" + tracks[i]);
-							soundPlayer = new Player(fis);
-							soundPlayer.play();
-							try {
-								Thread.sleep(45 * 1000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							if (stopped) {
-								break;
-							}
+		if (Settings.isMusicOn()) {
+			stopped = false;
+			Runnable r = new Runnable() {
+				@Override
+				public void run() {
+					try {
+						if (tracks.length == 0) {
+							stopped = true;
 						}
-						songIndex = 0;
+						while (!stopped) {
+							for (int i = songIndex; i < tracks.length; i++) {
+								FileInputStream fis = new FileInputStream("res/sound/" + tracks[i]);
+								soundPlayer = new Player(fis);
+								soundPlayer.play();
+								try {
+									Thread.sleep(45 * 1000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								if (stopped) {
+									break;
+								}
+							}
+							songIndex = 0;
+						}
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (JavaLayerException e) {
+						e.printStackTrace();
 					}
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (JavaLayerException e) {
-					e.printStackTrace();
 				}
-			}
-		};
-		playThread = new Thread(r);
-		playThread.start();
+			};
+			playThread = new Thread(r);
+			playThread.start();
+		}
 	}
 	
 	/**

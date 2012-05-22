@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import riskyspace.data.GameDataHandler;
 import riskyspace.data.Settings;
+import riskyspace.sound.PlayList;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
 import riskyspace.view.IMenu;
@@ -45,19 +46,23 @@ public class StartScreen extends JPanel {
 	
 	private ClickHandler clickHandler = null;
 	
+	private PlayList playlist = null;
+	
 	/*
 	 * Background
 	 */
 	private Image backGround = null;
 
 
-	public StartScreen() {
+	public StartScreen(PlayList playlist) {
 		measureScreen();
 		backGround = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/background.png").
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		createButtons();
 		createMenus();
 		clickHandler = new ClickHandler();
+		this.playlist = playlist;
+		this.playlist.start();
 		addMouseListener(clickHandler);
 	}	
 
@@ -130,9 +135,11 @@ public class StartScreen extends JPanel {
 				 if (Settings.isMusicOn()) {
 					 Settings.setProperty("music_enabled=false");
 				     musicButton.setImage("res/menu/lobby/music_off_button.png");
+				     playlist.pause();
 				 } else {
 					 Settings.setProperty("music_enabled=true");
 					 musicButton.setImage("res/menu/lobby/music_on_button.png");
+					 playlist.start();
 				 }
 			}
 		});

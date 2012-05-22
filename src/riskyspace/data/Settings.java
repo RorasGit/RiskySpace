@@ -33,7 +33,7 @@ public class Settings {
 	
 	public static void saveProperties() {
 		try {
-			File settingsFile = new File(GameDataHandler.getSaveFolder() + File.separator);
+			File settingsFile = new File(GameDataHandler.getSaveFolder() + File.separator + "settings.txt");
 			settingsFile.delete();
 			settingsFile.createNewFile();
 			FileWriter fw = new FileWriter(settingsFile);

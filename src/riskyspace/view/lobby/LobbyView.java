@@ -19,11 +19,11 @@ public class LobbyView implements Observer {
 	
 	public LobbyView () {
 		setFrame();
-		startScreen = new StartScreen();
+		playList = new PlayList(PlayList.STANDARD_LOBBY_LOOP);
+		startScreen = new StartScreen(playList);
 		startScreen.setObserver(this);
 		frame.addKeyListener(startScreen.getKeyListener());
 		frame.add(startScreen);
-		playList = new PlayList(PlayList.STANDARD_LOBBY_LOOP);
 		frame.setVisible(true);
 		renderThread = new Thread(new Runnable(){
 			@Override
@@ -38,7 +38,6 @@ public class LobbyView implements Observer {
 				}
 		}});
 		renderThread.start();
-		playList.start();
 	}
 	
 	private void setFrame() {
