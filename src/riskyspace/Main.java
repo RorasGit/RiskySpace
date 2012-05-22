@@ -2,6 +2,7 @@ package riskyspace;
 
 import javax.swing.JFrame;
 
+import riskyspace.data.GameDataHandler;
 import riskyspace.view.lobby.LobbyView;
 
 /**
@@ -12,6 +13,7 @@ public class Main {
 	private static JFrame frame;
 	
 	public static void main(String[] args) {
+		GameDataHandler.init();
 		new LobbyView();
 	}
 	public static JFrame getFrame(){

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import riskyspace.data.GameDataHandler;
 import riskyspace.logic.Battle;
 import riskyspace.logic.FleetMove;
 import riskyspace.logic.Path;
@@ -17,6 +18,7 @@ import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
+import riskyspace.model.PlayerStats;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
@@ -56,6 +58,7 @@ public enum GameManager {
 		 * Position selected (Colony, Planet)
 		 */
 		private Position selectedPosition = null;
+		
 	}
 	
 	/**
@@ -122,6 +125,18 @@ public enum GameManager {
 		return turn;
 	}
 	
+	public PlayerStats getStats(Player player) {
+		return world.getStats(player);
+	}
+
+	public Integer getWorldRows() {
+		return world.getRows();
+	}
+
+	public Integer getWorldCols() {
+		return world.getCols();
+	}
+	
 	public PlayerInfo getInfo(Player player) {
 		return playerInfo.get(player);
 	}
@@ -151,6 +166,9 @@ public enum GameManager {
 		updateSelections();
 		if (currentPlayer == players[0]) {
 			turn++;
+		}
+		if (turn % 2 == 0) {
+			GameDataHandler.autoSave(this.world, activePlayers, currentPlayer, turn, "Annihilation");
 		}
 	}
 

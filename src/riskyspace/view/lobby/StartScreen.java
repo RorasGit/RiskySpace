@@ -12,6 +12,7 @@ import java.util.Observer;
 
 import javax.swing.JPanel;
 
+import riskyspace.data.GameDataHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
 import riskyspace.view.IMenu;
@@ -74,14 +75,14 @@ public class StartScreen extends JPanel {
 		settingsMenu = new SettingsMenu(width/3, height/4, width/3, height/3);
 		preMultiplayerMenu = new PreMultiplayerMenu(4*width/10, height/3, width/5, 2*height/6);
 		
-		/*
-		 * Just as a test, meant to be the saved games.
-		 */
-		ArrayList<String> list = new ArrayList<String>();
-		for (int i=0; i<20; i++) {
-			list.add("" + i);
+		/* Convert game name String[] to ArrayList */
+		String[] savedList = GameDataHandler.getSavedGames();
+		ArrayList<String> gameList = new ArrayList<String>();
+		
+		for (int i = 0; i < savedList.length; i++) {
+			gameList.add(savedList[i]);
 		}
-		loadGameMenu = new LoadGameMenu<String>(2*width/5, height/5, width/5, height/2, list);
+		loadGameMenu = new LoadGameMenu<String>(2*width/5, height/5, width/5, height/2, gameList);
 	}
 	
 	private void hideMenus() {

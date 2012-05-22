@@ -23,27 +23,23 @@ import riskyspace.model.World;
  */
 public class GameDataHandler {
 	
-	private File riskySpace = null;
-	private File riskySave = null;
-	private File oldSave = null;
-	private File newSave = null;
-	
-	private final static Position pos = new Position (1, 1);
+	private static File riskySpace = null;
+	private static File riskySave = null;
+	private static File oldSave = null;
+	private static File newSave = null;
 	
 	/**
 	 * A default constructor.
 	 */
-	public GameDataHandler() {
-		this(System.getProperty("user.home"));
+	private GameDataHandler() {
+		;
 	}
 	
-	/**
-	 * A constructor that sets the file path you want to save your games to.
-	 * Directories RiskySpace and RiskySpace\\Save will be created for you
-	 * at the chosen path destination.
-	 * @param saveFolder - A string representing the file path you wish to use.
-	 */
-	public GameDataHandler(String saveFolder) {
+	public static void init() {
+		init(System.getProperty("user.home"));
+	}
+	
+	public static void init(String saveFolder) {
 		saveFolder = saveFolder + File.separator + "RiskySpace" +
 				File.separator;
 		riskySpace = new File(saveFolder);
@@ -74,7 +70,7 @@ public class GameDataHandler {
 	 * @param turn - an integer representing a game counter of how many turns have been played.
 	 * @param gameMode - the game mode setting of game.
 	 */
-	public void autoSave(World world, List<Player> players, Player currentPlayer, int turn, String gameMode) {
+	public static void autoSave(World world, List<Player> players, Player currentPlayer, int turn, String gameMode) {
 		try {
 			oldSave.createNewFile();
 			newSave.createNewFile();
@@ -99,7 +95,7 @@ public class GameDataHandler {
 	 * @param gameMode - the game mode setting of game.
 	 * @param gameName - the name of the file to which you want to save the game.
 	 */
-	public void saveGame(World world, List<Player> players, Player currentPlayer, int turn,
+	public static void saveGame(World world, List<Player> players, Player currentPlayer, int turn,
 			String gameMode, String gameName) {
 	
 		try {
@@ -123,7 +119,7 @@ public class GameDataHandler {
 	 * @param gameName - the name of the file which game has been saved to.
 	 * @throws IOException
 	 */
-	public void loadGame(String gameName) throws IOException {	
+	public static void loadGame(String gameName) throws IOException {	
 		try {
 			FileInputStream fis = new FileInputStream(riskySave + File.separator + gameName + ".rsg");
 			ObjectInputStream ois = new ObjectInputStream(fis);
@@ -153,7 +149,7 @@ public class GameDataHandler {
 	/**
 	 * Load the game currently saved in default file "last_autosave".
 	 */
-	public void loadAutoSave() {
+	public static void loadAutoSave() {
 		try {
 			loadGame("last_autosave");
 		} catch (IOException e) {
@@ -165,7 +161,7 @@ public class GameDataHandler {
 	 * View the games in the RiskySpace\\Save folder.
 	 * @return - An array containing save file names as strings.
 	 */
-	public String[] getSavedGames() {
+	public static String[] getSavedGames() {
 		File directory = riskySave;
 		FilenameFilter rsgFilter = new FilenameFilter() {
 			public boolean accept(File directory, String fileName) {
@@ -188,7 +184,7 @@ public class GameDataHandler {
 	 * @param gameName - the name of the save file you want to inspect.
 	 * @return - an array of strings representing players, turn and game mode of the save file.
 	 */
-	public String[] getGameInfo(String gameName) {
+	public static String[] getGameInfo(String gameName) {
 		FileInputStream fis;
 		ObjectInputStream ois = null;
 

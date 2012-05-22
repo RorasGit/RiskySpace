@@ -211,11 +211,11 @@ public class OpenGLView implements View, GLEventListener {
 
 	@Override
 	public void showGameOver(Player loser) {
-		renderArea.showGameOver(loser);
+		renderArea.setLoser(loser);
 	}
 	
 	@Override
 	public void showWinnerScreen() {
-		renderArea.showWinnerScreen();
+		renderArea.setWinner();
 	}
 }

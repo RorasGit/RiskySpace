@@ -24,7 +24,6 @@ import riskyspace.services.EventHandler;
 public class GameServer implements EventHandler {
 
 	private final int numberOfPlayers;
-	private final World world;
 	
 	private ServerSocket ss = null;
 	private List<ConnectionHandler> connections = new ArrayList<ConnectionHandler>();
@@ -33,7 +32,7 @@ public class GameServer implements EventHandler {
 
 	public GameServer(int numberOfPlayers, String[] ips) {
 		this.numberOfPlayers = numberOfPlayers;
-		this.world = new World(20, 20, numberOfPlayers);
+		World world = new World(20, 20, numberOfPlayers);
 		SpriteMapData.init(world);
 		GameManager.INSTANCE.init(world);
 		try {
@@ -117,9 +116,9 @@ public class GameServer implements EventHandler {
 			 */
 			Player player = GameManager.INSTANCE.addPlayer(socket.getInetAddress());
 			SpriteMapData data = SpriteMapData.getData(player);
-			PlayerStats stats = world.getStats(player);
-			Integer rows = world.getRows();
-			Integer cols = world.getCols();
+			PlayerStats stats = GameManager.INSTANCE.getStats(player);
+			Integer rows = GameManager.INSTANCE.getWorldRows();
+			Integer cols = GameManager.INSTANCE.getWorldCols();
 			
 			output.writeObject(new Event(Event.EventTag.INIT_COLS, cols));
 			output.writeObject(new Event(Event.EventTag.INIT_ROWS, rows));

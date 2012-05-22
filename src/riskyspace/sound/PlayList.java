@@ -8,7 +8,7 @@ import javazoom.jl.player.Player;
 
 /**
  * PlayList play sound files in a loop with a 45second break in between sound files.
- * @author Alexander Hederstaf
+ * @author Alexander Hederstaf + DJ rapp
  *
  */
 public class PlayList {
@@ -16,21 +16,21 @@ public class PlayList {
 	/**
 	 * Standard game loop playlist order
 	 */
-	public static final String[] STANDARD_GAME_LOOP = {"zikweb_-_Black_Snow.mp3",
+	public static final String[] STANDARD_GAME_LOOP = {"T-sonic - AirTrance.mp3",
 													   "zikweb_-_Not_too_quiet.mp3",
 													   "T-sonic - Expanse.mp3",
-													   "zikweb_-_Lament_Harp.mp3",
 													   "T-sonic - Collapsar.mp3",
 													   "T-sonic - Memory of Moon.mp3",
 													   "T-sonic - Noising.mp3",
 													   "morgantj_-_Wayfarer.mp3",
-													   "T-sonic - Singularity.mp3",};
+													   "T-sonic - Singularity.mp3",
+													   "T-sonic - Nucleosynthesis.mp3"};
 	
 	/**
 	 * Standard lobby loop playlist
 	 */
-	public static final String[] STANDARD_LOBBY_LOOP = {"T-sonic - Nucleosynthesis.mp3", 
-														"T-sonic - AirTrance.mp3",};
+	public static final String[] STANDARD_LOBBY_LOOP = {"zikweb_-_Lament_Harp.mp3",
+														"zikweb_-_Black_Snow.mp3"};
 	
 	private String[] tracks;
 	private int songIndex = 0;
