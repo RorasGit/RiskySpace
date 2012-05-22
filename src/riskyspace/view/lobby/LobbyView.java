@@ -25,7 +25,6 @@ public class LobbyView implements Observer {
 		playList = new PlayList(PlayList.STANDARD_LOBBY_LOOP);
 		frame.setVisible(true);
 		renderThread = new Thread(new Runnable(){
-
 			@Override
 			public void run() {
 				while (!interrupt) {
@@ -59,7 +58,13 @@ public class LobbyView implements Observer {
 				interrupt = true;
 			}
 			playList.pause();
+			if (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported()) {
+				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
+			} else {
+				System.err.println("Fullscreen not supported");
+			}
 			frame.dispose();
+			System.out.println("done");
 		}
 	}
 }

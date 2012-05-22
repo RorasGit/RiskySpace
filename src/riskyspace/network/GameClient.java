@@ -19,6 +19,7 @@ import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
+import riskyspace.sound.PlayList;
 import riskyspace.view.View;
 import riskyspace.view.opengl.impl.OpenGLView;
 
@@ -71,6 +72,8 @@ public class GameClient implements EventHandler {
 		}
 		System.out.println("Connected");
 		initiateGameView();
+		PlayList playList = new PlayList(PlayList.STANDARD_GAME_LOOP);
+		playList.start();
 		new ServerListener(mainView, input);
 	}
 

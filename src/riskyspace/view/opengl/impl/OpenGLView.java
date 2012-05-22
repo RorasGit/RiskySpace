@@ -78,11 +78,9 @@ public class OpenGLView implements View, GLEventListener {
 		frame.add(canvas);
 		frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		frame.setUndecorated(true);
-		if (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported()) {
-			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(frame);
-		} else {
-			System.err.println("Fullscreen not supported");
-		}
+		frame.setAlwaysOnTop(true);
+		frame.setResizable(false);
+		frame.pack();
 		canvas.requestFocusInWindow();
 		
 		FPSAnimator anim = new FPSAnimator(canvas, 60);

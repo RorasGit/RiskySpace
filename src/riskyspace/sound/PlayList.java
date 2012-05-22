@@ -79,6 +79,9 @@ public class PlayList {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
+							if (stopped) {
+								break;
+							}
 						}
 						songIndex = 0;
 					}
@@ -97,8 +100,9 @@ public class PlayList {
 	 * Pause this PlayList. Can be continued by calling start().
 	 */
 	public void pause() {
-		if (playThread != null && playThread.isInterrupted()) {
-			playThread.interrupt();
+		if (playThread != null && soundPlayer != null) {
+			soundPlayer.close();
+			stopped = true;
 		}
 		songIndex++;
 	}

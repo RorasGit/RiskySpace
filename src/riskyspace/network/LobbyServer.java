@@ -13,8 +13,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import riskyspace.services.Event;
-
 
 public class LobbyServer {
 	
@@ -115,10 +113,6 @@ public class LobbyServer {
 				}
 			}
 		}
-		
-		public void interrupt() {
-			
-		}
 	}
 	
 	/**
@@ -130,7 +124,6 @@ public class LobbyServer {
 			for (int i = 0; i < times; i++) {
 				connections.get(0).disconnect();
 			}
-			at.interrupt();
 			ss.close();
 		} catch (IOException e) {
 			e.printStackTrace();
