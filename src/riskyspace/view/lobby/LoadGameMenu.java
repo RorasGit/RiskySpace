@@ -21,7 +21,7 @@ public class LoadGameMenu<E> extends AbstractPreGameMenu implements SwingRenderA
 	public LoadGameMenu(int x, int y, int menuWidth, int menuHeight, ArrayList<E> array) {
 		super(x, y, menuWidth, menuHeight);
 		savedGames = new ScrollableList<E>(x + margin ,y + 2*margin/3 ,menuWidth - 2*margin, (menuHeight - 4*margin/3)/12, array);
-		background = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/veryWideBackgroundMenu.png").
+		background = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/widest_background_menu.png").
 				getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);
 	}
 	

@@ -54,18 +54,18 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		 * TODO: fix none absolute values
 		 */
 		playerOne = new SwingButton(getX() + margin, getY() + margin, 240, 50);
-		playerOne.setImage("res/menu/lobby/wideButton.png");
+		playerOne.setImage("res/menu/lobby/wide_button.png");
 		playerTwo = new SwingButton(getX() + margin, getY() + 2*margin + 50, 240, 50);
-		playerTwo.setImage("res/menu/lobby/wideButton.png");
+		playerTwo.setImage("res/menu/lobby/wide_button.png");
 		playerThree = new SwingButton(getX() + margin, getY() + 3*margin + 100, 240, 50);
-		playerThree.setImage("res/menu/lobby/wideButton.png");
+		playerThree.setImage("res/menu/lobby/wide_button.png");
 		playerThree.setEnabled(false);
 		playerFour = new SwingButton(getX() + margin, getY() + 4*margin + 150, 240, 50);
-		playerFour.setImage("res/menu/lobby/wideButton.png");
+		playerFour.setImage("res/menu/lobby/wide_button.png");
 		playerFour.setEnabled(false);
 		
 		startGame = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
-		startGame.setImage("res/menu/lobby/startGameButton.png");
+		startGame.setImage("res/menu/lobby/start_game_button.png");
 		startGame.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -74,7 +74,7 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		});
 		
 		createServer = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
-		createServer.setImage("res/menu/lobby/createServerButton.png");
+		createServer.setImage("res/menu/lobby/create_server_button.png");
 		createServer.setAction(new Action() {
 			@Override
 			public void performAction() {
@@ -116,9 +116,9 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 	}
 	
 	private void createBackground() {
-		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/widerMenubackground.png").
+		rightsideMenu = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/wider_menu_background.png").
 				getScaledInstance(2*getMenuWidth()/7, getMenuHeight()-2*margin, Image.SCALE_DEFAULT);
-		gameModeImage = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/Annihilation.png").
+		gameModeImage = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/annihilation.png").
 				getScaledInstance(2*getMenuWidth()/7 - 6*margin, (2*getMenuWidth()/7 - 3*margin)/2, Image.SCALE_DEFAULT);
 	}
 

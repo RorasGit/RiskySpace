@@ -35,7 +35,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 	
 	public PreMultiplayerMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
-		background = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/widerMenubackground.png").
+		background = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/wider_menu_background.png").
 				getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);	
 		ipBox = new TextBox(x + margin, y + margin + menuHeight/10, menuWidth - 2*margin, 30);
 		ipBox.setEnabled(false);
@@ -58,7 +58,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 				} else {
 					// TODO: Print fail text
 				}
-			}
+			} 		
 		});
 		
 		hostGame = new SwingButton(x + menuWidth/2 - 90, y + margin + 5*menuHeight/10, 180, 50);

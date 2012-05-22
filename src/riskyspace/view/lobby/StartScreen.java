@@ -89,7 +89,7 @@ public class StartScreen extends JPanel {
 	
 	public void createButtons() {
 		localGame = new SwingButton(width/2 - 125, height/2 - 200, 250, 50);
-		localGame.setImage("res/menu/lobby/localGameButton.png");
+		localGame.setImage("res/menu/lobby/local_game_button.png");
 		localGame.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -98,7 +98,7 @@ public class StartScreen extends JPanel {
 			}
 		});
 		multiplayer = new SwingButton(width/2 - 125, height/2 - 200 + 100, 250, 50);
-		multiplayer.setImage("res/menu/lobby/multiplayerButton.png");
+		multiplayer.setImage("res/menu/lobby/multiplayer_button.png");
 		multiplayer.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -107,7 +107,7 @@ public class StartScreen extends JPanel {
 			}
 		});
 		loadGame = new SwingButton(width/2 - 125, height/2 - 200 + 200, 250, 50);
-		loadGame.setImage("res/menu/lobby/loadGameButton.png");
+		loadGame.setImage("res/menu/lobby/load_game_button.png");
 		loadGame.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -116,7 +116,7 @@ public class StartScreen extends JPanel {
 			}
 		});
 		settings = new SwingButton(width/2 - 125, height/2 - 200 + 300, 250, 50);
-		settings.setImage("res/menu/lobby/settingsButton.png");
+		settings.setImage("res/menu/lobby/settings_button.png");
 		settings.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -125,7 +125,7 @@ public class StartScreen extends JPanel {
 			}
 		});
 		exit = new SwingButton(width/2 - 125, height/2 - 200 + 400, 250, 50);
-		exit.setImage("res/menu/lobby/exitGameButton.png");
+		exit.setImage("res/menu/lobby/exit_game_button.png");
 		exit.setAction(new Action(){
 			@Override
 			public void performAction() {
@@ -133,7 +133,7 @@ public class StartScreen extends JPanel {
 			}
 		});
 		backButton = new SwingButton(width/2 - width/3 + 10, height/2 + height/3 - 60, 180, 50);
-		backButton.setImage("res/menu/lobby/backButton.png");
+		backButton.setImage("res/menu/lobby/back_button.png");
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {

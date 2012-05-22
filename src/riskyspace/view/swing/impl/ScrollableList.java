@@ -3,9 +3,8 @@ package riskyspace.view.swing.impl;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import riskyspace.view.Button;
 import riskyspace.view.Clickable;
 
@@ -15,8 +14,6 @@ public class ScrollableList<E> implements Clickable {
 		
 	private List<SwingButton> displayedButtonList = new ArrayList<SwingButton>();
 		
-	private Map<Integer, SwingButton> values = new HashMap<Integer, SwingButton>();
-	
 	private Runnable scroll;
 	private Thread thread;
 	
@@ -43,10 +40,10 @@ public class ScrollableList<E> implements Clickable {
 		this.width = width;
 		this.height = height;
 		decreaseIndexButton = new SwingButton(x, y, width, height);
-		decreaseIndexButton.setImage("res/menu/lobby/scrollUpButton.png");
+		decreaseIndexButton.setImage("res/menu/lobby/scroll_up_button.png");
 		
 		increaseIndexButton = new SwingButton(x, y + 11*height, width, height);
-		increaseIndexButton.setImage("res/menu/lobby/scrollDownButton.png");
+		increaseIndexButton.setImage("res/menu/lobby/scroll_down_button.png");
 		
 		selectedIndex = 0;
 		selectButtons();
@@ -82,7 +79,7 @@ public class ScrollableList<E> implements Clickable {
 			for (int i = selectedIndex; i < selectedIndex+10; i++) {
 				if (i < savedGamesList.size()) {
 					SwingButton b = new SwingButton(x + 5, yPos, width - 10, buttonHeight);
-					b.setImage("res/menu/lobby/textItem.png");
+					b.setImage("res/menu/lobby/text_item.png");
 					b.setText(savedGamesList.get(i).toString());
 					displayedButtonList.add(b);
 					yPos = yPos + buttonHeight;

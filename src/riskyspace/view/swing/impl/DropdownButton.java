@@ -39,7 +39,7 @@ public class DropdownButton<E> implements Clickable {
 		this.height = height;
 		createButtons();
 		mainButton = new SwingButton(x,y,width,height);
-		mainButton.setImage("res/menu/lobby/dropdownButton.png");
+		mainButton.setImage("res/menu/lobby/drop_down_button.png");
 		mainButton.setText(buttonList.get(0).getText());
 		selectedValue = array.get(0);
 		mainButton.setAction(new Action(){
@@ -58,7 +58,7 @@ public class DropdownButton<E> implements Clickable {
 		int value = 2;
 		for(E item : itemList) {
 			SwingButton b = new SwingButton(x, yPos, width, buttonHeight);
-			b.setImage("res/menu/lobby/textItem.png");
+			b.setImage("res/menu/lobby/text_item.png");
 			b.setText(item.toString());
 			buttonList.add(b);
 			values.put(b, item);
