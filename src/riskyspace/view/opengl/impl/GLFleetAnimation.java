@@ -85,7 +85,7 @@ public class GLFleetAnimation implements GLRenderAble {
 		if (startTime == 0) {
 			startTime = System.currentTimeMillis();
 		}
-		float pDone = ((float) (System.currentTimeMillis() - startTime)) / maxTime;
+		float pDone = Math.min(((float) (System.currentTimeMillis() - startTime)) / maxTime, 1.0f);
 		if (moveRotation != endRotation) {
 			if (pDone > 0.7f) {
 				rotation = moveRotation + dRotation * ((pDone - 0.7f) / 0.3f);

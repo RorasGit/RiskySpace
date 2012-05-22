@@ -10,7 +10,6 @@ import java.awt.event.KeyListener;
 import java.util.Observer;
 
 import riskyspace.network.LobbyClient;
-import riskyspace.network.LobbyServer;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
 import riskyspace.view.ViewResources;
@@ -48,9 +47,16 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 		joinGame.setAction(new Action() {
 			@Override
 			public void performAction() {
-				if (client.connectToLobby(ipBox.getText())){
+				String ip = ipBox.getText();
+				boolean format = ip.split(".").length == 4;
+				for (int i = 0; i < ip.split(".").length; i++) {
+					format = format && ip.split(".")[i].length() < 4;
+				}
+				if (format && client.connectToLobby(ipBox.getText())){
 					setVisible(false);
 					multiplayerLobby.setClient(client);
+				} else {
+					// TODO: Print fail text
 				}
 			}
 		});
