@@ -6,7 +6,6 @@ import java.util.Set;
 import riskyspace.GameManager;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
-import riskyspace.model.Position;
 import riskyspace.model.World;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;

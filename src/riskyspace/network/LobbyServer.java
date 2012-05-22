@@ -26,8 +26,6 @@ public class LobbyServer {
 	private int port;
 	private String ip;
 
-	private AcceptThread at;
-	
 	private boolean started = false;
 
 	public LobbyServer(int maxNumberOfPlayers) {
@@ -44,7 +42,7 @@ public class LobbyServer {
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
-		at = new AcceptThread();
+		new AcceptThread();
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
 			System.out.println("Server started with IP: " + ip + ":" + port);
@@ -109,7 +107,6 @@ public class LobbyServer {
 						e.printStackTrace();
 						System.exit(1);
 					}
-//					System.out.println("IP Connected: " + cs.getInetAddress());
 				}
 			}
 		}

@@ -1,5 +1,10 @@
 package riskyspace.services;
-
+/**
+ * 
+ * @author Joachim von Hacht
+ * @modified Alexander Hederstaf
+ *
+ */
 public interface EventHandler {
 
 	/*

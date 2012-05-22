@@ -2,18 +2,13 @@ package riskyspace.view.opengl.menu;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.media.opengl.GLAutoDrawable;
-
-import com.jogamp.opengl.util.awt.TextRenderer;
-
 
 import riskyspace.PlayerColors;
 import riskyspace.model.BuildAble;
@@ -33,6 +28,8 @@ import riskyspace.view.opengl.Rectangle;
 import riskyspace.view.opengl.impl.GLButton;
 import riskyspace.view.opengl.impl.GLRankIndicator;
 import riskyspace.view.opengl.impl.GLSprite;
+
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
  * 
@@ -149,7 +146,7 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	private String nextHangarMetal = "";
 	private String nextHangarGas = "";
 	
-	private int[] currentLevelX, nextLevelX, nextLevelCostX;
+	private int[] currentLevelX, nextLevelX;
 	
 	private Font titleFont;
 	private Font infoFont;
@@ -167,7 +164,6 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 	
 	public GLBuildingMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
-		//TODO Create buttons and Load Sprites
 		margin = menuHeight/20;
 		
 		/*
@@ -646,12 +642,6 @@ public class GLBuildingMenu extends GLAbstractSideMenu {
 				imageRightX + 3*infoWidth/2 + splits[0].getWidth() - (int)infoRenderer.getBounds(nextTurretLevel).getWidth()/2,
 				imageRightX + 3*infoWidth/2 + splits[0].getWidth() - (int)infoRenderer.getBounds(nextRadarLevel).getWidth()/2,
 				imageRightX + 3*infoWidth/2 + splits[0].getWidth() - (int)infoRenderer.getBounds(nextHangarLevel).getWidth()/2
-		};
-		nextLevelCostX = new int[]{
-				mineRank.getX() + mineRank.getWidth() + mineSprite.getBounds().getWidth() + 3*infoWidth/2 - (int)infoRenderer.getBounds(nextMineMetal + nextMineGas).getWidth()/2,
-				mineRank.getX() + mineRank.getWidth() + mineSprite.getBounds().getWidth() + 3*infoWidth/2 - (int)infoRenderer.getBounds(nextTurretMetal + nextTurretGas).getWidth()/2,
-				mineRank.getX() + mineRank.getWidth() + mineSprite.getBounds().getWidth() + 3*infoWidth/2 - (int)infoRenderer.getBounds(nextRadarMetal + nextRadarGas).getWidth()/2,
-				mineRank.getX() + mineRank.getWidth() + mineSprite.getBounds().getWidth() + 3*infoWidth/2 - (int)infoRenderer.getBounds(nextHangarMetal + nextHangarGas).getWidth()/2,
 		};
 	}
 	

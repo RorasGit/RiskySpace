@@ -23,12 +23,11 @@ import riskyspace.model.building.Turret;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
-import riskyspace.view.View;
+import riskyspace.view.RankIndicator;
 import riskyspace.view.ViewResources;
 import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.SwingButton;
 import riskyspace.view.swing.impl.SwingRankIndicator;
-import riskyspace.view.RankIndicator;
 
 /**
  * 
@@ -146,7 +145,6 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 	
 	public BuildingMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
-		//TODO Create buttons and Load Images
 		margin = menuHeight/20;
 		
 		/*
@@ -265,12 +263,6 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 	}
 	
 	public void setColony(Colony colony) {
-		/*
-		 * TODO:
-		 * Assign values to variables based on colony info.
-		 * make sure the colony supplies sufficient information
-		 * Immutable?
-		 */
 		this.colony = colony;
 		checkBuildOptions();
 		checkQueue();
@@ -381,7 +373,6 @@ public class BuildingMenu extends SwingAbstractSideMenu {
 	@Override
 	public void draw(Graphics g) {
 		super.draw(g);
-		//TODO Draw all stuff
 		if (isVisible()) {
 			g.drawImage(cityImage, getX() + margin, getY() + 3*margin/2,null);
 			drawColonyName(g);

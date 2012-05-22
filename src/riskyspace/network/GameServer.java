@@ -1,6 +1,5 @@
 package riskyspace.network;
 
-import java.awt.EventQueue;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,7 +8,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,23 +28,9 @@ public class GameServer implements EventHandler {
 	
 	private ServerSocket ss = null;
 	private List<ConnectionHandler> connections = new ArrayList<ConnectionHandler>();
-	private AcceptThread at;
 	private String ip;
 	private int port = 6013;
 
-	/**
-	 * MAIN METHOD
-	 */
-	public static void main(String[] args) throws IOException {
-		final GameServer server = new GameServer(3, null); //NULL!
-		Runnable r = new Runnable() {
-			public void run() {
-				new GameClient(server.getIP(), server.getPort());
-			}
-		};
-		EventQueue.invokeLater(r);
-	}
-	
 	public GameServer(int numberOfPlayers, String[] ips) {
 		this.numberOfPlayers = numberOfPlayers;
 		this.world = new World(20, 20, numberOfPlayers);
@@ -58,7 +42,7 @@ public class GameServer implements EventHandler {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		at = new AcceptThread(ips);
+		new AcceptThread(ips);
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
 			System.out.println("Server started with IP: " + ip + ":" + port);
@@ -200,9 +184,6 @@ public class GameServer implements EventHandler {
 				e.printStackTrace();
 			}
 			connections.remove(this);
-//			if(!at.getThread().isAlive()){
-//				at = new AcceptThread();
-//			}
 			System.out.println("Connection to :" + socket.getInetAddress() + " closed.");
 		}
 	}
@@ -227,12 +208,9 @@ public class GameServer implements EventHandler {
 				try {
 					System.out.println("try!");
 					cs = ss.accept();
-					System.out.println("AAR(-): " + cs.getInetAddress().getHostAddress());
 					for (int i = 0; i < addresses.length; i++) {
-						System.out.println("AAR: " + cs.getInetAddress().getHostAddress());
 						if (cs.getInetAddress().getHostAddress().equals(addresses[i])) {
 							connections.add(new ConnectionHandler(cs));		
-							System.out.println("IP Connected: " + cs.getInetAddress());
 							break;
 						}
 					}

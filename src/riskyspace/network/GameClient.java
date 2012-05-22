@@ -21,6 +21,7 @@ import riskyspace.services.EventBus;
 import riskyspace.services.EventHandler;
 import riskyspace.sound.PlayList;
 import riskyspace.view.View;
+import riskyspace.view.ViewFactory;
 import riskyspace.view.opengl.impl.OpenGLView;
 
 /**
@@ -37,10 +38,6 @@ public class GameClient implements EventHandler {
 	private ObjectInputStream input = null;
 	private ObjectOutputStream output = null;
 	private Socket socket = null;
-	
-	public static void main(String[] args) {
-		new GameClient("129.16.197.74", 6013);
-	}
 	
 	public GameClient(String hostIP, int hostPort) {
 		System.out.println("new GC: " + hostIP + "  " + hostPort);
@@ -114,8 +111,9 @@ public class GameClient implements EventHandler {
 				}
 			}
 		}
+		// Swing/awt rendering, outdated
 //		mainView = ViewFactory.getView(ViewFactory.SWING_IMPL, rows, cols);
-		mainView = new OpenGLView(rows, cols);
+		mainView = ViewFactory.getView(ViewFactory.OPEN_GL_IMPL, rows, cols);
 		mainView.updateData(data);
 		mainView.setPlayerStats(stats);
 		mainView.setViewer(player);
@@ -167,6 +165,7 @@ public class GameClient implements EventHandler {
 			t.start();
 		}
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
 			while(true) {
@@ -188,8 +187,10 @@ public class GameClient implements EventHandler {
 							mainView.setActivePlayer((Player) event.getObjectValue());
 						} else if (event.getTag() == Event.EventTag.HOME_LOST) {
 							mainView.showGameOver((Player) event.getObjectValue());
+							mainView.hideMenus();
 						} else if (event.getTag() == Event.EventTag.GAME_OVER) {
 							mainView.showWinnerScreen();
+							mainView.hideMenus();
 						} else if (event.getTag() == Event.EventTag.SELECTION) {
 							Object selection = event.getObjectValue();
 							if (selection instanceof Colony) {

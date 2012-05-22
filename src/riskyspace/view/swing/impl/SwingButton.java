@@ -1,18 +1,13 @@
 package riskyspace.view.swing.impl;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MouseInfo;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.io.File;
 
-import riskyspace.view.Action;
 import riskyspace.view.Button;
 import riskyspace.view.GlowableGraphic;
-import riskyspace.view.View;
 import riskyspace.view.ViewResources;
 import riskyspace.view.swing.SwingRenderAble;
 

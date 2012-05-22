@@ -25,7 +25,6 @@ import riskyspace.model.World;
 import riskyspace.model.building.Ranked;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.services.EventText;
 
 public enum GameManager {
 	INSTANCE;
@@ -465,11 +464,6 @@ public enum GameManager {
 		}
 	}
 
-	/*
-	 * TODO:
-	 * Check that you don't queue the same building twice in a buildqueue
-	 * Check that the colony can build the shiptype
-	 */
 	private void queueBuildAble(BuildAble buildAble, Player player) {
 		for (Position pos : world.getContentPositions()) {
 			if (world.getTerritory(pos).hasColony()) {

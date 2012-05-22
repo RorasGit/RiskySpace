@@ -5,7 +5,6 @@ import java.awt.Image;
 import java.awt.Toolkit;
 
 import riskyspace.view.AbstractSideMenu;
-import riskyspace.view.View;
 import riskyspace.view.swing.SwingRenderAble;
 
 /**

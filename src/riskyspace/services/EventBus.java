@@ -3,6 +3,12 @@ package riskyspace.services;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author Joachim von Hacht
+ * @modified Alexander Hederstaf
+ *
+ */
 public enum EventBus {
 	SERVER,
 	CLIENT;

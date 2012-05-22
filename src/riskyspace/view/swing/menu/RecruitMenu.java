@@ -1,7 +1,6 @@
 package riskyspace.view.swing.menu;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -9,19 +8,15 @@ import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
 
-import riskyspace.GameManager;
 import riskyspace.PlayerColors;
 import riskyspace.model.Colony;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
-import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.ViewResources;
-import riskyspace.view.View;
 import riskyspace.view.swing.impl.SwingButton;
 
 public class RecruitMenu extends SwingAbstractSideMenu {

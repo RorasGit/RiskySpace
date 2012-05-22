@@ -11,7 +11,6 @@ import java.util.Observer;
 import riskyspace.network.LobbyClient;
 import riskyspace.network.LobbyServer;
 import riskyspace.view.Action;
-import riskyspace.view.View;
 import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.DropdownButton;
 import riskyspace.view.swing.impl.SwingButton;
@@ -50,9 +49,6 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 	}
 	
 	private void createButtons() {
-		/*
-		 * TODO: fix none absolute values
-		 */
 		playerOne = new SwingButton(getX() + margin, getY() + margin, 240, 50);
 		playerOne.setImage("res/menu/lobby/wide_button.png");
 		playerTwo = new SwingButton(getX() + margin, getY() + 2*margin + 50, 240, 50);

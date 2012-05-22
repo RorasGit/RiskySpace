@@ -6,7 +6,6 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 
-import riskyspace.view.View;
 import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.ScrollableList;
 

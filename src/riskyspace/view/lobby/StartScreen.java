@@ -20,6 +20,10 @@ import riskyspace.view.swing.impl.SwingButton;
 
 public class StartScreen extends JPanel {
 	
+	/**
+	 * Serializable ID
+	 */
+	private static final long serialVersionUID = -7626063623723164535L;
 	private int width;
 	private int height;
 	

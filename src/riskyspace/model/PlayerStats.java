@@ -8,10 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import riskyspace.services.Event;
-import riskyspace.services.EventBus;
-import riskyspace.services.Event.EventTag;
-
 public class PlayerStats implements Serializable{
 	
 	/**

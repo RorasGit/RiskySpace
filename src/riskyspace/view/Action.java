@@ -2,7 +2,7 @@ package riskyspace.view;
 
 /**
  *
- * @author flygarn
+ * @author Alexander Hederstaf
  *
  */
 public interface Action {

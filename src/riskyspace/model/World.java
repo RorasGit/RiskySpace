@@ -12,6 +12,10 @@ import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 
 public class World implements Serializable {
+	/**
+	 * Serializable id
+	 */
+	private static final long serialVersionUID = 6882167268368604629L;
 	private int rows = 0;
 	private int cols = 0;
 	private Map<Position, Territory> territories = null;

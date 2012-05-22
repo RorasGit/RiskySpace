@@ -3,20 +3,14 @@ package riskyspace.view.swing.menu;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import riskyspace.model.Fleet;
 import riskyspace.model.ShipType;
-import riskyspace.services.Event;
-import riskyspace.services.EventBus;
-import riskyspace.view.View;
-import riskyspace.view.swing.impl.SwingButton;
 
 public class FleetMenu extends SwingAbstractSideMenu {
 	

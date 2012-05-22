@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import riskyspace.services.Event;
-import riskyspace.services.EventText;
 
 /**
  * A class for representing queues of BuildAble items.
@@ -76,10 +74,6 @@ public class BuildQueue implements Serializable {
 			return false;
 		}
 		colonyQueue.get(pos).add(new QueueItem(buildAble));
-		String announcement = buildAble + " has been added to the build queue!";
-		EventText et = new EventText(announcement.substring(0, 1).toUpperCase() + announcement.substring(1).toLowerCase(), pos);
-		Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-//		EventBus.INSTANCE.publish(event); TODO: Ignore evtText atm
 		return true;
 	}
 	
@@ -248,8 +242,6 @@ public class BuildQueue implements Serializable {
 	 * Peek at all the build queues.
 	 * @return returns a Map containing the non-empty build queues from all colonies.
 	 */
-	// TODO
-	// QI.getItem() is mutable! Need to implement toClone() or similar in BuildAble interface.
 	public Map<Position, List<BuildAble>> peek() {
 		Map<Position, List<BuildAble>> copiedQueues = new HashMap<Position, List<BuildAble>>();
 		for (Position pos : colonyQueue.keySet()) {
@@ -301,18 +293,6 @@ public class BuildQueue implements Serializable {
 	 * @return returns true if the queue has sufficient space available
 	 */
 	public boolean hasQueueSpace(int space, Position pos) {
-		if (queueSize(pos) + space  > this.queueMaxSize) {
-			EventText et;
-			if (space == 1) {
-				et = new EventText("Build queue is full!", pos);	
-			} else {
-				 et = new EventText("Build queue does not have space for this!", pos);
-			}
-			Event event = new Event(Event.EventTag.EVENT_TEXT, et);
-//			EventBus.INSTANCE.publish(event);
-			return false;
-		} else {
-			return true;
-		}
+		return queueSize(pos) + space  > this.queueMaxSize;
 	}
 }

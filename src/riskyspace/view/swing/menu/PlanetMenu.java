@@ -6,13 +6,11 @@ import java.awt.Point;
 import java.awt.Toolkit;
 
 import riskyspace.model.Fleet;
-import riskyspace.model.Planet;
 import riskyspace.model.Resource;
 import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
 import riskyspace.view.Action;
-import riskyspace.view.View;
 import riskyspace.view.swing.impl.SwingButton;
 
 public class PlanetMenu extends SwingAbstractSideMenu{

@@ -3,7 +3,13 @@ package riskyspace.services;
 import java.io.Serializable;
 
 import riskyspace.model.Position;
-
+/**
+ * 
+ * @author Alexander Hederstaf
+ * Messages with bound positions in the world. 
+ * Used to write messages on the screen.
+ *
+ */
 public class EventText implements Serializable {
 	/**
 	 * 

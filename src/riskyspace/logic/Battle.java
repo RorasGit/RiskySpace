@@ -10,8 +10,6 @@ import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Territory;
-import riskyspace.services.Event;
-import riskyspace.services.EventBus;
 
 
 public class Battle {

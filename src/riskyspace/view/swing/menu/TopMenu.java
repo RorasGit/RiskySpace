@@ -7,18 +7,15 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 
-import riskyspace.logic.FleetMove;
 import riskyspace.model.PlayerStats;
 import riskyspace.model.Resource;
 import riskyspace.model.Supply;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
-import riskyspace.services.EventHandler;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
 import riskyspace.view.IMenu;
 import riskyspace.view.ViewResources;
-import riskyspace.view.View;
 import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.SwingButton;
 
@@ -38,17 +35,12 @@ public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 	private SwingButton menuButton = null;
 	private SwingButton buildQueueButton = null;
 	
-	private int x, y;
-	private int menuHeight = 0;
 	private int menuWidth = 0;
 	private int margin = 5;
 	
 	private Font resourceFont = null;
 	
 	public TopMenu (int x, int y, int width, int height) {
-		this.x = x;
-		this.y = y;
-		menuHeight = height;
 		menuWidth = width;
 		
 		supplyImage = Toolkit.getDefaultToolkit().getImage("res/menu/supply_square.png");

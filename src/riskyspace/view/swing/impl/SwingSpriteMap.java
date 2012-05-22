@@ -141,10 +141,6 @@ public class SwingSpriteMap {
 						map.paths.put(paths[i][j], new ArrayList<SwingSprite>());
 					}
 					SwingSprite sprite = null;
-					/*
-					 * TODO:
-					 * Fix arrow colors thing
-					 */
 					if (j == 0) {
 						sprite = new SwingSprite(SwingSpriteMap.pathTextures.get("START_" + Player.BLUE), 0, 0);
 						sprite.setRotation(Path.getRotation(null, paths[i][j], paths[i][j+1]));

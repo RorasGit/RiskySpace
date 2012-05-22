@@ -3,7 +3,12 @@ package riskyspace.services;
 import java.io.Serializable;
 
 import riskyspace.model.Player;
-
+/**
+ * 
+ * @author Joachim von Hacht
+ * @modified Alexander Hederstaf
+ *
+ */
 public class Event implements Serializable {
 
 	/**
@@ -53,7 +58,6 @@ public class Event implements Serializable {
 		INIT_COLS, 
 		INIT_PLAYER;
 		
-		//TODO: add all events that can occur.
 	}
 	
 	//The tag of the Event sent to the model.
