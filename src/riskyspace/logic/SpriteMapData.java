@@ -223,11 +223,17 @@ public class SpriteMapData implements Serializable {
 	}
 	
 	public int getFleetSize(Position position) {
-		return fleetSize.get(position);
+		if (fleetSize.containsKey(position)) {
+			return fleetSize.get(position);			
+		}
+		return 0;
 	}
 	
 	public int getColonizerAmount(Position position) {
-		return colonizerAmount.get(position);
+		if (colonizerAmount.containsKey(position)) {
+			return fleetSize.get(position);
+		}
+		return 0;
 	}
 
 	public int getRows() {

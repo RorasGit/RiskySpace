@@ -109,7 +109,7 @@ public class GLSpriteMap implements GLRenderAble {
 	public static void init() {
 		loadSprites();
 		setPlanetSprites();
-		numberRenderer = new TextRenderer(ViewResources.getFont().deriveFont(8f));
+		numberRenderer = new TextRenderer(ViewResources.getFont().deriveFont(12f));
 		initiated = true;
 	}
 
