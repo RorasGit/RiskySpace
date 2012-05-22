@@ -231,7 +231,7 @@ public class SpriteMapData implements Serializable {
 	
 	public int getColonizerAmount(Position position) {
 		if (colonizerAmount.containsKey(position)) {
-			return fleetSize.get(position);
+			return colonizerAmount.get(position);
 		}
 		return 0;
 	}
