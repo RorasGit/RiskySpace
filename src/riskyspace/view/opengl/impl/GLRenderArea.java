@@ -296,12 +296,6 @@ public class GLRenderArea implements GLRenderAble {
 	}
 	
 	public void showGameOver(Player killedBy) {
-		statusBackground = new GLSprite("square_button", 128, 80);
-		int width = screenArea.getWidth() / 2;
-		int height = screenArea.getHeight() / 2;
-		int x = screenArea.getWidth() / 2 - width / 2;
-		int y = screenArea.getHeight() / 2 - height / 2;
-		statusBackground.setBounds(new Rectangle(x, y, width, height));
 		statusString = "";
 		killedByString = killedBy.toString();
 		gameOver = true;
@@ -340,11 +334,17 @@ public class GLRenderArea implements GLRenderAble {
 			drawStatusBox(drawable, targetArea, 50);
 			drawGameOver(drawable, targetArea, 51);
 		}
-		//TODO: DRAW PICTURE
 	}
 
 	private void drawGameOver(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
 		if (gameOver) {
+			
+			int width = screenArea.getWidth() / 2;
+			int height = screenArea.getHeight() / 2;
+			int x = screenArea.getWidth() / 2 - width / 2;
+			int y = screenArea.getHeight() / 2 - height / 2;
+			statusBackground.setBounds(new Rectangle(x, y, width, height));
+			statusBackground = new GLSprite("square_button", 128, 80);
 			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
 			
 			/* Center of screen position */
@@ -358,10 +358,10 @@ public class GLRenderArea implements GLRenderAble {
 			
 			if (!winner) {
 			
-			line1 = "YOU HAVE BEEN DEFEATED!";
-			line2 = "ALL YOUR BASE";
-			line3 = "ARE BELONG TO";
-			line4 = killedByString;
+				line1 = "YOU HAVE BEEN DEFEATED!";
+				line2 = "ALL YOUR BASE";
+				line3 = "ARE BELONG TO";
+				line4 = killedByString;
 			
 			} else {
 				
