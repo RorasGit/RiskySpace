@@ -70,11 +70,11 @@ public class LobbyServer {
 	public boolean start() {
 		if(connections.size() == maxNumberOfPlayers){
 			started = true;
-			InetAddress[] addresses = new InetAddress[maxNumberOfPlayers];
-			for (int i = 0; i < addresses.length; i++) {
-				addresses[i] = connections.get(i).socket.getInetAddress();
+			String[] ips = new String[maxNumberOfPlayers];
+			for (int i = 0; i < ips.length; i++) {
+				ips[i] = connections.get(i).socket.getInetAddress().getHostAddress();
 			}
-			new GameServer(maxNumberOfPlayers, addresses);
+			new GameServer(maxNumberOfPlayers, ips);
 			for (ConnectionHandler ch : connections) {
 				try {
 					ch.output.writeObject("connect_to_game");

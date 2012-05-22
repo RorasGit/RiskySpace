@@ -96,7 +96,6 @@ public class LobbyClient extends Observable {
 	private class ServerListener implements Runnable {
 		
 		public ServerListener() {
-			System.out.println("created");
 			Thread t = new Thread(this);
 			t.start();
 		}

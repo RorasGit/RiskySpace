@@ -42,9 +42,9 @@ public class GameClient implements EventHandler {
 	}
 	
 	public GameClient(String hostIP, int hostPort) {
+		System.out.println("new GC: " + hostIP + "  " + hostPort);
 		EventBus.CLIENT.addHandler(this);
 		connect(hostIP, hostPort);
-		
 		Thread renderThread = new Thread(new Runnable() {
 			@Override public void run() {
 				while(true) {

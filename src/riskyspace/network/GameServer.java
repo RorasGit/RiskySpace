@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class GameServer implements EventHandler {
 		EventQueue.invokeLater(r);
 	}
 	
-	public GameServer(int numberOfPlayers, InetAddress[] addresses) {
+	public GameServer(int numberOfPlayers, String[] ips) {
 		this.numberOfPlayers = numberOfPlayers;
 		this.world = new World(20, 20, numberOfPlayers);
 		SpriteMapData.init(world);
@@ -57,7 +58,7 @@ public class GameServer implements EventHandler {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		at = new AcceptThread(addresses);
+		at = new AcceptThread(ips);
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
 			System.out.println("Server started with IP: " + ip + ":" + port);
@@ -206,10 +207,13 @@ public class GameServer implements EventHandler {
 
 	private class AcceptThread implements Runnable {
 		Thread t = null;
-		InetAddress[] addresses;
+		String[] addresses;
 		
-		public AcceptThread(InetAddress[] addresses) {
+		public AcceptThread(String[] addresses) {
 			this.addresses = addresses;
+			for (int i = 0; i < addresses.length; i++) {
+				System.out.println("adr: " + addresses[i]);
+			}
 			t = new Thread(this);
 			t.start();
 		}
@@ -219,9 +223,12 @@ public class GameServer implements EventHandler {
 			Socket cs = null;
 			while (connections.size() < numberOfPlayers) {
 				try {
+					System.out.println("try!");
 					cs = ss.accept();
+					System.out.println("AAR(-): " + cs.getInetAddress().getHostAddress());
 					for (int i = 0; i < addresses.length; i++) {
-						if (cs.getInetAddress().equals(addresses[i])) {
+						System.out.println("AAR: " + cs.getInetAddress().getHostAddress());
+						if (cs.getInetAddress().getHostAddress().equals(addresses[i])) {
 							connections.add(new ConnectionHandler(cs));		
 							System.out.println("IP Connected: " + cs.getInetAddress());
 							break;
