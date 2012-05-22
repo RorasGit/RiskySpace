@@ -27,9 +27,9 @@ public class Hangar implements BuildAble, Ranked {
 		if (getRank() == 0) {
 			return 50;
 		} else if (getRank() == 1) {
-			return 120;
+			return 90;
 		} else {
-			return 0;
+			return 140;
 		}
 	}
 
@@ -40,7 +40,7 @@ public class Hangar implements BuildAble, Ranked {
 		} else if (getRank() == 1) {
 			return 20;
 		} else {
-			return 0;
+			return 40;
 		}
 	}
 	public boolean canBuild(ShipType shiptype){
