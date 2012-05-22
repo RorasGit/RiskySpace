@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.util.Observer;
 
 import riskyspace.network.LobbyClient;
+import riskyspace.network.LobbyServer;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
 import riskyspace.view.ViewResources;
@@ -32,7 +33,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 	private TextBoxListener textListener;
 	
 	private LobbyClient client;
-
+	
 	public PreMultiplayerMenu(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
 		background = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/widerMenubackground.png").
@@ -49,8 +50,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 			public void performAction() {
 				if (client.connectToLobby(ipBox.getText())){
 					setVisible(false);
-					multiplayerLobby.setVisible(true);
-					client.addObserver(multiplayerLobby);
+					multiplayerLobby.setClient(client);
 				}
 			}
 		});
@@ -62,13 +62,18 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 			@Override
 			public void performAction() {
 				setVisible(false);
-				multiplayerLobby.setVisible(true);
+				multiplayerLobby.setGameCreate(client);
 			}
 		});
 
 		multiplayerLobby = new Lobby(5*x/12, y/2, 10*menuWidth/3, 2*menuHeight);
 		
 		textListener = new TextBoxListener();
+	}
+	
+	public void close() {
+		multiplayerLobby.close();
+		client = new LobbyClient();
 	}
 	
 	public void setObserver(Observer o) {

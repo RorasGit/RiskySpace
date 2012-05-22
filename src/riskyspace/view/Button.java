@@ -95,9 +95,6 @@ public abstract class Button implements Clickable {
 	public boolean mouseReleased(Point p) {
 		if (isEnabled()) {
 			if (contains(p)) {
-				if (action != null) {
-					action.performAction();
-				}
 				return true;
 			}
 		}

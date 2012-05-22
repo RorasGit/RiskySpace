@@ -9,6 +9,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 import riskyspace.network.LobbyClient;
+import riskyspace.network.LobbyServer;
+import riskyspace.view.Action;
 import riskyspace.view.View;
 import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.DropdownButton;
@@ -23,6 +25,7 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 	private SwingButton playerFour = null;
 	
 	private SwingButton startGame = null;
+	private SwingButton createServer = null;
 	
 	private DropdownButton<String> numberOfPlayersButton = null;
 	private DropdownButton<String> gameModesButton = null;
@@ -31,6 +34,14 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 	
 	private Image rightsideMenu = null;
 	private Image gameModeImage = null;
+
+	private boolean host = false;
+	private int players;
+	
+	private LobbyClient client;
+	private LobbyServer ls;
+	
+	private String ipString = "";
 	
 	public Lobby(int x, int y, int menuWidth, int menuHeight) {
 		super(x, y, menuWidth, menuHeight);
@@ -56,6 +67,19 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		startGame = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
 		startGame.setImage("res/menu/lobby/startGameButton.png");
 		
+		createServer = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 6*margin - 50, 180, 50);
+		createServer.setImage("res/menu/lobby/exitGameButton.png");
+		createServer.setAction(new Action() {
+			@Override
+			public void performAction() {
+				ls = new LobbyServer(Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]));
+				ipString = ls.getIP();
+				client.connectToLobby(ls.getIP());
+				setClient(client);
+				createServer.setEnabled(false);
+			}
+		});
+		
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("2 players");
 		list.add("3 players");
@@ -67,6 +91,17 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		list.add("Annihilation");
 		
 		gameModesButton = new DropdownButton<String>(getX() + getMenuWidth() - getMenuWidth()/7 - 80, getY() + 2*getMenuHeight()/6, 160, 30, list);
+	}
+	
+	public void close() {
+//		if (client != null) {
+//			client.close();
+//			client = null;
+//		}
+		if (ls != null) {
+			ls.close();
+			ls = null;
+		}
 	}
 	
 	public void setNumberOfPlayers(int nbrOfPlayers) {
@@ -88,6 +123,9 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		gameModesButton.draw(g);
 		
 		startGame.draw(g);
+		createServer.draw(g);
+
+		g.drawString(ipString, 20, 20);
 		
 		/*
 		 * Only draw if visible
@@ -100,25 +138,32 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		}
 	}
 	
+	private void setPlayerButtons() {
+		if (Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]) == 3) {
+			playerThree.setEnabled(true);
+			playerFour.setEnabled(false);
+		}
+		else if (Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]) == 4) {
+			playerThree.setEnabled(true);
+			playerFour.setEnabled(true);
+		} else {
+			playerThree.setEnabled(false);
+			playerFour.setEnabled(false);
+		}
+	}
+	
 	@Override
 	public boolean mousePressed(Point p) {
 		if (isVisible()) {
 			if (startGame.mousePressed(p)) {
-				
+				return true;
+			}
+			if (createServer.mousePressed(p)) {
+				return true;
 			}
 			if (numberOfPlayersButton.mousePressed(p)) {
 				gameModesButton.setOpen(false);
-				if (Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]) == 3) {
-					playerThree.setEnabled(true);
-					playerFour.setEnabled(false);
-				}
-				else if (Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]) == 4) {
-					playerThree.setEnabled(true);
-					playerFour.setEnabled(true);
-				} else {
-					playerThree.setEnabled(false);
-					playerFour.setEnabled(false);
-				}
+				setPlayerButtons();
 				return true;
 			}
 			if (gameModesButton.mousePressed(p)) {
@@ -131,16 +176,33 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		return false;
 	}
 
-
 	@Override
 	public boolean mouseReleased(Point p) {
 		if (numberOfPlayersButton.mouseReleased(p)) {return true;}
+		if (createServer.mouseReleased(p)) {return true;}
 		if (gameModesButton.mouseReleased(p)) {return true;}
 			return false;
 	}
 
-	private boolean host = false;
-	private int players;
+	public void setGameCreate(LobbyClient client) {
+		this.client = client;
+		client.addObserver(this);
+		gameModesButton.setEnabled(true);
+		numberOfPlayersButton.setEnabled(true);
+		createServer.setEnabled(true);
+		startGame.setEnabled(false);
+		setVisible(true);
+	}
+
+	public void setClient(LobbyClient client) {
+		this.client = client;
+		client.addObserver(this);
+		gameModesButton.setEnabled(false);
+		numberOfPlayersButton.setEnabled(false);
+		createServer.setEnabled(false);
+		startGame.setEnabled(false);
+		setVisible(true);
+	}
 	
 	@Override
 	public void update(Observable o, Object arg) {
@@ -152,8 +214,13 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 				startGame.setEnabled(host && players == Integer.parseInt(numberOfPlayersButton.getSelectedValue()));
 			} else if (input.contains(LobbyClient.MAX_PLAYERS)){
 				numberOfPlayersButton.setSelectedValue(value);
+				setPlayerButtons();
 			} else if (input.contains(LobbyClient.CURRENT_PLAYER)){
 				players = Integer.parseInt(value);
+				playerOne.setText(	players >= 1 ? "Connected" : "Empty");
+				playerTwo.setText(	players >= 2 ? "Connected" : "Empty");
+				playerThree.setText(players >= 3 ? "Connected" : "Empty");
+				playerFour.setText(	players >= 4 ? "Connected" : "Empty");
 			} else if (input.contains(LobbyClient.GAME_MODE)){
 				gameModesButton.setSelectedValue(value);
 			}	

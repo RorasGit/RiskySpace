@@ -1,6 +1,6 @@
 package riskyspace;
 
-import riskyspace.view.swing.impl.LobbyView;
+import riskyspace.view.lobby.LobbyView;
 
 /**
  * 

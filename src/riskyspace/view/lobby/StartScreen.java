@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
 import riskyspace.view.IMenu;
-import riskyspace.view.View;
 import riskyspace.view.swing.SwingRenderAble;
 import riskyspace.view.swing.impl.SwingButton;
 
@@ -139,6 +138,7 @@ public class StartScreen extends JPanel {
 			@Override
 			public void performAction() {
 				startScreenVisible = true;
+				preMultiplayerMenu.close();
 			}
 		});
 	}
@@ -166,7 +166,6 @@ public class StartScreen extends JPanel {
 			loadGame.draw(g);
 			settings.draw(g);
 			exit.draw(g);
-			
 		}
 	}
 

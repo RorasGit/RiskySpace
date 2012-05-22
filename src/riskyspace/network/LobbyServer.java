@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class LobbyServer {
 	private int port;
 	private String ip;
 
+	private AcceptThread at;
+	
 	private boolean started = false;
 
 	public LobbyServer(int maxNumberOfPlayers) {
@@ -38,7 +41,12 @@ public class LobbyServer {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		new AcceptThread();
+		try {
+			ss.setSoTimeout(1000);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		at = new AcceptThread();
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
 			System.out.println("Server started with IP: " + ip + ":" + port);
@@ -80,7 +88,6 @@ public class LobbyServer {
 	
 	private class AcceptThread implements Runnable {
 		Thread t = null;
-
 		public AcceptThread() {
 			t = new Thread(this);
 			t.start();
@@ -89,14 +96,17 @@ public class LobbyServer {
 		@Override
 		public void run() {
 			Socket cs = null;
-			while (!started) {
+			while (!started && !ss.isClosed()) {
 				if (connections.size() < maxNumberOfPlayers) {
 					try {
 						cs = ss.accept();
 						connections.add(new ConnectionHandler(cs));
 						for (ConnectionHandler ch : connections) {
-							ch.output.writeObject("players=" + (connections.size() + 1));
+							ch.output.writeObject("players=" + (connections.size()));
 						}
+					} catch (SocketTimeoutException e) {
+					} catch (SocketException e) {
+						System.err.println("failed connect");
 					} catch (IOException e) {
 						e.printStackTrace();
 						System.exit(1);
@@ -104,6 +114,26 @@ public class LobbyServer {
 					System.out.println("IP Connected: " + cs.getInetAddress());
 				}
 			}
+		}
+		
+		public void interrupt() {
+			
+		}
+	}
+	
+	/**
+	 * Close this server
+	 */
+	public void close() {
+		try {
+			int times = connections.size();
+			for (int i = 0; i < times; i++) {
+				connections.get(0).disconnect();
+			}
+			at.interrupt();
+			ss.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

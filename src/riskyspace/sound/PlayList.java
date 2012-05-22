@@ -39,10 +39,6 @@ public class PlayList {
 	
 	private Thread playThread;
 
-	public static void main(String[] args) {
-		new PlayList(STANDARD_GAME_LOOP).start();
-	}
-	
 	/**
 	 * Create a new PlayList that will Loop a set of songs
 	 * @param tracks A String Array with song names.
