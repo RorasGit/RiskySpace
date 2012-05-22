@@ -103,6 +103,11 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		if (ls != null) {
 			ls.close();
 			ls = null;
+			ipString = "";
+			playerOne.setText("");
+			playerTwo.setText("");
+			playerThree.setText("");
+			playerFour.setText("");
 		}
 	}
 	
