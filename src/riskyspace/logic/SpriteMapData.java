@@ -123,14 +123,6 @@ public class SpriteMapData implements Serializable {
 						for (Fleet fleet : terr.getFleets()) {
 							addFleetData(data, pos, fleet);
 						}
-						int size = 0;
-						for (Fleet fleet : terr.getFleets()) {
-							size += fleet.fleetSize();
-						}
-						int colonizers = world.getTerritory(pos).shipCount(ShipType.COLONIZER);
-						size = size - colonizers;
-						data.fleetSize.put(pos, size);
-						data.colonizerAmount.put(pos, colonizers);
 					}
 				}
 			} else if (SpriteMapData.seen.get(player).contains(pos)) {
@@ -160,6 +152,7 @@ public class SpriteMapData implements Serializable {
 						fleetData.setSteps(GameManager.INSTANCE.getPath(fleet));
 					}
 					existed = true;
+					data.fleetSize.put(pos, data.fleetSize.get(pos) + fleet.fleetSize());
 				}
 			}
 			if (!existed) {
@@ -168,6 +161,7 @@ public class SpriteMapData implements Serializable {
 				} else {
 					data.fleetData.add(new FleetData(pos, fleet.getOwner(), fleet.getFlagship(), new Position[2]));
 				}
+				data.fleetSize.put(pos, fleet.fleetSize());
 			}
 		} else if (fleet.getFlagship() == ShipType.COLONIZER) {
 			for (ColonizerData colonizerData : data.colonizerData) {
@@ -175,6 +169,7 @@ public class SpriteMapData implements Serializable {
 					if (colonizerData.getSteps()[1] == null && GameManager.INSTANCE.hasPath(fleet) && GameManager.INSTANCE.getPath(fleet).length >= 1) {
 						colonizerData.setSteps(GameManager.INSTANCE.getPath(fleet));
 						existed = true;
+						data.colonizerAmount.put(pos, data.colonizerAmount.get(pos) + fleet.fleetSize());
 					}
 				}
 			}
@@ -184,6 +179,7 @@ public class SpriteMapData implements Serializable {
 				} else {
 					data.colonizerData.add(new ColonizerData(pos, fleet.getOwner(), new Position[2]));
 				}
+				data.colonizerAmount.put(pos, fleet.fleetSize());
 			}
 		}
 	}
