@@ -8,6 +8,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 
 import riskyspace.model.Player;
@@ -101,13 +102,7 @@ public class GameDataHandler {
 		try {
 			FileOutputStream fos = new FileOutputStream(riskySave + File.separator + gameName + ".rsg");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-		
-			oos.writeObject(world);
-			oos.writeObject(players);
-			oos.writeObject(currentPlayer);
-			oos.writeInt(turn);
-			oos.writeObject(gameMode);
-			
+			oos.writeObject(new SavedGame(world, players, currentPlayer, turn, gameMode, gameName));
 			oos.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -117,33 +112,22 @@ public class GameDataHandler {
 	/**
 	 * Load a game from file name.
 	 * @param gameName - the name of the file which game has been saved to.
+	 * @return 
 	 * @throws IOException
 	 */
-	public static void loadGame(String gameName) throws IOException {	
+	public static SavedGame loadGame(String gameName) throws IOException {	
 		try {
 			FileInputStream fis = new FileInputStream(riskySave + File.separator + gameName + ".rsg");
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			
-			World world = (World) ois.readObject();
-			List<Player> players = (List<Player>) ois.readObject();
-			Player currentPlayer = (Player) ois.readObject();
-			int turn = (Integer) ois.readInt();
-			String gameMode = (String) ois.readObject();
-			
-			/* TODO
-			 * Use this info to create a new game instance:
-			 * new GameManager() <- needs to be implemented
-			 * GameManager.init(world);  <- need new init for a world loaded from file
-			 * 
-			 * OR
-			 * 
-			 * return it to someone who does it for you
-			 */
+			SavedGame gameData = (SavedGame) ois.readObject();
 			ois.close();
+			
+			return gameData;
 			
 		} catch (ClassNotFoundException  e) {
 			System.out.println(e);
 		}
+		return null;
 	}
 	
 	/**
@@ -200,15 +184,12 @@ public class GameDataHandler {
 			String[] gameInfo = {null, null, null};
 		
 			try {
-				World world = (World) ois.readObject();
-				List<Player> players = (List<Player>) ois.readObject();
-				Player currentPlayer = (Player) ois.readObject();
-				int turn = (Integer) ois.readInt();
-				String gameMode = (String) ois.readObject();
+
+				SavedGame gameData = (SavedGame) ois.readObject();
 		
-				gameInfo[0] = players.toString();
-				gameInfo[1] = turn+"";
-				gameInfo[2] = gameMode;
+				gameInfo[0] = gameData.getPlayers().toString();
+				gameInfo[1] = gameData.getTurn()+"";
+				gameInfo[2] = gameData.getGameMode();
 			
 				ois.close();				
 			} catch (ClassNotFoundException e) {
@@ -221,5 +202,39 @@ public class GameDataHandler {
 	
 	public static File getSaveFolder() {
 		return riskySpace;
+	}
+	private static class SavedGame implements Serializable{
+		/**
+		 * Serializable ID
+		 */
+		private static final long serialVersionUID = -1714063672495857194L;
+		private World world;
+		private List<Player> players;
+		private Player currentPlayer;
+		private int turn;
+		private String gameMode;
+		public SavedGame(World world, List<Player> players, Player currentPlayer, int turn, String gameMode, String gameName) {
+			this.world = world;
+			this.players = players;
+			this.currentPlayer = currentPlayer;
+			this.turn = turn;
+			this.gameMode = gameMode;
+		}
+		public World getWorld() {
+			return world;
+		}
+		public List<Player> getPlayers() {
+			return players;
+		}
+		public Player getCurrentPlayer() {
+			return currentPlayer;
+		}
+		public int getTurn() {
+			return turn;
+		}
+		public String getGameMode() {
+			return gameMode;
+		}
+		
 	}
 }
