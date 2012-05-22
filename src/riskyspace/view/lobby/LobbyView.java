@@ -14,6 +14,7 @@ public class LobbyView implements Observer {
 	private StartScreen startScreen = null;
 	private Thread renderThread;
 	private PlayList playList;
+	private boolean interrupt = false;
 	
 	public LobbyView () {
 		setFrame();
@@ -24,12 +25,13 @@ public class LobbyView implements Observer {
 		playList = new PlayList(PlayList.STANDARD_LOBBY_LOOP);
 		frame.setVisible(true);
 		renderThread = new Thread(new Runnable(){
+
 			@Override
 			public void run() {
-				while (true) {
+				while (!interrupt) {
 					frame.repaint();
 					try {
-						Thread.sleep(1000/30);
+						Thread.sleep(1000/30);	
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -54,7 +56,7 @@ public class LobbyView implements Observer {
 	public void update(Observable o, Object arg) {
 		if ("dispose".equals(arg)) {
 			if (renderThread != null && renderThread.isAlive()) {
-				renderThread.interrupt();
+				interrupt = true;
 			}
 			playList.pause();
 			frame.dispose();

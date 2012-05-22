@@ -18,7 +18,7 @@ import riskyspace.services.Event;
 
 public class LobbyServer {
 	
-	private final String START_GAME = "start_game";
+	public static final String START_GAME = "start_game";
 	
 	private int maxNumberOfPlayers;
 	private ServerSocket ss = null;
@@ -68,7 +68,7 @@ public class LobbyServer {
 	}
 	
 	public boolean start() {
-		if(connections.size() == maxNumberOfPlayers - 1){
+		if(connections.size() == maxNumberOfPlayers){
 			started = true;
 			InetAddress[] addresses = new InetAddress[maxNumberOfPlayers];
 			for (int i = 0; i < addresses.length; i++) {
@@ -111,7 +111,7 @@ public class LobbyServer {
 						e.printStackTrace();
 						System.exit(1);
 					}
-					System.out.println("IP Connected: " + cs.getInetAddress());
+//					System.out.println("IP Connected: " + cs.getInetAddress());
 				}
 			}
 		}
@@ -149,7 +149,7 @@ public class LobbyServer {
 			this.output = new ObjectOutputStream(socket.getOutputStream());
 			this.input = new ObjectInputStream(socket.getInputStream());
 			
-			if (ss.getInetAddress().equals(socket.getInetAddress())){
+			if (getIP().equals(socket.getInetAddress().getHostAddress())){
 				host = true;
 			}
 			
@@ -170,7 +170,7 @@ public class LobbyServer {
 				}
 				try {
 					Object o = input.readObject();
-					if (host && o instanceof Event.EventTag) {
+					if (host && o instanceof String) {
 						if (START_GAME.equals(o) && connections.size() == maxNumberOfPlayers) {
 							start();
 						}

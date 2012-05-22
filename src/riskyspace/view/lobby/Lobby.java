@@ -66,6 +66,12 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		
 		startGame = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
 		startGame.setImage("res/menu/lobby/startGameButton.png");
+		startGame.setAction(new Action() {
+			@Override
+			public void performAction() {
+				client.startGame();
+			}
+		});
 		
 		createServer = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 6*margin - 50, 180, 50);
 		createServer.setImage("res/menu/lobby/exitGameButton.png");
@@ -74,8 +80,8 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 			public void performAction() {
 				ls = new LobbyServer(Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]));
 				ipString = ls.getIP();
-				client.connectToLobby(ls.getIP());
 				setClient(client);
+				client.connectToLobby(ls.getIP());
 				createServer.setEnabled(false);
 			}
 		});
@@ -94,10 +100,6 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 	}
 	
 	public void close() {
-//		if (client != null) {
-//			client.close();
-//			client = null;
-//		}
 		if (ls != null) {
 			ls.close();
 			ls = null;
@@ -221,6 +223,7 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 				playerTwo.setText(	players >= 2 ? "Connected" : "Empty");
 				playerThree.setText(players >= 3 ? "Connected" : "Empty");
 				playerFour.setText(	players >= 4 ? "Connected" : "Empty");
+				startGame.setEnabled(host && players == Integer.parseInt(numberOfPlayersButton.getSelectedValue()));
 			} else if (input.contains(LobbyClient.GAME_MODE)){
 				gameModesButton.setSelectedValue(value);
 			}	

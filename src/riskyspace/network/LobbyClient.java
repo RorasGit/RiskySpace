@@ -47,7 +47,7 @@ public class LobbyClient extends Observable {
 
 	public void startGame() {
 		try {
-			output.writeObject("start_game");
+			output.writeObject(LobbyServer.START_GAME);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -122,8 +122,7 @@ public class LobbyClient extends Observable {
 							notifyObservers("dispose");
 							// Create GameClient
 							String ip = socket.getInetAddress().getHostAddress();
-							int port = socket.getPort();
-							new GameClient(ip, port);
+							new GameClient(ip, 6013);
 							// Set boolean to cancel this thread
 							started = true;
 						} else {
