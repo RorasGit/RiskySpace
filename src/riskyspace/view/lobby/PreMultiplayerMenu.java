@@ -94,6 +94,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 	public void setVisible(boolean enabled) {
 		super.setVisible(enabled);
 		multiplayerLobby.setVisible(false);
+		ipBox.setEnabled(enabled);
 	}
 	@Override
 	public boolean mousePressed(Point p) {
