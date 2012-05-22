@@ -496,9 +496,9 @@ public enum GameManager {
 						// BuildAble Ranked of this type is already in queue
 						return;
 					}
-					if (world.canAfford(getCurrentPlayer(), buildAble)) {
-						if(world.purchase(getCurrentPlayer(), buildAble)){
-							world.addToBuildQueue(buildAble, getCurrentPlayer(), pos);
+					if (world.canAfford(player, buildAble)) {
+						if(world.purchase(player, buildAble)){
+							world.addToBuildQueue(buildAble, player, pos);
 						}
 					}
 				}

@@ -193,9 +193,6 @@ public class GameServer implements EventHandler {
 		
 		public AcceptThread(String[] addresses) {
 			this.addresses = addresses;
-			for (int i = 0; i < addresses.length; i++) {
-				System.out.println("adr: " + addresses[i]);
-			}
 			t = new Thread(this);
 			t.start();
 		}
@@ -205,7 +202,6 @@ public class GameServer implements EventHandler {
 			Socket cs = null;
 			while (connections.size() < numberOfPlayers) {
 				try {
-					System.out.println("try!");
 					cs = ss.accept();
 					for (int i = 0; i < addresses.length; i++) {
 						if (cs.getInetAddress().getHostAddress().equals(addresses[i])) {

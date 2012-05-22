@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import riskyspace.LocalGame;
 import riskyspace.network.LobbyClient;
 import riskyspace.network.LobbyServer;
 import riskyspace.view.Action;
@@ -47,6 +48,8 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		createButtons();
 		createBackground();
 	}
+
+	private LocalGameClient localClient;
 	
 	private void createButtons() {
 		playerOne = new SwingButton(getX() + margin, getY() + margin, 240, 50);
@@ -65,7 +68,12 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		startGame.setAction(new Action() {
 			@Override
 			public void performAction() {
-				client.startGame();
+				if (client != null) {
+					client.startGame();
+				} else {
+					localClient.disposeLobby();
+					new LocalGame(Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]));
+				}
 			}
 		});
 		
@@ -93,6 +101,25 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 		list.add("Annihilation");
 		
 		gameModesButton = new DropdownButton<String>(getX() + getMenuWidth() - getMenuWidth()/7 - 80, getY() + 2*getMenuHeight()/6, 160, 30, list);
+	}
+	
+	/**
+	 * Client substitute used for Local Game to close the Lobby 
+	 */
+	class LocalGameClient extends Observable {
+		public void disposeLobby() {
+			setChanged();
+			notifyObservers("dispose");
+		}
+	}
+
+	/**
+	 * Set Observer to observe a localClient and listen for event to close the Lobby
+	 */
+	public void setObserver(final Observer o) {
+		// Observer used in local game to dispose window
+		localClient = new LocalGameClient();
+		localClient.addObserver(o);
 	}
 	
 	public void close() {
@@ -188,13 +215,22 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 	}
 
 	public void setGameCreate(LobbyClient client) {
-		this.client = client;
-		client.addObserver(this);
-		gameModesButton.setEnabled(true);
-		numberOfPlayersButton.setEnabled(true);
-		createServer.setEnabled(true);
-		startGame.setEnabled(false);
-		setVisible(true);
+		if (client == null) {
+			// Local
+			gameModesButton.setEnabled(true);
+			numberOfPlayersButton.setEnabled(true);
+			createServer.setEnabled(false);
+			startGame.setEnabled(true);
+			setVisible(true);
+		} else {
+			this.client = client;
+			client.addObserver(this);
+			gameModesButton.setEnabled(true);
+			numberOfPlayersButton.setEnabled(true);
+			createServer.setEnabled(true);
+			startGame.setEnabled(false);
+			setVisible(true);
+		}
 	}
 
 	public void setClient(LobbyClient client) {

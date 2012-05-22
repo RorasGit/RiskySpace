@@ -40,7 +40,6 @@ public class GameClient implements EventHandler {
 	private Socket socket = null;
 	
 	public GameClient(String hostIP, int hostPort) {
-		System.out.println("new GC: " + hostIP + "  " + hostPort);
 		EventBus.CLIENT.addHandler(this);
 		connect(hostIP, hostPort);
 		Thread renderThread = new Thread(new Runnable() {
@@ -157,7 +156,6 @@ public class GameClient implements EventHandler {
 		private View mainView = null;
 		private ObjectInputStream input = null;
 		
-
 		public ServerListener(View view, ObjectInputStream input) {
 			this.mainView = view;
 			this.input = input;

@@ -32,7 +32,7 @@ public class StartScreen extends JPanel {
 	
 	private boolean startScreenVisible = true;
 	
-	private IMenu localLobby = null;
+	private Lobby localLobby = null;
 	private IMenu loadGameMenu = null;
 	
 	private PreMultiplayerMenu preMultiplayerMenu = null;
@@ -67,6 +67,7 @@ public class StartScreen extends JPanel {
 	}	
 
 	public void setObserver(Observer o) {
+		localLobby.setObserver(o);
 		preMultiplayerMenu.setObserver(o);
 	}
 	
@@ -101,7 +102,7 @@ public class StartScreen extends JPanel {
 		localGame.setAction(new Action(){
 			@Override
 			public void performAction() {
-				localLobby.setVisible(true);
+				localLobby.setGameCreate(null);
 				startScreenVisible = false;
 			}
 		});

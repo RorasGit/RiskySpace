@@ -73,6 +73,7 @@ public class BuildQueue implements Serializable {
 		if (!hasQueueSpace(1, pos)) {
 			return false;
 		}
+		
 		colonyQueue.get(pos).add(new QueueItem(buildAble));
 		return true;
 	}
@@ -293,6 +294,6 @@ public class BuildQueue implements Serializable {
 	 * @return returns true if the queue has sufficient space available
 	 */
 	public boolean hasQueueSpace(int space, Position pos) {
-		return queueSize(pos) + space  > this.queueMaxSize;
+		return (queueSize(pos) + space) < this.queueMaxSize;
 	}
 }

@@ -589,9 +589,6 @@ public class GLRenderArea implements GLRenderAble {
 	 */
 	public void setQueue(Map<Colony, List<BuildAble>> colonyQueues) {
 		colonyMenu.setQueues(colonyQueues);
-		/*
-		 * Set for BuildQueueMenu
-		 */
 	}
 	
 	/**

@@ -69,15 +69,14 @@ public class World implements Serializable {
 		}
 		return hasContent;
 	}
+	
 	public Map<Colony, List<BuildAble>> getBuildQueue(Player player){
 		Map <Position, List<BuildAble>> buildQueue = buildqueue.get(player).peek();
 		Map <Colony, List<BuildAble>> returnedBuildQueue = new HashMap<Colony, List<BuildAble>>();
 		for (Position pos : buildQueue.keySet()) {
 			returnedBuildQueue.put(this.territories.get(pos).getColony(), buildQueue.get(pos));
 		}
-		
 		return returnedBuildQueue;
-		
 	}
 	
 	/**
