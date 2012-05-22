@@ -56,7 +56,7 @@ public class StartScreen extends JPanel {
 
 	public StartScreen(PlayList playlist) {
 		measureScreen();
-		backGround = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/background.png").
+		backGround = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/background3.png").
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		createButtons();
 		createMenus();
