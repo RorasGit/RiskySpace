@@ -308,6 +308,7 @@ public class GLRenderArea implements GLRenderAble {
 	}
 	
 	public void showWinnerScreen() {
+		gameOver = true;
 		winner = true;
 	}
 	
