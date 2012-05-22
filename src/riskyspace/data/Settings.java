@@ -2,8 +2,7 @@ package riskyspace.data;
 
 public class Settings {
 
-	private int musicVolume;
-	private int effectsVolume;
+	private boolean musicOn;
 	
 	private String IP;
 	
@@ -15,19 +14,11 @@ public class Settings {
 		return IP;
 	}
 	
-	public int getMusicVolume() {
-		return musicVolume;
+	public void setMusicOn(boolean b) {
+		musicOn = b;
 	}
 	
-	public void setMusicVolume(int i) {
-		musicVolume = i;
-	}
-	
-	public int getEffectsVolume() {
-		return effectsVolume;
-	}
-	
-	public void setEffectsVolume(int i) {
-		effectsVolume = i;
+	public boolean isMusicOn() {
+		return musicOn;
 	}
 }
