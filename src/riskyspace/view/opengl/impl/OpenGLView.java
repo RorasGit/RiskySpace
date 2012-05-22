@@ -80,13 +80,18 @@ public class OpenGLView implements View, GLEventListener {
 		frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		frame.setIgnoreRepaint(true);
 		if (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported()) {
-			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(frame);
+			if (!System.getProperty("os.name").contains("Windows")) {
+				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(frame);
+			} else {
+				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
+				frame.setAlwaysOnTop(true);
+				frame.setResizable(false);
+				frame.pack();
+				frame.setVisible(true);
+			}
 		} else {
 			System.err.println("Fullscreen not supported");
 		}
-//		frame.setAlwaysOnTop(true);
-//		frame.setResizable(false);
-//		frame.pack();
 		
 		canvas.requestFocusInWindow();
 		
