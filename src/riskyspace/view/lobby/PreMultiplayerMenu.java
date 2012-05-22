@@ -50,11 +50,13 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 			@Override
 			public void performAction() {
 				String ip = ipBox.getText();
-				Settings.setProperty("ip=" + ipBox.getText());
 				String[] parts = ip.split("\\.");
 				boolean format = parts.length == 4;
 				for (int i = 0; i < parts.length; i++) {
 					format = format && parts[i].length() < 4;
+				}
+				if (format) {
+					Settings.setProperty("ip=" + ip);
 				}
 				if (format && client.connectToLobby(ipBox.getText())){
 					setVisible(false);
