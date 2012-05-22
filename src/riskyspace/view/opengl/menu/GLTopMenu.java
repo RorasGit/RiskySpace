@@ -45,7 +45,6 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 	private GLButton endTurnButton = null;
 	private GLButton performMovesButton = null;
 	private GLButton menuButton = null;
-	private GLButton buildQueueButton = null;
 	
 	private int x, y;
 	private int menuHeight = 0;
@@ -81,8 +80,6 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 			}
 		});
 		
-		buildQueueButton = new GLButton(x + screenHeight/6, screenHeight - y, screenHeight/6, height);
-		buildQueueButton.setTexture("build_queue", 128, 80);
 		
 		endTurnButton = new GLButton(width - screenHeight/6, screenHeight - y, screenHeight/6, height);
 		endTurnButton.setTexture("end_turn", 128, 80);
@@ -115,7 +112,6 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 	@Override
 	public boolean mousePressed(Point p) {
 		if (menuButton.mousePressed(p)) {return true;}
-		else if (buildQueueButton.mousePressed(p)) {return true;}
 		else if (endTurnButton.mousePressed(p)) {return true;}
 		else if (performMovesButton.mousePressed(p)) {return true;}
 		else if (this.contains(p)) {return true;}
@@ -125,7 +121,6 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 	@Override
 	public boolean mouseReleased(Point p) {
 		if (menuButton.mouseReleased(p)) {return true;}
-		else if (buildQueueButton.mouseReleased(p)) {return true;}
 		else if (endTurnButton.mouseReleased(p)) {return true;}
 		else if (performMovesButton.mouseReleased(p)) {return true;}
 		else if (this.contains(p)) {return true;}
@@ -184,7 +179,6 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 		}
 		drawable.getGL().getGL2().glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		menuButton.draw(drawable, null, targetArea, zIndex);
-		buildQueueButton.draw(drawable, null, targetArea, zIndex);
 		endTurnButton.draw(drawable, null, targetArea, zIndex);
 		performMovesButton.draw(drawable, null, targetArea, zIndex);
 	}

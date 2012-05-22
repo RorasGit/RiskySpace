@@ -33,7 +33,6 @@ public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 	private SwingButton endTurnButton = null;
 	private SwingButton performMovesButton = null;
 	private SwingButton menuButton = null;
-	private SwingButton buildQueueButton = null;
 	
 	private int menuWidth = 0;
 	private int margin = 5;
@@ -57,9 +56,6 @@ public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 				System.exit(0);
 			}
 		});
-		
-		buildQueueButton = new SwingButton(x + screenHeight/6, y, screenHeight/6, height);
-		buildQueueButton.setImage("res/menu/build_queue.png");
 		
 		endTurnButton = new SwingButton(width - screenHeight/6, 0, screenHeight/6, height);
 		endTurnButton.setImage("res/menu/end_turn.png");
@@ -92,7 +88,6 @@ public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 	@Override
 	public boolean mousePressed(Point p) {
 		if (menuButton.mousePressed(p)) {return true;}
-		else if (buildQueueButton.mousePressed(p)) {return true;}
 		else if (endTurnButton.mousePressed(p)) {return true;}
 		else if (performMovesButton.mousePressed(p)) {return true;}
 		else if (this.contains(p)) {return true;}
@@ -102,7 +97,6 @@ public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 	@Override
 	public boolean mouseReleased(Point p) {
 		if (menuButton.mouseReleased(p)) {return true;}
-		else if (buildQueueButton.mouseReleased(p)) {return true;}
 		else if (endTurnButton.mouseReleased(p)) {return true;}
 		else if (performMovesButton.mouseReleased(p)) {return true;}
 		else if (this.contains(p)) {return true;}
@@ -135,7 +129,6 @@ public class TopMenu implements IMenu, Clickable, SwingRenderAble {
 		g.drawString(supply.getUsed() + "/" + supply.getMax(), a*5 + supplyImage.getWidth(null) + 5, margin + supplyImage.getHeight(null)/2 + fontHeight/2);
 		
 		menuButton.draw(g);
-		buildQueueButton.draw(g);
 		endTurnButton.draw(g);
 		performMovesButton.draw(g);
 	}
