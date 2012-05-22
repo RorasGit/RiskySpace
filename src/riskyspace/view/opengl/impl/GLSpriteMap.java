@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
+
 import riskyspace.logic.Path;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.logic.data.AnimationData;
@@ -19,6 +21,7 @@ import riskyspace.model.Player;
 import riskyspace.model.Position;
 import riskyspace.model.Resource;
 import riskyspace.model.ShipType;
+import riskyspace.view.ViewResources;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
 
@@ -94,9 +97,9 @@ public class GLSpriteMap implements GLRenderAble {
 	private Map<Player, Map<ShipType , Map<Rectangle, Double>>> fleets = new HashMap<Player, Map<ShipType , Map<Rectangle, Double>>>();
 	private Map<String, Map<Rectangle, Double>> paths = new HashMap<String, Map<Rectangle, Double>>();
 	
-	/* Integers for display, draw text how? */
-//	private Map<Position, Integer> shipCount = new HashMap<Position, Integer>();
-//	private Map<Position, Integer> colonizerCount = new HashMap<Position, Integer>();
+	private Map<Rectangle, Integer> shipCount = new HashMap<Rectangle, Integer>();
+	private Map<Rectangle, Integer> colonizerCount = new HashMap<Rectangle, Integer>();
+	private static TextRenderer numberRenderer;
 	
 	/**
 	 * Private constructor, create instances with getSprites()
@@ -106,6 +109,7 @@ public class GLSpriteMap implements GLRenderAble {
 	public static void init() {
 		loadSprites();
 		setPlanetSprites();
+		numberRenderer = new TextRenderer(ViewResources.getFont().deriveFont(8f));
 		initiated = true;
 	}
 
@@ -229,6 +233,12 @@ public class GLSpriteMap implements GLRenderAble {
 			Map<Rectangle, Double> dataMap = map.fleets.get(fleetData.getPlayer()).get(fleetData.getFlagships());
 			double angle = Math.toDegrees(Path.getRotation(null, fleetData.getSteps()[0], fleetData.getSteps()[1]));
 			dataMap.put(calculateRect(fleetData.getPosition(), 0, 0, squareSize, 0.5f), angle);
+			
+			if (data.getFleetSize(fleetData.getPosition()) > 0) {
+				Rectangle rect = calculateRect(fleetData.getPosition(), 0.4f, 0.1f, squareSize, 0);
+				Rectangle amountRect = new Rectangle(rect.getX() - 1, rect.getY() - 1, 2, 2);
+				map.shipCount.put(amountRect, data.getFleetSize(fleetData.getPosition()));
+			}
 		}
 		/* Add Animation Data*/
 		for (AnimationData animData : GLSpriteMap.data.getAnimationData()) {
@@ -251,6 +261,12 @@ public class GLSpriteMap implements GLRenderAble {
 			Map<Rectangle, Double> dataMap = map.fleets.get(colonizerData.getPlayer()).get(ShipType.COLONIZER);
 			double angle = Math.toDegrees(Path.getRotation(null, colonizerData.getSteps()[0], colonizerData.getSteps()[1]));
 			dataMap.put(calculateRect(colonizerData.getPosition(), 0.5f, 0, squareSize, 0.5f), angle);
+			
+			if (data.getColonizerAmount(colonizerData.getPosition()) > 0) {
+				Rectangle rect = calculateRect(colonizerData.getPosition(), 0.9f, 0.1f, squareSize, 0);
+				Rectangle amountRect = new Rectangle(rect.getX() - 1, rect.getY() - 1, 2, 2);
+				map.colonizerCount.put(amountRect, data.getColonizerAmount(colonizerData.getPosition()));
+			}
 		}
 		/* Add Fog Data */
 		for (Position pos : GLSpriteMap.data.getFog()) {
@@ -275,12 +291,6 @@ public class GLSpriteMap implements GLRenderAble {
 						}
 						rotation = Path.getRotation(paths[i][j-1], paths[i][j], null);
 						map.paths.get(HEAD).put(calculateRect(paths[i][j], 0, 0, squareSize, 1), rotation);
-						
-						
-						
-						
-						
-						
 					} else if (paths[i][j-1].getCol() != paths[i][j+1].getCol() && paths[i][j-1].getRow() != paths[i][j+1].getRow()) {
 						if (!flipTurnTexture(paths[i][j-1], paths[i][j], paths[i][j+1])) {
 							if (map.paths.get(TURN1) == null) {
@@ -375,6 +385,19 @@ public class GLSpriteMap implements GLRenderAble {
 				pathSprites.get(s).draw(drawable, r, targetArea, zIndex + 4);
 			}
 		}
+		/* Draw Fleet and Colonizer size */
+		for (Rectangle rect : shipCount.keySet()) {
+			String number = "" + shipCount.get(rect);
+			Rectangle drawRect = new Rectangle(rect.getX() - targetArea.getX(), rect.getY() - targetArea.getY(), 2, 2);
+			GLRenderArea.drawString(numberRenderer, drawRect, number, ViewResources.WHITE, drawable.getWidth(), drawable.getHeight());
+		}
+		
+		for (Rectangle rect : colonizerCount.keySet()) {
+			String number = "" + colonizerCount.get(rect);
+			Rectangle drawRect = new Rectangle(rect.getX() - targetArea.getX(), rect.getY() - targetArea.getY(), 2, 2);
+			GLRenderArea.drawString(numberRenderer, drawRect, number, ViewResources.WHITE, drawable.getWidth(), drawable.getHeight());
+		}
+		
 		for (GLFleetAnimation glAnim : fleetAnimations) {
 			/*
 			 * Animation supplies Rectangle itself

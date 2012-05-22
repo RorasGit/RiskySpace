@@ -389,10 +389,10 @@ public class GLRenderArea implements GLRenderAble {
 			
 			/* Here we draw the game over message */
 
-			drawString(statusTextRenderer, row1, line1, ViewResources.WHITE);
-			drawString(statusTextRenderer, row2, line2, ViewResources.WHITE);
-			drawString(statusTextRenderer, row3a, line3, ViewResources.WHITE);
-			drawString(statusTextRenderer, row3b, line4, statusStringColor);
+			drawString(statusTextRenderer, row1, line1, ViewResources.WHITE, drawable.getWidth(), drawable.getHeight());
+			drawString(statusTextRenderer, row2, line2, ViewResources.WHITE, drawable.getWidth(), drawable.getHeight());
+			drawString(statusTextRenderer, row3a, line3, ViewResources.WHITE, drawable.getWidth(), drawable.getHeight());
+			drawString(statusTextRenderer, row3b, line4, statusStringColor, drawable.getWidth(), drawable.getHeight());
 			
 			statusTextRenderer.setColor(1,1,1,1);
 		}
@@ -407,7 +407,7 @@ public class GLRenderArea implements GLRenderAble {
 	private void drawStatusBox(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
 		if (statusString.length() > 0 && !gameOver) {
 			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
-			drawString(statusTextRenderer, statusBackground.getBounds(), statusString, statusStringColor);
+			drawString(statusTextRenderer, statusBackground.getBounds(), statusString, statusStringColor, drawable.getWidth(), drawable.getHeight());
 		}
 	}
 
@@ -418,8 +418,8 @@ public class GLRenderArea implements GLRenderAble {
 	 * @param s The String to draw
 	 * @param c The Color of the Text
 	 */
-	private void drawString(TextRenderer textRenderer, Rectangle rect, String s, Color c) {
-		textRenderer.beginRendering(screenArea.getWidth(), screenArea.getHeight());
+	public static void drawString(TextRenderer textRenderer, Rectangle rect, String s, Color c, int width, int height) {
+		textRenderer.beginRendering(width, height);
 		textRenderer.setColor(c);
 		int textWidth = (int) textRenderer.getBounds(s).getWidth();
 		int textHeigth = (int) textRenderer.getBounds(s).getHeight();
