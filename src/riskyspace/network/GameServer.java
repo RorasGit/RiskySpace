@@ -108,6 +108,8 @@ public class GameServer implements EventHandler {
 				sendObject(evt, evt.getPlayer());
 			} else if (evt.getTag() == Event.EventTag.HOME_LOST) {
 				sendObject(evt, evt.getPlayer());
+			} else if (evt.getTag() == Event.EventTag.GAME_OVER) {
+				sendObject(evt, evt.getPlayer());
 			}
 			
 		} catch (IOException e) {

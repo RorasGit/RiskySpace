@@ -114,7 +114,8 @@ public class GLRenderArea implements GLRenderAble {
 	 */
 	private Player viewer = null;
 	
-	private boolean defeated = false;
+	private boolean gameOver = false;
+	private boolean winner = false;
 
 	/*
 	 * Status box, other player's turn
@@ -288,7 +289,7 @@ public class GLRenderArea implements GLRenderAble {
 	public void setActivePlayer(Player player) {
 		if (player == viewer) {
 			statusString = "";
-		} else if (!defeated) {
+		} else if (!gameOver) {
 			statusString = player + "'S TURN";
 			statusStringColor = PlayerColors.getColor(player);
 		}
@@ -296,14 +297,18 @@ public class GLRenderArea implements GLRenderAble {
 	
 	public void showGameOver(Player killedBy) {
 		statusBackground = new GLSprite("square_button", 128, 80);
-		int width = screenArea.getWidth()/2;
-		int height = screenArea.getHeight()/2;
+		int width = screenArea.getWidth() / 2;
+		int height = screenArea.getHeight() / 2;
 		int x = screenArea.getWidth() / 2 - width / 2;
 		int y = screenArea.getHeight() / 2 - height / 2;
 		statusBackground.setBounds(new Rectangle(x, y, width, height));
 		statusString = "";
 		killedByString = killedBy.toString();
-		defeated = true;
+		gameOver = true;
+	}
+	
+	public void showWinnerScreen() {
+		winner = true;
 	}
 	
 	@Override
@@ -336,18 +341,32 @@ public class GLRenderArea implements GLRenderAble {
 	}
 
 	private void drawGameOver(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
-		if (defeated) {
+		if (gameOver) {
 			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
 			
 			/* Center of screen position */
 			int cX = screenArea.getWidth() / 2;
 			int cY = screenArea.getHeight() / 2;
 			
-			String line1 = "YOU HAVE BEEN DEFEATED!";
-			String line2 = "ALL YOUR BASE";
-			String line3 = "ARE BELONG TO";
-			String line4 = killedByString;
+			String line1 = "";
+			String line2 = "";
+			String line3 = "";
+			String line4 = "";
 			
+			if (!winner) {
+			
+			line1 = "YOU HAVE BEEN DEFEATED!";
+			line2 = "ALL YOUR BASE";
+			line3 = "ARE BELONG TO";
+			line4 = killedByString;
+			
+			} else {
+				
+				line1 = "GREAT SUCCESS!";
+				line2 = "YOU KILLED ALL OF THE";
+				line3 = "NOOBS IN OUTER SPACE";
+				line4 = "";
+			}
 			/* Calculate lineHeight lH to use as Y offset */
 			int lH = (int) statusTextRenderer.getBounds("height").getHeight()+screenArea.getHeight() / 24;
 			
@@ -383,7 +402,7 @@ public class GLRenderArea implements GLRenderAble {
 	 * @param zIndex
 	 */
 	private void drawStatusBox(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
-		if (statusString.length() > 0 && !defeated) {
+		if (statusString.length() > 0 && !gameOver) {
 			statusBackground.draw(drawable, statusBackground.getBounds(), targetArea, zIndex);
 			drawString(statusTextRenderer, statusBackground.getBounds(), statusString, statusStringColor);
 		}

@@ -127,4 +127,9 @@ public class SwingView implements View {
 	public void showGameOver(Player loser) {
 		renderArea.showGameOver(loser);
 	}
+
+	@Override
+	public void showWinnerScreen() {
+		renderArea.showWinnerScreen();
+	}
 }

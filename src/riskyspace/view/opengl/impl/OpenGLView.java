@@ -90,13 +90,13 @@ public class OpenGLView implements View, GLEventListener {
 	//*****GLEventListener Methods*****
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		long b = System.currentTimeMillis();
-		if (sec == 0 || b -sec > 1000) {
-			System.out.println("FPS: " + times);
-			times = 0;
-			sec = b;
-		}
-		times++;
+//		long b = System.currentTimeMillis();
+//		if (sec == 0 || b -sec > 1000) {
+//			System.out.println("FPS: " + times);
+//			times = 0;
+//			sec = b;
+//		}
+//		times++;
 		
 		GL2 gl = drawable.getGL().getGL2();
 		drawable.getGL().glClearColor(0, 0, 0, 1f);
@@ -200,5 +200,10 @@ public class OpenGLView implements View, GLEventListener {
 	@Override
 	public void showGameOver(Player loser) {
 		renderArea.showGameOver(loser);
+	}
+	
+	@Override
+	public void showWinnerScreen() {
+		renderArea.showWinnerScreen();
 	}
 }

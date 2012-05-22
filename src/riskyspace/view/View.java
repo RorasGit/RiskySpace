@@ -30,5 +30,6 @@ public interface View {
 	public void hideMenus();
 
 	public void showGameOver(Player loser);
+	public void showWinnerScreen();
 }
 

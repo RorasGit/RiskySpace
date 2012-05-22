@@ -217,6 +217,11 @@ public enum GameManager {
 			Event homeLostEvent = new Event(Event.EventTag.HOME_LOST, getCurrentPlayer());
 			homeLostEvent.setPlayer(loser);
 			EventBus.SERVER.publish(homeLostEvent);
+			if (activePlayers.size() == 1) {
+				Event event = new Event(Event.EventTag.GAME_OVER, null);
+				event.setPlayer(getCurrentPlayer());
+				EventBus.SERVER.publish(event);
+			}
 		}
 	}
 	

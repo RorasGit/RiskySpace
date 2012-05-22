@@ -539,4 +539,9 @@ public class SwingRenderArea extends JPanel {
 		 */
 		System.out.println("loser has lost the game!");
 	}
+
+	public void showWinnerScreen() {
+		// TODO Auto-generated method stub
+		System.out.println("game over");
+	}
 }
