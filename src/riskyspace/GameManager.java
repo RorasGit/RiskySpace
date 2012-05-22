@@ -355,6 +355,7 @@ public enum GameManager {
 				if (fleet.hasColonizer() && fleet.getOwner() == player) {
 					fleet.useColonizer();
 					ter.getPlanet().buildColony(player);
+					incomeChanged(player);
 					if(fleet.fleetSize() == 0){
 						ter.removeFleet(fleet);
 					}

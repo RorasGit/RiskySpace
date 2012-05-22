@@ -129,6 +129,7 @@ public class World implements Serializable {
 				getTerritory(pos).addFleet(new Fleet(new Ship((ShipType) itemsToBuild.get(pos)), player));
 			} else if (itemsToBuild.get(pos) instanceof Ranked) {
 				((Ranked) itemsToBuild.get(pos)).upgrade();
+				incomeChanged(player);
 			}
 		}
 		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
@@ -147,6 +148,24 @@ public class World implements Serializable {
 		Event evt = new Event(Event.EventTag.BUILDQUEUE_CHANGED, getBuildQueue(player));
 		evt.setPlayer(player);
 		EventBus.SERVER.publish(evt);
+	}
+	private void incomeChanged(Player affectedPlayer) {
+		int metalIncome = 10;
+		int gasIncome = 0;
+		for (Position pos : getContentPositions()) {
+			Territory terr = getTerritory(pos);
+			if (terr.hasColony()) {
+				if (terr.getColony().getOwner() == affectedPlayer) {
+					if (terr.getPlanet().getType() == Resource.METAL) {
+						metalIncome += terr.getColony().getIncome();
+					} else if (terr.getPlanet().getType() == Resource.GAS) {
+						gasIncome += terr.getColony().getIncome();
+					}
+				}
+			}
+		}
+		setIncome(affectedPlayer, Resource.METAL, metalIncome);
+		setIncome(affectedPlayer, Resource.GAS, gasIncome);
 	}
 	
 	public List<Position> getContentPositions(){

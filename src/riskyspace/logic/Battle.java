@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import riskyspace.GameManager;
 import riskyspace.logic.data.BattleStats;
 import riskyspace.model.Colony;
 import riskyspace.model.Fleet;
 import riskyspace.model.Player;
 import riskyspace.model.Territory;
+import riskyspace.services.Event;
 
 
 public class Battle {
@@ -116,7 +118,12 @@ public class Battle {
 		if (territory.hasColony()) {
 			if (territory.getColony().getOwner() != winner) {
 				battleStats.setColonyDestroyed(true);
-				territory.getPlanet().destroyColony();
+				if(territory.getPlanet().destroyColony()){
+					Event evt = new Event(Event.EventTag.HOME_LOST, territory.getColony().getOwner());
+					GameManager.INSTANCE.handleEvent(evt, territory.getColony().getOwner());
+				}
+				Event evt = new Event(Event.EventTag.INCOME_CHANGED, territory.getColony().getOwner());
+				GameManager.INSTANCE.handleEvent(evt, winner);
 			}
 		}
 		return battleStats;

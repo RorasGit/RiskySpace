@@ -89,8 +89,7 @@ public class Mine implements BuildAble, Ranked {
 	public void upgrade() {
 		if (rank < MAX_RANK) {
 			rank++;
-			Event evt = new Event(Event.EventTag.INCOME_CHANGED, null);
-			GameManager.INSTANCE.handleEvent(evt, null);
+
 		}
 	}
 

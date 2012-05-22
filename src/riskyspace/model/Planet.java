@@ -50,9 +50,7 @@ public class Planet implements Serializable{
 	 */
 	public void buildColony(Player owner) {
 		colony = new Colony(type, owner);
-		Event evt = new Event(Event.EventTag.INCOME_CHANGED, owner);
-		GameManager.INSTANCE.handleEvent(evt, owner);
-		evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		Event evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
 		EventBus.SERVER.publish(evt);
 	}
 	
@@ -63,18 +61,12 @@ public class Planet implements Serializable{
 	/**
 	 * Removes the Colony on this Planet if there is one, otherwise it does nothing.
 	 */
-	public void destroyColony() {
-		Player owner = colony.getOwner();
+	public boolean destroyColony() {
 		boolean wasHome = colony.isHomeColony();
 		colony = null;
-		Event evt = new Event(Event.EventTag.INCOME_CHANGED, owner);
-		GameManager.INSTANCE.handleEvent(evt, owner);
-		evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
+		Event evt = new Event(Event.EventTag.UPDATE_SPRITEDATA, null);
 		EventBus.SERVER.publish(evt);
-		if (wasHome) {
-			evt = new Event(Event.EventTag.HOME_LOST, owner);
-			GameManager.INSTANCE.handleEvent(evt, owner);
-		}
+		return wasHome;
 	}
 	public boolean hasColony() {
 		return colony != null;
