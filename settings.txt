@@ -1,0 +1,2 @@
+ip=192.129.
+music_enabled=false

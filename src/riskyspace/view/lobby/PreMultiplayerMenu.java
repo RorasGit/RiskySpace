@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Observer;
 
+import riskyspace.data.Settings;
 import riskyspace.network.LobbyClient;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
@@ -38,6 +39,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 		background = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/wider_menu_background.png").
 				getScaledInstance(menuWidth, menuHeight, Image.SCALE_DEFAULT);	
 		ipBox = new TextBox(x + margin, y + margin + menuHeight/10, menuWidth - 2*margin, 30);
+		ipBox.setText(Settings.getLastIP());
 		ipBox.setEnabled(false);
 		
 		client = new LobbyClient();
@@ -48,6 +50,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 			@Override
 			public void performAction() {
 				String ip = ipBox.getText();
+				Settings.setProperty("ip=" + ipBox.getText());
 				String[] parts = ip.split("\\.");
 				boolean format = parts.length == 4;
 				for (int i = 0; i < parts.length; i++) {

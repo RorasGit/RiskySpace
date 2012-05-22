@@ -218,4 +218,8 @@ public class GameDataHandler {
 			}
 		return gameInfo;
 	}
+	
+	public static File getSaveFolder() {
+		return riskySpace;
+	}
 }

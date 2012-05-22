@@ -13,6 +13,7 @@ import java.util.Observer;
 import javax.swing.JPanel;
 
 import riskyspace.data.GameDataHandler;
+import riskyspace.data.Settings;
 import riskyspace.view.Action;
 import riskyspace.view.Clickable;
 import riskyspace.view.IMenu;
@@ -32,12 +33,11 @@ public class StartScreen extends JPanel {
 	
 	private IMenu localLobby = null;
 	private IMenu loadGameMenu = null;
-	private IMenu settingsMenu = null;
 	
 	private PreMultiplayerMenu preMultiplayerMenu = null;
 	
 	private SwingButton localGame = null;
-	private SwingButton settings = null;
+	private SwingButton musicButton = null;
 	private SwingButton multiplayer = null;
 	private SwingButton loadGame = null;
 	private SwingButton exit = null;
@@ -72,7 +72,6 @@ public class StartScreen extends JPanel {
 
 	public void createMenus() {
 		localLobby = new Lobby(width/6, height/6, 2*width/3, 2*height/3);
-		settingsMenu = new SettingsMenu(width/3, height/4, width/3, height/3);
 		preMultiplayerMenu = new PreMultiplayerMenu(4*width/10, height/3, width/5, 2*height/6);
 		
 		/* Convert game name String[] to ArrayList */
@@ -89,7 +88,6 @@ public class StartScreen extends JPanel {
 		localLobby.setVisible(false);
 		preMultiplayerMenu.setVisible(false);
 		loadGameMenu.setVisible(false);
-		settingsMenu.setVisible(false);
 	}
 	
 	public void createButtons() {
@@ -120,13 +118,22 @@ public class StartScreen extends JPanel {
 				startScreenVisible = false;
 			}
 		});
-		settings = new SwingButton(width/2 - 125, height/2 - 200 + 300, 250, 50);
-		settings.setImage("res/menu/lobby/settings_button.png");
-		settings.setAction(new Action(){
+		musicButton = new SwingButton(width/2 - 125, height/2 - 200 + 300, 250, 50);
+		if (Settings.isMusicOn()) {
+		     musicButton.setImage("res/menu/lobby/music_on_button.png");
+		 } else {
+			 musicButton.setImage("res/menu/lobby/music_off_button.png");
+		 }
+		musicButton.setAction(new Action(){
 			@Override
-			public void performAction() {
-				settingsMenu.setVisible(true);
-				startScreenVisible = false;
+			public void performAction() { 
+				 if (Settings.isMusicOn()) {
+					 Settings.setProperty("music_enabled=false");
+				     musicButton.setImage("res/menu/lobby/music_off_button.png");
+				 } else {
+					 Settings.setProperty("music_enabled=true");
+					 musicButton.setImage("res/menu/lobby/music_on_button.png");
+				 }
 			}
 		});
 		exit = new SwingButton(width/2 - 125, height/2 - 200 + 400, 250, 50);
@@ -160,16 +167,13 @@ public class StartScreen extends JPanel {
 			if (loadGameMenu.isVisible()) {
 				((SwingRenderAble) loadGameMenu).draw(g);
 			}
-			if (settingsMenu.isVisible()) {
-				((SwingRenderAble) settingsMenu).draw(g);
-			}
 			((SwingRenderAble) preMultiplayerMenu).draw(g);
 		}
 		else if (startScreenVisible) {
 			localGame.draw(g);
 			multiplayer.draw(g);
 			loadGame.draw(g);
-			settings.draw(g);
+			musicButton.draw(g);
 			exit.draw(g);
 		}
 	}
@@ -183,7 +187,7 @@ public class StartScreen extends JPanel {
 				if (localGame.mousePressed(point)) {return true;}
 				if (multiplayer.mousePressed(point)) {return true;}
 				if (loadGame.mousePressed(point)) {return true;}
-				if (settings.mousePressed(point)) {return true;}
+				if (musicButton.mousePressed(point)) {return true;}
 				if (exit.mousePressed(point)) {return true;}
 				
 			}
@@ -207,11 +211,6 @@ public class StartScreen extends JPanel {
 				}
 			}
 			
-			if (settingsMenu instanceof Clickable) {
-				if (((Clickable) settingsMenu).mousePressed(point)) {
-					return true;
-				}
-			}
 			return false;
 		}
 		
@@ -227,11 +226,6 @@ public class StartScreen extends JPanel {
 				}
 			}
 			
-			if (settingsMenu instanceof Clickable) {
-				if (((Clickable) settingsMenu).mouseReleased(point)) {
-					return true;
-				}
-			}
 			return false;
 		}
 

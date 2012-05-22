@@ -1,8 +1,12 @@
 package riskyspace;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
 import riskyspace.data.GameDataHandler;
+import riskyspace.data.Settings;
 import riskyspace.view.lobby.LobbyView;
 
 /**
@@ -14,7 +18,17 @@ public class Main {
 	
 	public static void main(String[] args) {
 		GameDataHandler.init();
+		try {
+			Settings.loadSetting(GameDataHandler.getSaveFolder() + File.separator);
+		} catch (IOException e) {
+		}
 		new LobbyView();
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Settings.saveProperties();
+			}
+		}));
 	}
 	public static JFrame getFrame(){
 		if(frame == null){
