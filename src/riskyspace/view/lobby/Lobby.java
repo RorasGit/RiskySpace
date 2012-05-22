@@ -73,8 +73,8 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 			}
 		});
 		
-		createServer = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 6*margin - 50, 180, 50);
-		createServer.setImage("res/menu/lobby/exitGameButton.png");
+		createServer = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
+		createServer.setImage("res/menu/lobby/createServerButton.png");
 		createServer.setAction(new Action() {
 			@Override
 			public void performAction() {
