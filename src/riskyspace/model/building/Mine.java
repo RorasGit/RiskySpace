@@ -3,8 +3,6 @@ package riskyspace.model.building;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.annotations.Expose;
-
 import riskyspace.GameManager;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Resource;
@@ -17,7 +15,6 @@ public class Mine implements BuildAble, Ranked {
 	 */
 	private static final long serialVersionUID = -5355474270301844204L;
 	private static final int MAX_RANK = 3;
-	@Expose
 	private int rank = 1;
 	
 	private Map<Resource, Map<Integer, Integer>> miningValues = null;

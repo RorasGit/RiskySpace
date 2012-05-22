@@ -114,9 +114,7 @@ public class GLRenderArea implements GLRenderAble {
 	 * The player viewing this renderArea
 	 */
 	private Player viewer = null;
-	
-	private GLButton disconnectButton;
-	
+		
 	private boolean gameOver = false;
 	private boolean winner = false;
 
@@ -759,7 +757,6 @@ public class GLRenderArea implements GLRenderAble {
 				if (fleetClick(me)) {return;}
 				if (colonizerClick(me.getPoint())) {return;}
 				if (planetClick(me.getPoint())) {return;}
-				if (disconnectButton.mousePressed(me.getPoint())) {return;}
 				else {
 					/*
 					 * Click was not in any trigger zone. Call deselect.

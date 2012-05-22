@@ -3,8 +3,6 @@ package riskyspace.model.building;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.annotations.Expose;
-
 import riskyspace.model.BattleAble;
 import riskyspace.model.BuildAble;
 
@@ -15,7 +13,6 @@ public class Turret implements BuildAble, BattleAble, Ranked {
 	 */
 	private static final long serialVersionUID = 4669428352358296033L;
 	private static final int MAX_RANK = 3;
-	@Expose
 	private int rank = 1;
 	
 	private final int baseShield = 10;
