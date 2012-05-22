@@ -318,26 +318,28 @@ public class GLRenderArea implements GLRenderAble {
 
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect, Rectangle targetArea, int zIndex) {
-		
-		drawStars(drawable);
-		drawGrid(drawable);
-		
-		if (sprites != null) {
-			sprites.draw(drawable, getCameraRect(), getCameraRect(), 2);
+		if(currentCamera != null){
+			drawStars(drawable);
+			drawGrid(drawable);
+			
+			if (sprites != null) {
+				sprites.draw(drawable, getCameraRect(), getCameraRect(), 2);
+			}
+			
+			drawSelectionBox(drawable, 10);
+			
+			/*
+			 * Draw menus
+			 */
+			topMenu.draw(drawable, topMenu.getBounds(), targetArea, 50);
+			colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
+			fleetMenu.draw(drawable, fleetMenu.getBounds(), screenArea, 50);
+			planetMenu.draw(drawable, planetMenu.getBounds(), screenArea, 50);
+			
+			drawStatusBox(drawable, targetArea, 50);
+			drawGameOver(drawable, targetArea, 51);
 		}
-		
-		drawSelectionBox(drawable, 10);
-		
-		/*
-		 * Draw menus
-		 */
-		topMenu.draw(drawable, topMenu.getBounds(), targetArea, 50);
-		colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
-		fleetMenu.draw(drawable, fleetMenu.getBounds(), screenArea, 50);
-		planetMenu.draw(drawable, planetMenu.getBounds(), screenArea, 50);
-		
-		drawStatusBox(drawable, targetArea, 50);
-		drawGameOver(drawable, targetArea, 51);
+		//TODO: DRAW PICTURE
 	}
 
 	private void drawGameOver(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {

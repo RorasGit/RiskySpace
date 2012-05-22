@@ -19,6 +19,7 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
 
+import riskyspace.Main;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
@@ -49,7 +50,7 @@ public class OpenGLView implements View, GLEventListener {
 		int height = Toolkit.getDefaultToolkit().getScreenSize().height;
 		
 		renderArea = new GLRenderArea(width, height, rows, cols);
-		frame = new JFrame("RiskySpace");
+		frame = Main.getFrame();
 		if (Toolkit.getDefaultToolkit().getMaximumCursorColors() > 0) {
 			Image cursor = Toolkit.getDefaultToolkit().getImage("res/blue_cursor.png");
 			Cursor c = Toolkit.getDefaultToolkit().createCustomCursor(cursor, new Point(0,0), "main");
@@ -77,10 +78,16 @@ public class OpenGLView implements View, GLEventListener {
 		
 		frame.add(canvas);
 		frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
-		frame.setUndecorated(true);
-		frame.setAlwaysOnTop(true);
-		frame.setResizable(false);
-		frame.pack();
+		frame.setIgnoreRepaint(true);
+		if (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported()) {
+			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(frame);
+		} else {
+			System.err.println("Fullscreen not supported");
+		}
+//		frame.setAlwaysOnTop(true);
+//		frame.setResizable(false);
+//		frame.pack();
+		
 		canvas.requestFocusInWindow();
 		
 		FPSAnimator anim = new FPSAnimator(canvas, 60);

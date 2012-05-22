@@ -6,6 +6,7 @@ import java.util.Observer;
 
 import javax.swing.JFrame;
 
+import riskyspace.Main;
 import riskyspace.sound.PlayList;
 
 public class LobbyView implements Observer {
@@ -41,7 +42,7 @@ public class LobbyView implements Observer {
 	}
 	
 	private void setFrame() {
-		frame = new JFrame("RiskySpace");
+		frame = Main.getFrame();
 		frame.setIgnoreRepaint(true);
 		frame.setUndecorated(true);
 		if (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported()) {
