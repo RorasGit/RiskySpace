@@ -28,6 +28,7 @@ import riskyspace.model.Position;
 import riskyspace.model.Territory;
 import riskyspace.services.Event;
 import riskyspace.services.EventBus;
+import riskyspace.view.Action;
 import riskyspace.view.ViewResources;
 import riskyspace.view.camera.Camera;
 import riskyspace.view.camera.CameraController;
@@ -386,6 +387,7 @@ public class GLRenderArea implements GLRenderAble {
 			Rectangle row2 = new Rectangle(cX - 1, cTextY - 1, 2, 2);
 			Rectangle row3a = new Rectangle(cX - wO/2 + wA/2 - 1, cTextY - lH - 1, 2, 2);
 			Rectangle row3b = new Rectangle(cX + wO/2 - wB/2 + cS - 1, cTextY - lH - 1, 2, 2);
+			Rectangle row4 = new Rectangle(cX -1, cY - lH -1, 2, 2);
 			
 			/* Here we draw the game over message */
 
@@ -393,6 +395,17 @@ public class GLRenderArea implements GLRenderAble {
 			drawString(statusTextRenderer, row2, line2, ViewResources.WHITE, drawable.getWidth(), drawable.getHeight());
 			drawString(statusTextRenderer, row3a, line3, ViewResources.WHITE, drawable.getWidth(), drawable.getHeight());
 			drawString(statusTextRenderer, row3b, line4, statusStringColor, drawable.getWidth(), drawable.getHeight());
+			
+			GLButton disconnectButton = new GLButton(cX -1, cY - cTextY - 1, 2, 2);
+			disconnectButton.setTexture("wide_button", 32, 8);
+			disconnectButton.setAction(new Action() {
+				@Override
+				public void performAction() {
+					System.exit(0);
+				}
+			});
+			disconnectButton.draw(drawable, null, targetArea, zIndex);
+			drawString(statusTextRenderer, row4, "Disconnect", ViewResources.WHITE);
 			
 			statusTextRenderer.setColor(1,1,1,1);
 		}
