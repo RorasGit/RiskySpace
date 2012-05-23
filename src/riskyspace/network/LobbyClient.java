@@ -148,11 +148,13 @@ public class LobbyClient extends Observable {
 	}
 
 	public void close() {
-		try {
-			output.writeObject(LobbyServer.DISCONNECT);
-			socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(socket != null){
+			try {
+				output.writeObject(LobbyServer.DISCONNECT);
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
