@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
+import riskyspace.data.Settings;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
@@ -38,14 +39,14 @@ public class GameClient implements EventHandler {
 	private ObjectInputStream input = null;
 	private ObjectOutputStream output = null;
 	private Socket socket = null;
+	private PlayList playList;
 	
 	public GameClient(String hostIP, int hostPort) {
 		EventBus.CLIENT.addHandler(this);
 		connect(hostIP, hostPort);
 		Thread renderThread = new Thread(new Runnable() {
 			@Override public void run() {
-				while(true) {
-					mainView.draw();
+				while(mainView.draw()) {
 					try {
 						Thread.sleep(1000/60);
 					} catch (InterruptedException e) {
@@ -53,7 +54,6 @@ public class GameClient implements EventHandler {
 					}
 				}
 			}
-			
 		});
 		renderThread.start();
 	}
@@ -68,7 +68,7 @@ public class GameClient implements EventHandler {
 		}
 		System.out.println("Connected");
 		initiateGameView();
-		PlayList playList = new PlayList(PlayList.STANDARD_GAME_LOOP);
+		playList = new PlayList(PlayList.STANDARD_GAME_LOOP);
 		playList.start();
 		new ServerListener(mainView, input);
 	}
@@ -134,13 +134,31 @@ public class GameClient implements EventHandler {
 	
 	@Override
 	public void performEvent(Event evt) {
-		try {
-			if (socket.isConnected() && !socket.isOutputShutdown()) {
-				output.writeObject(evt);
+		if (evt.getTag() == Event.EventTag.SOUND) {
+			if (Settings.isMusicOn()) {
+				playList.start();
+			} else {
+				playList.pause();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
+		} else if (evt.getTag() == Event.EventTag.DISCONNECT) {
+			mainView.setVisible(false);
+			playList.pause();
+			try {
+				socket.close();
+			} catch (IOException e) {
+			}
+			mainView.dispose();
+		} else if (evt.getTag() == Event.EventTag.SHOW_GAME_MENU) {
+			mainView.showGameContextMenu();
+		} else {
+			try {
+				if (socket.isConnected() && !socket.isOutputShutdown()) {
+					output.writeObject(evt);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
 		}
 	}
 	

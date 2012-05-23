@@ -41,7 +41,7 @@ public class Event implements Serializable {
 		QUEUE_SHIP,
 		QUEUE_BUILDING,
 		NEXT_TURN,
-		SOUND, //1
+		SOUND,
 		DISCONNECT,
 		SAVE_GAME,
 		SHOW_GAME_MENU,
