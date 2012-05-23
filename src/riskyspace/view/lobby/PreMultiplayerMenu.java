@@ -1,5 +1,6 @@
 package riskyspace.view.lobby;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -26,6 +27,8 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 	private Image background = null;
 	
 	private TextBox ipBox;
+	
+	private boolean connectionFailed = false;
 	
 	private SwingButton joinGame;
 	private SwingButton hostGame;
@@ -62,7 +65,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 					setVisible(false);
 					multiplayerLobby.setClient(client);
 				} else {
-					// TODO: Print fail text
+					connectionFailed = true;
 				}
 			} 		
 		});
@@ -100,6 +103,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 		super.setVisible(enabled);
 		multiplayerLobby.setVisible(false);
 		ipBox.setEnabled(enabled);
+		connectionFailed = false;
 	}
 	@Override
 	public boolean mousePressed(Point p) {
@@ -144,6 +148,11 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 			ipBox.draw(g);
 			joinGame.draw(g);
 			hostGame.draw(g);
+			if (connectionFailed) {
+				g.setFont(ViewResources.getFont().deriveFont(g.getClipBounds().height/60.0f));
+				g.setColor(Color.red);
+				g.drawString("Connection to IP Failed", getX() + getMenuWidth()/2 - g.getFontMetrics().stringWidth("Connection to IP Failed")/2, getY() + 4*margin/5);
+			}
 		}
 	}
 	private class TextBoxListener extends KeyAdapter {
