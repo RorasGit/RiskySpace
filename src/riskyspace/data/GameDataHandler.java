@@ -8,11 +8,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.List;
 
 import riskyspace.model.Player;
-import riskyspace.model.Position;
 import riskyspace.model.World;
 
 /**
@@ -29,8 +27,8 @@ public class GameDataHandler {
 	private static File oldSave = null;
 	private static File newSave = null;
 	
-	final static String lastAutoSave = "LAST-AUTOSAVE";
-	final static String previousAutoSave = "PREV-AUTOSAVE";
+	public final static String LAST_AUTOSAVE = "LAST-AUTOSAVE";
+	public final static String PREVIOUS_AUTOSAVE = "PREV-AUTOSAVE";
 	
 	/**
 	 * A default constructor.
@@ -50,8 +48,8 @@ public class GameDataHandler {
 		riskySave = new File(saveFolder + File.separator +
 				"Save");
 		
-		oldSave = new File(riskySave + File.separator + previousAutoSave + ".rsg");
-		newSave = new File(riskySave + File.separator + lastAutoSave + ".rsg");
+		oldSave = new File(riskySave + File.separator + PREVIOUS_AUTOSAVE + ".rsg");
+		newSave = new File(riskySave + File.separator + LAST_AUTOSAVE + ".rsg");
 		
 		// Create the folders and files unless they already exist.
 		try {
@@ -87,7 +85,7 @@ public class GameDataHandler {
 			newSave.renameTo(oldSave);
 		}
 		
-		saveGame(world, players, currentPlayer, turn, gameMode, lastAutoSave);
+		saveGame(world, players, currentPlayer, turn, gameMode, LAST_AUTOSAVE);
 	}
 	
 	/**
@@ -138,7 +136,7 @@ public class GameDataHandler {
 	 */
 	public static void loadAutoSave() {
 		try {
-			loadGame(lastAutoSave);
+			loadGame(LAST_AUTOSAVE);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
