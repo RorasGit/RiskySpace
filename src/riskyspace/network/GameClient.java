@@ -144,16 +144,13 @@ public class GameClient implements EventHandler {
 		} else if (evt.getTag() == Event.EventTag.DISCONNECT) {
 			mainView.setVisible(false);
 			playList.pause();
-			try {
-				socket.close();
-			} catch (IOException e) {
-			}
+			disconnect();
 			mainView.dispose();
 		} else if (evt.getTag() == Event.EventTag.SHOW_GAME_MENU) {
 			mainView.showGameContextMenu();
 		} else {
 			try {
-				if (socket.isConnected() && !socket.isOutputShutdown()) {
+				if (socket.isConnected() && !socket.isOutputShutdown() && !socket.isClosed()) {
 					output.writeObject(evt);
 				}
 			} catch (IOException e) {
@@ -240,12 +237,14 @@ public class GameClient implements EventHandler {
 				}
 			}
 		}
-		private void disconnect() {
-			try {
-				socket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		
+	}
+	private void disconnect() {
+		try {
+			socket.close();
+			mainView.setViewer(null);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

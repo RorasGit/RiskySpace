@@ -282,6 +282,10 @@ public class GLRenderArea implements GLRenderAble {
 	 * @param player The Player whos perspective is to be used for this view
 	 */
 	public void setViewer(Player player) {
+		if(player == null){
+			cc.interrupt();
+			return;
+		}
 		this.viewer = player;
 		currentCamera = cameras.get(player);
 		cc.setCamera(currentCamera);
@@ -356,7 +360,7 @@ public class GLRenderArea implements GLRenderAble {
 	}
 
 	private void drawGameOver(GLAutoDrawable drawable, Rectangle targetArea, int zIndex) {
-		if (gameOver) {
+		if (gameOver && !isGameMenuShowing()) {
 			
 			/* Center of screen position */
 			int cX = screenArea.getWidth() / 2;
