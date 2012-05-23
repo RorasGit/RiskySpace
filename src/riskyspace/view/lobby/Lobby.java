@@ -54,13 +54,17 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 	private void createButtons() {
 		playerOne = new SwingButton(getX() + margin, getY() + margin, 240, 50);
 		playerOne.setImage("res/menu/lobby/wide_button.png");
+		playerOne.setText("BLUE PLAYER");
 		playerTwo = new SwingButton(getX() + margin, getY() + 2*margin + 50, 240, 50);
 		playerTwo.setImage("res/menu/lobby/wide_button.png");
+		playerTwo.setText("RED PLAYER");
 		playerThree = new SwingButton(getX() + margin, getY() + 3*margin + 100, 240, 50);
 		playerThree.setImage("res/menu/lobby/wide_button.png");
+		playerThree.setText("GREEN PLAYER");
 		playerThree.setEnabled(false);
 		playerFour = new SwingButton(getX() + margin, getY() + 4*margin + 150, 240, 50);
 		playerFour.setImage("res/menu/lobby/wide_button.png");
+		playerFour.setText("YELLOW PLAYER");
 		playerFour.setEnabled(false);
 		
 		startGame = new SwingButton(getX() + getMenuWidth() - getMenuWidth()/7 - 90, getY() + getMenuHeight() - 3*margin - 50, 180, 50);
@@ -127,10 +131,10 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 			ls.close();
 			ls = null;
 			ipString = "";
-			playerOne.setText("");
-			playerTwo.setText("");
-			playerThree.setText("");
-			playerFour.setText("");
+			playerOne.setText("BLUE PLAYER");
+			playerTwo.setText("RED PLAYER");
+			playerThree.setText("GREEN PLAYER");
+			playerFour.setText("YELLOW PLAYER");
 		}
 	}
 	
