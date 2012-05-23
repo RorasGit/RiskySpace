@@ -225,7 +225,7 @@ public enum GameManager {
 			if (minute.length() == 1) {
 				minute = 0 + minute;
 			}
-			String saveName = year + "-" + month + "-" + day + " " + hour + ":" + minute;
+			String saveName = year + "-" + month + "-" + day + " " + hour + "-" + minute;
 			System.out.println(saveName);
 			GameDataHandler.saveGame(world, activePlayers, player, turn, "Annihilation", saveName);
 			return;

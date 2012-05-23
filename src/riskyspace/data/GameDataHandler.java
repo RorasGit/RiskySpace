@@ -97,9 +97,10 @@ public class GameDataHandler {
 	 */
 	public static void saveGame(World world, List<Player> players, Player currentPlayer, int turn,
 			String gameMode, String gameName) {
-	
+		
+		
 		try {
-			FileOutputStream fos = new FileOutputStream(riskySave + File.separator + gameName.toUpperCase() + ".rsg");
+			FileOutputStream fos = new FileOutputStream(riskySave + File.separator + gameName + ".rsg");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(new SavedGame(world, players, currentPlayer, turn, gameMode, gameName));
 			oos.close();
