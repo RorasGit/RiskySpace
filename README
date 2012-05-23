@@ -89,4 +89,5 @@ Tips:
 MISC:
 The Awt View implementation is not used by the game at the moment though some classes in the swing packages are used by the lobby.
 
-
+SCREEN RESOLUTION REQUIREMENT:
+We recommend a minimum screen solution of 1024x768, preferably higher for proper rendering of graphics.
