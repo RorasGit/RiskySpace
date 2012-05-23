@@ -239,9 +239,7 @@ public class GameServer implements EventHandler {
 					System.exit(1);
 				}
 			}
-			if (!loadedSave) {
-				GameManager.INSTANCE.start();
-			}
+			GameManager.INSTANCE.start(!loadedSave);
 		}
 	}
 	public String getIP(){

@@ -79,6 +79,11 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 				} else {
 					localClient.disposeLobby();
 					new LocalGame(Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]));
+//					try {
+//						new LocalGame(GameDataHandler.loadGame("12-05-23 05:32"));
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
 				}
 			}
 		});

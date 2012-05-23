@@ -78,8 +78,10 @@ public enum GameManager {
 		int i = 0;
 		for (Player player : activePlayers) {
 			PlayerInfo info = new PlayerInfo();
-			info.setIP(ips[i]);
-			i++;
+			if (ips != null) {
+				info.setIP(ips[i]);
+				i++;
+			}
 			playerInfo.put(player, new PlayerInfo());
 			selections.put(player, new Selection());
 		}
@@ -106,9 +108,11 @@ public enum GameManager {
 		initPlayers(numberOfPlayers);
 	}
 	
-	public void start() {
+	public void start(boolean changePlayer) {
 		if(!started){
-			changePlayer();
+			if (changePlayer) {
+				changePlayer();
+			}
 			world.updatePlayerStats(getCurrentPlayer());
 			started = true;
 		}
