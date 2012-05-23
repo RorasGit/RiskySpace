@@ -18,16 +18,15 @@ public class PlayList {
 	/**
 	 * Standard game loop playlist order
 	 */
-	public static final String[] STANDARD_GAME_LOOP = {"T-sonic - AirTrance.mp3",
-													   "zikweb_-_Not_too_quiet.mp3",
-													   "T-sonic - Expanse.mp3",
-													   "T-sonic - Collapsar.mp3",
-													   "T-sonic - Memory of Moon.mp3",
-													   "T-sonic - Noising.mp3",
-													   "morgantj_-_Wayfarer.mp3",
-													   "T-sonic - Singularity.mp3",
-													   "T-sonic - Nucleosynthesis.mp3"};
-	
+	public static final String[] STANDARD_GAME_LOOP = {	"T-sonic - Memory of Moon.mp3",
+														"morgantj_-_Wayfarer.mp3",
+														"T-sonic - Expanse.mp3",
+														"T-sonic - Collapsar.mp3",
+														"T-sonic - AirTrance.mp3",
+														"T-sonic - Noising.mp3",
+														"zikweb_-_Not_too_quiet.mp3",
+														"T-sonic - Singularity.mp3",
+													   	"T-sonic - Nucleosynthesis.mp3"};
 	/**
 	 * Standard lobby loop playlist
 	 */
