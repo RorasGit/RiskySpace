@@ -91,7 +91,7 @@ public class StartScreen extends JPanel {
 		for (int i = 0; i < savedList.length; i++) {
 			gameList.add(savedList[i]);
 		}
-		loadGameMenu = new LoadGameMenu<String>(2*width/5, height/5, width/5, height/2, gameList);
+		loadGameMenu = new LoadGameMenu<String>(width/6, height/6, 2*width/3, 2*height/3, gameList);
 	}
 	
 	private void hideMenus() {
