@@ -52,12 +52,15 @@ public class StartScreen extends JPanel {
 	 * Background
 	 */
 	private Image backGround = null;
+	private Image title = null;
 
 
 	public StartScreen(PlayList playlist) {
 		measureScreen();
 		backGround = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/background3.png").
 				getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		title = Toolkit.getDefaultToolkit().getImage("res/menu/lobby/sector_zero.png").
+				getScaledInstance(500, 130, Image.SCALE_DEFAULT);
 		createButtons();
 		createMenus();
 		clickHandler = new ClickHandler();
@@ -166,6 +169,7 @@ public class StartScreen extends JPanel {
 	public void paintComponent(Graphics g) {
 		
 		g.drawImage(backGround, 0, 0, null);
+		g.drawImage(title, width/2 - 250, height/20, null);
 		
 		if (!startScreenVisible) {
 			backButton.draw(g);
