@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import riskyspace.GameManager;
+import riskyspace.data.SavedGame;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.Player;
 import riskyspace.model.PlayerStats;
@@ -30,11 +31,35 @@ public class GameServer implements EventHandler {
 	private String ip;
 	private int port = 6013;
 
+	private boolean loadedSave = false;
+	
 	public GameServer(int numberOfPlayers, String[] ips) {
 		this.numberOfPlayers = numberOfPlayers;
 		World world = new World(20, 20, numberOfPlayers);
 		SpriteMapData.init(world);
 		GameManager.INSTANCE.init(world);
+		try {
+			ss = new ServerSocket(port);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		new AcceptThread(ips);
+		try {
+			ip = InetAddress.getLocalHost().getHostAddress();
+			System.out.println("Server started with IP: " + ip + ":" + port);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();	
+		}
+		EventBus.SERVER.addHandler(this);
+	}
+	
+	public GameServer(String[] ips, SavedGame game) {
+		this.numberOfPlayers = game.getPlayers().size();
+		World world = game.getWorld();
+		SpriteMapData.init(world);
+		GameManager.INSTANCE.init(game, ips);
+		loadedSave = true;
 		try {
 			ss = new ServerSocket(port);
 		} catch (IOException e) {
@@ -60,7 +85,7 @@ public class GameServer implements EventHandler {
 	
 	public void sendObject(Object o, Player player) throws IOException{
 		for (ConnectionHandler ch : connections) {
-			if (GameManager.INSTANCE.getInfo(player).getIP().equals(ch.socket.getInetAddress())){
+			if (GameManager.INSTANCE.getInfo(player).getIP().equals(ch.socket.getInetAddress().getHostAddress())){
 				ch.output.writeObject(o);
 				ch.output.reset();
 				break;
@@ -147,7 +172,7 @@ public class GameServer implements EventHandler {
 						Event evt = (Event) o;
 						Player p = null;
 						for (Player player : GameManager.INSTANCE.getActivePlayers()) {
-							if (GameManager.INSTANCE.getInfo(player).getIP().equals(socket.getInetAddress())) {
+							if (GameManager.INSTANCE.getInfo(player).getIP().equals(socket.getInetAddress().getHostAddress())) {
 								p = player;
 							}
 						}
@@ -214,7 +239,9 @@ public class GameServer implements EventHandler {
 					System.exit(1);
 				}
 			}
-			GameManager.INSTANCE.start();
+			if (!loadedSave) {
+				GameManager.INSTANCE.start();
+			}
 		}
 	}
 	public String getIP(){

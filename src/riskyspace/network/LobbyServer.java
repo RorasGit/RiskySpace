@@ -13,6 +13,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import riskyspace.data.SavedGame;
+
 
 public class LobbyServer {
 	
@@ -21,6 +23,8 @@ public class LobbyServer {
 	private int maxNumberOfPlayers;
 	private ServerSocket ss = null;
 
+	private SavedGame game;
+	
 	private List<ConnectionHandler> connections = new ArrayList<ConnectionHandler>();
 	
 	private int port;
@@ -51,6 +55,29 @@ public class LobbyServer {
 		}
 	}
 
+	public LobbyServer(SavedGame game) {
+		this.maxNumberOfPlayers = game.getPlayers().size();
+		this.port = 6012;
+		try {
+			ss = new ServerSocket(port);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		try {
+			ss.setSoTimeout(1000);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		new AcceptThread();
+		try {
+			ip = InetAddress.getLocalHost().getHostAddress();
+			System.out.println("Server started with IP: " + ip + ":" + port);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public int getMaxNumberOfPlayers() {
 		return maxNumberOfPlayers;
 	}
@@ -70,7 +97,11 @@ public class LobbyServer {
 			for (int i = 0; i < ips.length; i++) {
 				ips[i] = connections.get(i).socket.getInetAddress().getHostAddress();
 			}
-			new GameServer(maxNumberOfPlayers, ips);
+			if (game != null) {
+				new GameServer(ips, game);
+			} else {
+				new GameServer(maxNumberOfPlayers, ips);
+			}
 			for (ConnectionHandler ch : connections) {
 				try {
 					ch.output.writeObject("connect_to_game");

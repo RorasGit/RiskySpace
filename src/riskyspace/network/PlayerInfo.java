@@ -4,15 +4,19 @@ import java.net.InetAddress;
 
 public class PlayerInfo {
 	
-	private InetAddress ip = null;
+	private String ip = null;
 	
 	public PlayerInfo() {}
 	
 	public void setIP(InetAddress ip) {
+		this.ip = ip.getHostAddress();
+	}
+	
+	public void setIP(String ip) {
 		this.ip = ip;
 	}
 	
-	public InetAddress getIP() {
+	public String getIP() {
 		return ip;
 	}
 }

@@ -2,7 +2,6 @@ package riskyspace;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import riskyspace.data.GameDataHandler;
+import riskyspace.data.SavedGame;
 import riskyspace.logic.Battle;
 import riskyspace.logic.FleetMove;
 import riskyspace.logic.Path;
@@ -64,6 +64,27 @@ public enum GameManager {
 	}
 	
 	/**
+	 * Used for Save Game
+	 * @param game Loaded game
+	 * @param ips 
+	 */
+	public void init(SavedGame game, String[] ips) {
+		this.world = game.getWorld();
+		this.turn = game.getTurn();
+		this.currentPlayer = game.getCurrentPlayer();
+		this.activePlayers = game.getPlayers();
+		int i = 0;
+		for (Player player : activePlayers) {
+			PlayerInfo info = new PlayerInfo();
+			info.setIP(ips[i]);
+			i++;
+			playerInfo.put(player, new PlayerInfo());
+			selections.put(player, new Selection());
+		}
+		initiated = true;
+	}
+	
+	/**
 	 * Used for Network Game
 	 * @param world
 	 */
@@ -103,7 +124,7 @@ public enum GameManager {
 	
 	public Player addPlayer(InetAddress ip){
 		for (Player player : activePlayers) {
-			if(playerInfo.get(player).getIP().equals(ip)){
+			if(playerInfo.get(player).getIP().equals(ip.getHostAddress())){
 				return player;
 			}
 		}

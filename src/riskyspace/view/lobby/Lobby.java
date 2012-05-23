@@ -4,11 +4,13 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
 import riskyspace.LocalGame;
+import riskyspace.data.GameDataHandler;
 import riskyspace.network.LobbyClient;
 import riskyspace.network.LobbyServer;
 import riskyspace.view.Action;
@@ -218,6 +220,24 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 			return false;
 	}
 
+	public void setLoadGame(LobbyClient client, String saveName) {
+		this.client = client;
+		client.addObserver(this);
+		gameModesButton.setEnabled(false);
+		numberOfPlayersButton.setEnabled(false);
+		createServer.setEnabled(false);
+		startGame.setEnabled(false);
+		try {
+			ls = new LobbyServer(GameDataHandler.loadGame(saveName));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ipString = ls.getIP();
+		setClient(client);
+		client.connectToLobby(ls.getIP());
+		setVisible(true);
+	}
+	
 	public void setGameCreate(LobbyClient client) {
 		if (client == null) {
 			// Local
