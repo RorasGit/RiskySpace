@@ -141,7 +141,7 @@ public class SpriteMapData implements Serializable {
 		if (fleet.getFlagship() != ShipType.COLONIZER) {
 			for (FleetData fleetData : data.fleetData) {
 				if (fleetData.getPosition().equals(pos)) {
-					if (fleetData.getFlagships().compareTo(fleet.getFlagship()) > 0) {
+					if (fleetData.getFlagships().compareTo(fleet.getFlagship()) < 0) {
 						fleetData.setFlagShip(fleet.getFlagship());
 						if (GameManager.INSTANCE.hasPath(fleet)) {
 							fleetData.setSteps(GameManager.INSTANCE.getPath(fleet));

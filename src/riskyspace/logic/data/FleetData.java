@@ -25,8 +25,12 @@ public class FleetData extends SpriteData {
 			throw new IllegalArgumentException("There must be at least 2 Positions including current");
 		}
 		this.steps = new Position[3];
-		for (int i = 0; i < steps.length && i < 3; i++) {
-			this.steps[i] = steps[i];
+		for (int i = 0; i < 3; i++) {
+			if (i < steps.length) {
+				this.steps[i] = steps[i];
+			} else {
+				this.steps[i] = null;
+			}
 		}
 	}
 	
