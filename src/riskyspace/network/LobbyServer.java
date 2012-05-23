@@ -130,6 +130,7 @@ public class LobbyServer {
 					try {
 						cs = ss.accept();
 						connections.add(new ConnectionHandler(cs));
+						System.out.println(connections.size());
 						for (ConnectionHandler ch : connections) {
 							ch.output.writeObject("players=" + (connections.size()));
 						}
@@ -152,8 +153,9 @@ public class LobbyServer {
 		try {
 			int times = connections.size();
 			for (int i = 0; i < times; i++) {
-				connections.get(0).output.writeObject(DISCONNECT);
-				connections.get(0).disconnect();
+				ConnectionHandler ch = connections.get(0);
+				ch.output.writeObject(DISCONNECT);
+				ch.disconnect();
 			}
 			ss.close();
 		} catch (IOException e) {
