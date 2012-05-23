@@ -58,14 +58,15 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 				for (int i = 0; i < parts.length; i++) {
 					format = format && parts[i].length() < 4;
 				}
-				if (format) {
-					Settings.setProperty("ip=" + ip);
-				}
+				
 				if (format && client.connectToLobby(ipBox.getText())){
 					setVisible(false);
 					multiplayerLobby.setClient(client);
 				} else {
 					connectionFailed = true;
+				}
+				if (format) {
+					Settings.setProperty("ip=" + ip);
 				}
 			} 		
 		});

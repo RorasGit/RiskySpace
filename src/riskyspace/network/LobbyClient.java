@@ -63,10 +63,13 @@ public class LobbyClient extends Observable {
 					output = new ObjectOutputStream(socket.getOutputStream());
 				} catch (UnknownHostException e) {
 					System.err.println("Dont know about host: " + hostIP);
+					socket = null;
 				} catch (ConnectException e) {
 					System.err.println("Connection refused");
+					socket = null;
 				} catch (IOException e) {
 					e.printStackTrace();
+					socket = null;
 				}
 			}
 		};
