@@ -5,16 +5,68 @@
 	<classpathentry kind="src" path="demo"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt.jar" sourcepath="lib/jogamp-all-platforms/jogamp-all-platforms/gluegen-java-src.zip">
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt.jar" sourcepath="lib/jogamp-all-platforms/jogamp-all-platforms/gluegen-java-src.zip">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="RiskySpace/lib/jogamp-all-platforms/jogamp-all-platforms/jar"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl.all.jar" sourcepath="lib/jogamp-all-platforms/jogamp-all-platforms/jogl-java-src.zip">
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl.all.jar" sourcepath="lib/jogamp-all-platforms/jogamp-all-platforms/jogl-java-src.zip">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="RiskySpace/lib/jogamp-all-platforms/jogamp-all-platforms/jar"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/JLayer1.0.1/jl1.0.1.jar" sourcepath="lib/JLayer1.0.1/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/JLayer1.0.1/jl1.0.1.jar" sourcepath="lib/JLayer1.0.1/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-android-armv7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-linux-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-linux-armv7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-linux-armv7hf.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-linux-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-macosx-universal.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-solaris-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-solaris-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-windows-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-windows-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-unsigned.apk"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt.apk"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-android-armv7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-linux-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-linux-armv7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-linux-armv7hf.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-linux-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-macosx-universal.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-solaris-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-solaris-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-windows-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-natives-windows-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-test.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal-unsigned.apk"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal.apk"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/joal.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-android-armv7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-linux-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-linux-armv7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-linux-armv7hf.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-linux-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-macosx-universal.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-solaris-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-solaris-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-windows-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-natives-windows-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl-unsigned.apk"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl.apk"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jocl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogamp.android-launcher-unsigned.apk"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogamp.android-launcher.apk"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-android-armv7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-linux-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-linux-armv7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-linux-armv7hf.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-linux-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-macosx-universal.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-solaris-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-solaris-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-windows-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
