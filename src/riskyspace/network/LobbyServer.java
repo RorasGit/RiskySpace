@@ -152,6 +152,7 @@ public class LobbyServer {
 		try {
 			int times = connections.size();
 			for (int i = 0; i < times; i++) {
+				connections.get(0).output.writeObject(DISCONNECT);
 				connections.get(0).disconnect();
 			}
 			ss.close();

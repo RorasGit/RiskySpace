@@ -161,8 +161,7 @@ public class StartScreen extends JPanel {
 		backButton.setAction(new Action(){
 			@Override
 			public void performAction() {
-				startScreenVisible = true;
-				preMultiplayerMenu.close();
+				goBack();
 			}
 		});
 	}
@@ -260,5 +259,10 @@ public class StartScreen extends JPanel {
 
 	public KeyListener getKeyListener() {
 		return preMultiplayerMenu.getKeyListener();
+	}
+
+	public void goBack() {
+		startScreenVisible = true;
+		preMultiplayerMenu.close();
 	}
 }
