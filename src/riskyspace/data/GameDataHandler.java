@@ -42,11 +42,9 @@ public class GameDataHandler {
 	}
 	
 	public static void init(String saveFolder) {
-		saveFolder = saveFolder + File.separator + "RiskySpace" +
-				File.separator;
+		saveFolder = saveFolder + File.separator + "RiskySpace" + File.separator;
 		riskySpace = new File(saveFolder);
-		riskySave = new File(saveFolder + File.separator +
-				"Save");
+		riskySave = new File(saveFolder + File.separator + "Save");
 		
 		oldSave = new File(riskySave + File.separator + PREVIOUS_AUTOSAVE + ".rsg");
 		newSave = new File(riskySave + File.separator + LAST_AUTOSAVE + ".rsg");
