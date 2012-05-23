@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
@@ -220,13 +221,32 @@ public class GameClient implements EventHandler {
 							}
 						} 
 					}
+				}catch(SocketException e){
+					e.printStackTrace();
+					mainView.showWinnerScreen();
+					disconnect();
+					break;
 				} catch (EOFException e){
+					e.printStackTrace();
+					disconnect();
+					break;
 				} catch (IOException e) {
 					e.printStackTrace();
+					disconnect();
+					break;
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
+					disconnect();
 				}
 			}
 		}
+		private void disconnect() {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
+	
 }
