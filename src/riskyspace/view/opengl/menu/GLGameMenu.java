@@ -50,7 +50,7 @@ public class GLGameMenu implements IMenu, Clickable, GLRenderAble {
 		int h = height/13;
 		sound = new GLButton(centerX - (7*w)/2, centerY - 4*h - h / 2, 7*w, 2*h);
 		sound.setTexture("square_button", 128, 80);
-		sound.setText("Sound On");
+		sound.setText("Sound " + (Settings.isMusicOn() ? "On" : "OFF"));
 		sound.setAction(new Action() {
 			@Override public void performAction() {
 				/*

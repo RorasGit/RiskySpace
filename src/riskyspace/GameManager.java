@@ -2,6 +2,8 @@ package riskyspace;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -200,7 +202,27 @@ public enum GameManager {
 			return;
 		}
 		if (evt.getTag() == Event.EventTag.SAVE_GAME) {
-			GameDataHandler.saveGame(world, activePlayers, player, turn, "Annihilation", "12-05-23 03:02");
+			Calendar cal = GregorianCalendar.getInstance();
+			String year = ("" + cal.get(Calendar.YEAR)).substring(2);
+			String month = "" + (cal.get(Calendar.MONTH) + 1);
+			if (month.length() == 1) {
+				month = 0 + month;
+			}
+			String day = "" + cal.get(Calendar.DATE);
+			if (day.length() == 1) {
+				day = 0 + day;
+			}
+			String hour = "" + cal.get(Calendar.HOUR_OF_DAY);
+			if (hour.length() == 1) {
+				hour = 0 + hour;
+			}
+			String minute = "" + cal.get(Calendar.MINUTE);
+			if (minute.length() == 1) {
+				minute = 0 + minute;
+			}
+			String saveName = year + "-" + month + "-" + day + " " + hour + ":" + minute;
+			System.out.println(saveName);
+			GameDataHandler.saveGame(world, activePlayers, player, turn, "Annihilation", saveName);
 			return;
 		}
 		/*
