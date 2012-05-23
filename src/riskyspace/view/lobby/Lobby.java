@@ -11,6 +11,7 @@ import java.util.Observer;
 
 import riskyspace.LocalGame;
 import riskyspace.data.GameDataHandler;
+import riskyspace.data.SavedGame;
 import riskyspace.network.LobbyClient;
 import riskyspace.network.LobbyServer;
 import riskyspace.view.Action;
@@ -42,6 +43,8 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 	
 	private LobbyClient client;
 	private LobbyServer ls;
+	
+	private String game;
 	
 	private String ipString = "";
 	
@@ -78,12 +81,15 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 					client.startGame();
 				} else {
 					localClient.disposeLobby();
-					new LocalGame(Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]));
-//					try {
-//						new LocalGame(GameDataHandler.loadGame("12-05-23 05:32"));
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
+					if (game != null) {
+						try {
+							new LocalGame(GameDataHandler.loadGame(game));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else {
+						new LocalGame(Integer.parseInt(numberOfPlayersButton.getSelectedValue().split(" ")[0]));
+					}
 				}
 			}
 		});
@@ -235,21 +241,31 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 	}
 
 	public void setLoadGame(LobbyClient client, String saveName) {
-		this.client = client;
-		client.addObserver(this);
-		gameModesButton.setEnabled(false);
-		numberOfPlayersButton.setEnabled(false);
-		createServer.setEnabled(false);
-		startGame.setEnabled(false);
-		try {
-			ls = new LobbyServer(GameDataHandler.loadGame(saveName));
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (client == null) {
+			game = saveName;
+			gameModesButton.setEnabled(false);
+			numberOfPlayersButton.setEnabled(false);
+			createServer.setEnabled(false);
+			startGame.setEnabled(true);
+			setVisible(true);
+		} else {
+			this.client = client;
+			game = saveName;
+			client.addObserver(this);
+			gameModesButton.setEnabled(false);
+			numberOfPlayersButton.setEnabled(false);
+			createServer.setEnabled(false);
+			startGame.setEnabled(false);
+			try {
+				ls = new LobbyServer(GameDataHandler.loadGame(saveName));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			ipString = ls.getIP();
+			setClient(client);
+			client.connectToLobby(ls.getIP());
+			setVisible(true);
 		}
-		ipString = ls.getIP();
-		setClient(client);
-		client.connectToLobby(ls.getIP());
-		setVisible(true);
 	}
 	
 	public void setGameCreate(LobbyClient client) {

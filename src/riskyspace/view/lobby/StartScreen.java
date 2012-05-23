@@ -34,7 +34,7 @@ public class StartScreen extends JPanel {
 	private boolean startScreenVisible = true;
 	
 	private Lobby localLobby = null;
-	private IMenu loadGameMenu = null;
+	private LoadGameMenu loadGameMenu = null;
 	
 	private PreMultiplayerMenu preMultiplayerMenu = null;
 	
@@ -73,6 +73,7 @@ public class StartScreen extends JPanel {
 	public void setObserver(Observer o) {
 		localLobby.setObserver(o);
 		preMultiplayerMenu.setObserver(o);
+		loadGameMenu.setObserver(o);
 	}
 	
 	private void measureScreen() {
@@ -91,7 +92,7 @@ public class StartScreen extends JPanel {
 		for (int i = 0; i < savedList.length; i++) {
 			gameList.add(savedList[i]);
 		}
-		loadGameMenu = new LoadGameMenu<String>(width/6, height/6, 2*width/3, 2*height/3, gameList);
+		loadGameMenu = new LoadGameMenu(width/6, height/6, 2*width/3, 2*height/3, gameList);
 	}
 	
 	private void hideMenus() {
@@ -262,4 +263,13 @@ public class StartScreen extends JPanel {
 		return preMultiplayerMenu.getKeyListener();
 	}
 
+	public void startLoadGame(String saveName, boolean local) {
+		if (local) {
+			localLobby.setLoadGame(null, saveName);
+			loadGameMenu.setVisible(false);
+		} else {
+			preMultiplayerMenu.setLoadGame(saveName);
+			loadGameMenu.setVisible(false);
+		}
+	}
 }

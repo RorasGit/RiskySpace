@@ -58,6 +58,7 @@ public class LobbyServer {
 	}
 
 	public LobbyServer(SavedGame game) {
+		this.game = game;
 		this.maxNumberOfPlayers = game.getPlayers().size();
 		this.port = 6012;
 		try {

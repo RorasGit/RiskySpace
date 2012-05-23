@@ -64,6 +64,11 @@ public class LobbyView implements Observer {
 				System.err.println("Fullscreen not supported");
 			}
 			frame.dispose();
+		} else if (arg instanceof String && ((String) arg).contains("save=")) {
+			String msg = (String) arg;
+			String saveName = msg.substring("save=".length(), msg.indexOf("?"));
+			boolean local = Boolean.parseBoolean(msg.substring(("save=" + saveName + "?local=").length()));
+			startScreen.startLoadGame(saveName, local);
 		}
 	}
 }

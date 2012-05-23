@@ -171,4 +171,7 @@ public class PreMultiplayerMenu extends AbstractPreGameMenu implements SwingRend
 			}
 		}
 	}
+	public void setLoadGame(String saveName) {
+		multiplayerLobby.setLoadGame(client, saveName);
+	}
 }
