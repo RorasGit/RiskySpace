@@ -40,6 +40,7 @@ public class OpenGLView implements View, GLEventListener {
 	
 	public OpenGLView (int rows, int cols) {
 		System.setProperty("sun.java2d.noddraw", "true");
+		System.setProperty("sun.java2d.opengl", "false");
 		System.setProperty("sun.awt.noerasebackground", "true");
 		
 		GLProfile glProfile = GLProfile.getDefault();

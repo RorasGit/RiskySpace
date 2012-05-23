@@ -71,6 +71,7 @@ public enum GameManager {
 	 * @param ips 
 	 */
 	public void init(SavedGame game, String[] ips) {
+		System.out.println("was here");
 		this.world = game.getWorld();
 		this.turn = game.getTurn();
 		this.currentPlayer = game.getCurrentPlayer();
@@ -82,7 +83,7 @@ public enum GameManager {
 				info.setIP(ips[i]);
 				i++;
 			}
-			playerInfo.put(player, new PlayerInfo());
+			playerInfo.put(player, info);
 			selections.put(player, new Selection());
 		}
 		initiated = true;
@@ -128,9 +129,9 @@ public enum GameManager {
 		}
 	}
 	
-	public Player addPlayer(InetAddress ip){
+	public synchronized Player addPlayer(InetAddress ip){
 		for (Player player : activePlayers) {
-			if(playerInfo.get(player).getIP().equals(ip.getHostAddress())){
+			if (playerInfo.get(player).getIP().equals(ip.getHostAddress())){
 				return player;
 			}
 		}

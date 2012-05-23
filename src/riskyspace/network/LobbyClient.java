@@ -126,6 +126,7 @@ public class LobbyClient extends Observable {
 							String ip = socket.getInetAddress().getHostAddress();
 							new GameClient(ip, 6013);
 							// Set boolean to cancel this thread
+							socket.close();
 							started = true;
 						} else {
 							setChanged();
