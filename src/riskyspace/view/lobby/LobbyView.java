@@ -64,7 +64,6 @@ public class LobbyView implements Observer {
 				System.err.println("Fullscreen not supported");
 			}
 			frame.dispose();
-			System.out.println("done");
 		}
 	}
 }

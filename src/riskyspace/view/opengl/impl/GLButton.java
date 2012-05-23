@@ -9,8 +9,11 @@ import javax.media.opengl.GLAutoDrawable;
 
 import riskyspace.view.Button;
 import riskyspace.view.GlowableGraphic;
+import riskyspace.view.ViewResources;
 import riskyspace.view.opengl.GLRenderAble;
 import riskyspace.view.opengl.Rectangle;
+
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 /**
  * Simple Button object that can be drawn in an OpenGL context.
@@ -26,11 +29,14 @@ public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 	private boolean canGlow = true;
 	
 	private Rectangle renderRect;
+	
+	private TextRenderer textRenderer;
 
 	public GLButton(int x, int y, int width, int height) {
 		super(x, y, width, height);
 		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 		renderRect = new Rectangle(x, screenHeight - y - height, width, height);
+		textRenderer = new TextRenderer(ViewResources.getFont().deriveFont(Math.min(width/7f, height/4f)));
 	}
 	
 	/**
@@ -95,12 +101,14 @@ public class GLButton extends Button implements GLRenderAble, GlowableGraphic {
 	@Override
 	public void draw(GLAutoDrawable drawable, Rectangle objectRect,	Rectangle targetArea, int zIndex) {
 		GL2 gl = drawable.getGL().getGL2();
-//		System.out.println("Can: " + canBeDisabled + " " + sprite.toString());
 		if (isEnabled()) {
 			if (canGlow() && cursorOver()) {
 				gl.glColor4f(0.8f, 0.8f, 1.0f, 1.0f);
 			}
 			sprite.draw(drawable, renderRect, targetArea, zIndex);
+			if (!getText().equals("")) {
+				GLRenderArea.drawString(textRenderer, getBounds(), getText(), getTextColor(), drawable.getWidth(), drawable.getHeight());
+			}
 		} else if (canBeDisabled) {
 			disabledSprite.draw(drawable, renderRect, targetArea, zIndex);
 		}

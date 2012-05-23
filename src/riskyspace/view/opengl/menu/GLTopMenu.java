@@ -76,7 +76,7 @@ public class GLTopMenu implements IMenu, Clickable, GLRenderAble {
 		menuButton.setAction(new Action() {
 			@Override
 			public void performAction() {
-				System.exit(0);
+				EventBus.CLIENT.publish(new Event(Event.EventTag.SHOW_GAME_MENU, null));
 			}
 		});
 		

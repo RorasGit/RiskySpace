@@ -13,7 +13,7 @@ import riskyspace.model.Territory;
 
 public interface View {
 	
-	public void draw();
+	public boolean draw();
 	public void setViewer(Player player);
 	public void setActivePlayer(Player player);
 	public void setVisible(boolean visible);
@@ -26,9 +26,11 @@ public interface View {
 	public void showPlanet(Territory selection);
 	public void showColony(Colony selection);
 	public void showFleet(Fleet selection);
+	public void showGameContextMenu();
 	public void hideMenus();
 
 	public void showGameOver(Player loser);
 	public void showWinnerScreen();
+	
+	public void dispose();
 }
-

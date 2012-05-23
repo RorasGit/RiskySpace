@@ -39,6 +39,7 @@ import riskyspace.view.opengl.menu.GLColonyMenu;
 import riskyspace.view.opengl.menu.GLFleetMenu;
 import riskyspace.view.opengl.menu.GLPlanetMenu;
 import riskyspace.view.opengl.menu.GLTopMenu;
+import riskyspace.view.opengl.menu.GLGameMenu;
 
 public class GLRenderArea implements GLRenderAble {
 	
@@ -138,7 +139,8 @@ public class GLRenderArea implements GLRenderAble {
 	private GLPlanetMenu planetMenu = null;
 	private GLFleetMenu fleetMenu = null;
 	private GLTopMenu topMenu = null;
-
+	private GLGameMenu gameMenu = null;
+	
 	private String killedByString;
 
 	/**
@@ -188,6 +190,10 @@ public class GLRenderArea implements GLRenderAble {
 		planetMenu = new GLPlanetMenu(screenArea.getWidth() - menuWidth, 80,
 				menuWidth, screenArea.getHeight()-80);
 		topMenu = new GLTopMenu(0, screenArea.getHeight(), screenArea.getWidth(), 80);
+		gameMenu = new GLGameMenu(screenArea.getWidth() / 2,
+								  screenArea.getHeight() / 2,
+								  screenArea.getWidth() / 4,
+								  screenArea.getHeight() / 2);
 	}
 
 	/**
@@ -293,8 +299,8 @@ public class GLRenderArea implements GLRenderAble {
 			statusString = "";
 		} else if (!gameOver) {
 			statusString = player + "'S TURN";
-			statusStringColor = PlayerColors.getColor(player);
 		}
+		statusStringColor = PlayerColors.getColor(player);
 	}
 	
 	public void showGameOver() {
@@ -342,6 +348,7 @@ public class GLRenderArea implements GLRenderAble {
 			colonyMenu.draw(drawable, colonyMenu.getBounds(), screenArea, 50);
 			fleetMenu.draw(drawable, fleetMenu.getBounds(), screenArea, 50);
 			planetMenu.draw(drawable, planetMenu.getBounds(), screenArea, 50);
+			gameMenu.draw(drawable, gameMenu.getBounds(), targetArea, 50);
 			
 			drawStatusBox(drawable, targetArea, 50);
 			drawGameOver(drawable, targetArea, 51);
@@ -592,6 +599,22 @@ public class GLRenderArea implements GLRenderAble {
 	}
 	
 	/**
+	 * Set if the game menu should be visible or not
+	 * @param show true if it should be shown
+	 */
+	public void showGameMenu(boolean show) {
+		gameMenu.setVisible(show);
+	}
+	
+	/**
+	 * Returns if the game menu showing or not
+	 * @return true if the game menu is showing
+	 */
+	public boolean isGameMenuShowing() {
+		return gameMenu.isVisible();
+	}
+	
+	/**
 	 * Tell this RenderArea to display information about
 	 * a selected Fleet
 	 * @param selection The selected Fleet
@@ -659,6 +682,7 @@ public class GLRenderArea implements GLRenderAble {
 			clicked = clicked || colonyMenu.mousePressed(point);
 			clicked = clicked || fleetMenu.mousePressed(point);
 			clicked = clicked || planetMenu.mousePressed(point);
+			clicked = clicked || gameMenu.mousePressed(point);
 			return clicked;
 		}
 

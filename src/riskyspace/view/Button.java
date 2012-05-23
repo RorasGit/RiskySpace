@@ -14,9 +14,9 @@ public abstract class Button implements Clickable {
 	private int width, height;
 	
 	private Action action = null;
-	private String text = null;
+	private String text = "";
 	private boolean enabled = true;
-	private Color textColor = null;
+	private Color textColor = ViewResources.WHITE;
 	
 	public Button(int x, int y, int width, int height) {
 		super();

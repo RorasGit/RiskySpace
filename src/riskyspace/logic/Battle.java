@@ -119,10 +119,10 @@ public class Battle {
 			if (territory.getColony().getOwner() != winner) {
 				battleStats.setColonyDestroyed(true);
 				if(territory.getPlanet().destroyColony()){
-					Event evt = new Event(Event.EventTag.HOME_LOST, territory.getColony().getOwner());
-					GameManager.INSTANCE.handleEvent(evt, territory.getColony().getOwner());
+					Event evt = new Event(Event.EventTag.HOME_LOST, battleStats.getLoser());
+					GameManager.INSTANCE.handleEvent(evt, battleStats.getLoser());
 				}
-				Event evt = new Event(Event.EventTag.INCOME_CHANGED, territory.getColony().getOwner());
+				Event evt = new Event(Event.EventTag.INCOME_CHANGED, battleStats.getLoser());
 				GameManager.INSTANCE.handleEvent(evt, winner);
 			}
 		}

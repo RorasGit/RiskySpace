@@ -35,7 +35,7 @@ public class BattleStats implements Serializable {
 	}
 	
 	public Player getLoser() {
-		return winner == participants[0] ? participants[0] : participants[1];
+		return winner == participants[0] ? participants[1] : participants[0];
 	}
 	
 	public void setWinner(Player winner) {

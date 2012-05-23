@@ -2,6 +2,7 @@ package riskyspace;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -175,6 +176,10 @@ public enum GameManager {
 
 	public synchronized void handleEvent(Event evt, Player player) {
 		if (!initiated || (!activePlayers.contains(player) && player != null)) {
+			return;
+		}
+		if (evt.getTag() == Event.EventTag.SAVE_GAME) {
+			GameDataHandler.saveGame(world, activePlayers, player, turn, "Annihilation", "12-05-23 03:02");
 			return;
 		}
 		/*

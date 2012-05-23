@@ -3,6 +3,7 @@ package riskyspace;
 import java.util.List;
 import java.util.Map;
 
+import riskyspace.data.Settings;
 import riskyspace.logic.SpriteMapData;
 import riskyspace.model.BuildAble;
 import riskyspace.model.Colony;
@@ -21,6 +22,8 @@ import riskyspace.view.ViewFactory;
 public class LocalGame {
 	
 	private final View mainView;
+	private final PlayList playList;
+	private final Thread renderThread;
 	
 	public LocalGame(int numberOfPlayers) {
 		World world = new World(20, 20, numberOfPlayers);
@@ -40,12 +43,11 @@ public class LocalGame {
 		mainView.setActivePlayer(GameManager.INSTANCE.getCurrentPlayer());
 		mainView.setVisible(true);
 
-		PlayList playList = new PlayList(PlayList.STANDARD_GAME_LOOP);
+		playList = new PlayList(PlayList.STANDARD_GAME_LOOP);
 		playList.start();
-		Thread renderThread = new Thread(new Runnable() {
+		renderThread = new Thread(new Runnable() {
 			@Override public void run() {
-				while(true) {
-					mainView.draw();
+				while(mainView.draw()) {
 					try {
 						Thread.sleep(1000/60);
 					} catch (InterruptedException e) {
@@ -65,8 +67,22 @@ public class LocalGame {
 		
 		@Override
 		public void performEvent(Event evt) {
-			Player p = GameManager.INSTANCE.getCurrentPlayer();
-			GameManager.INSTANCE.handleEvent(evt, p);
+			if (evt.getTag() == Event.EventTag.SOUND) {
+				if (Settings.isMusicOn()) {
+					playList.start();
+				} else {
+					playList.pause();
+				}
+			} else if (evt.getTag() == Event.EventTag.DISCONNECT) {
+				mainView.setVisible(false);
+				playList.pause();
+				mainView.dispose();
+			} else if (evt.getTag() == Event.EventTag.SHOW_GAME_MENU) {
+				mainView.showGameContextMenu();
+			} else {
+				Player p = GameManager.INSTANCE.getCurrentPlayer();
+				GameManager.INSTANCE.handleEvent(evt, p);
+			}
 		}
 	}
 

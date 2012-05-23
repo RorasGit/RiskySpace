@@ -60,7 +60,7 @@ public class OpenGLView implements View, GLEventListener {
 			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					System.exit(0);
+					showGameContextMenu();
 				} else if (event.getKeyCode() == KeyEvent.VK_SPACE) {
 					Event evt = new Event(Event.EventTag.MOVE, null);
 					EventBus.CLIENT.publish(evt);
@@ -102,14 +102,6 @@ public class OpenGLView implements View, GLEventListener {
 	//*****GLEventListener Methods*****
 	@Override
 	public void display(GLAutoDrawable drawable) {
-//		long b = System.currentTimeMillis();
-//		if (sec == 0 || b -sec > 1000) {
-//			System.out.println("FPS: " + times);
-//			times = 0;
-//			sec = b;
-//		}
-//		times++;
-		
 		GL2 gl = drawable.getGL().getGL2();
 		drawable.getGL().glClearColor(0, 0, 0, 1f);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -144,16 +136,29 @@ public class OpenGLView implements View, GLEventListener {
 	}
 
 	@Override
+	public void dispose() {
+		frame.dispose();
+	}
+	
+	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
 		renderArea.updateSize(width, height);
 	}
 	
 	//*****View Methods*****
 	@Override
-	public void draw() {
-		
+	public boolean draw() {
+		/*
+		 * This method draws with FPSAnimator, return false
+		 */
+		return false;
 	}
 
+	@Override
+	public void showGameContextMenu() {
+		renderArea.showGameMenu(!renderArea.isGameMenuShowing());
+	}
+	
 	@Override
 	public void setViewer(Player player) {
 		renderArea.setViewer(player);

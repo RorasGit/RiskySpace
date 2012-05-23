@@ -64,8 +64,9 @@ public class SwingView implements View {
 	}
 
 	@Override
-	public void draw() {
+	public boolean draw() {
 		renderArea.repaint();
+		return frame.isShowing();
 	}
 
 	@Override
@@ -131,5 +132,17 @@ public class SwingView implements View {
 	@Override
 	public void showWinnerScreen() {
 		renderArea.showWinnerScreen();
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showGameContextMenu() {
+		// TODO Auto-generated method stub
+		
 	}
 }

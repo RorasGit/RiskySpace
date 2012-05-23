@@ -60,6 +60,8 @@ public class Planet implements Serializable{
 	
 	/**
 	 * Removes the Colony on this Planet if there is one, otherwise it does nothing.
+	 * 
+	 * @return <code>true</code> if the colony was someone's Home Planet
 	 */
 	public boolean destroyColony() {
 		boolean wasHome = colony.isHomeColony();
@@ -68,6 +70,7 @@ public class Planet implements Serializable{
 		EventBus.SERVER.publish(evt);
 		return wasHome;
 	}
+	
 	public boolean hasColony() {
 		return colony != null;
 	}
