@@ -138,6 +138,15 @@ public class Lobby extends AbstractPreGameMenu implements SwingRenderAble, Obser
 			playerThree.setText("GREEN PLAYER");
 			playerFour.setText("YELLOW PLAYER");
 		}
+		if(client != null){
+			client.close();
+			client = null;
+			ipString = "";
+			playerOne.setText("BLUE PLAYER");
+			playerTwo.setText("RED PLAYER");
+			playerThree.setText("GREEN PLAYER");
+			playerFour.setText("YELLOW PLAYER");
+		}
 	}
 	
 	public void setNumberOfPlayers(int nbrOfPlayers) {

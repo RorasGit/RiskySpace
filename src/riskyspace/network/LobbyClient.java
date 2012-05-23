@@ -130,17 +130,26 @@ public class LobbyClient extends Observable {
 						}
 					}
 				} catch (SocketException e) {
-					System.out.println("Server shutdown!");
 					stopped = true;
 				} catch (EOFException e) {
-					System.out.println("Server shutdown!");
 					stopped = true;
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
+					/*
+					 * Got an nonserializable object, nothing to do here.
+					 */
 				}
 			}
+		}
+	}
+
+	public void close() {
+		try {
+			output.writeObject(LobbyServer.DISCONNECT);
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

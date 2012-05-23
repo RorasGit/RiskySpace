@@ -19,6 +19,8 @@ import riskyspace.data.SavedGame;
 public class LobbyServer {
 	
 	public static final String START_GAME = "start_game";
+
+	public static final String DISCONNECT = "disconnect";
 	
 	private int maxNumberOfPlayers;
 	private ServerSocket ss = null;
@@ -195,6 +197,13 @@ public class LobbyServer {
 						if (START_GAME.equals(o) && connections.size() == maxNumberOfPlayers) {
 							start();
 						}
+					}else if (o instanceof String){
+						if (DISCONNECT.equals(o)) {
+							disconnect();
+							for (ConnectionHandler ch : connections) {
+								ch.output.writeObject("players=" + (connections.size()));
+							}
+						}
 					}
 				} catch (SocketException e){
 					disconnect();
@@ -205,7 +214,9 @@ public class LobbyServer {
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
+					/*
+					 * Server got an nonserializable object, nothing to do here.
+					 */
 				}
 			}
 		}
@@ -217,7 +228,6 @@ public class LobbyServer {
 				e.printStackTrace();
 			}
 			connections.remove(this);
-			System.out.println("Connection to :" + socket.getInetAddress() + " closed.");
 		}
 	}
 }

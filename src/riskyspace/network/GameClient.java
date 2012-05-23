@@ -219,21 +219,18 @@ public class GameClient implements EventHandler {
 						} 
 					}
 				}catch(SocketException e){
-					e.printStackTrace();
 					mainView.showWinnerScreen();
 					disconnect();
 					break;
 				} catch (EOFException e){
-					e.printStackTrace();
 					disconnect();
 					break;
 				} catch (IOException e) {
 					e.printStackTrace();
-					disconnect();
-					break;
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-					disconnect();
+					/*
+					 * Got an nonserializable object, nothing to do here.
+					 */
 				}
 			}
 		}
