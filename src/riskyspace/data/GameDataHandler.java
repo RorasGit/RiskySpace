@@ -29,6 +29,9 @@ public class GameDataHandler {
 	private static File oldSave = null;
 	private static File newSave = null;
 	
+	final static String lastAutoSave = "LAST-AUTOSAVE";
+	final static String previousAutoSave = "PREV-AUTOSAVE";
+	
 	/**
 	 * A default constructor.
 	 */
@@ -47,8 +50,8 @@ public class GameDataHandler {
 		riskySave = new File(saveFolder + File.separator +
 				"Save");
 		
-		oldSave = new File(riskySave + File.separator + "previous_autosave.rsg");
-		newSave = new File(riskySave + File.separator + "last_autosave.rsg");
+		oldSave = new File(riskySave + File.separator + previousAutoSave + ".rsg");
+		newSave = new File(riskySave + File.separator + lastAutoSave + ".rsg");
 		
 		// Create the folders and files unless they already exist.
 		try {
@@ -62,7 +65,7 @@ public class GameDataHandler {
 	}
 
 	/**
-	 * Save the current game to default game name "last_autosave".
+	 * Save the current game to default game name "lastAutoSave".
 	 * The game currently saved in "last_autosave" will be moved to "previous_autosave".
 	 * "previous_autosave" will be overwritten.
 	 * @param world - the world describing the game you wish to save.
@@ -84,7 +87,7 @@ public class GameDataHandler {
 			newSave.renameTo(oldSave);
 		}
 		
-		saveGame(world, players, currentPlayer, turn, gameMode, "last_autosave");
+		saveGame(world, players, currentPlayer, turn, gameMode, lastAutoSave);
 	}
 	
 	/**
@@ -100,7 +103,7 @@ public class GameDataHandler {
 			String gameMode, String gameName) {
 	
 		try {
-			FileOutputStream fos = new FileOutputStream(riskySave + File.separator + gameName + ".rsg");
+			FileOutputStream fos = new FileOutputStream(riskySave + File.separator + gameName.toUpperCase() + ".rsg");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(new SavedGame(world, players, currentPlayer, turn, gameMode, gameName));
 			oos.close();
@@ -117,7 +120,7 @@ public class GameDataHandler {
 	 */
 	public static SavedGame loadGame(String gameName) throws IOException {	
 		try {
-			FileInputStream fis = new FileInputStream(riskySave + File.separator + gameName + ".rsg");
+			FileInputStream fis = new FileInputStream(riskySave + File.separator + gameName.toUpperCase() + ".rsg");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			SavedGame gameData = (SavedGame) ois.readObject();
 			ois.close();
@@ -131,11 +134,11 @@ public class GameDataHandler {
 	}
 	
 	/**
-	 * Load the game currently saved in default file "last_autosave".
+	 * Load the game currently saved in default file "lastAutoSave".
 	 */
 	public static void loadAutoSave() {
 		try {
-			loadGame("last_autosave");
+			loadGame(lastAutoSave);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -173,7 +176,7 @@ public class GameDataHandler {
 		ObjectInputStream ois = null;
 
 			try {
-				fis = new FileInputStream(riskySave + File.separator + gameName + ".rsg");
+				fis = new FileInputStream(riskySave + File.separator + gameName.toUpperCase() + ".rsg");
 				ois = new ObjectInputStream(fis);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
